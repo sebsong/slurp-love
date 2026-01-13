@@ -5,5 +5,4 @@
 	],
 	"Lua.runtime.version": "LuaJIT",
 	"Lua.workspace.checkThirdParty": false,
-	"editor.formatOnSave": true
 }
