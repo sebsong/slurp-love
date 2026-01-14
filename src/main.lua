@@ -9,6 +9,8 @@ function love.load()
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
+	BoatQuad = love.graphics.newQuad(0, 0, 32, 32, EntitiesImage:getWidth(), EntitiesImage:getHeight())
+
 	local width, height = love.graphics.getDimensions()
 	Pos = { x = width / 2, y = height / 2 }
 	Speed = 300
@@ -36,6 +38,6 @@ end
 function love.draw()
 	-- TLfres.beginRendering(DisplayWidth, DisplayHeight)
 	love.graphics.draw(BackgroundImage)
-	love.graphics.draw(EntitiesImage, Pos.x, Pos.y)
+	love.graphics.draw(EntitiesImage, BoatQuad, Pos.x, Pos.y)
 	-- TLfres.endRendering()
 end
