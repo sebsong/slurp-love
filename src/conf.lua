@@ -24,13 +24,13 @@ function love.conf(t)
 
 	t.window.title          = "slurp's up!"
 	t.window.icon           = nil
-	t.window.width          = DisplayWidth
-	t.window.height         = DisplayHeight
+	t.window.width          = 1280
+	t.window.height         = 720
 	t.window.borderless     = false
 	t.window.resizable      = false
 	t.window.minwidth       = 1
 	t.window.minheight      = 1
-	t.window.fullscreen     = false
+	t.window.fullscreen     = true
 	t.window.fullscreentype = "desktop"
 	t.window.vsync          = 1
 	t.window.msaa           = 0

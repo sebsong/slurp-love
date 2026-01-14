@@ -2,6 +2,9 @@ require("game/settings")
 TLfres = require("external/tlfres")
 
 function love.load()
+	Canvas = love.graphics.newCanvas(CanvasWidth, CanvasHeight)
+	love.graphics.setDefaultFilter("nearest", "nearest")
+
 	ColorPalette = {}
 	for hexColor in love.filesystem.lines("assets/art/look-of-horror.hex") do
 		table.insert(ColorPalette, hexColor)
@@ -11,9 +14,14 @@ function love.load()
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	BoatQuad = love.graphics.newQuad(0, 0, 32, 32, EntitiesImage:getWidth(), EntitiesImage:getHeight())
 
-	local width, height = love.graphics.getDimensions()
-	Pos = { x = width / 2, y = height / 2 }
+	Pos = { x = CanvasWidth / 2, y = CanvasHeight / 2 }
 	Speed = 300
+
+	local windowWidth, windowHeight = love.graphics.getDimensions()
+	ScaleX = windowWidth / CanvasWidth
+	ScaleY = windowHeight / CanvasHeight
+
+	print(ScaleX, ScaleY)
 end
 
 function love.update(dt)
@@ -36,8 +44,9 @@ function love.update(dt)
 end
 
 function love.draw()
-	-- TLfres.beginRendering(DisplayWidth, DisplayHeight)
-	love.graphics.draw(BackgroundImage)
-	love.graphics.draw(EntitiesImage, BoatQuad, Pos.x, Pos.y)
-	-- TLfres.endRendering()
+	Canvas:renderTo(function()
+		love.graphics.draw(BackgroundImage)
+		love.graphics.draw(EntitiesImage, BoatQuad, Pos.x, Pos.y)
+	end)
+	love.graphics.draw(Canvas, 0, 0, 0, ScaleX, ScaleY)
 end

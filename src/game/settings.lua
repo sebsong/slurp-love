@@ -1,2 +1,2 @@
-DisplayWidth = 1280
-DisplayHeight = 720
+CanvasWidth = 1280
+CanvasHeight = 720
