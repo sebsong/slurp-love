@@ -2,19 +2,23 @@
 	"folders": [
 		{
 			"name": "game",
-			"path": "./game",
+			"path": "./src/game",
 		},
 		{
 			"name": "engine",
-			"path": "./engine",
+			"path": "./src/engine",
 		},
 		{
 			"name": "assets",
-			"path": "./assets",
+			"path": "./src/assets",
 		},
 		{
 			"name": "external",
-			"path": "./external",
+			"path": "./src/external",
+		},
+		{
+			"name": "src",
+			"path": "./src",
 		},
 		{
 			"name": "root",

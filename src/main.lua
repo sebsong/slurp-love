@@ -1,5 +1,5 @@
 function love.load()
-	-- entitiesImage = love.graphics.newImage("assets/art/entities.png")
+	entitiesImage = love.graphics.newImage("assets/art/entities.png")
 	rectPos = { x = 100, y = 100 }
 	speed = 300
 end
@@ -24,6 +24,6 @@ function love.update(dt)
 end
 
 function love.draw()
-	-- love.graphics.draw(entitiesImage)
+	love.graphics.draw(entitiesImage)
 	love.graphics.rectangle("fill", rectPos.x, rectPos.y, 50, 80)
 end
