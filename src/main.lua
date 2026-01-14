@@ -1,7 +1,8 @@
 function love.load()
-	entitiesImage = love.graphics.newImage("assets/art/entities.png")
-	rectPos = { x = 100, y = 100 }
-	speed = 300
+	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
+	local width, height = love.graphics.getDimensions()
+	Pos = { x = width / 2, y = height / 2 }
+	Speed = 300
 end
 
 function love.update(dt)
@@ -10,20 +11,19 @@ function love.update(dt)
 	end
 
 	if love.keyboard.isDown("up") then
-		rectPos.y = rectPos.y - speed * dt;
+		Pos.y = Pos.y - Speed * dt;
 	end
 	if love.keyboard.isDown("down") then
-		rectPos.y = rectPos.y + speed * dt;
+		Pos.y = Pos.y + Speed * dt;
 	end
 	if love.keyboard.isDown("left") then
-		rectPos.x = rectPos.x - speed * dt;
+		Pos.x = Pos.x - Speed * dt;
 	end
 	if love.keyboard.isDown("right") then
-		rectPos.x = rectPos.x + speed * dt;
+		Pos.x = Pos.x + Speed * dt;
 	end
 end
 
 function love.draw()
-	love.graphics.draw(entitiesImage)
-	love.graphics.rectangle("fill", rectPos.x, rectPos.y, 50, 80)
+	love.graphics.draw(EntitiesImage, Pos.x, Pos.y)
 end
