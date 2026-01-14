@@ -1,3 +1,5 @@
+require("game/settings")
+
 local IS_DEBUG = os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" and arg[2] == "debug"
 if IS_DEBUG then
 	require("lldebugger").start()
@@ -22,8 +24,8 @@ function love.conf(t)
 
 	t.window.title          = "slurp's up!"
 	t.window.icon           = nil
-	t.window.width          = 1280
-	t.window.height         = 720
+	t.window.width          = DisplayWidth
+	t.window.height         = DisplayHeight
 	t.window.borderless     = false
 	t.window.resizable      = false
 	t.window.minwidth       = 1

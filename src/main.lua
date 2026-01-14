@@ -1,4 +1,13 @@
+require("game/settings")
+TLfres = require("external/tlfres")
+
 function love.load()
+	ColorPalette = {}
+	for hexColor in love.filesystem.lines("assets/art/look-of-horror.hex") do
+		table.insert(ColorPalette, hexColor)
+	end
+
+	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	local width, height = love.graphics.getDimensions()
 	Pos = { x = width / 2, y = height / 2 }
@@ -25,5 +34,8 @@ function love.update(dt)
 end
 
 function love.draw()
+	-- TLfres.beginRendering(DisplayWidth, DisplayHeight)
+	love.graphics.draw(BackgroundImage)
 	love.graphics.draw(EntitiesImage, Pos.x, Pos.y)
+	-- TLfres.endRendering()
 end
