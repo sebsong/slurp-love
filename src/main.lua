@@ -13,10 +13,12 @@ function love.load()
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 
-	BoatQuad = love.graphics.newQuad(0, 0, 32, 32, EntitiesImage:getWidth(), EntitiesImage:getHeight())
-	Pos = { x = 0, y = 0 }
+	WorldTransform = love.math.newTransform(CanvasWidth / 2, CanvasHeight / 2)
+
+	local boatWidth, boatHeight = 32, 32
+	BoatQuad = love.graphics.newQuad(0, 0, boatWidth, boatHeight, EntitiesImage:getWidth(), EntitiesImage:getHeight())
+	BoatTransform = love.math.newTransform(0, 0, 0, 1, 1, boatWidth / 2, boatHeight / 2)
 	Speed = 300
-	Rot = 0
 	RotSpeed = 2 * PI
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
@@ -30,16 +32,16 @@ function love.update(dt)
 	end
 
 	if love.keyboard.isDown("up") then
-		Pos.y = Pos.y - Speed * dt
+		BoatTransform:translate(0, -Speed * dt)
 	end
 	if love.keyboard.isDown("down") then
-		Pos.y = Pos.y + Speed * dt
+		BoatTransform:translate(0, Speed * dt)
 	end
 	if love.keyboard.isDown("left") then
-		Rot = Rot - RotSpeed * dt
+		BoatTransform:rotate(-RotSpeed * dt)
 	end
 	if love.keyboard.isDown("right") then
-		Rot = Rot + RotSpeed * dt
+		BoatTransform:rotate(RotSpeed * dt)
 	end
 end
 
@@ -48,10 +50,10 @@ function love.draw()
 		love.graphics.draw(BackgroundImage)
 
 		love.graphics.push()
-		love.graphics.translate(CanvasWidth / 2, CanvasHeight / 2)
+		love.graphics.applyTransform(WorldTransform)
 
-		local _, _, width, height = BoatQuad:getViewport()
-		love.graphics.draw(EntitiesImage, BoatQuad, Pos.x, Pos.y, Rot, 1, 1, width / 2, height / 2)
+		love.graphics.draw(EntitiesImage, BoatQuad, BoatTransform)
+		love.graphics.points(0, 0)
 
 		love.graphics.pop()
 	end)
