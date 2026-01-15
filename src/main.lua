@@ -1,4 +1,5 @@
 require("game/settings")
+require("engine/math")
 
 function love.load()
 	Canvas = love.graphics.newCanvas(CanvasWidth, CanvasHeight)
@@ -13,8 +14,10 @@ function love.load()
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 
 	BoatQuad = love.graphics.newQuad(0, 0, 32, 32, EntitiesImage:getWidth(), EntitiesImage:getHeight())
-	Pos = { x = CanvasWidth / 2, y = CanvasHeight / 2 }
+	Pos = { x = 0, y = 0 }
 	Speed = 300
+	Rot = 0
+	RotSpeed = 2 * PI
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
 	CanvasScaleX = windowWidth / CanvasWidth
@@ -27,23 +30,30 @@ function love.update(dt)
 	end
 
 	if love.keyboard.isDown("up") then
-		Pos.y = Pos.y - Speed * dt;
+		Pos.y = Pos.y - Speed * dt
 	end
 	if love.keyboard.isDown("down") then
-		Pos.y = Pos.y + Speed * dt;
+		Pos.y = Pos.y + Speed * dt
 	end
 	if love.keyboard.isDown("left") then
-		Pos.x = Pos.x - Speed * dt;
+		Rot = Rot - RotSpeed * dt
 	end
 	if love.keyboard.isDown("right") then
-		Pos.x = Pos.x + Speed * dt;
+		Rot = Rot + RotSpeed * dt
 	end
 end
 
 function love.draw()
 	Canvas:renderTo(function()
 		love.graphics.draw(BackgroundImage)
-		love.graphics.draw(EntitiesImage, BoatQuad, Pos.x, Pos.y)
+
+		love.graphics.push()
+		love.graphics.translate(CanvasWidth / 2, CanvasHeight / 2)
+
+		local _, _, width, height = BoatQuad:getViewport()
+		love.graphics.draw(EntitiesImage, BoatQuad, Pos.x, Pos.y, Rot, 1, 1, width / 2, height / 2)
+
+		love.graphics.pop()
 	end)
 	love.graphics.draw(Canvas, 0, 0, 0, CanvasScaleX, CanvasScaleY)
 end
