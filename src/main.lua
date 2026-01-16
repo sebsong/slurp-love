@@ -2,6 +2,7 @@ require("game/settings")
 require("engine/math")
 
 function love.load()
+	love.graphics.setDefaultFilter("nearest", "nearest")
 	Canvas = love.graphics.newCanvas(CanvasWidth, CanvasHeight)
 	Canvas:setFilter("nearest", "nearest")
 
@@ -21,10 +22,10 @@ function love.load()
 
 	local boatWidth, boatHeight = 32, 32
 	BoatQuad = love.graphics.newQuad(0, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
-	BoatTransform = love.math.newTransform(0, 0, 0, 1, 1, boatWidth / 2, boatHeight / 2)
-	Speed = 300
+	BoatTransform = love.math.newTransform(0, 0, 0, 1, 1)
+	Speed = 50
 	Rot = 0
-	RotSpeed = 2 * PI
+	RotSpeed = 2 * PI / 3
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
 	CanvasScale = math.floor(windowHeight / CanvasHeight)
@@ -35,18 +36,16 @@ function love.update(dt)
 		love.event.quit()
 	end
 
-	if love.keyboard.isDown("up") then
+	if love.keyboard.isDown("up") or love.keyboard.isDown("w") then
 		BoatTransform:translate(0, -Speed * dt)
 	end
-	if love.keyboard.isDown("down") then
+	if love.keyboard.isDown("down") or love.keyboard.isDown("s") then
 		BoatTransform:translate(0, Speed * dt)
 	end
-	if love.keyboard.isDown("left") then
-		-- Rot = Rot - RotSpeed * dt
+	if love.keyboard.isDown("left") or love.keyboard.isDown("a") then
 		BoatTransform:rotate(-RotSpeed * dt)
 	end
-	if love.keyboard.isDown("right") then
-		-- Rot = Rot + RotSpeed * dt
+	if love.keyboard.isDown("right") or love.keyboard.isDown("d") then
 		BoatTransform:rotate(RotSpeed * dt)
 	end
 end
@@ -57,7 +56,9 @@ function love.draw()
 	love.graphics.draw(BackgroundImage, BackgroundQuad)
 	love.graphics.applyTransform(WorldTransform)
 
-	love.graphics.draw(EntitiesImage, BoatQuad, BoatTransform)
+	love.graphics.applyTransform(BoatTransform)
+	local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
+	love.graphics.draw(EntitiesImage, BoatQuad, 0, 0, 0, 1, 1, boatWidth / 2, boatHeight / 2)
 	love.graphics.points(0, 0)
 
 	love.graphics.pop()
