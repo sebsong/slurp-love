@@ -13,6 +13,9 @@ function love.load()
 
 	WorldTransform = love.math.newTransform(CanvasWidth / 2, CanvasHeight / 2)
 
+	World = love.physics.newWorld(0, 0)
+	BoatBody = love.physics.newBody(World, 0, 0, "dynamic")
+
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	local entitiesImageWidth = EntitiesImage:getWidth()
@@ -33,6 +36,8 @@ function love.load()
 	Bgm:setVolume(0.3)
 	Bgm:setLooping(true)
 	Bgm:play()
+
+	love.graphics.setPointSize(5)
 end
 
 function love.update(dt)
@@ -70,4 +75,8 @@ function love.draw()
 	love.graphics.draw(EntitiesImage, BoatQuad, 0, 0, 0, 1, 1, boatWidth / 2, boatHeight / 2)
 
 	love.graphics.pop()
+
+	local x, y = WorldTransform:transformPoint(BoatTransform:inverseTransformPoint(0, 1))
+	print(x, y)
+	love.graphics.points(x, y)
 end
