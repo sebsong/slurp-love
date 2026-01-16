@@ -28,6 +28,11 @@ function love.load()
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
 	CanvasScale = math.floor(windowHeight / CanvasHeight)
+
+	Bgm = love.audio.newSource("assets/sound/bgm.ogg", "stream")
+	Bgm:setVolume(0.3)
+	Bgm:setLooping(true)
+	Bgm:play()
 end
 
 function love.update(dt)
