@@ -1,2 +1,2 @@
-CanvasWidth = 640
-CanvasHeight = 360
+CanvasWidth = 1280
+CanvasHeight = 720

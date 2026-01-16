@@ -23,9 +23,9 @@ function love.load()
 	local boatWidth, boatHeight = 32, 32
 	BoatQuad = love.graphics.newQuad(0, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
 	BoatTransform = love.math.newTransform(0, 0, 0, 1, 1)
-	Speed = 50
+	Speed = 75
 	Rot = 0
-	RotSpeed = 2 * PI / 3
+	RotSpeed = PI / 4
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
 	CanvasScale = math.floor(windowHeight / CanvasHeight)
@@ -40,7 +40,7 @@ function love.update(dt)
 		BoatTransform:translate(0, -Speed * dt)
 	end
 	if love.keyboard.isDown("down") or love.keyboard.isDown("s") then
-		BoatTransform:translate(0, Speed * dt)
+		BoatTransform:translate(0, 0.25 * Speed * dt)
 	end
 	if love.keyboard.isDown("left") or love.keyboard.isDown("a") then
 		BoatTransform:rotate(-RotSpeed * dt)
@@ -54,6 +54,11 @@ function love.draw()
 	love.graphics.push()
 	love.graphics.scale(CanvasScale, CanvasScale)
 	love.graphics.draw(BackgroundImage, BackgroundQuad)
+	love.graphics.pop()
+
+	love.graphics.push()
+
+	love.graphics.scale(CanvasScale, CanvasScale)
 	love.graphics.applyTransform(WorldTransform)
 
 	love.graphics.applyTransform(BoatTransform)
