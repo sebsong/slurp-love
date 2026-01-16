@@ -24,7 +24,6 @@ function love.load()
 	BoatQuad = love.graphics.newQuad(0, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
 	BoatTransform = love.math.newTransform(0, 0, 0, 1, 1)
 	Speed = 75
-	Rot = 0
 	RotSpeed = PI / 4
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
@@ -64,7 +63,6 @@ function love.draw()
 	love.graphics.applyTransform(BoatTransform)
 	local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
 	love.graphics.draw(EntitiesImage, BoatQuad, 0, 0, 0, 1, 1, boatWidth / 2, boatHeight / 2)
-	love.graphics.points(0, 0)
 
 	love.graphics.pop()
 end
