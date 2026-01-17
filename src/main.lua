@@ -29,7 +29,10 @@ function love.load()
 	local boatWidth, boatHeight = 32, 32
 	BoatQuad = love.graphics.newQuad(0, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
 	BoatTransform = love.math.newTransform(0, 0, 0, 1, 1)
-	Speed = 75
+	Speed = 0
+	MaxSpeed = 75
+	Acceleration = 2 * MaxSpeed
+	Deceleration = Acceleration / 2
 	RotSpeed = PI / 4
 
 	Bgm = love.audio.newSource("assets/sound/bgm.ogg", "stream")
@@ -40,16 +43,34 @@ function love.load()
 	love.graphics.setPointSize(5)
 end
 
+local function upPressed()
+	return love.keyboard.isDown("up") or love.keyboard.isDown("w")
+end
+
+local function downPressed()
+	return love.keyboard.isDown("down") or love.keyboard.isDown("s")
+end
+
 function love.update(dt)
 	if love.keyboard.isDown("escape") then
 		love.event.quit()
 	end
 
-	if love.keyboard.isDown("up") or love.keyboard.isDown("w") then
-		BoatTransform:translate(0, -Speed * dt)
-	end
-	if love.keyboard.isDown("down") or love.keyboard.isDown("s") then
-		BoatTransform:translate(0, 0.25 * Speed * dt)
+	if upPressed() or downPressed() then
+		if upPressed() then
+			Speed = Speed + Acceleration * dt
+			-- BoatTransform:translate(0, -Speed * dt)
+		end
+		if downPressed() then
+			Speed = Speed - Acceleration * dt
+			-- BoatTransform:translate(0, 0.25 * Speed * dt)
+		end
+	else
+		if Speed > 0 then
+			Speed = math.max(0, Speed - Deceleration * dt)
+		elseif Speed < 0 then
+			Speed = math.min(0, Speed + Deceleration * dt)
+		end
 	end
 	if love.keyboard.isDown("left") or love.keyboard.isDown("a") then
 		BoatTransform:rotate(-RotSpeed * dt)
@@ -57,6 +78,12 @@ function love.update(dt)
 	if love.keyboard.isDown("right") or love.keyboard.isDown("d") then
 		BoatTransform:rotate(RotSpeed * dt)
 	end
+
+	if math.abs(Speed) > MaxSpeed then
+		Speed = (Speed / math.abs(Speed)) * MaxSpeed
+	end
+
+	BoatTransform:translate(0, -Speed * dt)
 end
 
 function love.draw()
@@ -73,7 +100,7 @@ function love.draw()
 
 	love.graphics.pop()
 
-	local x, y = WorldTransform:transformPoint(BoatTransform:inverseTransformPoint(0, 1))
-	print(x, y)
-	love.graphics.points(x, y)
+	X, Y = WorldTransform:transformPoint(BoatTransform:transformPoint(0, -20))
+	print(X, Y)
+	love.graphics.points(X, Y)
 end
