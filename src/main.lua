@@ -11,7 +11,10 @@ function love.load()
 		table.insert(ColorPalette, hexColor)
 	end
 
-	WorldTransform = love.math.newTransform(CanvasWidth / 2, CanvasHeight / 2)
+	local windowWidth, windowHeight = love.graphics.getDimensions()
+	CanvasScale = math.min(windowWidth / CanvasWidth, windowHeight / CanvasHeight)
+
+	WorldTransform = love.math.newTransform(windowWidth / 2, windowHeight / 2, 0, CanvasScale, CanvasScale)
 
 	World = love.physics.newWorld(0, 0)
 	BoatBody = love.physics.newBody(World, 0, 0, "dynamic")
@@ -28,9 +31,6 @@ function love.load()
 	BoatTransform = love.math.newTransform(0, 0, 0, 1, 1)
 	Speed = 75
 	RotSpeed = PI / 4
-
-	local windowWidth, windowHeight = love.graphics.getDimensions()
-	CanvasScale = math.floor(windowHeight / CanvasHeight)
 
 	Bgm = love.audio.newSource("assets/sound/bgm.ogg", "stream")
 	Bgm:setVolume(0.3)
@@ -61,14 +61,11 @@ end
 
 function love.draw()
 	love.graphics.push()
-	love.graphics.scale(CanvasScale, CanvasScale)
-	love.graphics.draw(BackgroundImage, BackgroundQuad)
-	love.graphics.pop()
 
-	love.graphics.push()
-
-	love.graphics.scale(CanvasScale, CanvasScale)
 	love.graphics.applyTransform(WorldTransform)
+
+	local _, _, backgroundWidth, backgroundHeight = BackgroundQuad:getViewport()
+	love.graphics.draw(BackgroundImage, BackgroundQuad, 0, 0, 0, 1, 1, backgroundWidth / 2, backgroundHeight / 2)
 
 	love.graphics.applyTransform(BoatTransform)
 	local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
