@@ -1,5 +1,6 @@
 require("game/settings")
 require("engine/math")
+require("engine/color")
 require("engine/tilemap")
 
 function love.load()
@@ -9,11 +10,12 @@ function love.load()
 	ScreenScale = math.min(windowWidth / ScreenWidth, windowHeight / ScreenHeight)
 	ScreenTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
 
+	ColorPalette = LoadColorPalette("assets/art/look-of-horror.hex")
+
 	local tileset = NewTileset("assets/art/tileset.png", 32)
 	Tilemap = NewTilemap("assets/art/map.csv", tileset)
-	local tilemapPixelWidth, tilemapPixelHeight = GetPixelDimensions(Tilemap)
-	print(tilemapPixelWidth, tilemapPixelHeight)
 
+	-- TODO: offset world coords so 0, 0 is center of tilemap
 	-- WorldTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
 	WorldTransform = love.math.newTransform()
 
@@ -23,16 +25,9 @@ function love.load()
 		screenHeight = ScreenHeight,
 	}
 
-	ColorPalette = {}
-	for hexColor in love.filesystem.lines("assets/art/look-of-horror.hex") do
-		table.insert(ColorPalette, hexColor)
-	end
-
-	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	local entitiesImageWidth = EntitiesImage:getWidth()
 	local entitiesImageHeight = EntitiesImage:getHeight()
-	BackgroundQuad = love.graphics.newQuad(0, 0, ScreenWidth, ScreenHeight, entitiesImageWidth, entitiesImageHeight)
 
 	local boatWidth, boatHeight = 32, 32
 	BoatQuad = love.graphics.newQuad(0, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
@@ -110,14 +105,7 @@ local function getIntersectionTiles(tilemap, camera)
 end
 
 function love.draw()
-	love.graphics.push()
-	love.graphics.applyTransform(ScreenTransform)
-	love.graphics.applyTransform(WorldTransform)
-
-	local _, _, backgroundWidth, backgroundHeight = BackgroundQuad:getViewport()
-	love.graphics.draw(BackgroundImage, BackgroundQuad, 0, 0, 0, 1, 1, backgroundWidth / 2, backgroundHeight / 2)
-
-	love.graphics.pop()
+	love.graphics.setBackgroundColor(ColorPalette[2])
 
 	love.graphics.push()
 	love.graphics.applyTransform(ScreenTransform)
