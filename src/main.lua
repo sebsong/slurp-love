@@ -1,32 +1,33 @@
 require("game/settings")
 require("engine/math")
+require("engine/color")
 require("engine/tilemap")
 
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
-	Canvas = love.graphics.newCanvas(CanvasWidth, CanvasHeight)
-	Canvas:setFilter("nearest", "nearest")
-
-	ColorPalette = {}
-	for hexColor in love.filesystem.lines("assets/art/look-of-horror.hex") do
-		table.insert(ColorPalette, hexColor)
-	end
-
-	Tileset = NewTileset("assets/art/tileset.png", 32)
-	Tilemap = NewTilemap("assets/art/map.csv")
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
-	CanvasScale = math.min(windowWidth / CanvasWidth, windowHeight / CanvasHeight)
-	CanvasTransform = love.math.newTransform(0, 0, 0, CanvasScale, CanvasScale)
+	ScreenScale = math.min(windowWidth / ScreenWidth, windowHeight / ScreenHeight)
+	ScreenTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
 
-	WorldTransform = love.math.newTransform(windowWidth / 2, windowHeight / 2)
+	ColorPalette = LoadColorPalette("assets/art/look-of-horror.hex")
 
-	BackgroundImage = love.graphics.newImage("assets/art/background.png")
+	local tileset = NewTileset("assets/art/tileset.png", 32)
+	Tilemap = NewTilemap("assets/art/map.csv", tileset)
+
+	-- TODO: offset world coords so 0, 0 is center of tilemap
+	-- WorldTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
+	WorldTransform = love.math.newTransform()
+
+	Camera = {
+		transform = love.math.newTransform(),
+		screenWidth = ScreenWidth,
+		screenHeight = ScreenHeight,
+	}
+
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	local entitiesImageWidth = EntitiesImage:getWidth()
 	local entitiesImageHeight = EntitiesImage:getHeight()
-
-	BackgroundQuad = love.graphics.newQuad(0, 0, CanvasWidth, CanvasHeight, entitiesImageWidth, entitiesImageHeight)
 
 	local boatWidth, boatHeight = 32, 32
 	BoatQuad = love.graphics.newQuad(0, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
@@ -84,28 +85,42 @@ function love.update(dt)
 	end
 
 	BoatTransform:translate(0, -Speed * dt)
+
+	local boatX, boatY = BoatTransform:transformPoint(0, 0)
+	Camera.transform:setTransformation(boatX, boatY)
+end
+
+local function getIntersectionTiles(tilemap, camera)
+	local tileSize = tilemap.tileset.tileSize
+
+	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
+	local startX, startY = cameraX - (camera.screenWidth / 2), cameraY - (camera.screenHeight / 2)
+	local endX, endY = startX + camera.screenWidth, startY + camera.screenHeight
+
+	local tilemapStartX, tilemapStartY = WorldTransform:transformPoint(startX, startY)
+	local tilemapEndX, tilemapEndY = WorldTransform:transformPoint(endX, endY)
+	local startRowIdx, endRowIdx = math.floor(tilemapStartY / tileSize) - 1, math.ceil(tilemapEndY / tileSize) + 1
+	local startColIdx, endColIdx = math.floor(tilemapStartX / tileSize) - 1, math.ceil(tilemapEndX / tileSize) + 1
+	return startRowIdx, endRowIdx, startColIdx, endColIdx
 end
 
 function love.draw()
+	love.graphics.setBackgroundColor(ColorPalette[2])
+
 	love.graphics.push()
+	love.graphics.applyTransform(ScreenTransform)
 	love.graphics.applyTransform(WorldTransform)
-	love.graphics.applyTransform(CanvasTransform)
-
-	local _, _, backgroundWidth, backgroundHeight = BackgroundQuad:getViewport()
-	love.graphics.draw(BackgroundImage, BackgroundQuad, 0, 0, 0, 1, 1, backgroundWidth / 2, backgroundHeight / 2)
-
+	local camX, camY = Camera.transform:transformPoint(0, 0)
+	love.graphics.translate(-(camX - Camera.screenWidth / 2), -(camY - Camera.screenHeight / 2))
+	local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(Tilemap, Camera)
+	DrawTiles(Tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
 	love.graphics.pop()
 
-
 	love.graphics.push()
-	love.graphics.applyTransform(CanvasTransform)
-	DrawTilemap(Tilemap, Tileset)
-	love.graphics.pop()
-
-
-	love.graphics.push()
+	love.graphics.applyTransform(ScreenTransform)
 	love.graphics.applyTransform(WorldTransform)
-	love.graphics.applyTransform(CanvasTransform)
+	local camX, camY = Camera.transform:transformPoint(0, 0)
+	love.graphics.translate(-(camX - Camera.screenWidth / 2), -(camY - Camera.screenHeight / 2))
 	love.graphics.applyTransform(BoatTransform)
 
 	local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
