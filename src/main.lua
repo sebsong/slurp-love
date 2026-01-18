@@ -16,6 +16,7 @@ function love.load()
 	Tilemap = NewTilemap("assets/art/map.csv", tileset)
 
 	-- TODO: offset world coords so 0, 0 is center of tilemap
+	local tilemapPixelWidth, tilemapPixelHeight = GetPixelDimensions(Tilemap)
 	-- WorldTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
 	WorldTransform = love.math.newTransform()
 
@@ -31,7 +32,7 @@ function love.load()
 
 	local boatWidth, boatHeight = 32, 32
 	BoatQuad = love.graphics.newQuad(0, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
-	BoatTransform = love.math.newTransform(0, 0, 0, 1, 1)
+	BoatTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2, 0, 1, 1)
 	Speed = 0
 	MaxSpeed = 75
 	Acceleration = 2 * MaxSpeed
