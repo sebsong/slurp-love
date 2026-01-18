@@ -1,5 +1,6 @@
 require("game/settings")
 require("engine/math")
+require("engine/tilemap")
 
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
@@ -11,13 +12,13 @@ function love.load()
 		table.insert(ColorPalette, hexColor)
 	end
 
+	Tileset = NewTileset("assets/art/tileset.png", 32)
+	Tilemap = NewTilemap("assets/art/map.csv")
+
 	local windowWidth, windowHeight = love.graphics.getDimensions()
 	CanvasScale = math.min(windowWidth / CanvasWidth, windowHeight / CanvasHeight)
 
 	WorldTransform = love.math.newTransform(windowWidth / 2, windowHeight / 2, 0, CanvasScale, CanvasScale)
-
-	World = love.physics.newWorld(0, 0)
-	BoatBody = love.physics.newBody(World, 0, 0, "dynamic")
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
@@ -94,6 +95,13 @@ function love.draw()
 	local _, _, backgroundWidth, backgroundHeight = BackgroundQuad:getViewport()
 	love.graphics.draw(BackgroundImage, BackgroundQuad, 0, 0, 0, 1, 1, backgroundWidth / 2, backgroundHeight / 2)
 
+	love.graphics.pop()
+
+	DrawTilemap(Tilemap, Tileset)
+
+	love.graphics.push()
+
+	love.graphics.applyTransform(WorldTransform)
 	love.graphics.applyTransform(BoatTransform)
 	local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
 	love.graphics.draw(EntitiesImage, BoatQuad, 0, 0, 0, 1, 1, boatWidth / 2, boatHeight / 2)
@@ -101,6 +109,5 @@ function love.draw()
 	love.graphics.pop()
 
 	X, Y = WorldTransform:transformPoint(BoatTransform:transformPoint(0, -20))
-	print(X, Y)
 	love.graphics.points(X, Y)
 end
