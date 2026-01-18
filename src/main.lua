@@ -17,8 +17,9 @@ function love.load()
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
 	CanvasScale = math.min(windowWidth / CanvasWidth, windowHeight / CanvasHeight)
+	CanvasTransform = love.math.newTransform(0, 0, 0, CanvasScale, CanvasScale)
 
-	WorldTransform = love.math.newTransform(windowWidth / 2, windowHeight / 2, 0, CanvasScale, CanvasScale)
+	WorldTransform = love.math.newTransform(windowWidth / 2, windowHeight / 2)
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
@@ -60,11 +61,9 @@ function love.update(dt)
 	if upPressed() or downPressed() then
 		if upPressed() then
 			Speed = Speed + Acceleration * dt
-			-- BoatTransform:translate(0, -Speed * dt)
 		end
 		if downPressed() then
 			Speed = Speed - Acceleration * dt
-			-- BoatTransform:translate(0, 0.25 * Speed * dt)
 		end
 	else
 		if Speed > 0 then
@@ -89,25 +88,28 @@ end
 
 function love.draw()
 	love.graphics.push()
-
 	love.graphics.applyTransform(WorldTransform)
+	love.graphics.applyTransform(CanvasTransform)
 
 	local _, _, backgroundWidth, backgroundHeight = BackgroundQuad:getViewport()
 	love.graphics.draw(BackgroundImage, BackgroundQuad, 0, 0, 0, 1, 1, backgroundWidth / 2, backgroundHeight / 2)
 
 	love.graphics.pop()
 
-	DrawTilemap(Tilemap, Tileset)
 
 	love.graphics.push()
+	love.graphics.applyTransform(CanvasTransform)
+	DrawTilemap(Tilemap, Tileset)
+	love.graphics.pop()
 
+
+	love.graphics.push()
 	love.graphics.applyTransform(WorldTransform)
+	love.graphics.applyTransform(CanvasTransform)
 	love.graphics.applyTransform(BoatTransform)
+
 	local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
 	love.graphics.draw(EntitiesImage, BoatQuad, 0, 0, 0, 1, 1, boatWidth / 2, boatHeight / 2)
 
 	love.graphics.pop()
-
-	X, Y = WorldTransform:transformPoint(BoatTransform:transformPoint(0, -20))
-	love.graphics.points(X, Y)
 end
