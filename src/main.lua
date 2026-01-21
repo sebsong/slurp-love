@@ -9,15 +9,13 @@ function love.load()
 	local windowWidth, windowHeight = love.graphics.getDimensions()
 	ScreenScale = math.min(math.floor(windowWidth / ScreenWidth), math.floor(windowHeight / ScreenHeight))
 
-	-- ScreenScaleTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
+	ScreenScaleTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
 
-	Canvas = love.graphics.newCanvas(ScreenWidth, ScreenHeight)
+	Canvas = love.graphics.newCanvas(ScreenWidth * ScreenScale, ScreenHeight * ScreenScale)
 	CanvasToScreenTransform = love.math.newTransform(
 		(windowWidth - ScreenWidth * ScreenScale) / 2,
 		(windowHeight - ScreenHeight * ScreenScale) / 2,
-		0,
-		ScreenScale,
-		ScreenScale
+		0
 	)
 
 	ColorPalette = LoadColorPalette("assets/art/look-of-horror.hex")
@@ -141,16 +139,16 @@ function love.draw()
 		function()
 			love.graphics.clear()
 
+			love.graphics.push()
+			love.graphics.applyTransform(ScreenScaleTransform)
 			love.graphics.draw(BackgroundImage)
 
-			love.graphics.push()
 			local camX, camY = Camera.transform:transformPoint(0, 0)
 			local worldToCanvasTransform = love.math.newTransform(
 				-(camX - Camera.screenWidth / 2),
 				-(camY - Camera.screenHeight / 2)
 			)
 			love.graphics.applyTransform(worldToCanvasTransform)
-			-- love.graphics.applyTransform(ScreenScaleTransform)
 
 			love.graphics.push()
 			love.graphics.applyTransform(TilemapToWorldTransform)
