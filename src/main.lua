@@ -8,7 +8,13 @@ function love.load()
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
 	ScreenScale = math.min(windowWidth / ScreenWidth, windowHeight / ScreenHeight)
-	ScreenTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
+	-- ScreenTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
+	ScreenTransform = love.math.newTransform()
+
+	Canvas = love.graphics.newCanvas(ScreenWidth, ScreenHeight)
+	CanvasTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
+	-- CanvasTransform = love.math.newTransform((windowWidth - ScreenWidth) / 2, (windowHeight - ScreenHeight) / 2,
+	-- ScreenScale, ScreenScale)
 
 	ColorPalette = LoadColorPalette("assets/art/look-of-horror.hex")
 
@@ -45,6 +51,7 @@ function love.load()
 	Bgm:play()
 
 	love.graphics.setPointSize(5)
+	love.graphics.setBackgroundColor(ColorPalette[2])
 end
 
 local function upPressed()
@@ -106,26 +113,31 @@ local function getIntersectionTiles(tilemap, camera)
 end
 
 function love.draw()
-	love.graphics.setBackgroundColor(ColorPalette[2])
+	Canvas:renderTo(
+		function()
+			love.graphics.clear()
 
-	love.graphics.push()
-	love.graphics.applyTransform(ScreenTransform)
-	love.graphics.applyTransform(WorldTransform)
-	local camX, camY = Camera.transform:transformPoint(0, 0)
-	love.graphics.translate(-(camX - Camera.screenWidth / 2), -(camY - Camera.screenHeight / 2))
-	local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(Tilemap, Camera)
-	DrawTiles(Tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
-	love.graphics.pop()
+			love.graphics.push()
+			-- love.graphics.applyTransform(ScreenTransform)
+			love.graphics.applyTransform(WorldTransform)
+			local camX, camY = Camera.transform:transformPoint(0, 0)
+			love.graphics.translate(-(camX - Camera.screenWidth / 2), -(camY - Camera.screenHeight / 2))
+			local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(Tilemap, Camera)
+			DrawTiles(Tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
+			love.graphics.pop()
 
-	love.graphics.push()
-	love.graphics.applyTransform(ScreenTransform)
-	love.graphics.applyTransform(WorldTransform)
-	local camX, camY = Camera.transform:transformPoint(0, 0)
-	love.graphics.translate(-(camX - Camera.screenWidth / 2), -(camY - Camera.screenHeight / 2))
-	love.graphics.applyTransform(BoatTransform)
+			love.graphics.push()
+			-- love.graphics.applyTransform(ScreenTransform)
+			love.graphics.applyTransform(WorldTransform)
+			local camX, camY = Camera.transform:transformPoint(0, 0)
+			love.graphics.translate(-(camX - Camera.screenWidth / 2), -(camY - Camera.screenHeight / 2))
+			love.graphics.applyTransform(BoatTransform)
 
-	local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
-	love.graphics.draw(EntitiesImage, BoatQuad, 0, 0, 0, 1, 1, boatWidth / 2, boatHeight / 2)
+			local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
+			love.graphics.draw(EntitiesImage, BoatQuad, 0, 0, 0, 1, 1, boatWidth / 2, boatHeight / 2)
 
-	love.graphics.pop()
+			love.graphics.pop()
+		end
+	)
+	love.graphics.draw(Canvas, CanvasTransform)
 end
