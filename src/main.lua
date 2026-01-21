@@ -41,7 +41,7 @@ function love.load()
 	local entitiesImageWidth = EntitiesImage:getWidth()
 	local entitiesImageHeight = EntitiesImage:getHeight()
 
-	local numBoatQuads = 4
+	local numBoatQuads = 8
 	local boatWidth, boatHeight = 16, 16
 	BoatQuad = love.graphics.newQuad(6 * 16, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
 	BoatQuads = {}
