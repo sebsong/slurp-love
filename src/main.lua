@@ -41,13 +41,13 @@ function love.load()
 
 	local numBoatQuads = 8
 	local boatWidth, boatHeight = 16, 16
-	BoatQuad = love.graphics.newQuad(6 * 16, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
 	BoatQuads = {}
 	for i = 1, numBoatQuads do
-		local boatQuad = love.graphics.newQuad((6 + i - 1) * 16, 0, boatWidth, boatHeight, entitiesImageWidth,
+		local boatQuad = love.graphics.newQuad((6 + i - 1) * 16, 16, boatWidth, boatHeight, entitiesImageWidth,
 			entitiesImageHeight)
 		table.insert(BoatQuads, boatQuad)
 	end
+	BoatQuad = BoatQuads[1]
 	BoatTransform = love.math.newTransform()
 	Speed = 0
 	MaxSpeed = 75
@@ -157,9 +157,10 @@ function love.draw()
 			love.graphics.pop()
 
 			love.graphics.push()
-			love.graphics.applyTransform(BoatTransform)
+			-- love.graphics.applyTransform(BoatTransform)
+			local boatX, boatY = BoatTransform:transformPoint(0, 0)
 			local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
-			love.graphics.draw(EntitiesImage, BoatQuad, 0, 0, 0, 1, 1, boatWidth / 2, boatHeight / 2)
+			love.graphics.draw(EntitiesImage, BoatQuad, boatX, boatY, 0, 1, 1, boatWidth / 2, boatHeight / 2)
 			love.graphics.pop()
 
 			love.graphics.pop()
