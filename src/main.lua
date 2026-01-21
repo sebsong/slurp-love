@@ -27,8 +27,8 @@ function love.load()
 
 	-- TODO: offset world coords so 0, 0 is center of tilemap
 	local tilemapPixelWidth, tilemapPixelHeight = GetPixelDimensions(Tilemap)
-	-- WorldTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
-	WorldToTilemapTransform = love.math.newTransform()
+	WorldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
+	TilemapToWorldTransform = WorldToTilemapTransform:inverse()
 
 	Camera = {
 		transform = love.math.newTransform(),
@@ -42,7 +42,7 @@ function love.load()
 
 	local boatWidth, boatHeight = 32, 32
 	BoatQuad = love.graphics.newQuad(0, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
-	BoatTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
+	BoatTransform = love.math.newTransform()
 	Speed = 0
 	MaxSpeed = 75
 	Acceleration = 2 * MaxSpeed
@@ -124,17 +124,24 @@ function love.draw()
 			love.graphics.draw(BackgroundImage)
 
 			love.graphics.push()
-			-- love.graphics.applyTransform(ScreenTransform)
-			love.graphics.applyTransform(WorldToTilemapTransform)
 			local camX, camY = Camera.transform:transformPoint(0, 0)
-			love.graphics.translate(-(camX - Camera.screenWidth / 2), -(camY - Camera.screenHeight / 2))
+			local worldToCanvasTransform = love.math.newTransform(
+				-(camX - Camera.screenWidth / 2),
+				-(camY - Camera.screenHeight / 2)
+			)
+			love.graphics.applyTransform(worldToCanvasTransform)
+
+			love.graphics.push()
+			love.graphics.applyTransform(TilemapToWorldTransform)
 			local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(Tilemap, Camera)
 			DrawTiles(Tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
+			love.graphics.pop()
 
+			love.graphics.push()
 			love.graphics.applyTransform(BoatTransform)
-
 			local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
 			love.graphics.draw(EntitiesImage, BoatQuad, 0, 0, 0, 1, 1, boatWidth / 2, boatHeight / 2)
+			love.graphics.pop()
 
 			love.graphics.pop()
 		end
