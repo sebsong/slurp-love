@@ -7,7 +7,9 @@ function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
-	ScreenScale = math.min(windowWidth / ScreenWidth, windowHeight / ScreenHeight)
+	ScreenScale = math.min(math.floor(windowWidth / ScreenWidth), math.floor(windowHeight / ScreenHeight))
+
+	-- ScreenScaleTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
 
 	Canvas = love.graphics.newCanvas(ScreenWidth, ScreenHeight)
 	CanvasToScreenTransform = love.math.newTransform(
@@ -25,7 +27,6 @@ function love.load()
 	local tileset = NewTileset("assets/art/tileset.png", 32)
 	Tilemap = NewTilemap("assets/art/map.csv", tileset)
 
-	-- TODO: offset world coords so 0, 0 is center of tilemap
 	local tilemapPixelWidth, tilemapPixelHeight = GetPixelDimensions(Tilemap)
 	WorldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
 	TilemapToWorldTransform = WorldToTilemapTransform:inverse()
@@ -40,17 +41,25 @@ function love.load()
 	local entitiesImageWidth = EntitiesImage:getWidth()
 	local entitiesImageHeight = EntitiesImage:getHeight()
 
-	local boatWidth, boatHeight = 32, 32
-	BoatQuad = love.graphics.newQuad(0, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
+	local numBoatQuads = 4
+	local boatWidth, boatHeight = 16, 16
+	BoatQuad = love.graphics.newQuad(6 * 16, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
+	BoatQuads = {}
+	for i = 1, numBoatQuads do
+		local boatQuad = love.graphics.newQuad((6 + i - 1) * 16, 0, boatWidth, boatHeight, entitiesImageWidth,
+			entitiesImageHeight)
+		table.insert(BoatQuads, boatQuad)
+	end
 	BoatTransform = love.math.newTransform()
 	Speed = 0
 	MaxSpeed = 75
 	Acceleration = 2 * MaxSpeed
 	Deceleration = Acceleration / 2
+	Rot = 0
 	RotSpeed = PI / 4
 
 	Bgm = love.audio.newSource("assets/sound/bgm.ogg", "stream")
-	Bgm:setVolume(0.3)
+	Bgm:setVolume(0.2)
 	Bgm:setLooping(true)
 	Bgm:play()
 
@@ -86,11 +95,22 @@ function love.update(dt)
 		end
 	end
 	if love.keyboard.isDown("left") or love.keyboard.isDown("a") then
+		Rot = Rot - RotSpeed * dt
 		BoatTransform:rotate(-RotSpeed * dt)
 	end
 	if love.keyboard.isDown("right") or love.keyboard.isDown("d") then
+		Rot = Rot + RotSpeed * dt
 		BoatTransform:rotate(RotSpeed * dt)
 	end
+
+	local rotSegmentLength = 2 * PI / #BoatQuads
+	local boatQuadIdx = math.floor(
+		(
+			((Rot + (rotSegmentLength / 2)) % (2 * PI)) /
+			(rotSegmentLength)
+		)
+	) + 1
+	BoatQuad = BoatQuads[boatQuadIdx]
 
 	if math.abs(Speed) > MaxSpeed then
 		Speed = (Speed / math.abs(Speed)) * MaxSpeed
@@ -130,6 +150,7 @@ function love.draw()
 				-(camY - Camera.screenHeight / 2)
 			)
 			love.graphics.applyTransform(worldToCanvasTransform)
+			-- love.graphics.applyTransform(ScreenScaleTransform)
 
 			love.graphics.push()
 			love.graphics.applyTransform(TilemapToWorldTransform)
