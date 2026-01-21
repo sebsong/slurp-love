@@ -8,15 +8,19 @@ function love.load()
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
 	ScreenScale = math.min(windowWidth / ScreenWidth, windowHeight / ScreenHeight)
-	-- ScreenTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
-	ScreenTransform = love.math.newTransform()
 
 	Canvas = love.graphics.newCanvas(ScreenWidth, ScreenHeight)
-	CanvasTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
-	-- CanvasTransform = love.math.newTransform((windowWidth - ScreenWidth) / 2, (windowHeight - ScreenHeight) / 2,
-	-- ScreenScale, ScreenScale)
+	CanvasToScreenTransform = love.math.newTransform(
+		(windowWidth - ScreenWidth * ScreenScale) / 2,
+		(windowHeight - ScreenHeight * ScreenScale) / 2,
+		0,
+		ScreenScale,
+		ScreenScale
+	)
 
 	ColorPalette = LoadColorPalette("assets/art/look-of-horror.hex")
+
+	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
 	local tileset = NewTileset("assets/art/tileset.png", 32)
 	Tilemap = NewTilemap("assets/art/map.csv", tileset)
@@ -24,7 +28,7 @@ function love.load()
 	-- TODO: offset world coords so 0, 0 is center of tilemap
 	local tilemapPixelWidth, tilemapPixelHeight = GetPixelDimensions(Tilemap)
 	-- WorldTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
-	WorldTransform = love.math.newTransform()
+	WorldToTilemapTransform = love.math.newTransform()
 
 	Camera = {
 		transform = love.math.newTransform(),
@@ -38,7 +42,7 @@ function love.load()
 
 	local boatWidth, boatHeight = 32, 32
 	BoatQuad = love.graphics.newQuad(0, 0, boatWidth, boatHeight, entitiesImageWidth, entitiesImageHeight)
-	BoatTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2, 0, 1, 1)
+	BoatTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
 	Speed = 0
 	MaxSpeed = 75
 	Acceleration = 2 * MaxSpeed
@@ -51,7 +55,7 @@ function love.load()
 	Bgm:play()
 
 	love.graphics.setPointSize(5)
-	love.graphics.setBackgroundColor(ColorPalette[2])
+	love.graphics.setBackgroundColor(0, 0, 0)
 end
 
 local function upPressed()
@@ -105,8 +109,8 @@ local function getIntersectionTiles(tilemap, camera)
 	local startX, startY = cameraX - (camera.screenWidth / 2), cameraY - (camera.screenHeight / 2)
 	local endX, endY = startX + camera.screenWidth, startY + camera.screenHeight
 
-	local tilemapStartX, tilemapStartY = WorldTransform:transformPoint(startX, startY)
-	local tilemapEndX, tilemapEndY = WorldTransform:transformPoint(endX, endY)
+	local tilemapStartX, tilemapStartY = WorldToTilemapTransform:transformPoint(startX, startY)
+	local tilemapEndX, tilemapEndY = WorldToTilemapTransform:transformPoint(endX, endY)
 	local startRowIdx, endRowIdx = math.floor(tilemapStartY / tileSize) - 1, math.ceil(tilemapEndY / tileSize) + 1
 	local startColIdx, endColIdx = math.floor(tilemapStartX / tileSize) - 1, math.ceil(tilemapEndX / tileSize) + 1
 	return startRowIdx, endRowIdx, startColIdx, endColIdx
@@ -117,20 +121,16 @@ function love.draw()
 		function()
 			love.graphics.clear()
 
+			love.graphics.draw(BackgroundImage)
+
 			love.graphics.push()
 			-- love.graphics.applyTransform(ScreenTransform)
-			love.graphics.applyTransform(WorldTransform)
+			love.graphics.applyTransform(WorldToTilemapTransform)
 			local camX, camY = Camera.transform:transformPoint(0, 0)
 			love.graphics.translate(-(camX - Camera.screenWidth / 2), -(camY - Camera.screenHeight / 2))
 			local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(Tilemap, Camera)
 			DrawTiles(Tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
-			love.graphics.pop()
 
-			love.graphics.push()
-			-- love.graphics.applyTransform(ScreenTransform)
-			love.graphics.applyTransform(WorldTransform)
-			local camX, camY = Camera.transform:transformPoint(0, 0)
-			love.graphics.translate(-(camX - Camera.screenWidth / 2), -(camY - Camera.screenHeight / 2))
 			love.graphics.applyTransform(BoatTransform)
 
 			local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
@@ -139,5 +139,5 @@ function love.draw()
 			love.graphics.pop()
 		end
 	)
-	love.graphics.draw(Canvas, CanvasTransform)
+	love.graphics.draw(Canvas, CanvasToScreenTransform)
 end
