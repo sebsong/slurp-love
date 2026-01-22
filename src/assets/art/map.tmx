@@ -3,7 +3,7 @@
  <editorsettings>
   <export target="map.csv" format="csv"/>
  </editorsettings>
- <tileset firstgid="1" source="tileset.tsx"/>
+ <tileset firstgid="1" source="tileset_old.tsx"/>
  <layer id="1" name="Tile Layer 1" width="80" height="45">
   <data encoding="csv">
 7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,

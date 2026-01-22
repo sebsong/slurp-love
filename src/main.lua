@@ -8,9 +8,7 @@ function love.load()
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
 	ScreenScale = math.min(math.floor(windowWidth / ScreenWidth), math.floor(windowHeight / ScreenHeight))
-
 	ScreenScaleTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
-
 	Canvas = love.graphics.newCanvas(ScreenWidth * ScreenScale, ScreenHeight * ScreenScale)
 	CanvasToScreenTransform = love.math.newTransform(
 		(windowWidth - ScreenWidth * ScreenScale) / 2,
@@ -22,8 +20,11 @@ function love.load()
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
-	local tileset = NewTileset("assets/art/tileset.png", 32)
+	local tileset = NewTileset("assets/art/tileset_old.png", 32)
 	Tilemap = NewTilemap("assets/art/map.csv", tileset)
+
+	-- local tileset = NewTileset("assets/art/tileset.png", 16)
+	-- Tilemap = NewTilemap("assets/art/map_iso.csv", tileset, true)
 
 	local tilemapPixelWidth, tilemapPixelHeight = GetPixelDimensions(Tilemap)
 	WorldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
@@ -33,6 +34,7 @@ function love.load()
 		transform = love.math.newTransform(),
 		screenWidth = ScreenWidth,
 		screenHeight = ScreenHeight,
+		zoom = 1,
 	}
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
@@ -118,6 +120,8 @@ function love.update(dt)
 
 	local boatX, boatY = BoatTransform:transformPoint(0, 0)
 	Camera.transform:setTransformation(boatX, boatY)
+	-- Camera.screenWidth = Camera.screenWidth / Camera.zoom
+	-- Camera.screenHeight = Camera.screenHeight / Camera.zoom
 end
 
 local function getIntersectionTiles(tilemap, camera)

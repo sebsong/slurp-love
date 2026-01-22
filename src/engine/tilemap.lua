@@ -1,3 +1,5 @@
+require("engine/math")
+
 function NewTileset(imageFilePath, tileSize)
 	local tileset = {}
 	tileset.image = love.graphics.newImage(imageFilePath)
@@ -19,9 +21,10 @@ function NewTileset(imageFilePath, tileSize)
 	return tileset
 end
 
-function NewTilemap(csvFilepath, tileset)
+function NewTilemap(csvFilepath, tileset, isIsometric)
 	local tilemap = {}
 	tilemap.tileset = tileset
+	tilemap.transform = love.math.newTransform()
 	local tiles = {}
 	for line in love.filesystem.lines(csvFilepath) do
 		local rowTiles = {}
@@ -39,12 +42,20 @@ function NewTilemap(csvFilepath, tileset)
 			tilemap.width = #firstRowTiles
 		end
 	end
+	if isIsometric or false then
+		-- TODO: this is not right
+		tilemap.transform:translate(tilemap.width / 2, 0)
+		tilemap.transform:rotate(PI / 2)
+	end
 	return tilemap
 end
 
 function DrawTiles(tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
 	local tileset = tilemap.tileset
 	local tileSize = tileset.tileSize
+
+	-- TODO: this is not right
+	love.graphics.applyTransform(tilemap.transform)
 
 	for rowIdx = startRowIdx, endRowIdx - 1 do
 		local rowYOffset = (rowIdx - 1) * tileSize
