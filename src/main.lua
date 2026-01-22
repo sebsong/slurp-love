@@ -1,17 +1,20 @@
-require("game/settings")
+require("engine/settings")
 require("engine/math")
 require("engine/color")
 require("engine/tilemap")
+Camera = require("engine/camera")
 
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
 	ScreenScale = math.min(windowWidth / TargetCanvasWidth, windowHeight / TargetCanvasHeight)
-	if ScreenScale > 1 then
-		-- if display is smaller than the canvas, we can't enforce integer scaling
-		ScreenScale = math.floor(ScreenScale)
-	end
+
+	-- if ScreenScale > 1 then
+	-- if display is smaller than the canvas, we can't enforce integer scaling
+	-- ScreenScale = math.floor(ScreenScale)
+	-- end
+
 	local canvasWidth = TargetCanvasWidth * ScreenScale
 	local canvasHeight = TargetCanvasHeight * ScreenScale
 	Canvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
@@ -34,19 +37,6 @@ function love.load()
 	local tilemapPixelWidth, tilemapPixelHeight = GetPixelDimensions(Tilemap)
 	WorldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
 	TilemapToWorldTransform = WorldToTilemapTransform:inverse()
-
-	Camera = {
-		transform = love.math.newTransform(),
-		screenWidth = TargetCanvasWidth,
-		screenHeight = TargetCanvasHeight,
-		zoom = 1,
-		getScreenWidth = function(self)
-			return self.screenWidth / self.zoom
-		end,
-		getScreenHeight = function(self)
-			return self.screenHeight / self.zoom
-		end
-	}
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	local entitiesImageWidth = EntitiesImage:getWidth()
@@ -86,12 +76,9 @@ local function downPressed()
 	return love.keyboard.isDown("down") or love.keyboard.isDown("s")
 end
 
-function love.wheelmoved(x, y)
-	-- Camera.zoom = Camera.zoom + y * ScrollWheelSensitivity
-	if y > 0 then
-		Camera.zoom = 1
-	else
-		Camera.zoom = 0.5
+function love.keypressed(key, scancode, isRepeat)
+	if key == "space" and not isRepeat then
+		Camera:toggleZoom()
 	end
 end
 
