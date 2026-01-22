@@ -7,12 +7,17 @@ function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
-	ScreenScale = math.min(math.floor(windowWidth / ScreenWidth), math.floor(windowHeight / ScreenHeight))
-	ScreenScaleTransform = love.math.newTransform(0, 0, 0, ScreenScale, ScreenScale)
-	Canvas = love.graphics.newCanvas(ScreenWidth * ScreenScale, ScreenHeight * ScreenScale)
+	ScreenScale = math.min(windowWidth / TargetCanvasWidth, windowHeight / TargetCanvasHeight)
+	if ScreenScale > 1 then
+		-- if display is smaller than the canvas, we can't enforce integer scaling
+		ScreenScale = math.floor(ScreenScale)
+	end
+	local canvasWidth = TargetCanvasWidth * ScreenScale
+	local canvasHeight = TargetCanvasHeight * ScreenScale
+	Canvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
 	CanvasToScreenTransform = love.math.newTransform(
-		(windowWidth - ScreenWidth * ScreenScale) / 2,
-		(windowHeight - ScreenHeight * ScreenScale) / 2,
+		(windowWidth - canvasWidth) / 2,
+		(windowHeight - canvasHeight) / 2,
 		0
 	)
 
@@ -32,9 +37,15 @@ function love.load()
 
 	Camera = {
 		transform = love.math.newTransform(),
-		screenWidth = ScreenWidth,
-		screenHeight = ScreenHeight,
-		zoom = 1,
+		screenWidth = TargetCanvasWidth,
+		screenHeight = TargetCanvasHeight,
+		zoom = .5,
+		getScreenWidth = function(self)
+			return self.screenWidth / self.zoom
+		end,
+		getScreenHeight = function(self)
+			return self.screenHeight / self.zoom
+		end
 	}
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
@@ -73,6 +84,10 @@ end
 
 local function downPressed()
 	return love.keyboard.isDown("down") or love.keyboard.isDown("s")
+end
+
+function love.wheelmoved(x, y)
+	Camera.zoom = Camera.zoom + y * ScrollWheelSensitivity
 end
 
 function love.update(dt)
@@ -120,16 +135,14 @@ function love.update(dt)
 
 	local boatX, boatY = BoatTransform:transformPoint(0, 0)
 	Camera.transform:setTransformation(boatX, boatY)
-	-- Camera.screenWidth = Camera.screenWidth / Camera.zoom
-	-- Camera.screenHeight = Camera.screenHeight / Camera.zoom
 end
 
 local function getIntersectionTiles(tilemap, camera)
 	local tileSize = tilemap.tileset.tileSize
 
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
-	local startX, startY = cameraX - (camera.screenWidth / 2), cameraY - (camera.screenHeight / 2)
-	local endX, endY = startX + camera.screenWidth, startY + camera.screenHeight
+	local startX, startY = cameraX - (camera:getScreenWidth() / 2), cameraY - (camera:getScreenHeight() / 2)
+	local endX, endY = startX + camera:getScreenWidth(), startY + camera:getScreenHeight()
 
 	local tilemapStartX, tilemapStartY = WorldToTilemapTransform:transformPoint(startX, startY)
 	local tilemapEndX, tilemapEndY = WorldToTilemapTransform:transformPoint(endX, endY)
@@ -144,13 +157,14 @@ function love.draw()
 			love.graphics.clear()
 
 			love.graphics.push()
-			love.graphics.applyTransform(ScreenScaleTransform)
+			love.graphics.scale(ScreenScale, ScreenScale)
 			love.graphics.draw(BackgroundImage)
+			love.graphics.scale(Camera.zoom, Camera.zoom)
 
 			local camX, camY = Camera.transform:transformPoint(0, 0)
 			local worldToCanvasTransform = love.math.newTransform(
-				-(camX - Camera.screenWidth / 2),
-				-(camY - Camera.screenHeight / 2)
+				-(camX - Camera:getScreenWidth() / 2),
+				-(camY - Camera:getScreenHeight() / 2)
 			)
 			love.graphics.applyTransform(worldToCanvasTransform)
 
