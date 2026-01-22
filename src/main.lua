@@ -39,7 +39,7 @@ function love.load()
 		transform = love.math.newTransform(),
 		screenWidth = TargetCanvasWidth,
 		screenHeight = TargetCanvasHeight,
-		zoom = .5,
+		zoom = 1,
 		getScreenWidth = function(self)
 			return self.screenWidth / self.zoom
 		end,
@@ -87,7 +87,12 @@ local function downPressed()
 end
 
 function love.wheelmoved(x, y)
-	Camera.zoom = Camera.zoom + y * ScrollWheelSensitivity
+	-- Camera.zoom = Camera.zoom + y * ScrollWheelSensitivity
+	if y > 0 then
+		Camera.zoom = 1
+	else
+		Camera.zoom = 0.5
+	end
 end
 
 function love.update(dt)
