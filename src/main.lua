@@ -39,11 +39,11 @@ function love.load()
 	local entitiesImageWidth = EntitiesImage:getWidth()
 	local entitiesImageHeight = EntitiesImage:getHeight()
 
-	local numBoatQuads = 8
+	local numBoatQuads = 16
 	local boatWidth, boatHeight = 16, 16
 	BoatQuads = {}
 	for i = 1, numBoatQuads do
-		local boatQuad = love.graphics.newQuad((6 + i - 1) * 16, 16, boatWidth, boatHeight, entitiesImageWidth,
+		local boatQuad = love.graphics.newQuad((6 + i - 1) * 16, 2 * 16, boatWidth, boatHeight, entitiesImageWidth,
 			entitiesImageHeight)
 		table.insert(BoatQuads, boatQuad)
 	end
