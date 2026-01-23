@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="200" height="200" tilewidth="16" tileheight="16" infinite="1" nextlayerid="2" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="200" height="200" tilewidth="14" tileheight="14" infinite="1" nextlayerid="2" nextobjectid="1">
  <editorsettings>
-  <export target="map.csv" format="csv"/>
+  <export target="map.lua" format="lua"/>
  </editorsettings>
  <tileset firstgid="1" source="tileset.tsx"/>
  <layer id="1" name="base" width="200" height="200">

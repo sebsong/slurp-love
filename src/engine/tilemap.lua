@@ -1,19 +1,20 @@
 require("engine/math")
 
-function NewTileset(imageFilePath, tileSize)
+function NewTileset(imageFilePath, tileImageSize, tileGridSize)
 	local tileset = {}
 	tileset.image = love.graphics.newImage(imageFilePath)
-	tileset.tileSize = tileSize
+	tileset.tileSize = tileGridSize
 	tileset.tileQuads = {}
 
-	local numTilesPerRow = tileset.image:getPixelWidth() / tileSize
-	local numTilesPerCol = tileset.image:getPixelHeight() / tileSize
+	local numTilesPerRow = tileset.image:getPixelWidth() / tileImageSize
+	local numTilesPerCol = tileset.image:getPixelHeight() / tileImageSize
 	local tileId = 0
 	for rowIdx = 1, numTilesPerRow, 1 do
-		local rowYOffset = (rowIdx - 1) * tileSize
+		local rowYOffset = (rowIdx - 1) * tileImageSize
 		for colIdx = 1, numTilesPerCol, 1 do
-			local colXOffset = (colIdx - 1) * tileSize
-			tileset.tileQuads[tileId] = love.graphics.newQuad(colXOffset, rowYOffset, tileSize, tileSize, tileset.image)
+			local colXOffset = (colIdx - 1) * tileImageSize
+			tileset.tileQuads[tileId] = love.graphics.newQuad(colXOffset, rowYOffset, tileImageSize, tileImageSize,
+				tileset.image)
 			tileId = tileId + 1
 		end
 	end
