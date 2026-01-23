@@ -1,7 +1,7 @@
 require("engine/math")
 
 local function getIntersectionTiles(tilemap, camera)
-	local tileSize = tilemap.tileset.tileSize
+	local tileWidth, tileHeight = tilemap.tileset.tileWidth, tilemap.tileset.tileHeight
 
 	if tilemap.isIsometric then
 		-- TODO: this is a hack for isometric, need to actually intersect tiles with camera and return tiles instead of tile index ranges
@@ -14,24 +14,24 @@ local function getIntersectionTiles(tilemap, camera)
 
 	local tilemapStartX, tilemapStartY = tilemap.worldToTilemapTransform:transformPoint(startX, startY)
 	local tilemapEndX, tilemapEndY = tilemap.worldToTilemapTransform:transformPoint(endX, endY)
-	local startRowIdx, endRowIdx = math.floor(tilemapStartY / tileSize) - 1, math.ceil(tilemapEndY / tileSize) + 1
-	local startColIdx, endColIdx = math.floor(tilemapStartX / tileSize) - 1, math.ceil(tilemapEndX / tileSize) + 1
+	local startRowIdx, endRowIdx = math.floor(tilemapStartY / tileHeight) - 1, math.ceil(tilemapEndY / tileHeight) + 1
+	local startColIdx, endColIdx = math.floor(tilemapStartX / tileWidth) - 1, math.ceil(tilemapEndX / tileWidth) + 1
 	return startRowIdx, endRowIdx, startColIdx, endColIdx
 end
 
 local function draw(self, camera)
 	local tileset = self.tileset
-	local tileSize = tileset.tileSize
+	local tileWidth, tileHeight = tileset.tileWidth, tileset.tileHeight
 	local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(self, camera)
 
 	for rowIdx = startRowIdx, endRowIdx - 1 do
-		local rowYOffset = (rowIdx - 1) * tileSize
+		local rowYOffset = (rowIdx - 1) * tileHeight
 		for colIdx = startColIdx, endColIdx - 1 do
 			local rowTiles = self.tiles[rowIdx]
 			if rowTiles then
 				local tileId = rowTiles[colIdx]
 				if tileId then
-					local colXOffset = (colIdx - 1) * tileSize
+					local colXOffset = (colIdx - 1) * tileWidth
 					local tileQuad = tileset.tileQuads[tileId]
 					if tileQuad then
 						local x, y = self.tilemapToWorldTransform:transformPoint(colXOffset, rowYOffset)
@@ -43,26 +43,33 @@ local function draw(self, camera)
 	end
 end
 
-function NewTileset(imageFilePath, tileImageSize, tileGridSize)
-	local tileset = {}
-	tileset.image = love.graphics.newImage(imageFilePath)
-	tileset.tileSize = tileGridSize
-	tileset.tileQuads = {}
+function NewTileset(imageFilePath, tileImageSize, tileGridWidth, tileGridHeight, isIsometric)
+	local tileWidth = tileGridWidth
+	local tileHeight = tileGridHeight
+	if isIsometric then
+		-- TODO: compute diagonal width and height
+	end
 
-	local numTilesPerRow = tileset.image:getPixelWidth() / tileImageSize
-	local numTilesPerCol = tileset.image:getPixelHeight() / tileImageSize
+	local image = love.graphics.newImage(imageFilePath)
+	local tileQuads = {}
+	local numTilesPerRow = image:getPixelWidth() / tileImageSize
+	local numTilesPerCol = image:getPixelHeight() / tileImageSize
 	local tileId = 0
 	for rowIdx = 1, numTilesPerRow, 1 do
 		local rowYOffset = (rowIdx - 1) * tileImageSize
 		for colIdx = 1, numTilesPerCol, 1 do
 			local colXOffset = (colIdx - 1) * tileImageSize
-			tileset.tileQuads[tileId] = love.graphics.newQuad(colXOffset, rowYOffset, tileImageSize, tileImageSize,
-				tileset.image)
+			tileQuads[tileId] = love.graphics.newQuad(colXOffset, rowYOffset, tileImageSize, tileImageSize, image)
 			tileId = tileId + 1
 		end
 	end
 
-	return tileset
+	return {
+		image = image,
+		quads = tileQuads,
+		tileWidth = tileWidth,
+		tileHeight = tileHeight,
+	}
 end
 
 function NewTilemap(csvFilepath, tileset, isIsometric)
@@ -85,14 +92,15 @@ function NewTilemap(csvFilepath, tileset, isIsometric)
 		end
 	end
 
-	local tileSize = tileset.tileSize
-	local tilemapPixelWidth, tilemapPixelHeight = width * tileSize, height * tileSize
+	local tilemapPixelWidth, tilemapPixelHeight = width * tileset.tileWidth, height * tileset.tileWidth
 	local worldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
 	local isIsometric = isIsometric or false
 	if isIsometric then
 		worldToTilemapTransform:rotate(-PI / 4)
 		-- diagonal scaling sqrt(1^2 + 1^2)
+		local diagonalScale = math.sqrt(tileset.tileWidth ^ 2 + tileset.tileHeight ^ 2)
 		worldToTilemapTransform:scale(math.sqrt(2), math.sqrt(2))
+		worldToTilemapTransform:shear(math.sqrt(2), math.sqrt(2))
 	end
 	local tilemapToWorldTransform = worldToTilemapTransform:inverse()
 
