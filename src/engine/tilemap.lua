@@ -51,8 +51,8 @@ function NewTilemap(csvFilepath, tileset, isIsometric)
 	tilemap.worldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
 	if tilemap.isIsometric then
 		tilemap.worldToTilemapTransform:rotate(-PI / 4)
-		-- TODO: why doesn't the spacing line up with tiled?
-		-- tilemap.worldToTilemapTransform:scale(1.7, 1.7)
+		-- diagonal scaling sqrt(1^2 + 1^2)
+		tilemap.worldToTilemapTransform:scale(math.sqrt(2), math.sqrt(2))
 	end
 	tilemap.tilemapToWorldTransform = tilemap.worldToTilemapTransform:inverse()
 	return tilemap
