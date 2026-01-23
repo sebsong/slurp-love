@@ -28,11 +28,8 @@ function love.load()
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
-	-- local tileset = NewTileset("assets/art/tileset_old.png", 32)
-	-- Tilemap = NewTilemap("assets/art/map.csv", tileset)
-
 	local tileset = NewTileset("assets/art/tileset.png", 16)
-	Tilemap = NewTilemap("assets/art/map_iso.csv", tileset, true)
+	Tilemap = NewTilemap("assets/art/map.csv", tileset, true)
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	local entitiesImageWidth = EntitiesImage:getWidth()

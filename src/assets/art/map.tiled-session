@@ -15,6 +15,14 @@
                 "y": 1306.060606060606
             }
         },
+        "map_iso.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 763.3333333333333,
+                "y": 674
+            }
+        },
         "map_tileset.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -25,7 +33,9 @@
             "scaleInEditor": 5.5
         },
         "tileset_old.tsx": {
-            "dynamicWrapping": false
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 4
         }
     },
     "last.exportedFilePath": "C:/Users/sebys/Workspace/slurp-love/src/assets/art",
@@ -42,6 +52,8 @@
     ],
     "project": "map.tiled-project",
     "recentFiles": [
+        "tileset_old.tsx",
+        "map_iso.tmx",
         "tileset.tsx",
         "map_tileset.tsx"
     ],
