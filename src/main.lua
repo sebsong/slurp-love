@@ -61,25 +61,6 @@ function love.update(dt)
 	Camera.transform:setTransformation(boatX, boatY)
 end
 
-local function getIntersectionTiles(tilemap, camera)
-	local tileSize = tilemap.tileset.tileSize
-
-	if tilemap.isIsometric then
-		-- TODO: this is a hack for isometric, need to actually intersect tiles with camera and return tiles instead of tile index ranges
-		return 0, tilemap.height, 0, tilemap.width
-	end
-
-	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
-	local startX, startY = cameraX - (camera:getScreenWidth() / 2), cameraY - (camera:getScreenHeight() / 2)
-	local endX, endY = startX + camera:getScreenWidth(), startY + camera:getScreenHeight()
-
-	local tilemapStartX, tilemapStartY = tilemap.worldToTilemapTransform:transformPoint(startX, startY)
-	local tilemapEndX, tilemapEndY = tilemap.worldToTilemapTransform:transformPoint(endX, endY)
-	local startRowIdx, endRowIdx = math.floor(tilemapStartY / tileSize) - 1, math.ceil(tilemapEndY / tileSize) + 1
-	local startColIdx, endColIdx = math.floor(tilemapStartX / tileSize) - 1, math.ceil(tilemapEndX / tileSize) + 1
-	return startRowIdx, endRowIdx, startColIdx, endColIdx
-end
-
 function love.draw()
 	Canvas:renderTo(
 		function()
@@ -99,8 +80,7 @@ function love.draw()
 			)
 			love.graphics.applyTransform(worldToCanvasTransform)
 
-			local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(Tilemap, Camera)
-			DrawTiles(Tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
+			Tilemap:draw(Camera)
 
 			Boat:draw()
 
