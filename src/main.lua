@@ -54,8 +54,9 @@ function love.load()
 	BoatTransform = love.math.newTransform()
 	Speed = 0
 	MaxSpeed = 75
+	MaxBackwardsSpeed = MaxSpeed * 0.5
 	Acceleration = 2 * MaxSpeed
-	Deceleration = Acceleration / 2
+	Deceleration = Acceleration / 4
 	Rot = 0
 	RotSpeed = PI / 4
 
@@ -66,14 +67,6 @@ function love.load()
 
 	love.graphics.setPointSize(5)
 	love.graphics.setBackgroundColor(0, 0, 0)
-end
-
-local function upPressed()
-	return love.keyboard.isDown("up") or love.keyboard.isDown("w")
-end
-
-local function downPressed()
-	return love.keyboard.isDown("down") or love.keyboard.isDown("s")
 end
 
 function love.keypressed(key, scancode, isRepeat)
@@ -87,20 +80,34 @@ function love.update(dt)
 		love.event.quit()
 	end
 
-	if upPressed() or downPressed() then
-		if upPressed() then
-			Speed = Speed + Acceleration * dt
+	local didMove = false
+	if love.keyboard.isDown("up") or love.keyboard.isDown("w") then
+		Speed = Speed + Acceleration * dt
+		didMove = true
+	end
+	if love.keyboard.isDown("down") or love.keyboard.isDown("s") then
+		local acceleration = Deceleration
+		if Speed > 0 then
+			acceleration = acceleration * 2
 		end
-		if downPressed() then
-			Speed = Speed - Acceleration * dt
-		end
-	else
+		Speed = Speed - acceleration * dt
+		didMove = true
+	end
+
+	if not didMove then
 		if Speed > 0 then
 			Speed = math.max(0, Speed - Deceleration * dt)
 		elseif Speed < 0 then
 			Speed = math.min(0, Speed + Deceleration * dt)
 		end
 	end
+
+	if Speed > 0 and Speed > MaxSpeed then
+		Speed = MaxSpeed
+	elseif Speed < 0 and Speed < -MaxBackwardsSpeed then
+		Speed = -MaxBackwardsSpeed
+	end
+
 	if love.keyboard.isDown("left") or love.keyboard.isDown("a") then
 		Rot = Rot - RotSpeed * dt
 		BoatTransform:rotate(-RotSpeed * dt)
@@ -118,10 +125,6 @@ function love.update(dt)
 		)
 	) + 1
 	BoatQuad = BoatQuads[boatQuadIdx]
-
-	if math.abs(Speed) > MaxSpeed then
-		Speed = (Speed / math.abs(Speed)) * MaxSpeed
-	end
 
 	BoatTransform:translate(0, -Speed * dt)
 
