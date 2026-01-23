@@ -14,7 +14,6 @@ function NewCamera()
 	local zoomToggleIdx = 1
 	local zoomToggles = { 1, 0.5 }
 
-
 	local function getScreenWidth(self)
 		return screenWidth / self.zoom
 	end
@@ -28,6 +27,10 @@ function NewCamera()
 		self.zoom = zoomToggles[zoomToggleIdx]
 	end
 
+	local function resetZoom(self)
+		self.zoom = zoomToggles[zoomToggleIdx]
+	end
+
 	return {
 		transform = love.math.newTransform(),
 		zoom = zoomToggles[1],
@@ -35,5 +38,6 @@ function NewCamera()
 		getScreenWidth = getScreenWidth,
 		getScreenHeight = getScreenHeight,
 		toggleZoom = toggleZoom,
+		resetZoom = resetZoom,
 	}
 end

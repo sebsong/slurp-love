@@ -36,6 +36,10 @@ function love.load()
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	Boat = NewBoat(EntitiesImage)
 
+	IsCameraPanning = false
+	CameraPanSpeed = 0.5
+	CameraZoomSpeed = 0.1
+
 	Bgm = love.audio.newSource("assets/sound/bgm.ogg", "stream")
 	Bgm:setVolume(0.2)
 	Bgm:setLooping(true)
@@ -51,6 +55,29 @@ function love.keypressed(key, scancode, isRepeat)
 	end
 end
 
+function love.mousepressed(x, y, button, isTouch, presses)
+	if button == 3 then
+		IsCameraPanning = not IsCameraPanning
+		love.mouse.setRelativeMode(IsCameraPanning)
+
+		if not IsCameraPanning then
+			Camera:resetZoom()
+		end
+	end
+end
+
+function love.mousemoved(x, y, dx, dy, isTouch)
+	if IsCameraPanning then
+		Camera.transform:translate(dx * CameraPanSpeed, dy * CameraPanSpeed)
+	end
+end
+
+function love.wheelmoved(x, y)
+	if IsCameraPanning then
+		Camera.zoom = Camera.zoom + y * CameraZoomSpeed
+	end
+end
+
 function love.update(dt)
 	if love.keyboard.isDown("escape") then
 		love.event.quit()
@@ -58,8 +85,11 @@ function love.update(dt)
 
 	Boat:update(dt)
 
-	local boatX, boatY = Boat.transform:transformPoint(0, 0)
-	Camera.transform:setTransformation(boatX, boatY)
+
+	if not IsCameraPanning then
+		local boatX, boatY = Boat.transform:transformPoint(0, 0)
+		Camera.transform:setTransformation(boatX, boatY)
+	end
 end
 
 function love.draw()
