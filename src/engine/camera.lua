@@ -3,8 +3,8 @@ require("engine/settings")
 function GetWorldToCanvasTransform(camera)
 	local camX, camY = camera.transform:transformPoint(0, 0)
 	return love.math.newTransform(
-		-(camX - camera:getScreenWidth() / 2),
-		-(camY - camera:getScreenHeight() / 2)
+		-camX + (camera:getScreenWidth() / 2),
+		-camY + (camera:getScreenHeight() / 2)
 	)
 end
 

@@ -1,5 +1,4 @@
 require("engine/settings")
-require("engine/math")
 require("engine/color")
 require("engine/tilemap")
 require("engine/camera")
