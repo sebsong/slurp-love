@@ -35,6 +35,12 @@ function love.load()
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	Boat = NewBoat(EntitiesImage)
+	local packageSize = 16
+	Package = {
+		image = EntitiesImage,
+		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
+		transform = love.math.newTransform(185, -70),
+	}
 
 	IsCameraPanning = false
 	CameraPanSpeed = 0.5
@@ -108,6 +114,11 @@ function love.draw()
 			Tilemap:draw(Camera)
 
 			Boat:draw()
+
+			love.graphics.push()
+			love.graphics.applyTransform(Package.transform)
+			love.graphics.draw(Package.image, Package.quad)
+			love.graphics.pop()
 
 			love.graphics.pop()
 		end
