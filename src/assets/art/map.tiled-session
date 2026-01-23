@@ -3,16 +3,17 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "map.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
         "map.tmx": {
-            "scale": 0.33,
+            "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1245.4545454545453,
-                "y": 1306.060606060606
+                "x": 1885,
+                "y": 1348.5
             }
         },
         "map_iso.tmx": {
@@ -42,19 +43,22 @@
     "last.externalTilesetPath": "C:/Users/sebys/Workspace/slurp-love/src/assets/art",
     "last.imagePath": "C:/Users/sebys/Workspace/slurp-love/src/assets/art",
     "map.height": 80,
-    "map.lastUsedExportFilter": "CSV files (*.csv)",
+    "map.lastUsedExportFilter": "Lua files (*.lua)",
     "map.lastUsedFormat": "tmx",
     "map.orientation": "2",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
     "map.width": 100,
     "openFiles": [
+        "map.tmx",
+        "tileset.tsx"
     ],
     "project": "map.tiled-project",
     "recentFiles": [
+        "tileset.tsx",
+        "map.tmx",
         "tileset_old.tsx",
         "map_iso.tmx",
-        "tileset.tsx",
         "map_tileset.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
