@@ -1,13 +1,11 @@
-TargetCanvasWidth = 640
-TargetCanvasHeight = 360
+BaseCanvasWidth = 640
+BaseCanvasHeight = 360
 
--- TargetCanvasWidth = 1280
--- TargetCanvasHeight = 720
+-- BaseCanvasWidth = 1280
+-- BaseCanvasHeight = 720
 
--- TargetCanvasWidth = 2560
--- TargetCanvasHeight = 1440
+-- BaseCanvasWidth = 2560
+-- BaseCanvasHeight = 1440
 
--- TargetCanvasWidth = 7680
--- TargetCanvasHeight = 4320
-
-ScrollWheelSensitivity = 0.05
+-- BaseCanvasWidth = 7680
+-- BaseCanvasHeight = 4320

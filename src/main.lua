@@ -2,28 +2,30 @@ require("engine/settings")
 require("engine/math")
 require("engine/color")
 require("engine/tilemap")
-Camera = require("engine/camera")
+require("engine/camera")
 require("game/boat")
 
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
-	ScreenScale = math.min(windowWidth / TargetCanvasWidth, windowHeight / TargetCanvasHeight)
+	ScreenScale = math.min(windowWidth / BaseCanvasWidth, windowHeight / BaseCanvasHeight)
 
 	-- if ScreenScale > 1 then
 	-- if display is smaller than the canvas, we can't enforce integer scaling
 	-- ScreenScale = math.floor(ScreenScale)
 	-- end
 
-	local canvasWidth = TargetCanvasWidth * ScreenScale
-	local canvasHeight = TargetCanvasHeight * ScreenScale
+	local canvasWidth = BaseCanvasWidth * ScreenScale
+	local canvasHeight = BaseCanvasHeight * ScreenScale
 	Canvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
 	CanvasToScreenTransform = love.math.newTransform(
 		(windowWidth - canvasWidth) / 2,
 		(windowHeight - canvasHeight) / 2,
 		0
 	)
+
+	Camera = NewCamera()
 
 	ColorPalette = LoadColorPalette("assets/art/look-of-horror.hex")
 
@@ -72,13 +74,7 @@ function love.draw()
 			love.graphics.draw(BackgroundImage)
 
 			love.graphics.scale(Camera.zoom, Camera.zoom)
-
-			local camX, camY = Camera.transform:transformPoint(0, 0)
-			local worldToCanvasTransform = love.math.newTransform(
-				-(camX - Camera:getScreenWidth() / 2),
-				-(camY - Camera:getScreenHeight() / 2)
-			)
-			love.graphics.applyTransform(worldToCanvasTransform)
+			love.graphics.applyTransform(GetWorldToCanvasTransform(Camera))
 
 			Tilemap:draw(Camera)
 
