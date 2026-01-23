@@ -28,11 +28,11 @@ function love.load()
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
-	local tileset = NewTileset("assets/art/tileset_old.png", 32)
-	Tilemap = NewTilemap("assets/art/map.csv", tileset)
+	-- local tileset = NewTileset("assets/art/tileset_old.png", 32)
+	-- Tilemap = NewTilemap("assets/art/map.csv", tileset)
 
-	-- local tileset = NewTileset("assets/art/tileset.png", 16)
-	-- Tilemap = NewTilemap("assets/art/map_iso.csv", tileset, true)
+	local tileset = NewTileset("assets/art/tileset.png", 16)
+	Tilemap = NewTilemap("assets/art/map_iso.csv", tileset, true)
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	local entitiesImageWidth = EntitiesImage:getWidth()
@@ -131,14 +131,17 @@ end
 local function getIntersectionTiles(tilemap, camera)
 	local tileSize = tilemap.tileset.tileSize
 
+	if tilemap.isIsometric then
+		-- TODO: this is a hack for isometric, need to actually intersect tiles with camera and return tiles instead of tile index ranges
+		return 0, tilemap.height, 0, tilemap.width
+	end
+
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
 	local startX, startY = cameraX - (camera:getScreenWidth() / 2), cameraY - (camera:getScreenHeight() / 2)
 	local endX, endY = startX + camera:getScreenWidth(), startY + camera:getScreenHeight()
 
 	local tilemapStartX, tilemapStartY = tilemap.worldToTilemapTransform:transformPoint(startX, startY)
 	local tilemapEndX, tilemapEndY = tilemap.worldToTilemapTransform:transformPoint(endX, endY)
-	-- tilemapStartX, tilemapStartY = tilemap.transform:transformPoint(tilemapStartX, tilemapStartY)
-	-- tilemapEndX, tilemapEndY = tilemap.transform:transformPoint(tilemapEndX, tilemapEndY)
 	local startRowIdx, endRowIdx = math.floor(tilemapStartY / tileSize) - 1, math.ceil(tilemapEndY / tileSize) + 1
 	local startColIdx, endColIdx = math.floor(tilemapStartX / tileSize) - 1, math.ceil(tilemapEndX / tileSize) + 1
 	return startRowIdx, endRowIdx, startColIdx, endColIdx
@@ -165,7 +168,6 @@ function love.draw()
 			DrawTiles(Tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
 
 			love.graphics.push()
-			-- love.graphics.applyTransform(BoatTransform)
 			local boatX, boatY = BoatTransform:transformPoint(0, 0)
 			local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
 			love.graphics.draw(EntitiesImage, BoatQuad, boatX, boatY, 0, 1, 1, boatWidth / 2, boatHeight / 2)

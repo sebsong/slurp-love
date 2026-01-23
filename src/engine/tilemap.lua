@@ -41,7 +41,6 @@ function NewTilemap(csvFilepath, tileset, isIsometric)
 	tilemap.tiles = tiles
 
 	if tilemap.tiles then
-		-- TODO: calculate diagonal width and height for isometric
 		tilemap.height = #tilemap.tiles
 		local firstRowTiles = tilemap.tiles[1]
 		if firstRowTiles then
@@ -51,9 +50,9 @@ function NewTilemap(csvFilepath, tileset, isIsometric)
 	local tilemapPixelWidth, tilemapPixelHeight = getPixelDimensions(tilemap)
 	tilemap.worldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
 	if tilemap.isIsometric then
-		-- TODO: this is not right
-		tilemap.tilemapToWorldTransform:translate(tilemap.width, 0)
-		tilemap.tilemapToWorldTransform:rotate(PI / 4)
+		tilemap.worldToTilemapTransform:rotate(-PI / 4)
+		-- TODO: why doesn't the spacing line up with tiled?
+		-- tilemap.worldToTilemapTransform:scale(1.7, 1.7)
 	end
 	tilemap.tilemapToWorldTransform = tilemap.worldToTilemapTransform:inverse()
 	return tilemap
