@@ -3,6 +3,7 @@ require("engine/math")
 require("engine/color")
 require("engine/tilemap")
 Camera = require("engine/camera")
+require("game/boat")
 
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
@@ -32,26 +33,7 @@ function love.load()
 	Tilemap = NewTilemap("assets/art/map.csv", tileset, true)
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
-	local entitiesImageWidth = EntitiesImage:getWidth()
-	local entitiesImageHeight = EntitiesImage:getHeight()
-
-	local numBoatQuads = 16
-	local boatWidth, boatHeight = 16, 16
-	BoatQuads = {}
-	for i = 1, numBoatQuads do
-		local boatQuad = love.graphics.newQuad((6 + i - 1) * 16, 2 * 16, boatWidth, boatHeight, entitiesImageWidth,
-			entitiesImageHeight)
-		table.insert(BoatQuads, boatQuad)
-	end
-	BoatQuad = BoatQuads[1]
-	BoatTransform = love.math.newTransform()
-	Speed = 0
-	MaxSpeed = 75
-	MaxBackwardsSpeed = MaxSpeed * 0.5
-	Acceleration = 2 * MaxSpeed
-	Deceleration = Acceleration / 4
-	Rot = 0
-	RotSpeed = PI / 4
+	Boat = NewBoat(EntitiesImage)
 
 	Bgm = love.audio.newSource("assets/sound/bgm.ogg", "stream")
 	Bgm:setVolume(0.2)
@@ -73,55 +55,9 @@ function love.update(dt)
 		love.event.quit()
 	end
 
-	local didMove = false
-	if love.keyboard.isDown("up") or love.keyboard.isDown("w") then
-		Speed = Speed + Acceleration * dt
-		didMove = true
-	end
-	if love.keyboard.isDown("down") or love.keyboard.isDown("s") then
-		local acceleration = Deceleration
-		if Speed > 0 then
-			acceleration = acceleration * 2
-		end
-		Speed = Speed - acceleration * dt
-		didMove = true
-	end
+	Boat:update(dt)
 
-	if not didMove then
-		if Speed > 0 then
-			Speed = math.max(0, Speed - Deceleration * dt)
-		elseif Speed < 0 then
-			Speed = math.min(0, Speed + Deceleration * dt)
-		end
-	end
-
-	if Speed > 0 and Speed > MaxSpeed then
-		Speed = MaxSpeed
-	elseif Speed < 0 and Speed < -MaxBackwardsSpeed then
-		Speed = -MaxBackwardsSpeed
-	end
-
-	if love.keyboard.isDown("left") or love.keyboard.isDown("a") then
-		Rot = Rot - RotSpeed * dt
-		BoatTransform:rotate(-RotSpeed * dt)
-	end
-	if love.keyboard.isDown("right") or love.keyboard.isDown("d") then
-		Rot = Rot + RotSpeed * dt
-		BoatTransform:rotate(RotSpeed * dt)
-	end
-
-	local rotSegmentLength = 2 * PI / #BoatQuads
-	local boatQuadIdx = math.floor(
-		(
-			((Rot + (rotSegmentLength / 2)) % (2 * PI)) /
-			(rotSegmentLength)
-		)
-	) + 1
-	BoatQuad = BoatQuads[boatQuadIdx]
-
-	BoatTransform:translate(0, -Speed * dt)
-
-	local boatX, boatY = BoatTransform:transformPoint(0, 0)
+	local boatX, boatY = Boat.transform:transformPoint(0, 0)
 	Camera.transform:setTransformation(boatX, boatY)
 end
 
@@ -151,7 +87,9 @@ function love.draw()
 
 			love.graphics.push()
 			love.graphics.scale(ScreenScale, ScreenScale)
+
 			love.graphics.draw(BackgroundImage)
+
 			love.graphics.scale(Camera.zoom, Camera.zoom)
 
 			local camX, camY = Camera.transform:transformPoint(0, 0)
@@ -164,11 +102,7 @@ function love.draw()
 			local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(Tilemap, Camera)
 			DrawTiles(Tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
 
-			love.graphics.push()
-			local boatX, boatY = BoatTransform:transformPoint(0, 0)
-			local _, _, boatWidth, boatHeight = BoatQuad:getViewport()
-			love.graphics.draw(EntitiesImage, BoatQuad, boatX, boatY, 0, 1, 1, boatWidth / 2, boatHeight / 2)
-			love.graphics.pop()
+			Boat:draw()
 
 			love.graphics.pop()
 		end
