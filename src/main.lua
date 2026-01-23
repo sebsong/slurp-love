@@ -34,10 +34,6 @@ function love.load()
 	-- local tileset = NewTileset("assets/art/tileset.png", 16)
 	-- Tilemap = NewTilemap("assets/art/map_iso.csv", tileset, true)
 
-	local tilemapPixelWidth, tilemapPixelHeight = GetPixelDimensions(Tilemap)
-	WorldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
-	TilemapToWorldTransform = WorldToTilemapTransform:inverse()
-
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	local entitiesImageWidth = EntitiesImage:getWidth()
 	local entitiesImageHeight = EntitiesImage:getHeight()
@@ -139,8 +135,10 @@ local function getIntersectionTiles(tilemap, camera)
 	local startX, startY = cameraX - (camera:getScreenWidth() / 2), cameraY - (camera:getScreenHeight() / 2)
 	local endX, endY = startX + camera:getScreenWidth(), startY + camera:getScreenHeight()
 
-	local tilemapStartX, tilemapStartY = WorldToTilemapTransform:transformPoint(startX, startY)
-	local tilemapEndX, tilemapEndY = WorldToTilemapTransform:transformPoint(endX, endY)
+	local tilemapStartX, tilemapStartY = tilemap.worldToTilemapTransform:transformPoint(startX, startY)
+	local tilemapEndX, tilemapEndY = tilemap.worldToTilemapTransform:transformPoint(endX, endY)
+	-- tilemapStartX, tilemapStartY = tilemap.transform:transformPoint(tilemapStartX, tilemapStartY)
+	-- tilemapEndX, tilemapEndY = tilemap.transform:transformPoint(tilemapEndX, tilemapEndY)
 	local startRowIdx, endRowIdx = math.floor(tilemapStartY / tileSize) - 1, math.ceil(tilemapEndY / tileSize) + 1
 	local startColIdx, endColIdx = math.floor(tilemapStartX / tileSize) - 1, math.ceil(tilemapEndX / tileSize) + 1
 	return startRowIdx, endRowIdx, startColIdx, endColIdx
@@ -163,11 +161,8 @@ function love.draw()
 			)
 			love.graphics.applyTransform(worldToCanvasTransform)
 
-			love.graphics.push()
-			love.graphics.applyTransform(TilemapToWorldTransform)
 			local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(Tilemap, Camera)
 			DrawTiles(Tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
-			love.graphics.pop()
 
 			love.graphics.push()
 			-- love.graphics.applyTransform(BoatTransform)

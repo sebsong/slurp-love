@@ -21,10 +21,15 @@ function NewTileset(imageFilePath, tileSize)
 	return tileset
 end
 
+local function getPixelDimensions(tilemap)
+	local tileSize = tilemap.tileset.tileSize
+	return tilemap.width * tileSize, tilemap.height * tileSize
+end
+
 function NewTilemap(csvFilepath, tileset, isIsometric)
 	local tilemap = {}
 	tilemap.tileset = tileset
-	tilemap.transform = love.math.newTransform()
+	tilemap.isIsometric = isIsometric or false
 	local tiles = {}
 	for line in love.filesystem.lines(csvFilepath) do
 		local rowTiles = {}
@@ -36,26 +41,27 @@ function NewTilemap(csvFilepath, tileset, isIsometric)
 	tilemap.tiles = tiles
 
 	if tilemap.tiles then
+		-- TODO: calculate diagonal width and height for isometric
 		tilemap.height = #tilemap.tiles
 		local firstRowTiles = tilemap.tiles[1]
 		if firstRowTiles then
 			tilemap.width = #firstRowTiles
 		end
 	end
-	if isIsometric or false then
+	local tilemapPixelWidth, tilemapPixelHeight = getPixelDimensions(tilemap)
+	tilemap.worldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
+	if tilemap.isIsometric then
 		-- TODO: this is not right
-		tilemap.transform:translate(tilemap.width / 2, 0)
-		tilemap.transform:rotate(PI / 2)
+		tilemap.tilemapToWorldTransform:translate(tilemap.width, 0)
+		tilemap.tilemapToWorldTransform:rotate(PI / 4)
 	end
+	tilemap.tilemapToWorldTransform = tilemap.worldToTilemapTransform:inverse()
 	return tilemap
 end
 
 function DrawTiles(tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
 	local tileset = tilemap.tileset
 	local tileSize = tileset.tileSize
-
-	-- TODO: this is not right
-	love.graphics.applyTransform(tilemap.transform)
 
 	for rowIdx = startRowIdx, endRowIdx - 1 do
 		local rowYOffset = (rowIdx - 1) * tileSize
@@ -67,15 +73,11 @@ function DrawTiles(tilemap, startRowIdx, endRowIdx, startColIdx, endColIdx)
 					local colXOffset = (colIdx - 1) * tileSize
 					local tileQuad = tileset.tileQuads[tileId]
 					if tileQuad then
-						love.graphics.draw(tileset.image, tileQuad, colXOffset, rowYOffset)
+						local x, y = tilemap.tilemapToWorldTransform:transformPoint(colXOffset, rowYOffset)
+						love.graphics.draw(tileset.image, tileQuad, x, y)
 					end
 				end
 			end
 		end
 	end
-end
-
-function GetPixelDimensions(tilemap)
-	local tileSize = tilemap.tileset.tileSize
-	return tilemap.width * tileSize, tilemap.height * tileSize
 end
