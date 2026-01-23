@@ -40,6 +40,7 @@ function love.load()
 		image = EntitiesImage,
 		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
 		transform = love.math.newTransform(185, -70),
+		triggerRadius = 64
 	}
 
 	IsCameraPanning = false
@@ -118,6 +119,9 @@ function love.draw()
 			love.graphics.push()
 			love.graphics.applyTransform(Package.transform)
 			love.graphics.draw(Package.image, Package.quad)
+			local _, _, width, height = Package.quad:getViewport()
+			-- love.graphics.setColor(ColorPalette[2])
+			love.graphics.circle("line", width / 2, height / 2, Package.triggerRadius)
 			love.graphics.pop()
 
 			love.graphics.pop()
