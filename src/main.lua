@@ -56,20 +56,28 @@ function love.load()
 	love.graphics.setBackgroundColor(0, 0, 0)
 end
 
+local function toggleCameraPan()
+	IsCameraPanning = not IsCameraPanning
+	love.mouse.setRelativeMode(IsCameraPanning)
+
+	if not IsCameraPanning then
+		Camera:resetZoom()
+	end
+end
+
 function love.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
 		Camera:toggleZoom()
+	end
+
+	if key == "`" and not isRepeat then
+		toggleCameraPan()
 	end
 end
 
 function love.mousepressed(x, y, button, isTouch, presses)
 	if button == 3 then
-		IsCameraPanning = not IsCameraPanning
-		love.mouse.setRelativeMode(IsCameraPanning)
-
-		if not IsCameraPanning then
-			Camera:resetZoom()
-		end
+		toggleCameraPan()
 	end
 end
 
