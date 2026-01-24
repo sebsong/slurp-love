@@ -24,18 +24,29 @@ local function draw(self, camera)
 	local tileWidth, tileHeight = tileset.tileWidth, tileset.tileHeight
 	local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(self, camera)
 
+	local tileX, tileY
 	for rowIdx = startRowIdx, endRowIdx - 1 do
-		local rowYOffset = (rowIdx - 1) * tileHeight
+		if self.isIsometric then
+		else
+			tileY = (rowIdx - 1) * tileHeight
+		end
 		for colIdx = startColIdx, endColIdx - 1 do
 			local rowTiles = self.tiles[rowIdx]
 			if rowTiles then
 				local tileId = rowTiles[colIdx]
 				if tileId then
-					local colXOffset = (colIdx - 1) * tileWidth
-					local tileQuad = tileset.tileQuads[tileId]
+					if self.isIsometric then
+						-- TODO: can save the row result instead of recomputing
+						tileX = -(rowIdx - 1) * tileWidth / 2 + (colIdx - 1) * tileWidth / 2
+						tileY = (rowIdx - 1) * tileHeight / 2 + (colIdx - 1) * tileHeight / 2
+					else
+						tileX = (colIdx - 1) * tileWidth
+					end
+					local tileQuad = tileset.quads[tileId]
 					if tileQuad then
-						local x, y = self.tilemapToWorldTransform:transformPoint(colXOffset, rowYOffset)
-						love.graphics.draw(tileset.image, tileQuad, x, y)
+						local x, y = self.tilemapToWorldTransform:transformPoint(tileX, tileY)
+						local _, _, width, height = tileQuad:getViewport()
+						love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height / 2)
 					end
 				end
 			end
@@ -43,12 +54,9 @@ local function draw(self, camera)
 	end
 end
 
-function NewTileset(imageFilePath, tileImageSize, tileGridWidth, tileGridHeight, isIsometric)
+function NewTileset(imageFilePath, tileImageSize, tileGridWidth, tileGridHeight)
 	local tileWidth = tileGridWidth
 	local tileHeight = tileGridHeight
-	if isIsometric then
-		-- TODO: compute diagonal width and height
-	end
 
 	local image = love.graphics.newImage(imageFilePath)
 	local tileQuads = {}
@@ -96,11 +104,11 @@ function NewTilemap(csvFilepath, tileset, isIsometric)
 	local worldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
 	local isIsometric = isIsometric or false
 	if isIsometric then
-		worldToTilemapTransform:rotate(-PI / 4)
+		--TODO: need some translation to center the tilemap
+		-- worldToTilemapTransform:rotate(-PI / 4)
 		-- diagonal scaling sqrt(1^2 + 1^2)
-		local diagonalScale = math.sqrt(tileset.tileWidth ^ 2 + tileset.tileHeight ^ 2)
-		worldToTilemapTransform:scale(math.sqrt(2), math.sqrt(2))
-		worldToTilemapTransform:shear(math.sqrt(2), math.sqrt(2))
+		-- local diagonalScale = math.sqrt(tileset.tileWidth ^ 2 + tileset.tileHeight ^ 2)
+		-- worldToTilemapTransform:scale(math.sqrt(2), math.sqrt(2))
 	end
 	local tilemapToWorldTransform = worldToTilemapTransform:inverse()
 
