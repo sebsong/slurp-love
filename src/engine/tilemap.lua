@@ -1,7 +1,8 @@
+-- Based on Tiled (https://www.mapeditor.org/)
 require("engine/math")
 
 local function getIntersectionTiles(tilemap, camera)
-	local tileWidth, tileHeight = tilemap.tileset.tileWidth, tilemap.tileset.tileHeight
+	local tileWidth, tileHeight = tilemap.tileWidth, tilemap.tileHeight
 
 	if tilemap.isIsometric then
 		-- TODO: this is a hack for isometric, need to actually intersect tiles with camera and return tiles instead of tile index ranges
@@ -21,7 +22,6 @@ end
 
 local function draw(self, camera)
 	local tileset = self.tileset
-	local tileWidth, tileHeight = tileset.tileWidth, tileset.tileHeight
 	local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(self, camera)
 
 	local tileX, tileY
@@ -32,11 +32,11 @@ local function draw(self, camera)
 				local tileId = rowTiles[colIdx]
 				if tileId then
 					if self.isIsometric then
-						tileX = -(rowIdx - 1) * tileWidth / 2 + (colIdx - 1) * tileWidth / 2
-						tileY = (rowIdx - 1) * tileHeight / 2 + (colIdx - 1) * tileHeight / 2
+						tileX = -(rowIdx - 1) * self.tileWidth / 2 + (colIdx - 1) * self.tileWidth / 2
+						tileY = (rowIdx - 1) * self.tileHeight / 2 + (colIdx - 1) * self.tileHeight / 2
 					else
-						tileX = (colIdx - 1) * tileWidth
-						tileY = (rowIdx - 1) * tileHeight
+						tileX = (colIdx - 1) * self.tileWidth
+						tileY = (rowIdx - 1) * self.tileHeight
 					end
 					local tileQuad = tileset.quads[tileId]
 					if tileQuad then
@@ -50,10 +50,7 @@ local function draw(self, camera)
 	end
 end
 
-function NewTileset(imageFilePath, tileImageSize, tileGridWidth, tileGridHeight)
-	local tileWidth = tileGridWidth
-	local tileHeight = tileGridHeight
-
+function NewTileset(imageFilePath, tileImageSize)
 	local image = love.graphics.newImage(imageFilePath)
 	local tileQuads = {}
 	local numTilesPerRow = image:getPixelWidth() / tileImageSize
@@ -71,12 +68,19 @@ function NewTileset(imageFilePath, tileImageSize, tileGridWidth, tileGridHeight)
 	return {
 		image = image,
 		quads = tileQuads,
-		tileWidth = tileWidth,
-		tileHeight = tileHeight,
 	}
 end
 
-function NewTilemap(csvFilepath, tileset, isIsometric)
+local function getTilemapTransforms(tilemapPixelWidth, tilemapPixelHeight, isIsometric)
+	local worldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
+	if isIsometric then
+		worldToTilemapTransform:translate(-tilemapPixelWidth / 2, 0)
+	end
+	local tilemapToWorldTransform = worldToTilemapTransform:inverse()
+	return worldToTilemapTransform, tilemapToWorldTransform
+end
+
+local function newTilemapCsv(csvFilepath, tileset, isIsometric, tileGridWidth, tileGridHeight)
 	local tiles = {}
 	for line in love.filesystem.lines(csvFilepath) do
 		local rowTiles = {}
@@ -96,23 +100,82 @@ function NewTilemap(csvFilepath, tileset, isIsometric)
 		end
 	end
 
-	local tilemapPixelWidth, tilemapPixelHeight = width * tileset.tileWidth, height * tileset.tileHeight
-	local worldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
+	local tilemapPixelWidth, tilemapPixelHeight = width * tileGridWidth, height * tileGridHeight
 	local isIsometric = isIsometric or false
-	if isIsometric then
-		worldToTilemapTransform:translate(-tilemapPixelWidth / 2, 0)
-	end
-	local tilemapToWorldTransform = worldToTilemapTransform:inverse()
+	local worldToTilemapTransform, tilemapToWorldTransform = getTilemapTransforms(
+		tilemapPixelWidth,
+		tilemapPixelHeight,
+		isIsometric
+	)
 
 	return {
 		tileset = tileset,
 		tiles = tiles,
 		width = width,
 		height = height,
+		tileWidth = tileGridWidth,
+		tileHeight = tileGridHeight,
 		isIsometric = isIsometric,
 		worldToTilemapTransform = worldToTilemapTransform,
 		tilemapToWorldTransform = tilemapToWorldTransform,
 
 		draw = draw,
 	}
+end
+
+local function newTilemapLua(luaFilepath, tileset)
+	local first, _ = string.find(luaFilepath, "%.lua")
+	local tilemapInfo = require(string.sub(luaFilepath, 1, first - 1))
+	local tiles = {}
+	for i = 1, tilemapInfo.height do
+		table.insert(tiles, {})
+	end
+	for _, chunk in ipairs(tilemapInfo.layers[1].chunks) do
+		for j = 1, chunk.height do
+			local rowIdx = chunk.y + j
+			for i = 1, chunk.width do
+				local colIdx = chunk.x + i
+				if rowIdx <= #tiles and colIdx < #tiles[rowIdx] then
+					tiles[rowIdx][colIdx] = chunk.data[j * chunk.width + i]
+				end
+			end
+		end
+	end
+
+	local width = tilemapInfo.width
+	local height = tilemapInfo.height
+	local tileWidth = tilemapInfo.tilewidth
+	local tileHeight = tilemapInfo.tileheight
+	local tilemapPixelWidth, tilemapPixelHeight = width * tileWidth, height * tileHeight
+	local isIsometric = tilemapInfo.orientation == "isometric"
+	local worldToTilemapTransform, tilemapToWorldTransform = getTilemapTransforms(
+		tilemapPixelWidth,
+		tilemapPixelHeight,
+		isIsometric
+	)
+
+	return {
+		tileset = tileset,
+		tiles = tiles,
+		width = width,
+		height = height,
+		tileWidth = tileWidth,
+		tileHeight = tileHeight,
+		isIsometric = isIsometric,
+		worldToTilemapTransform = worldToTilemapTransform,
+		tilemapToWorldTransform = tilemapToWorldTransform,
+
+		draw = draw,
+	}
+end
+
+function NewTilemap(filePath, tileset, isIsometric, tileGridWidth, tileGridHeight)
+	local fileExt = string.sub(filePath, string.find(filePath, "%.%a+") or #filePath - 3, #filePath)
+	if fileExt == ".csv" then
+		return newTilemapCsv(filePath, tileset, isIsometric, tileGridWidth, tileGridHeight)
+	elseif fileExt == ".lua" then
+		return newTilemapLua(filePath, tileset)
+	else
+		love.errorhandler(string.format("Unsupported file extenstion: %s", fileExt))
+	end
 end
