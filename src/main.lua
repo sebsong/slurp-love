@@ -30,8 +30,8 @@ function love.load()
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
-	local tileset = NewTileset("assets/art/tileset.png", 16, 16, 8) -- TODO: maybe switch to reading lua exported tiled files to get the grid size info
-	Tilemap = NewTilemap("assets/art/map.csv", tileset, true)
+	local tileset = NewTileset("assets/tilemap/tileset.png", 16, 16, 8) -- TODO: maybe switch to reading lua exported tiled files to get the grid size info
+	Tilemap = NewTilemap("assets/tilemap/map.csv", tileset, true)
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	Boat = NewBoat(EntitiesImage)

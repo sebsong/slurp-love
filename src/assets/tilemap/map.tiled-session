@@ -3,17 +3,17 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "map_iso.tmx",
+    "activeFile": "map.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "fileStates": {
         "map.tmx": {
-            "scale": 0.3151,
+            "scale": 0.31,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1217.0739447794351,
-                "y": 687.0834655664867
+                "x": 1217.7419354838712,
+                "y": 685.4838709677422
             }
         },
         "map_iso.tmx": {
@@ -36,7 +36,7 @@
             "scaleInDock": 1
         }
     },
-    "last.exportedFilePath": "C:/Users/sebys/Workspace/slurp-love/src/assets/art",
+    "last.exportedFilePath": "/Users/sebsong/Workspace/slurp-love/src/assets/tilemap",
     "last.externalTilesetPath": "C:/Users/sebys/Workspace/slurp-love/src/assets/art",
     "last.imagePath": "C:/Users/sebys/Workspace/slurp-love/src/assets/art",
     "map.height": 80,
@@ -48,13 +48,12 @@
     "map.width": 100,
     "openFiles": [
         "map.tmx",
-        "tileset.tsx",
-        "map_iso.tmx"
+        "tileset.tsx"
     ],
     "project": "map.tiled-project",
     "recentFiles": [
-        "map.tmx",
         "tileset.tsx",
+        "map.tmx",
         "map_iso.tmx",
         "map_tileset.tsx"
     ],
