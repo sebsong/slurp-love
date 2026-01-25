@@ -55,13 +55,12 @@ function NewTileset(imageFilePath, tileImageSize)
 	local tileQuads = {}
 	local numTilesPerRow = image:getPixelWidth() / tileImageSize
 	local numTilesPerCol = image:getPixelHeight() / tileImageSize
-	local tileId = 0
 	for rowIdx = 1, numTilesPerRow, 1 do
 		local rowYOffset = (rowIdx - 1) * tileImageSize
 		for colIdx = 1, numTilesPerCol, 1 do
 			local colXOffset = (colIdx - 1) * tileImageSize
-			tileQuads[tileId] = love.graphics.newQuad(colXOffset, rowYOffset, tileImageSize, tileImageSize, image)
-			tileId = tileId + 1
+			local tileQuad = love.graphics.newQuad(colXOffset, rowYOffset, tileImageSize, tileImageSize, image)
+			table.insert(tileQuads, tileQuad)
 		end
 	end
 
@@ -85,7 +84,7 @@ local function newTilemapCsv(csvFilepath, tileset, isIsometric, tileGridWidth, t
 	for line in love.filesystem.lines(csvFilepath) do
 		local rowTiles = {}
 		for tileId in string.gmatch(line, "%-?%d+") do
-			table.insert(rowTiles, tonumber(tileId))
+			table.insert(rowTiles, tonumber(tileId) + 1) -- Csv tile ids are 0-indexed while lua is 1-indexed
 		end
 		table.insert(tiles, rowTiles)
 	end
@@ -127,7 +126,7 @@ local function newTilemapLua(luaFilepath, tileset)
 	local first, _ = string.find(luaFilepath, "%.lua")
 	local tilemapInfo = require(string.sub(luaFilepath, 1, first - 1))
 	local tiles = {}
-	for i = 1, tilemapInfo.height do
+	for _ = 1, tilemapInfo.height do
 		table.insert(tiles, {})
 	end
 	for _, chunk in ipairs(tilemapInfo.layers[1].chunks) do
@@ -135,8 +134,8 @@ local function newTilemapLua(luaFilepath, tileset)
 			local rowIdx = chunk.y + j
 			for i = 1, chunk.width do
 				local colIdx = chunk.x + i
-				if rowIdx <= #tiles and colIdx < #tiles[rowIdx] then
-					tiles[rowIdx][colIdx] = chunk.data[j * chunk.width + i]
+				if rowIdx <= tilemapInfo.width and colIdx <= tilemapInfo.height then
+					tiles[rowIdx][colIdx] = chunk.data[(j - 1) * chunk.width + (i - 1) + 1]
 				end
 			end
 		end
