@@ -35,13 +35,15 @@ function love.load()
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	Boat = NewBoat(EntitiesImage)
+
+	Packages = {}
 	local packageSize = 16
-	Package = {
+	local package = {
 		image = EntitiesImage,
 		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
 		transform = love.math.newTransform(185, -70),
-		triggerRadius = 64
 	}
+	table.insert(Packages, package)
 
 	IsCameraPanning = false
 	CameraPanSpeed = 0.5
@@ -67,6 +69,10 @@ end
 
 function love.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
+		Boat:pickupPackages(Packages)
+	end
+
+	if key == "return" and not isRepeat then
 		Camera:toggleZoom()
 	end
 
@@ -124,13 +130,18 @@ function love.draw()
 
 			Boat:draw()
 
-			love.graphics.push()
-			love.graphics.applyTransform(Package.transform)
-			love.graphics.draw(Package.image, Package.quad)
-			local _, _, width, height = Package.quad:getViewport()
-			-- love.graphics.setColor(ColorPalette[2])
-			love.graphics.circle("line", width / 2, height / 2, Package.triggerRadius)
-			love.graphics.pop()
+			for _, package in ipairs(Packages) do
+				if Boat:hasPackage(package) then
+					goto continue
+				end
+
+				love.graphics.push()
+				love.graphics.applyTransform(package.transform)
+				local _, _, width, height = package.quad:getViewport()
+				love.graphics.draw(package.image, package.quad, -width / 2, -height / 2)
+				love.graphics.pop()
+				::continue::
+			end
 
 			love.graphics.pop()
 		end

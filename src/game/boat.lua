@@ -58,8 +58,35 @@ local function draw(self)
 	local boatX, boatY = self.transform:transformPoint(0, 0)
 	local _, _, boatWidth, boatHeight = self.currentQuad:getViewport()
 	love.graphics.draw(self.image, self.currentQuad, boatX, boatY, 0, 1, 1, boatWidth / 2, boatHeight / 2)
+	love.graphics.circle("line", boatX, boatY, self.interactionRadius)
 	love.graphics.pop()
 end
+
+local function hasPackage(self, package)
+	-- TODO: see if there's a lua Set or a better way to check this
+	for _, boatPackage in ipairs(self.packages) do
+		if package == boatPackage then -- TODO: is this comparison expensive?
+			return true
+		end
+	end
+	return false
+end
+
+local function pickupPackages(self, packages)
+	for _, package in ipairs(packages) do
+		if self:hasPackage(package) then
+			goto continue
+		end
+		local boatX, boatY = self.transform:transformPoint(0, 0)
+		local packageX, packageY = package.transform:transformPoint(0, 0)
+		if Distance({ x = boatX, y = boatY }, { x = packageX, y = packageY }) <= self.interactionRadius then
+			table.insert(self.packages, package)
+		end
+
+		::continue::
+	end
+end
+
 
 function NewBoat(entitiesImage)
 	local boatQuads = {}
@@ -86,8 +113,12 @@ function NewBoat(entitiesImage)
 		deceleration = acceleration / 4,
 		rotation = 0,
 		rotationSpeed = PI / 4,
+		interactionRadius = 75,
+		packages = {},
 
 		update = update,
 		draw = draw,
+		hasPackage = hasPackage,
+		pickupPackages = pickupPackages,
 	}
 end
