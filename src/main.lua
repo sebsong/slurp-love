@@ -38,12 +38,21 @@ function love.load()
 
 	Packages = {}
 	local packageSize = 16
-	local package = {
+	table.insert(Packages, {
 		image = EntitiesImage,
 		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
 		transform = love.math.newTransform(185, -70),
-	}
-	table.insert(Packages, package)
+	})
+	table.insert(Packages, {
+		image = EntitiesImage,
+		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
+		transform = love.math.newTransform(-230, -40),
+	})
+	table.insert(Packages, {
+		image = EntitiesImage,
+		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
+		transform = love.math.newTransform(50, 240),
+	})
 
 	IsCameraPanning = false
 	CameraPanSpeed = 0.5
@@ -70,7 +79,7 @@ end
 function love.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
 		if not Boat:pickupPackages(Packages) then
-			Boat:dropOffPackages()
+			Boat:dropOffPackage()
 		end
 	end
 

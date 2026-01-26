@@ -90,13 +90,15 @@ local function pickupPackages(self, packages)
 	return pickedUp
 end
 
-local function dropOffPackages(self)
-	local boatX, boatY = self.transform:transformPoint(0, 0)
-	for _, package in ipairs(self.packages) do
-		local packageX, packageY = package.transform:transformPoint(0, 0)
-		package.transform:translate(-packageX + boatX, -packageY + boatY)
-		table.remove(self.packages, self:indexOfPackage(package))
+local function dropOffPackage(self)
+	if #self.packages == 0 then
+		return
 	end
+
+	local boatX, boatY = self.transform:transformPoint(0, 0)
+	local package = table.remove(self.packages, #self.packages)
+	local packageX, packageY = package.transform:transformPoint(0, 0)
+	package.transform:translate(-packageX + boatX, -packageY + boatY)
 end
 
 function NewBoat(entitiesImage)
@@ -131,6 +133,6 @@ function NewBoat(entitiesImage)
 		draw = draw,
 		indexOfPackage = indexOfPackage,
 		pickupPackages = pickupPackages,
-		dropOffPackages = dropOffPackages,
+		dropOffPackage = dropOffPackage,
 	}
 end
