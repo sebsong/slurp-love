@@ -69,7 +69,9 @@ end
 
 function love.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
-		Boat:pickupPackages(Packages)
+		if not Boat:pickupPackages(Packages) then
+			Boat:dropOffPackages()
+		end
 	end
 
 	if key == "return" and not isRepeat then
@@ -131,7 +133,7 @@ function love.draw()
 			Boat:draw()
 
 			for _, package in ipairs(Packages) do
-				if Boat:hasPackage(package) then
+				if Boat:indexOfPackage(package) then
 					goto continue
 				end
 

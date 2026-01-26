@@ -62,31 +62,42 @@ local function draw(self)
 	love.graphics.pop()
 end
 
-local function hasPackage(self, package)
+local function indexOfPackage(self, package)
 	-- TODO: see if there's a lua Set or a better way to check this
-	for _, boatPackage in ipairs(self.packages) do
+	for i, boatPackage in ipairs(self.packages) do
 		if package == boatPackage then -- TODO: is this comparison expensive?
-			return true
+			return i
 		end
 	end
-	return false
+	return nil
 end
 
 local function pickupPackages(self, packages)
+	local pickedUp = false
 	for _, package in ipairs(packages) do
-		if self:hasPackage(package) then
+		if self:indexOfPackage(package) then
 			goto continue
 		end
 		local boatX, boatY = self.transform:transformPoint(0, 0)
 		local packageX, packageY = package.transform:transformPoint(0, 0)
 		if Distance({ x = boatX, y = boatY }, { x = packageX, y = packageY }) <= self.interactionRadius then
 			table.insert(self.packages, package)
+			pickedUp = true
 		end
 
 		::continue::
 	end
+	return pickedUp
 end
 
+local function dropOffPackages(self)
+	local boatX, boatY = self.transform:transformPoint(0, 0)
+	for _, package in ipairs(self.packages) do
+		local packageX, packageY = package.transform:transformPoint(0, 0)
+		package.transform:translate(-packageX + boatX, -packageY + boatY)
+		table.remove(self.packages, self:indexOfPackage(package))
+	end
+end
 
 function NewBoat(entitiesImage)
 	local boatQuads = {}
@@ -118,7 +129,8 @@ function NewBoat(entitiesImage)
 
 		update = update,
 		draw = draw,
-		hasPackage = hasPackage,
+		indexOfPackage = indexOfPackage,
 		pickupPackages = pickupPackages,
+		dropOffPackages = dropOffPackages,
 	}
 end
