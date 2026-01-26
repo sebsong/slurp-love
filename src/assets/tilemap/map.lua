@@ -9,14 +9,19 @@ return {
   height = 200,
   tilewidth = 16,
   tileheight = 8,
-  nextlayerid = 2,
-  nextobjectid = 1,
+  nextlayerid = 3,
+  nextobjectid = 11,
   properties = {},
   tilesets = {
     {
       name = "tileset",
       firstgid = 1,
       filename = "tileset.tsx"
+    },
+    {
+      name = "packages",
+      firstgid = 3,
+      filename = "packages.tsx"
     }
   },
   layers = {
@@ -2914,6 +2919,106 @@ return {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
           }
+        }
+      }
+    },
+    {
+      type = "objectgroup",
+      draworder = "topdown",
+      id = 2,
+      name = "packages",
+      class = "",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      parallaxx = 1,
+      parallaxy = 1,
+      properties = {},
+      objects = {
+        {
+          id = 4,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 872,
+          y = 656,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 3,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 5,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 973.79,
+          y = 637.575,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 3,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 6,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1032,
+          y = 808,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 3,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 8,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1040,
+          y = 784,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 1,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 9,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1040,
+          y = 760,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 1,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 10,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 664,
+          y = 888,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 4,
+          visible = true,
+          properties = {}
         }
       }
     }

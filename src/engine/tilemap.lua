@@ -1,4 +1,5 @@
 -- Based on Tiled (https://www.mapeditor.org/)
+require("engine/file")
 require("engine/math")
 
 local function getIntersectionTiles(tilemap, camera)
@@ -79,7 +80,10 @@ local function getTilemapTransforms(tilemapPixelWidth, tilemapPixelHeight, isIso
 	return worldToTilemapTransform, tilemapToWorldTransform
 end
 
-local function newTilemapCsv(csvFilepath, tileset, isIsometric, tileGridWidth, tileGridHeight)
+
+function NewTilemapCsv(csvFilepath, tileset, isIsometric, tileGridWidth, tileGridHeight)
+	AssertFileExt(csvFilepath, ".csv")
+
 	local tiles = {}
 	for line in love.filesystem.lines(csvFilepath) do
 		local rowTiles = {}
@@ -122,14 +126,15 @@ local function newTilemapCsv(csvFilepath, tileset, isIsometric, tileGridWidth, t
 	}
 end
 
-local function newTilemapLua(luaFilepath, tileset)
-	local first, _ = string.find(luaFilepath, "%.lua")
-	local tilemapInfo = require(string.sub(luaFilepath, 1, first - 1))
+function NewTilemapLua(luaFilepath, tileset, layerIndex)
+	AssertFileExt(luaFilepath, ".lua")
+
+	local tilemapInfo = require(StripFileExtension(luaFilepath))
 	local tiles = {}
 	for _ = 1, tilemapInfo.height do
 		table.insert(tiles, {})
 	end
-	for _, chunk in ipairs(tilemapInfo.layers[1].chunks) do
+	for _, chunk in ipairs(tilemapInfo.layers[layerIndex].chunks) do
 		for j = 1, chunk.height do
 			local rowIdx = chunk.y + j
 			for i = 1, chunk.width do
@@ -168,13 +173,21 @@ local function newTilemapLua(luaFilepath, tileset)
 	}
 end
 
-function NewTilemap(filePath, tileset, isIsometric, tileGridWidth, tileGridHeight)
-	local fileExt = string.sub(filePath, string.find(filePath, "%.%a+") or #filePath - 3, #filePath)
-	if fileExt == ".csv" then
-		return newTilemapCsv(filePath, tileset, isIsometric, tileGridWidth, tileGridHeight)
-	elseif fileExt == ".lua" then
-		return newTilemapLua(filePath, tileset)
-	else
-		love.errorhandler(string.format("Unsupported file extenstion: %s", fileExt))
+-- NOTE: assumes that layer index matches tileset index and that only 1 tileset is used per layer
+-- TODO: maybe should just process this with the tilemap and make it a property on the tilemap? need tilemap -> world transform
+function NewObjectMap(luaFilepath, layerIndex)
+	AssertFileExt(luaFilepath, ".lua")
+	local tilemapInfo = require(StripFileExtension(luaFilepath))
+	local tilesetInfo = tilemapInfo.tilesets[layerIndex]
+	local objectGroup = tilemapInfo.layers[layerIndex]
+
+	local objects = {}
+	for _, object in ipairs(objectGroup.objects) do
+		local objX, objY = object.x, object.y
+		table.insert(objects, {
+			transform = love.math.newTransform(),
+		})
 	end
+
+	return objects
 end
