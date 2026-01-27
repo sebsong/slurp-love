@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="200" height="200" tilewidth="16" tileheight="8" infinite="1" nextlayerid="3" nextobjectid="11">
+<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="200" height="200" tilewidth="16" tileheight="8" infinite="1" nextlayerid="3" nextobjectid="12">
  <editorsettings>
   <export target="map.lua" format="lua"/>
  </editorsettings>
  <tileset firstgid="1" source="tileset.tsx"/>
- <tileset firstgid="2" source="packages.tsx"/>
+ <tileset firstgid="3" source="packages.tsx"/>
  <layer id="1" name="base" width="200" height="200">
   <data encoding="csv">
    <chunk x="0" y="0" width="16" height="16">
@@ -2476,11 +2476,9 @@
   </data>
  </layer>
  <objectgroup id="2" name="packages">
-  <object id="4" gid="2" x="872" y="656" width="16" height="16"/>
-  <object id="5" gid="2" x="973.79" y="637.575" width="16" height="16"/>
-  <object id="6" gid="2" x="1032" y="808" width="16" height="16"/>
-  <object id="8" gid="1" x="1040" y="784" width="16" height="16"/>
-  <object id="9" gid="1" x="1040" y="760" width="16" height="16"/>
-  <object id="10" gid="3" x="664" y="888" width="16" height="16"/>
+  <object id="4" gid="3" x="872" y="656" width="16" height="16"/>
+  <object id="5" gid="3" x="973.79" y="637.575" width="16" height="16"/>
+  <object id="6" gid="3" x="1032" y="808" width="16" height="16"/>
+  <object id="10" gid="4" x="664" y="888" width="16" height="16"/>
  </objectgroup>
 </map>

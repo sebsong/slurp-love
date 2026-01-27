@@ -30,19 +30,25 @@ function love.load()
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
-	local tileset = NewTileset("assets/art/tileset.png", 16) -- TODO: maybe switch to reading lua exported tiled files to get the grid size info
-	Tilemap = NewTilemapLua("assets/tilemap/map.lua", tileset, 1)
+	local tilesets = {
+		NewTileset("assets/art/tileset.png", 16) -- TODO: maybe switch to reading lua exported tiled files to get the grid size info
+	}
+	Tilemap = NewTilemapLua("assets/tilemap/map.lua", tilesets)
+	LandTileLayerIndex = 1
+	PackageTileLayerIndex = 2
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	Boat = NewBoat(EntitiesImage)
 
 	Packages = {}
 	local packageSize = 16
-	table.insert(Packages, {
-		image = EntitiesImage,
-		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
-		transform = love.math.newTransform(185, -70),
-	})
+	-- for _, package in ipairs(Tilemap.layers[PackageTileLayerIndex].objects) do
+	-- 	table.insert(Packages, {
+	-- 		image = EntitiesImage,
+	-- 		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
+	-- 		transform = Tilemap.tilemapToWorldTransform:apply(package.transform)
+	-- 	})
+	-- end
 	table.insert(Packages, {
 		image = EntitiesImage,
 		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
@@ -137,7 +143,7 @@ function love.draw()
 			love.graphics.scale(Camera.zoom, Camera.zoom)
 			love.graphics.applyTransform(GetWorldToCanvasTransform(Camera))
 
-			Tilemap:draw(Camera)
+			Tilemap:draw(LandTileLayerIndex, Camera)
 
 			Boat:draw()
 

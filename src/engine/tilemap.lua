@@ -21,33 +21,49 @@ local function getIntersectionTiles(tilemap, camera)
 	return startRowIdx, endRowIdx, startColIdx, endColIdx
 end
 
-local function draw(self, camera)
-	local tileset = self.tileset
-	local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(self, camera)
+local function drawTileLayer(tilemap, layerIndex, camera)
+	local layer = tilemap.layers[layerIndex]
+	local tileset = layer.tileset
+	local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(tilemap, camera)
 
 	local tileX, tileY
 	for rowIdx = startRowIdx, endRowIdx - 1 do
 		for colIdx = startColIdx, endColIdx - 1 do
-			local rowTiles = self.tiles[rowIdx]
+			local rowTiles = layer.tiles[rowIdx]
 			if rowTiles then
 				local tileId = rowTiles[colIdx]
 				if tileId then
-					if self.isIsometric then
-						tileX = -(rowIdx - 1) * self.tileWidth / 2 + (colIdx - 1) * self.tileWidth / 2
-						tileY = (rowIdx - 1) * self.tileHeight / 2 + (colIdx - 1) * self.tileHeight / 2
+					if tilemap.isIsometric then
+						tileX = -(rowIdx - 1) * tilemap.tileWidth / 2 + (colIdx - 1) * tilemap.tileWidth / 2
+						tileY = (rowIdx - 1) * tilemap.tileHeight / 2 + (colIdx - 1) * tilemap.tileHeight / 2
 					else
-						tileX = (colIdx - 1) * self.tileWidth
-						tileY = (rowIdx - 1) * self.tileHeight
+						tileX = (colIdx - 1) * tilemap.tileWidth
+						tileY = (rowIdx - 1) * tilemap.tileHeight
 					end
 					local tileQuad = tileset.quads[tileId]
 					if tileQuad then
-						local x, y = self.tilemapToWorldTransform:transformPoint(tileX, tileY)
+						local x, y = tilemap.tilemapToWorldTransform:transformPoint(tileX, tileY)
 						local _, _, width, height = tileQuad:getViewport()
 						love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height / 2)
 					end
 				end
 			end
 		end
+	end
+end
+
+local function drawObjectLayer(tilemap, layerIndex, camera)
+	assert(false, "TODO implement")
+end
+
+local function draw(self, layerIndex, camera)
+	local layer = self.layers[layerIndex]
+	if layer.tiles then
+		drawTileLayer(self, layerIndex, camera)
+	elseif layer.objects then
+		drawObjectLayer(self, layerIndex, camera)
+	else
+		assert(false, string.format("Layer should have tiles or objects: %s", layer))
 	end
 end
 
@@ -81,6 +97,7 @@ local function getTilemapTransforms(tilemapPixelWidth, tilemapPixelHeight, isIso
 end
 
 
+-- NOTE: doesn't support layers currently
 function NewTilemapCsv(csvFilepath, tileset, isIsometric, tileGridWidth, tileGridHeight)
 	AssertFileExt(csvFilepath, ".csv")
 
@@ -126,25 +143,29 @@ function NewTilemapCsv(csvFilepath, tileset, isIsometric, tileGridWidth, tileGri
 	}
 end
 
-function NewTilemapLua(luaFilepath, tileset, layerIndex)
+local function getTilesetIndex(gid, tilesetInfos)
+	for i = #tilesetInfos, 1, -1 do
+		local tilesetInfo = tilesetInfos[i]
+		if gid >= tilesetInfo.firstgid then
+			return i
+		end
+	end
+	assert(false, string.format("Object gid: %s should map to a tileset"), gid)
+end
+
+local function getTileId(gid, tilesetInfo)
+	return gid - tilesetInfo.firstgid + 1
+end
+
+-- NOTE: tilesets must match order of tilesets in tilemap
+-- NOTE: tilesets and layers are 1:1
+function NewTilemapLua(luaFilepath, tilesets)
 	AssertFileExt(luaFilepath, ".lua")
 
 	local tilemapInfo = require(StripFileExtension(luaFilepath))
-	local tiles = {}
-	for _ = 1, tilemapInfo.height do
-		table.insert(tiles, {})
-	end
-	for _, chunk in ipairs(tilemapInfo.layers[layerIndex].chunks) do
-		for j = 1, chunk.height do
-			local rowIdx = chunk.y + j
-			for i = 1, chunk.width do
-				local colIdx = chunk.x + i
-				if rowIdx <= tilemapInfo.width and colIdx <= tilemapInfo.height then
-					tiles[rowIdx][colIdx] = chunk.data[(j - 1) * chunk.width + (i - 1) + 1]
-				end
-			end
-		end
-	end
+
+	-- TODO: can we process tilesets here?
+	local tilesetInfos = tilemapInfo.tilesets
 
 	local width = tilemapInfo.width
 	local height = tilemapInfo.height
@@ -158,9 +179,52 @@ function NewTilemapLua(luaFilepath, tileset, layerIndex)
 		isIsometric
 	)
 
+	local layers = {}
+	for i, layer in ipairs(tilemapInfo.layers) do
+		if layer.type == "tilelayer" then
+			local firstTileGid = layer.chunks[1].data[1]
+			local tilesetIndex = getTilesetIndex(firstTileGid, tilesetInfos)
+			local tilesetInfo = tilesetInfos[tilesetIndex]
+			local tiles = {}
+			for _ = 1, tilemapInfo.height do
+				table.insert(tiles, {})
+			end
+			for _, chunk in ipairs(layer.chunks) do
+				for j = 1, chunk.height do
+					local rowIdx = chunk.y + j
+					for i = 1, chunk.width do
+						local colIdx = chunk.x + i
+						if rowIdx <= tilemapInfo.width and colIdx <= tilemapInfo.height then
+							local gid = chunk.data[(j - 1) * chunk.width + (i - 1) + 1]
+							tiles[rowIdx][colIdx] = getTileId(gid, tilesetInfo)
+						end
+					end
+				end
+			end
+
+			layers[i] = {
+				tileset = tilesets[tilesetIndex],
+				tiles = tiles,
+			}
+		elseif layer.type == "objectgroup" then
+			local firstObjectGid = layer.objects[1].gid
+			local tilesetIndex = getTilesetIndex(firstObjectGid, tilesetInfos)
+			local tilesetInfo = tilesetInfos[tilesetIndex]
+
+			local objects = {}
+			for _, object in ipairs(layer.objects) do
+				table.insert(objects, {
+					tileId = getTileId(object.gid, tilesetInfo),
+					transform = love.math.newTransform(object.x, object.y),
+				})
+			end
+			layers[i] = {
+				tileset = tilesets[tilesetIndex],
+				objects = objects,
+			}
+		end
+	end
 	return {
-		tileset = tileset,
-		tiles = tiles,
 		width = width,
 		height = height,
 		tileWidth = tileWidth,
@@ -169,25 +233,8 @@ function NewTilemapLua(luaFilepath, tileset, layerIndex)
 		worldToTilemapTransform = worldToTilemapTransform,
 		tilemapToWorldTransform = tilemapToWorldTransform,
 
+		layers = layers,
+
 		draw = draw,
 	}
-end
-
--- NOTE: assumes that layer index matches tileset index and that only 1 tileset is used per layer
--- TODO: maybe should just process this with the tilemap and make it a property on the tilemap? need tilemap -> world transform
-function NewObjectMap(luaFilepath, layerIndex)
-	AssertFileExt(luaFilepath, ".lua")
-	local tilemapInfo = require(StripFileExtension(luaFilepath))
-	local tilesetInfo = tilemapInfo.tilesets[layerIndex]
-	local objectGroup = tilemapInfo.layers[layerIndex]
-
-	local objects = {}
-	for _, object in ipairs(objectGroup.objects) do
-		local objX, objY = object.x, object.y
-		table.insert(objects, {
-			transform = love.math.newTransform(),
-		})
-	end
-
-	return objects
 end
