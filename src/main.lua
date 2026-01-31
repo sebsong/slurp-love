@@ -31,7 +31,9 @@ function love.load()
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
 	local tilesets = {
-		NewTileset("assets/art/tileset.png", 16) -- TODO: maybe switch to reading lua exported tiled files to get the grid size info
+		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
+		NewTileset("assets/art/tileset.png", 16),
+		NewTileset("assets/art/packages.png", 16),
 	}
 	Tilemap = NewTilemapLua("assets/tilemap/map.lua", tilesets)
 	LandTileLayerIndex = 1
@@ -40,17 +42,15 @@ function love.load()
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	Boat = NewBoat(EntitiesImage)
 
+	PackagesTileset = tilesets[PackageTileLayerIndex]
 	Packages = {}
-	local packageSize = 16
-	for _, package in ipairs(Tilemap.layers[PackageTileLayerIndex].objects) do
-		-- TODO: need to either convert object x,y into tile indices or have a transformation that operates on tilemap pixel coords
-		local objX, objY = package.transform:transformPoint(0, 0)
-		-- TODO: this isn't the right way to get the indices
-		local colIdx, rowIdx = objX / Tilemap.tileWidth, objY / Tilemap.tileHeight
-		local x, y = Tilemap.tilemapToWorldTransform:transformPoint(colIdx, rowIdx)
+	for _, object in ipairs(Tilemap.layers[PackageTileLayerIndex].objects) do
+		local objX, objY = object.transform:transformPoint(0, 0)
+		-- TODO: debug this
+		local x, y = Tilemap.tilemapToWorldTransform:transformPoint(objX, objY)
 		table.insert(Packages, {
-			image = EntitiesImage,
-			quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
+			image = PackagesTileset.image,
+			quad = PackagesTileset.quads[object.tileId],
 			transform = love.math.newTransform(x, y)
 		})
 	end
