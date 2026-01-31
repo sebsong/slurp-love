@@ -83,30 +83,36 @@ end
 local function getTilemapTransforms(tileWidth, tileHeight, width, height, isIsometric)
 	local tilemapToWorldTransform
 	local tilemapIndexToWorldTransform
-	local tileScaleX, tileScaleY
 	if isIsometric then
 		local shearFactor = -(tileWidth - tileHeight) / (tileWidth + tileHeight)
 		-- NOTE: shearing affects the scaling, need to adjust for that
 		local shearCorrectionScale = 1 / math.sqrt(1 + shearFactor ^ 2)
 
+		-- TODO: no need for this anymore, just use the indexed version
 		tilemapToWorldTransform = love.math.newTransform()
 		tilemapToWorldTransform:scale(shearCorrectionScale, shearCorrectionScale)
-		tilemapToWorldTransform:translate(0, -height / 2)
+		tilemapToWorldTransform:translate(0, -(height / 2) * tileHeight)
 		tilemapToWorldTransform:rotate(PI / 4)
 		tilemapToWorldTransform:shear(shearFactor, shearFactor)
 
 		local tileScale = math.sqrt((tileWidth / 2) ^ 2 + (tileHeight / 2) ^ 2)
-		tileScaleX, tileScaleY = tileScale, tileScale
+		tilemapIndexToWorldTransform = love.math.newTransform()
+		tilemapIndexToWorldTransform:scale(tileScale, tileScale)
+		tilemapIndexToWorldTransform:scale(shearCorrectionScale, shearCorrectionScale)
+		tilemapIndexToWorldTransform:translate(0, -height / 2)
+		tilemapIndexToWorldTransform:rotate(PI / 4)
+		tilemapIndexToWorldTransform:shear(shearFactor, shearFactor)
+
+		print(tilemapToWorldTransform:transformPoint(0, 0))
+		print(tilemapIndexToWorldTransform:transformPoint(1, 1))
 	else
 		tilemapToWorldTransform = love.math.newTransform()
 		tilemapToWorldTransform:translate(-width / 2, -height / 2)
 
-		tileScaleX, tileScaleY = tileWidth, tileHeight
+		tilemapIndexToWorldTransform = love.math.newTransform()
+		tilemapIndexToWorldTransform:translate(-width / 2, -height / 2)
+		tilemapIndexToWorldTransform:scale(tileWidth, tileHeight)
 	end
-
-	tilemapIndexToWorldTransform = love.math.newTransform()
-	tilemapIndexToWorldTransform:scale(tileScaleX, tileScaleY)
-	tilemapIndexToWorldTransform:apply(tilemapToWorldTransform) -- TODO: is this a different order of operations?
 
 	local worldToTilemapTransform = tilemapToWorldTransform:inverse()
 	local worldToTilemapIndexTransform = tilemapIndexToWorldTransform:inverse()
@@ -191,7 +197,7 @@ function NewTilemapLua(luaFilepath, tilesets)
 					tileId = getTileId(object.gid, tilesetInfo),
 					width = object.width,
 					height = object.height,
-					transform = love.math.newTransform(object.x + object.width / 2, object.y + object.height / 2),
+					transform = love.math.newTransform(object.x / (object.width / 2), object.y / (object.height / 2)),
 				})
 			end
 			layers[i] = {

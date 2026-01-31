@@ -45,13 +45,13 @@ function love.load()
 	PackagesTileset = tilesets[PackageTileLayerIndex]
 	Packages = {}
 	for _, object in ipairs(Tilemap.layers[PackageTileLayerIndex].objects) do
-		local objX, objY = object.transform:transformPoint(0, 0)
+		local objColIdx, objRowIdx = object.transform:transformPoint(0, 0)
 		-- TODO: debug this
-		local x, y = Tilemap.tilemapToWorldTransform:transformPoint(objX, objY)
+		local colIdx, rowIdx = Tilemap.tilemapIndexToWorldTransform:transformPoint(objColIdx, objRowIdx)
 		table.insert(Packages, {
 			image = PackagesTileset.image,
 			quad = PackagesTileset.quads[object.tileId],
-			transform = love.math.newTransform(x, y)
+			transform = love.math.newTransform(colIdx, rowIdx)
 		})
 	end
 
@@ -161,7 +161,7 @@ function love.draw()
 				love.graphics.push()
 				love.graphics.applyTransform(package.transform)
 				local _, _, width, height = package.quad:getViewport()
-				love.graphics.draw(package.image, package.quad, -width / 2, -height / 2)
+				love.graphics.draw(package.image, package.quad)
 				love.graphics.pop()
 				::continue::
 			end
