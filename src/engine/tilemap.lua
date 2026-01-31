@@ -39,13 +39,6 @@ local function drawTileLayer(tilemap, layerIndex, camera)
 
 						local _, _, width, height = tileQuad:getViewport()
 						love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height / 2)
-						-- x = x - width / 2
-						-- y = y - height / 2
-						-- love.graphics.applyTransform(tilemap.tilemapToWorldTransform)
-						-- love.graphics.points(x, y)
-						-- love.graphics.points(x + width, y)
-						-- love.graphics.points(x, y + height)
-						-- love.graphics.points(x + width, y + height)
 					end
 				end
 			end
@@ -91,9 +84,12 @@ end
 local function getTilemapTransforms(tileWidth, tileHeight, width, height, isIsometric)
 	local tilemapToWorldTransform
 	if isIsometric then
-		-- TODO: debug why this scale seems slightly too large?
-		local tileScale = math.sqrt((tileWidth / 2) ^ 2 + (tileHeight / 2) ^ 2)
 		local shearFactor = -(tileWidth - tileHeight) / (tileWidth + tileHeight)
+
+		-- NOTE: shearing affects the scaling, need to adjust for that
+		local shearScale = math.sqrt(1 + shearFactor ^ 2)
+		local tileScale = math.sqrt((tileWidth / 2) ^ 2 + (tileHeight / 2) ^ 2) / shearScale
+
 		tilemapToWorldTransform = love.math.newTransform()
 		tilemapToWorldTransform:scale(tileScale, tileScale)
 		tilemapToWorldTransform:translate(0, -height / 2)
