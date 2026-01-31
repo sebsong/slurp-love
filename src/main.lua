@@ -42,17 +42,16 @@ function love.load()
 
 	Packages = {}
 	local packageSize = 16
-	-- TODO: debug this
 	for _, package in ipairs(Tilemap.layers[PackageTileLayerIndex].objects) do
-		-- print(package.transform:transformPoint(0, 0))
-		-- local test = package.transform:apply(Tilemap.tilemapToWorldTransform)
-		-- print(test:transformPoint(0, 0))
-		-- print("------------------------------------------------------------------------------------")
-
+		-- TODO: need to either convert object x,y into tile indices or have a transformation that operates on tilemap pixel coords
+		local objX, objY = package.transform:transformPoint(0, 0)
+		-- TODO: this isn't the right way to get the indices
+		local colIdx, rowIdx = objX / Tilemap.tileWidth, objY / Tilemap.tileHeight
+		local x, y = Tilemap.tilemapToWorldTransform:transformPoint(colIdx, rowIdx)
 		table.insert(Packages, {
 			image = EntitiesImage,
 			quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
-			transform = love.math.newTransform()
+			transform = love.math.newTransform(x, y)
 		})
 	end
 
