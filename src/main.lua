@@ -42,23 +42,30 @@ function love.load()
 
 	Packages = {}
 	local packageSize = 16
-	-- for _, package in ipairs(Tilemap.layers[PackageTileLayerIndex].objects) do
-	-- 	table.insert(Packages, {
-	-- 		image = EntitiesImage,
-	-- 		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
-	-- 		transform = Tilemap.tilemapToWorldTransform:apply(package.transform)
-	-- 	})
-	-- end
-	table.insert(Packages, {
-		image = EntitiesImage,
-		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
-		transform = love.math.newTransform(-230, -40),
-	})
-	table.insert(Packages, {
-		image = EntitiesImage,
-		quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
-		transform = love.math.newTransform(50, 240),
-	})
+	-- TODO: debug this
+	for _, package in ipairs(Tilemap.layers[PackageTileLayerIndex].objects) do
+		-- print(package.transform:transformPoint(0, 0))
+		local test = package.transform:apply(Tilemap.tilemapToWorldTransform)
+		-- print(test:transformPoint(0, 0))
+		-- print("------------------------------------------------------------------------------------")
+
+		table.insert(Packages, {
+			image = EntitiesImage,
+			quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
+			transform = test
+		})
+	end
+
+	-- table.insert(Packages, {
+	-- 	image = EntitiesImage,
+	-- 	quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
+	-- 	transform = love.math.newTransform(-230, -40),
+	-- })
+	-- table.insert(Packages, {
+	-- 	image = EntitiesImage,
+	-- 	quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
+	-- 	transform = love.math.newTransform(50, 240),
+	-- })
 
 	IsCameraPanning = false
 	CameraPanSpeed = 0.5
@@ -67,7 +74,7 @@ function love.load()
 	Bgm = love.audio.newSource("assets/sound/bgm.ogg", "stream")
 	Bgm:setVolume(0.2)
 	Bgm:setLooping(true)
-	Bgm:play()
+	-- Bgm:play()
 
 	love.graphics.setPointSize(5)
 	love.graphics.setBackgroundColor(0, 0, 0)
@@ -147,18 +154,18 @@ function love.draw()
 
 			Boat:draw()
 
-			for _, package in ipairs(Packages) do
-				if Boat:indexOfPackage(package) then
-					goto continue
-				end
+			-- for _, package in ipairs(Packages) do
+			-- 	if Boat:indexOfPackage(package) then
+			-- 		goto continue
+			-- 	end
 
-				love.graphics.push()
-				love.graphics.applyTransform(package.transform)
-				local _, _, width, height = package.quad:getViewport()
-				love.graphics.draw(package.image, package.quad, -width / 2, -height / 2)
-				love.graphics.pop()
-				::continue::
-			end
+			-- 	love.graphics.push()
+			-- 	love.graphics.applyTransform(package.transform)
+			-- 	local _, _, width, height = package.quad:getViewport()
+			-- 	love.graphics.draw(package.image, package.quad, -width / 2, -height / 2)
+			-- 	love.graphics.pop()
+			-- 	::continue::
+			-- end
 
 			love.graphics.pop()
 		end

@@ -33,18 +33,19 @@ local function drawTileLayer(tilemap, layerIndex, camera)
 			if rowTiles then
 				local tileId = rowTiles[colIdx]
 				if tileId then
-					if tilemap.isIsometric then
-						tileX = -(rowIdx - 1) * tilemap.tileWidth / 2 + (colIdx - 1) * tilemap.tileWidth / 2
-						tileY = (rowIdx - 1) * tilemap.tileHeight / 2 + (colIdx - 1) * tilemap.tileHeight / 2
-					else
-						tileX = (colIdx - 1) * tilemap.tileWidth
-						tileY = (rowIdx - 1) * tilemap.tileHeight
-					end
 					local tileQuad = tileset.quads[tileId]
 					if tileQuad then
-						local x, y = tilemap.tilemapToWorldTransform:transformPoint(tileX, tileY)
+						local x, y = tilemap.tilemapToWorldTransform:transformPoint(colIdx, rowIdx)
+
 						local _, _, width, height = tileQuad:getViewport()
 						love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height / 2)
+						-- x = x - width / 2
+						-- y = y - height / 2
+						-- love.graphics.applyTransform(tilemap.tilemapToWorldTransform)
+						-- love.graphics.points(x, y)
+						-- love.graphics.points(x + width, y)
+						-- love.graphics.points(x, y + height)
+						-- love.graphics.points(x + width, y + height)
 					end
 				end
 			end
@@ -87,13 +88,27 @@ function NewTileset(imageFilePath, tileImageSize)
 	}
 end
 
-local function getTilemapTransforms(tilemapPixelWidth, tilemapPixelHeight, isIsometric)
-	local worldToTilemapTransform = love.math.newTransform(tilemapPixelWidth / 2, tilemapPixelHeight / 2)
+local function getTilemapTransforms(tileWidth, tileHeight, width, height, isIsometric)
+	local tilemapToWorldTransform
 	if isIsometric then
-		worldToTilemapTransform:translate(-tilemapPixelWidth / 2, 0)
+		-- TODO: debug why this scale seems slightly too large?
+		local tileScale = math.sqrt((tileWidth / 2) ^ 2 + (tileHeight / 2) ^ 2)
+		local shearFactor = -(tileWidth - tileHeight) / (tileWidth + tileHeight)
+		tilemapToWorldTransform = love.math.newTransform()
+		tilemapToWorldTransform:scale(tileScale, tileScale)
+		tilemapToWorldTransform:translate(0, -height / 2)
+		tilemapToWorldTransform:rotate(PI / 4)
+		tilemapToWorldTransform:shear(shearFactor, shearFactor)
+	else
+		tilemapToWorldTransform = love.math.newTransform(
+			-width / 2, -height / 2,
+			0,
+			tileWidth,
+			tileHeight
+		)
 	end
-	local tilemapToWorldTransform = worldToTilemapTransform:inverse()
-	return worldToTilemapTransform, tilemapToWorldTransform
+	local worldToTilemapTransform = tilemapToWorldTransform:inverse()
+	return tilemapToWorldTransform, worldToTilemapTransform
 end
 
 
@@ -120,11 +135,12 @@ function NewTilemapCsv(csvFilepath, tileset, isIsometric, tileGridWidth, tileGri
 		end
 	end
 
-	local tilemapPixelWidth, tilemapPixelHeight = width * tileGridWidth, height * tileGridHeight
 	local isIsometric = isIsometric or false
-	local worldToTilemapTransform, tilemapToWorldTransform = getTilemapTransforms(
-		tilemapPixelWidth,
-		tilemapPixelHeight,
+	local tilemapToWorldTransform, worldToTilemapTransform = getTilemapTransforms(
+		tileGridWidth,
+		tileGridHeight,
+		width,
+		height,
 		isIsometric
 	)
 
@@ -171,11 +187,12 @@ function NewTilemapLua(luaFilepath, tilesets)
 	local height = tilemapInfo.height
 	local tileWidth = tilemapInfo.tilewidth
 	local tileHeight = tilemapInfo.tileheight
-	local tilemapPixelWidth, tilemapPixelHeight = width * tileWidth, height * tileHeight
 	local isIsometric = tilemapInfo.orientation == "isometric"
-	local worldToTilemapTransform, tilemapToWorldTransform = getTilemapTransforms(
-		tilemapPixelWidth,
-		tilemapPixelHeight,
+	local tilemapToWorldTransform, worldToTilemapTransform = getTilemapTransforms(
+		tileWidth,
+		tileHeight,
+		width,
+		height,
 		isIsometric
 	)
 
@@ -230,8 +247,8 @@ function NewTilemapLua(luaFilepath, tilesets)
 		tileWidth = tileWidth,
 		tileHeight = tileHeight,
 		isIsometric = isIsometric,
-		worldToTilemapTransform = worldToTilemapTransform,
 		tilemapToWorldTransform = tilemapToWorldTransform,
+		worldToTilemapTransform = worldToTilemapTransform,
 
 		layers = layers,
 
