@@ -63,11 +63,11 @@ end
 function NewTileset(imageFilePath, tileImageSize)
 	local image = love.graphics.newImage(imageFilePath)
 	local tileQuads = {}
-	local numTilesPerRow = image:getPixelWidth() / tileImageSize
-	local numTilesPerCol = image:getPixelHeight() / tileImageSize
-	for rowIdx = 1, numTilesPerRow, 1 do
+	local numCols = image:getPixelWidth() / tileImageSize
+	local numRows = image:getPixelHeight() / tileImageSize
+	for rowIdx = 1, numRows, 1 do
 		local rowYOffset = (rowIdx - 1) * tileImageSize
-		for colIdx = 1, numTilesPerCol, 1 do
+		for colIdx = 1, numCols, 1 do
 			local colXOffset = (colIdx - 1) * tileImageSize
 			local tileQuad = love.graphics.newQuad(colXOffset, rowYOffset, tileImageSize, tileImageSize, image)
 			table.insert(tileQuads, tileQuad)

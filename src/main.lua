@@ -46,7 +46,6 @@ function love.load()
 	Packages = {}
 	for _, object in ipairs(Tilemap.layers[PackageTileLayerIndex].objects) do
 		local objColIdx, objRowIdx = object.transform:transformPoint(0, 0)
-		-- TODO: debug this
 		local colIdx, rowIdx = Tilemap.tilemapIndexToWorldTransform:transformPoint(objColIdx, objRowIdx)
 		table.insert(Packages, {
 			image = PackagesTileset.image,
@@ -54,17 +53,6 @@ function love.load()
 			transform = love.math.newTransform(colIdx, rowIdx)
 		})
 	end
-
-	-- table.insert(Packages, {
-	-- 	image = EntitiesImage,
-	-- 	quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
-	-- 	transform = love.math.newTransform(-230, -40),
-	-- })
-	-- table.insert(Packages, {
-	-- 	image = EntitiesImage,
-	-- 	quad = love.graphics.newQuad(0, 2 * packageSize, packageSize, packageSize, EntitiesImage),
-	-- 	transform = love.math.newTransform(50, 240),
-	-- })
 
 	IsCameraPanning = false
 	CameraPanSpeed = 0.5
@@ -128,7 +116,6 @@ function love.update(dt)
 	end
 
 	Boat:update(dt)
-
 
 	if not IsCameraPanning then
 		local boatX, boatY = Boat.transform:transformPoint(0, 0)
