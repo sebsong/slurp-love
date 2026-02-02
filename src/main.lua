@@ -161,7 +161,7 @@ function love.draw()
 				love.graphics.push()
 				love.graphics.applyTransform(package.transform)
 				local _, _, width, height = package.quad:getViewport()
-				love.graphics.draw(package.image, package.quad)
+				love.graphics.draw(package.image, package.quad, -width / 2, -height / 2)
 				love.graphics.pop()
 				::continue::
 			end

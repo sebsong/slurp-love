@@ -37,7 +37,7 @@ local function drawTileLayer(tilemap, layerIndex, camera)
 						local x, y = tilemap.tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
 
 						local _, _, width, height = tileQuad:getViewport()
-						love.graphics.draw(tileset.image, tileQuad, x, y)
+						love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height / 2)
 					end
 				end
 			end
