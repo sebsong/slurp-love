@@ -56,7 +56,7 @@ function love.load()
 
 	IsCameraPanning = false
 	CameraPanSpeed = 0.5
-	CameraZoomSpeed = 0.1
+	CameraZoomSpeed = 1.1
 
 	Bgm = love.audio.newSource("assets/sound/bgm.ogg", "stream")
 	Bgm:setVolume(0.2)
@@ -105,8 +105,12 @@ function love.mousemoved(x, y, dx, dy, isTouch)
 end
 
 function love.wheelmoved(x, y)
-	if IsCameraPanning then
-		Camera.zoom = Camera.zoom + y * CameraZoomSpeed
+	if IsCameraPanning and y ~= 0 then
+		local cameraZoomMultiplier = CameraZoomSpeed
+		if y < 0 then
+			cameraZoomMultiplier = 1 / cameraZoomMultiplier
+		end
+		Camera.zoom = Camera.zoom * cameraZoomMultiplier
 	end
 end
 

@@ -3,44 +3,57 @@ require("engine/file")
 require("engine/math")
 
 local function getIntersectionTiles(tilemap, camera)
-	local tileWidth, tileHeight = tilemap.tileWidth, tilemap.tileHeight
-
-	if tilemap.isIsometric then
-		-- TODO: this is a hack for isometric, need to actually intersect tiles with camera and return tiles instead of tile index ranges
-		return 1, tilemap.height, 1, tilemap.width
-	end
-
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
 	local startX, startY = cameraX - (camera:getScreenWidth() / 2), cameraY - (camera:getScreenHeight() / 2)
 	local endX, endY = startX + camera:getScreenWidth(), startY + camera:getScreenHeight()
 
-	local tilemapStartX, tilemapStartY = tilemap.worldToTilemapTransform:transformPoint(startX, startY)
-	local tilemapEndX, tilemapEndY = tilemap.worldToTilemapTransform:transformPoint(endX, endY)
-	local startRowIdx, endRowIdx = math.floor(tilemapStartY / tileHeight) - 1, math.ceil(tilemapEndY / tileHeight) + 1
-	local startColIdx, endColIdx = math.floor(tilemapStartX / tileWidth) - 1, math.ceil(tilemapEndX / tileWidth) + 1
-	return startRowIdx, endRowIdx, startColIdx, endColIdx
+	local startColIdx, startRowIdx
+	local endColIdx, endRowIdx
+	if tilemap.isIsometric then
+		startColIdx, _ = tilemap.worldToTilemapIndexTransform:transformPoint(startX, startY)
+		endColIdx, _ = tilemap.worldToTilemapIndexTransform:transformPoint(endX, endY)
+		_, startRowIdx = tilemap.worldToTilemapIndexTransform:transformPoint(endX, startY)
+		_, endRowIdx = tilemap.worldToTilemapIndexTransform:transformPoint(startX, endY)
+	else
+		startColIdx, startRowIdx = tilemap.worldToTilemapIndexTransform:transformPoint(startX, startY)
+		endColIdx, endRowIdx = tilemap.worldToTilemapIndexTransform:transformPoint(endX, endY)
+	end
+
+	return
+		math.floor(math.max(startColIdx, 1)),
+		math.floor(math.min(startRowIdx, tilemap.width)),
+		math.ceil(math.max(endColIdx, 1)),
+		math.ceil(math.min(endRowIdx, tilemap.height))
 end
 
 local function drawTileLayer(tilemap, layerIndex, camera)
 	local layer = tilemap.layers[layerIndex]
 	local tileset = layer.tileset
-	local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(tilemap, camera)
+	local startColIdx, startRowIdx, endColIdx, endRowIdx = getIntersectionTiles(tilemap, camera)
+
+	assert(startColIdx <= endColIdx)
+	assert(startRowIdx <= endRowIdx)
 
 	for rowIdx = startRowIdx, endRowIdx do
 		for colIdx = startColIdx, endColIdx do
 			local rowTiles = layer.tiles[rowIdx]
-			if rowTiles then
-				local tileId = rowTiles[colIdx]
-				if tileId then
-					local tileQuad = tileset.quads[tileId]
-					if tileQuad then
-						local x, y = tilemap.tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
-
-						local _, _, width, height = tileQuad:getViewport()
-						love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height / 2)
-					end
-				end
+			if not rowTiles then
+				goto continue
 			end
+			local tileId = rowTiles[colIdx]
+			if not tileId then
+				goto continue
+			end
+			local tileQuad = tileset.quads[tileId]
+			if not tileQuad then
+				goto continue
+			end
+
+			local x, y = tilemap.tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
+			local _, _, width, height = tileQuad:getViewport()
+			love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height / 2)
+
+			::continue::
 		end
 	end
 end
@@ -81,19 +94,11 @@ function NewTileset(imageFilePath, tileImageSize)
 end
 
 local function getTilemapTransforms(tileWidth, tileHeight, width, height, isIsometric)
-	local tilemapToWorldTransform
 	local tilemapIndexToWorldTransform
 	if isIsometric then
 		local shearFactor = -(tileWidth - tileHeight) / (tileWidth + tileHeight)
 		-- NOTE: shearing affects the scaling, need to adjust for that
 		local shearCorrectionScale = 1 / math.sqrt(1 + shearFactor ^ 2)
-
-		-- TODO: no need for this anymore, just use the indexed version
-		tilemapToWorldTransform = love.math.newTransform()
-		tilemapToWorldTransform:scale(shearCorrectionScale, shearCorrectionScale)
-		tilemapToWorldTransform:translate(0, -(height / 2) * tileHeight)
-		tilemapToWorldTransform:rotate(PI / 4)
-		tilemapToWorldTransform:shear(shearFactor, shearFactor)
 
 		local tileScale = math.sqrt((tileWidth / 2) ^ 2 + (tileHeight / 2) ^ 2)
 		tilemapIndexToWorldTransform = love.math.newTransform()
@@ -102,22 +107,15 @@ local function getTilemapTransforms(tileWidth, tileHeight, width, height, isIsom
 		tilemapIndexToWorldTransform:translate(0, -height / 2)
 		tilemapIndexToWorldTransform:rotate(PI / 4)
 		tilemapIndexToWorldTransform:shear(shearFactor, shearFactor)
-
-		print(tilemapToWorldTransform:transformPoint(0, 0))
-		print(tilemapIndexToWorldTransform:transformPoint(1, 1))
 	else
-		tilemapToWorldTransform = love.math.newTransform()
-		tilemapToWorldTransform:translate(-width / 2, -height / 2)
-
 		tilemapIndexToWorldTransform = love.math.newTransform()
 		tilemapIndexToWorldTransform:translate(-width / 2, -height / 2)
 		tilemapIndexToWorldTransform:scale(tileWidth, tileHeight)
 	end
 
-	local worldToTilemapTransform = tilemapToWorldTransform:inverse()
 	local worldToTilemapIndexTransform = tilemapIndexToWorldTransform:inverse()
 
-	return tilemapToWorldTransform, worldToTilemapTransform, tilemapIndexToWorldTransform, worldToTilemapIndexTransform
+	return tilemapIndexToWorldTransform, worldToTilemapIndexTransform
 end
 
 local function getTilesetIndex(gid, tilesetInfos)
@@ -150,14 +148,13 @@ function NewTilemapLua(luaFilepath, tilesets)
 	local tileHeight = tilemapInfo.tileheight
 	local isIsometric = tilemapInfo.orientation == "isometric"
 
-	local tilemapToWorldTransform, worldToTilemapTransform, tilemapIndexToWorldTransform, worldToTilemapIndexTransform =
-		getTilemapTransforms(
-			tileWidth,
-			tileHeight,
-			width,
-			height,
-			isIsometric
-		)
+	local tilemapIndexToWorldTransform, worldToTilemapIndexTransform = getTilemapTransforms(
+		tileWidth,
+		tileHeight,
+		width,
+		height,
+		isIsometric
+	)
 
 	local layers = {}
 	for i, layer in ipairs(tilemapInfo.layers) do
@@ -217,8 +214,6 @@ function NewTilemapLua(luaFilepath, tilesets)
 		tileHeight = tileHeight,
 		isIsometric = isIsometric,
 
-		tilemapToWorldTransform = tilemapToWorldTransform,
-		worldToTilemapTransform = worldToTilemapTransform,
 		tilemapIndexToWorldTransform = tilemapIndexToWorldTransform,
 		worldToTilemapIndexTransform = worldToTilemapIndexTransform,
 
