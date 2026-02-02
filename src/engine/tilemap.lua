@@ -7,7 +7,7 @@ local function getIntersectionTiles(tilemap, camera)
 
 	if tilemap.isIsometric then
 		-- TODO: this is a hack for isometric, need to actually intersect tiles with camera and return tiles instead of tile index ranges
-		return 0, tilemap.height, 0, tilemap.width
+		return 1, tilemap.height, 1, tilemap.width
 	end
 
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
@@ -26,8 +26,8 @@ local function drawTileLayer(tilemap, layerIndex, camera)
 	local tileset = layer.tileset
 	local startRowIdx, endRowIdx, startColIdx, endColIdx = getIntersectionTiles(tilemap, camera)
 
-	for rowIdx = startRowIdx, endRowIdx - 1 do
-		for colIdx = startColIdx, endColIdx - 1 do
+	for rowIdx = startRowIdx, endRowIdx do
+		for colIdx = startColIdx, endColIdx do
 			local rowTiles = layer.tiles[rowIdx]
 			if rowTiles then
 				local tileId = rowTiles[colIdx]
@@ -37,7 +37,7 @@ local function drawTileLayer(tilemap, layerIndex, camera)
 						local x, y = tilemap.tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
 
 						local _, _, width, height = tileQuad:getViewport()
-						love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height / 2)
+						love.graphics.draw(tileset.image, tileQuad, x, y)
 					end
 				end
 			end
@@ -190,14 +190,18 @@ function NewTilemapLua(luaFilepath, tilesets)
 			local firstObjectGid = layer.objects[1].gid
 			local tilesetIndex = getTilesetIndex(firstObjectGid, tilesetInfos)
 			local tilesetInfo = tilesetInfos[tilesetIndex]
+			local objectLayerColOffset = -1
+			local objectLayerRowOffset = -1
 
 			local objects = {}
 			for _, object in ipairs(layer.objects) do
+				local colIdx = object.x / (object.width / 2) + 1 + objectLayerColOffset
+				local rowIdx = object.y / (object.height / 2) + 1 + objectLayerRowOffset
 				table.insert(objects, {
 					tileId = getTileId(object.gid, tilesetInfo),
 					width = object.width,
 					height = object.height,
-					transform = love.math.newTransform(object.x / (object.width / 2), object.y / (object.height / 2)),
+					transform = love.math.newTransform(colIdx, rowIdx),
 				})
 			end
 			layers[i] = {
