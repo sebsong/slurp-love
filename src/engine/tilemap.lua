@@ -199,6 +199,16 @@ function NewTilemapLua(luaFilepath, tilesets)
 					transform = love.math.newTransform(colIdx, rowIdx),
 				})
 			end
+
+			table.sort(
+				objects,
+				function(o1, o2)
+					local _, o1Y = tilemapIndexToWorldTransform:transformPoint(o1.transform:transformPoint(0, 0))
+					local _, o2Y = tilemapIndexToWorldTransform:transformPoint(o2.transform:transformPoint(0, 0))
+					return o1Y < o2Y
+				end
+			)
+
 			layers[i] = {
 				tileset = tilesets[tilesetIndex],
 				objects = objects,
