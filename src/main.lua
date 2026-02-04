@@ -2,7 +2,9 @@ require("engine/settings")
 require("engine/color")
 require("engine/tilemap")
 require("engine/camera")
+
 require("game/boat")
+require("game/package")
 
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
@@ -42,16 +44,10 @@ function love.load()
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	Boat = NewBoat(EntitiesImage)
 
-	PackagesTileset = tilesets[PackageTileLayerIndex]
+	local packagesTileset = tilesets[PackageTileLayerIndex]
 	Packages = {}
 	for _, object in ipairs(Tilemap.layers[PackageTileLayerIndex].objects) do
-		local objColIdx, objRowIdx = object.transform:transformPoint(0, 0)
-		local colIdx, rowIdx = Tilemap.tilemapIndexToWorldTransform:transformPoint(objColIdx, objRowIdx)
-		table.insert(Packages, {
-			image = PackagesTileset.image,
-			quad = PackagesTileset.quads[object.tileId],
-			transform = love.math.newTransform(colIdx, rowIdx)
-		})
+		table.insert(Packages, CreatePackage(Tilemap, packagesTileset, object))
 	end
 
 	IsCameraPanning = false

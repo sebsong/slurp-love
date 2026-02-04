@@ -83,6 +83,7 @@ local function pickupPackages(self, packages)
 		if Distance({ x = boatX, y = boatY }, { x = packageX, y = packageY }) <= self.interactionRadius then
 			table.insert(self.packages, package)
 			pickedUp = true
+			package:applyEffect(self)
 		end
 
 		::continue::
@@ -99,6 +100,7 @@ local function dropOffPackage(self)
 	local package = table.remove(self.packages, #self.packages)
 	local packageX, packageY = package.transform:transformPoint(0, 0)
 	package.transform:translate(-packageX + boatX, -packageY + boatY)
+	package:removeEffect(self)
 end
 
 function NewBoat(entitiesImage)
@@ -125,7 +127,7 @@ function NewBoat(entitiesImage)
 		acceleration = 2 * maxSpeed,
 		deceleration = acceleration / 4,
 		rotation = 0,
-		rotationSpeed = PI / 4,
+		rotationSpeed = PI / 2,
 		interactionRadius = 75,
 		packages = {},
 
