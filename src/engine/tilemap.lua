@@ -187,13 +187,11 @@ function NewTilemapLua(luaFilepath, tilesets)
 			local firstObjectGid = layer.objects[1].gid
 			local tilesetIndex = getTilesetIndex(firstObjectGid, tilesetInfos)
 			local tilesetInfo = tilesetInfos[tilesetIndex]
-			local objectLayerColOffset = -1
-			local objectLayerRowOffset = -1
 
 			local objects = {}
 			for _, object in ipairs(layer.objects) do
-				local colIdx = object.x / (object.width / 2) + 1 + objectLayerColOffset
-				local rowIdx = object.y / (object.height / 2) + 1 + objectLayerRowOffset
+				local colIdx = object.x / (tileHeight) + 1
+				local rowIdx = object.y / (tileHeight) + 1
 				table.insert(objects, {
 					tileId = getTileId(object.gid, tilesetInfo),
 					width = object.width,
