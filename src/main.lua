@@ -73,7 +73,7 @@ function love.load()
 	Bgm = love.audio.newSource("assets/sound/bgm.ogg", "stream")
 	Bgm:setVolume(0.2)
 	Bgm:setLooping(true)
-	-- Bgm:play()
+	Bgm:play()
 
 	love.graphics.setPointSize(5)
 	love.graphics.setBackgroundColor(0, 0, 0)

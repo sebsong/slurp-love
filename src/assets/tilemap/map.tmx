@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="200" height="200" tilewidth="16" tileheight="8" infinite="1" backgroundcolor="#0a202f" nextlayerid="5" nextobjectid="36">
+<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="200" height="200" tilewidth="16" tileheight="8" infinite="1" backgroundcolor="#0a202f" nextlayerid="5" nextobjectid="69">
  <editorsettings>
   <export target="map.lua" format="lua"/>
  </editorsettings>
@@ -2481,10 +2481,13 @@
   <object id="5" gid="5" x="968" y="632" width="16" height="16"/>
   <object id="6" gid="4" x="1024" y="800" width="16" height="16"/>
  </objectgroup>
- <objectgroup id="4" name="buildings">
+ <objectgroup draworder="index" id="4" name="buildings">
   <object id="28" gid="8" x="840" y="608" width="64" height="64"/>
   <object id="30" gid="8" x="824" y="624" width="64" height="64"/>
   <object id="31" gid="7" x="1016" y="800" width="64" height="64"/>
   <object id="35" gid="8" x="-24" y="-24" width="64" height="64"/>
+  <object id="68" gid="7" x="1040" y="680" width="64" height="64"/>
+  <object id="64" gid="7" x="1032" y="696" width="64" height="64"/>
+  <object id="63" gid="7" x="1048" y="704" width="64" height="64"/>
  </objectgroup>
 </map>

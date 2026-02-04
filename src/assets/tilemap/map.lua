@@ -10,7 +10,7 @@ return {
   tilewidth = 16,
   tileheight = 8,
   nextlayerid = 5,
-  nextobjectid = 36,
+  nextobjectid = 69,
   backgroundcolor = { 10, 32, 47 },
   properties = {},
   tilesets = {
@@ -2988,7 +2988,7 @@ return {
     },
     {
       type = "objectgroup",
-      draworder = "topdown",
+      draworder = "index",
       id = 4,
       name = "buildings",
       class = "",
@@ -3053,6 +3053,48 @@ return {
           height = 64,
           rotation = 0,
           gid = 8,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 68,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1040,
+          y = 680,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 7,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 64,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1032,
+          y = 696,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 7,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 63,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1048,
+          y = 704,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 7,
           visible = true,
           properties = {}
         }
