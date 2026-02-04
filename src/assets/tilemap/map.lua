@@ -9,8 +9,8 @@ return {
   height = 200,
   tilewidth = 16,
   tileheight = 8,
-  nextlayerid = 4,
-  nextobjectid = 26,
+  nextlayerid = 5,
+  nextobjectid = 32,
   properties = {},
   tilesets = {
     {
@@ -22,6 +22,11 @@ return {
       name = "packages",
       firstgid = 3,
       filename = "packages.tsx"
+    },
+    {
+      name = "buildings",
+      firstgid = 7,
+      filename = "buildings.tsx"
     }
   },
   layers = {
@@ -2975,6 +2980,64 @@ return {
           height = 16,
           rotation = 0,
           gid = 4,
+          visible = true,
+          properties = {}
+        }
+      }
+    },
+    {
+      type = "objectgroup",
+      draworder = "topdown",
+      id = 4,
+      name = "buildings",
+      class = "",
+      visible = true,
+      opacity = 1,
+      offsetx = 0,
+      offsety = 0,
+      parallaxx = 1,
+      parallaxy = 1,
+      properties = {},
+      objects = {
+        {
+          id = 28,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 872,
+          y = 640,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 8,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 30,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 856,
+          y = 656,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 8,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 31,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 1048,
+          y = 832,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 7,
           visible = true,
           properties = {}
         }

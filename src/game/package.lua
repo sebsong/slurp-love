@@ -21,7 +21,7 @@ local function removeEffect(self, boat)
 	end
 end
 
-function CreatePackage(tilemap, tileset, tileObject)
+function NewPackage(tilemap, tileset, tileObject)
 	local objColIdx, objRowIdx = tileObject.transform:transformPoint(0, 0)
 	local colIdx, rowIdx = tilemap.tilemapIndexToWorldTransform:transformPoint(objColIdx, objRowIdx)
 	local tileId = tileObject.tileId

@@ -8,6 +8,10 @@
         "."
     ],
     "fileStates": {
+        "buildings.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1.8095
+        },
         "map.tmx": {
             "scale": 0.31,
             "selectedLayer": 0,
@@ -52,6 +56,7 @@
     ],
     "project": "map.tiled-project",
     "recentFiles": [
+        "buildings.tsx",
         "tileset.tsx",
         "map.tmx",
         "map_iso.tmx",
@@ -59,7 +64,7 @@
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
-        "height": 16,
-        "width": 16
+        "height": 64,
+        "width": 64
     }
 }
