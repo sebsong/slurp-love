@@ -1,5 +1,6 @@
 require("engine/math")
 require("engine/color")
+local ui = require("game/ui")
 
 local numBoatAngles = 16
 local boatWidth, boatHeight = 16, 16
@@ -23,7 +24,7 @@ local function update(self, dt)
 
 	if didMove then
 		self.gas = self.gas - gasDepletionRate * dt
-		print("GAS REMAINING: ", self.gas)
+		ui.gasMeterShader:send("progress", self.gas / initialGas)
 		if self.gas <= 0 then
 			print("OUT OF GAS")
 		end
