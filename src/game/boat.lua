@@ -3,6 +3,8 @@ require("engine/color")
 
 local numBoatAngles = 16
 local boatWidth, boatHeight = 16, 16
+local initialGas = 100
+local gasDepletionRate = .5
 
 local function update(self, dt)
 	local didMove = false
@@ -19,7 +21,13 @@ local function update(self, dt)
 		didMove = true
 	end
 
-	if not didMove then
+	if didMove then
+		self.gas = self.gas - gasDepletionRate * dt
+		print("GAS REMAINING: ", self.gas)
+		if self.gas <= 0 then
+			print("OUT OF GAS")
+		end
+	else
 		if self.speed > 0 then
 			self.speed = math.max(0, self.speed - self.deceleration * dt)
 		elseif self.speed < 0 then
@@ -133,6 +141,7 @@ function NewBoat(entitiesImage)
 		rotationSpeed = math.pi / 2,
 		interactionRadius = 75,
 		packages = {},
+		gas = initialGas,
 
 		update = update,
 		draw = draw,

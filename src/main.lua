@@ -5,6 +5,7 @@ require("engine/camera")
 
 require("game/boat")
 require("game/package")
+local ui = require("game/ui")
 
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
@@ -65,6 +66,8 @@ function love.load()
 			transform = love.math.newTransform(colIdx, rowIdx),
 		})
 	end
+
+	ui:load()
 
 	IsCameraPanning = false
 	CameraPanSpeed = 0.5
@@ -149,6 +152,7 @@ function love.draw()
 
 			love.graphics.draw(BackgroundImage)
 
+			love.graphics.push()
 			love.graphics.scale(Camera.zoom, Camera.zoom)
 			love.graphics.applyTransform(GetWorldToCanvasTransform(Camera))
 
@@ -176,6 +180,9 @@ function love.draw()
 				love.graphics.draw(building.image, building.quad, -width / 2, -height)
 				love.graphics.pop()
 			end
+			love.graphics.pop()
+
+			ui:draw()
 
 			love.graphics.pop()
 		end
