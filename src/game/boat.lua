@@ -5,7 +5,7 @@ local ui = require("game/ui")
 local numBoatAngles = 16
 local boatWidth, boatHeight = 16, 16
 local initialGas = 100
-local gasDepletionRate = .5
+local gasDepletionRate = 1.
 
 local function update(self, dt)
 	local didMove = false

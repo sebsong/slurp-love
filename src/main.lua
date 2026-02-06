@@ -38,11 +38,13 @@ function love.load()
 		NewTileset("assets/art/tileset.png", 16),
 		NewTileset("assets/art/packages.png", 16),
 		NewTileset("assets/art/buildings.png", 64),
+		NewTileset("assets/art/mailboxes.png", 16),
 	}
 	Tilemap = NewTilemapLua("assets/tilemap/map.lua", tilesets)
 	LandTileLayerIndex = 1
 	PackageTileLayerIndex = 2
 	BuildingTileLayerIndex = 3
+	MailboxTileLayerIndex = 4 -- TODO: layer and tileset index are different, need to support better layer and tilset mixing
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 	Boat = NewBoat(EntitiesImage)
@@ -51,6 +53,20 @@ function love.load()
 	Packages = {}
 	for _, object in ipairs(Tilemap.layers[PackageTileLayerIndex].objects) do
 		table.insert(Packages, NewPackage(Tilemap, packagesTileset, object))
+	end
+
+	local mailboxTileset = tilesets[MailboxTileLayerIndex]
+	Mailboxes = {}
+	for _, object in ipairs(Tilemap.layers[MailboxTileLayerIndex].objects) do
+		local objColIdx, objRowIdx = object.transform:transformPoint(0, 0)
+		local colIdx, rowIdx = Tilemap.tilemapIndexToWorldTransform:transformPoint(objColIdx, objRowIdx)
+		local tileId = object.tileId
+		table.insert(Mailboxes, {
+			tileId = tileId,
+			image = mailboxTileset.image,
+			quad = mailboxTileset.quads[tileId],
+			transform = love.math.newTransform(colIdx, rowIdx),
+		})
 	end
 
 	local buildingTileset = tilesets[BuildingTileLayerIndex]
@@ -171,6 +187,14 @@ function love.draw()
 				love.graphics.draw(package.image, package.quad, -width / 2, -height)
 				love.graphics.pop()
 				::continue::
+			end
+
+			for _, mailbox in ipairs(Mailboxes) do
+				love.graphics.push()
+				love.graphics.applyTransform(mailbox.transform)
+				local _, _, width, height = mailbox.quad:getViewport()
+				love.graphics.draw(mailbox.image, mailbox.quad, -width / 2, -height)
+				love.graphics.pop()
 			end
 
 			for _, building in ipairs(Buildings) do

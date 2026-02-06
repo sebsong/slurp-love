@@ -1,10 +1,15 @@
 #pragma language glsl3
 
+
 uniform float progress;
 
 #ifdef VERTEX
 vec4 position( mat4 transform_projection, vec4 vertex_position ) {
-	return transform_projection * vertex_position;
+	vec4 pos = transform_projection * vertex_position;
+	// if (gl_VertexID % 2 == 0) {
+	// 	pos.y += (1.0 - progress) / 10;
+	// }
+	return pos;
 }
 #endif
 

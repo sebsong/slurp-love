@@ -6,10 +6,15 @@
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "C:/Users/sebys/Workspace/slurp-love/src/assets/tilemap/buildings.tsx": {
-            "dynamicWrapping": false
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "C:/Users/sebys/Workspace/slurp-love/src/assets/tilemap/packages.tsx": {
+            "scaleInDock": 3
         },
         "C:/Users/sebys/Workspace/slurp-love/src/assets/tilemap/tileset.tsx": {
-            "dynamicWrapping": false
+            "dynamicWrapping": false,
+            "scaleInDock": 3
         },
         "map.tmx": {
             "scale": 1.5,
@@ -42,6 +47,7 @@
             "scaleInEditor": 4
         }
     },
+    "last.imagePath": "C:/Users/sebys/Workspace/slurp-love/src/assets/art",
     "openFiles": [
         "map.tmx",
         "tileset.tsx"
@@ -53,5 +59,10 @@
         "tileset_old.tsx",
         "map_iso.tmx",
         "map_tileset.tsx"
-    ]
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
 }

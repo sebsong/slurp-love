@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="200" height="200" tilewidth="16" tileheight="8" infinite="1" backgroundcolor="#0a202f" nextlayerid="5" nextobjectid="84">
+<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="200" height="200" tilewidth="16" tileheight="8" infinite="1" backgroundcolor="#0a202f" nextlayerid="6" nextobjectid="88">
  <editorsettings>
   <export target="map.lua" format="lua"/>
  </editorsettings>
  <tileset firstgid="1" source="tileset.tsx"/>
  <tileset firstgid="3" source="packages.tsx"/>
  <tileset firstgid="7" source="buildings.tsx"/>
+ <tileset firstgid="9" source="mailboxes.tsx"/>
  <layer id="1" name="base" width="200" height="200">
   <data encoding="csv">
    <chunk x="0" y="0" width="16" height="16">
@@ -2480,6 +2481,11 @@
   <object id="4" gid="3" x="864" y="648" width="16" height="16"/>
   <object id="5" gid="5" x="976" y="640" width="16" height="16"/>
   <object id="6" gid="4" x="1032" y="800" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup id="5" name="mailboxes">
+  <object id="85" gid="9" x="552" y="536" width="16" height="16"/>
+  <object id="86" gid="9" x="648" y="384" width="16" height="16"/>
+  <object id="87" gid="9" x="1096" y="680" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="4" name="buildings">
   <object id="28" gid="8" x="864" y="632" width="64" height="64"/>
