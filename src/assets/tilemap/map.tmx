@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="200" height="200" tilewidth="16" tileheight="8" infinite="1" backgroundcolor="#0a202f" nextlayerid="5" nextobjectid="72">
+<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="200" height="200" tilewidth="16" tileheight="8" infinite="1" backgroundcolor="#0a202f" nextlayerid="5" nextobjectid="84">
  <editorsettings>
   <export target="map.lua" format="lua"/>
  </editorsettings>
@@ -653,8 +653,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,
+1,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0
 </chunk>
    <chunk x="80" y="48" width="16" height="16">
 1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,
@@ -801,11 +801,11 @@
 1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0
 </chunk>
    <chunk x="64" y="64" width="16" height="16">
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+1,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0,
+1,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0,
+1,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0,
+1,2,2,2,2,1,1,0,0,0,0,0,0,0,0,0,
+1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
@@ -2490,5 +2490,16 @@
   <object id="64" gid="7" x="1064" y="728" width="64" height="64"/>
   <object id="63" gid="7" x="1088" y="728" width="64" height="64"/>
   <object id="69" gid="7" x="1088" y="704" width="64" height="64"/>
+  <object id="72" gid="7" x="1072" y="784" width="64" height="64"/>
+  <object id="73" gid="7" x="1120" y="800" width="64" height="64"/>
+  <object id="74" gid="7" x="1136" y="768" width="64" height="64"/>
+  <object id="75" gid="7" x="1096" y="840" width="64" height="64"/>
+  <object id="76" gid="7" x="1071.13" y="863.875" width="64" height="64"/>
+  <object id="77" gid="7" x="1133.88" y="842.125" width="64" height="64"/>
+  <object id="78" gid="7" x="1090.13" y="753.375" width="64" height="64"/>
+  <object id="79" gid="7" x="1090.13" y="753.375" width="64" height="64"/>
+  <object id="80" gid="7" x="1131.63" y="714.875" width="64" height="64"/>
+  <object id="81" gid="7" x="1188.63" y="806.875" width="64" height="64"/>
+  <object id="82" gid="8" x="856" y="488" width="64" height="64"/>
  </objectgroup>
 </map>

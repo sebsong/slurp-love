@@ -28,7 +28,7 @@ function love.load()
 
 	Camera = NewCamera()
 
-	ColorPalette = LoadColorPalette("assets/art/look-of-horror.hex")
+	LoadColorPalette("assets/art/look-of-horror.hex")
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 

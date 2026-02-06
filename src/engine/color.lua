@@ -1,3 +1,5 @@
+ColorPalette = nil;
+
 local function hexToColorAmount(hexSubString)
 	return tonumber(hexSubString, 16) / 255
 end
@@ -14,6 +16,8 @@ function LoadColorPalette(hexFilePath)
 	for hexColor in love.filesystem.lines(hexFilePath) do
 		table.insert(colorPalette, hexToRGBA(hexColor))
 	end
+
+	ColorPalette = colorPalette
 
 	return colorPalette
 end

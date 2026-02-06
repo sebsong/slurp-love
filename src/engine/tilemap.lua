@@ -1,6 +1,5 @@
 -- Based on Tiled (https://www.mapeditor.org/)
 require("engine/file")
-require("engine/math")
 
 local function getIntersectionTiles(tilemap, camera)
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
@@ -105,7 +104,7 @@ local function getTilemapTransforms(tileWidth, tileHeight, width, height, isIsom
 		tilemapIndexToWorldTransform:scale(tileScale, tileScale)
 		tilemapIndexToWorldTransform:scale(shearCorrectionScale, shearCorrectionScale)
 		tilemapIndexToWorldTransform:translate(0, -height / 2)
-		tilemapIndexToWorldTransform:rotate(PI / 4)
+		tilemapIndexToWorldTransform:rotate(math.pi / 4)
 		tilemapIndexToWorldTransform:shear(shearFactor, shearFactor)
 	else
 		tilemapIndexToWorldTransform = love.math.newTransform()

@@ -1,4 +1,5 @@
 require("engine/math")
+require("engine/color")
 
 local numBoatAngles = 16
 local boatWidth, boatHeight = 16, 16
@@ -41,10 +42,10 @@ local function update(self, dt)
 		self.transform:rotate(self.rotationSpeed * dt)
 	end
 
-	local rotSegmentLength = 2 * PI / #self.quads
+	local rotSegmentLength = 2 * math.pi / #self.quads
 	local boatQuadIdx = math.floor(
 		(
-			((self.rotation + (rotSegmentLength / 2)) % (2 * PI)) /
+			((self.rotation + (rotSegmentLength / 2)) % (2 * math.pi)) /
 			(rotSegmentLength)
 		)
 	) + 1
@@ -58,7 +59,9 @@ local function draw(self)
 	local boatX, boatY = self.transform:transformPoint(0, 0)
 	local _, _, boatWidth, boatHeight = self.currentQuad:getViewport()
 	love.graphics.draw(self.image, self.currentQuad, boatX, boatY, 0, 1, 1, boatWidth / 2, boatHeight / 2)
+	love.graphics.setColor(ColorPalette[3])
 	love.graphics.circle("line", boatX, boatY, self.interactionRadius)
+	love.graphics.setColor(1, 1, 1, 1)
 	love.graphics.pop()
 end
 
@@ -127,7 +130,7 @@ function NewBoat(entitiesImage)
 		acceleration = 2 * maxSpeed,
 		deceleration = acceleration / 4,
 		rotation = 0,
-		rotationSpeed = PI / 2,
+		rotationSpeed = math.pi / 2,
 		interactionRadius = 75,
 		packages = {},
 
