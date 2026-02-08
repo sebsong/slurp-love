@@ -27,7 +27,6 @@ end
 
 local function drawTileLayer(tilemap, layerIndex, camera)
 	local layer = tilemap.layers[layerIndex]
-	local tileset = layer.tileset
 	local startColIdx, startRowIdx, endColIdx, endRowIdx = getIntersectionTiles(tilemap, camera)
 
 	assert(startColIdx <= endColIdx)
@@ -39,10 +38,16 @@ local function drawTileLayer(tilemap, layerIndex, camera)
 			if not rowTiles then
 				goto continue
 			end
-			local tileId = rowTiles[colIdx]
-			if not tileId then
+			local tile = rowTiles[colIdx]
+			if not tile then
 				goto continue
 			end
+			local tilesetIndex = tile.tilesetIndex
+			local tileId = tile.tileId
+			if not tilesetIndex or not tileId then
+				goto continue
+			end
+			local tileset = tilemap.tilesets[tilesetIndex]
 			local tileQuad = tileset.quads[tileId]
 			if not tileQuad then
 				goto continue
@@ -124,7 +129,7 @@ local function getTilesetIndex(gid, tilesetInfos)
 			return i
 		end
 	end
-	assert(false, string.format("Object gid: %s should map to a tileset"), gid)
+	assert(false, string.format("Object gid: %s should map to a tileset", gid))
 end
 
 local function getTileId(gid, tilesetInfo)
@@ -158,9 +163,6 @@ function NewTilemapLua(luaFilepath, tilesets)
 	local layers = {}
 	for i, layer in ipairs(tilemapInfo.layers) do
 		if layer.type == "tilelayer" then
-			local firstTileGid = layer.chunks[1].data[1]
-			local tilesetIndex = getTilesetIndex(firstTileGid, tilesetInfos)
-			local tilesetInfo = tilesetInfos[tilesetIndex]
 			local tiles = {}
 			for _ = 1, tilemapInfo.height do
 				table.insert(tiles, {})
@@ -170,46 +172,56 @@ function NewTilemapLua(luaFilepath, tilesets)
 					local rowIdx = chunk.y + j
 					for i = 1, chunk.width do
 						local colIdx = chunk.x + i
-						if rowIdx <= tilemapInfo.width and colIdx <= tilemapInfo.height then
-							local gid = chunk.data[(j - 1) * chunk.width + (i - 1) + 1]
-							tiles[rowIdx][colIdx] = getTileId(gid, tilesetInfo)
+						if rowIdx > tilemapInfo.width or colIdx > tilemapInfo.height then
+							goto continue
 						end
+						local gid = chunk.data[(j - 1) * chunk.width + (i - 1) + 1]
+						if gid == 0 then
+							tiles[rowIdx][colIdx] = {
+								tilesetIndex = nil,
+								tileId = nil,
+							}
+							goto continue
+						end
+						local tilesetIndex = getTilesetIndex(gid, tilesetInfos)
+						local tileId = getTileId(gid, tilesetInfos[tilesetIndex])
+						tiles[rowIdx][colIdx] = {
+							tilesetIndex = tilesetIndex,
+							tileId = tileId,
+						}
+						::continue::
 					end
 				end
 			end
 
 			layers[i] = {
-				tileset = tilesets[tilesetIndex],
 				tiles = tiles,
 			}
 		elseif layer.type == "objectgroup" then
-			local firstObjectGid = layer.objects[1].gid
-			local tilesetIndex = getTilesetIndex(firstObjectGid, tilesetInfos)
-			local tilesetInfo = tilesetInfos[tilesetIndex]
-
 			local objects = {}
 			for _, object in ipairs(layer.objects) do
 				local colIdx = object.x / (tileHeight) + 1
 				local rowIdx = object.y / (tileHeight) + 1
+				local tilesetIndex = getTilesetIndex(object.gid, tilesetInfos)
+				local tileset = tilesets[tilesetIndex]
+				local tileId = getTileId(object.gid, tilesetInfos[tilesetIndex])
+				local worldX, worldY = tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
+				local quad = tileset.quads[tileId]
+				local _, _, width, height = quad:getViewport()
 				table.insert(objects, {
-					tileId = getTileId(object.gid, tilesetInfo),
-					width = object.width,
-					height = object.height,
-					transform = love.math.newTransform(colIdx, rowIdx),
+					tilesetIndex = tilesetIndex,
+					tileId = tileId,
+
+					shouldDraw = true,
+					image = tileset.image,
+					quad = quad,
+					offsetX = -width / 2,
+					offsetY = -height,
+					transform = love.math.newTransform(worldX, worldY),
 				})
 			end
 
-			table.sort(
-				objects,
-				function(o1, o2)
-					local _, o1Y = tilemapIndexToWorldTransform:transformPoint(o1.transform:transformPoint(0, 0))
-					local _, o2Y = tilemapIndexToWorldTransform:transformPoint(o2.transform:transformPoint(0, 0))
-					return o1Y < o2Y
-				end
-			)
-
 			layers[i] = {
-				tileset = tilesets[tilesetIndex],
 				objects = objects,
 			}
 		end
@@ -224,6 +236,7 @@ function NewTilemapLua(luaFilepath, tilesets)
 		tilemapIndexToWorldTransform = tilemapIndexToWorldTransform,
 		worldToTilemapIndexTransform = worldToTilemapIndexTransform,
 
+		tilesets = tilesets,
 		layers = layers,
 
 		draw = draw,

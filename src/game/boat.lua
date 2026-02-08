@@ -58,7 +58,7 @@ local function update(self, dt)
 			(rotSegmentLength)
 		)
 	) + 1
-	self.currentQuad = self.quads[boatQuadIdx]
+	self.quad = self.quads[boatQuadIdx]
 
 	self.transform:translate(0, -self.speed * dt)
 end
@@ -66,10 +66,9 @@ end
 local function draw(self)
 	love.graphics.push()
 	local boatX, boatY = self.transform:transformPoint(0, 0)
-	local _, _, boatWidth, boatHeight = self.currentQuad:getViewport()
-	love.graphics.draw(self.image, self.currentQuad, boatX, boatY, 0, 1, 1, boatWidth / 2, boatHeight / 2)
+	love.graphics.draw(self.image, self.quad, boatX + self.offsetX, boatY + self.offsetY)
 	love.graphics.setColor(ColorPalette[3])
-	love.graphics.circle("line", boatX, boatY, self.interactionRadius)
+	love.graphics.circle("line", boatX, boatY + self.offsetY / 2, self.interactionRadius)
 	love.graphics.setColor(1, 1, 1, 1)
 	love.graphics.pop()
 end
@@ -95,6 +94,7 @@ local function pickupPackages(self, packages)
 		if Distance({ x = boatX, y = boatY }, { x = packageX, y = packageY }) <= self.interactionRadius then
 			table.insert(self.packages, package)
 			pickedUp = true
+			package.shouldDraw = false
 			package:applyEffect(self)
 		end
 
@@ -112,6 +112,7 @@ local function dropOffPackage(self)
 	local package = table.remove(self.packages, #self.packages)
 	local packageX, packageY = package.transform:transformPoint(0, 0)
 	package.transform:translate(-packageX + boatX, -packageY + boatY)
+	package.shouldDraw = true
 	package:removeEffect(self)
 end
 
@@ -125,14 +126,21 @@ function NewBoat(entitiesImage)
 		)
 		table.insert(boatQuads, boatQuad)
 	end
+	local quad = boatQuads[1]
+	local _, _, width, height = quad:getViewport()
 
 	local maxSpeed = 75
 	local acceleration = 2 * maxSpeed
 	return {
+		shouldDraw = true,
 		image = entitiesImage,
-		quads = boatQuads,
-		currentQuad = boatQuads[1],
+		quad = quad,
+		offsetX = -width / 2,
+		offsetY = -height,
 		transform = love.math.newTransform(),
+		draw = draw,
+
+		quads = boatQuads,
 		speed = 0,
 		maxSpeed = maxSpeed,
 		maxBackwardsSpeed = maxSpeed * 0.5,
@@ -145,7 +153,6 @@ function NewBoat(entitiesImage)
 		gas = initialGas,
 
 		update = update,
-		draw = draw,
 		indexOfPackage = indexOfPackage,
 		pickupPackages = pickupPackages,
 		dropOffPackage = dropOffPackage,

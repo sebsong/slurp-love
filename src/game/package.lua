@@ -21,17 +21,8 @@ local function removeEffect(self, boat)
 	end
 end
 
-function NewPackage(tilemap, tileset, tileObject)
-	local objColIdx, objRowIdx = tileObject.transform:transformPoint(0, 0)
-	local colIdx, rowIdx = tilemap.tilemapIndexToWorldTransform:transformPoint(objColIdx, objRowIdx)
-	local tileId = tileObject.tileId
-	return {
-		tileId = tileId,
-		image = tileset.image,
-		quad = tileset.quads[tileId],
-		transform = love.math.newTransform(colIdx, rowIdx),
-
-		applyEffect = applyEffect,
-		removeEffect = removeEffect,
-	}
+function ConvertToPackage(tileObject)
+	tileObject.applyEffect = applyEffect
+	tileObject.removeEffect = removeEffect
+	return tileObject
 end

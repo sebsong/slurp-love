@@ -2,6 +2,7 @@ require("engine/settings")
 require("engine/color")
 require("engine/tilemap")
 require("engine/camera")
+require("engine/draw_utils")
 
 require("game/boat")
 require("game/package")
@@ -33,6 +34,13 @@ function love.load()
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
+	LandTileLayerIndex = 1
+	ObjectTileLayerIndex = 2
+
+	LandTilesetIndex = 1
+	PackageTilesetIndex = 2
+	BuildingTilesetIndex = 3
+	MailboxTilesetIndex = 4 -- TODO: layer and tileset index are different, need to support better layer and tilset mixing
 	local tilesets = {
 		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
 		NewTileset("assets/art/tileset.png", 16),
@@ -41,46 +49,22 @@ function love.load()
 		NewTileset("assets/art/mailboxes.png", 16),
 	}
 	Tilemap = NewTilemapLua("assets/tilemap/map.lua", tilesets)
-	LandTileLayerIndex = 1
-	PackageTileLayerIndex = 2
-	BuildingTileLayerIndex = 3
-	MailboxTileLayerIndex = 4 -- TODO: layer and tileset index are different, need to support better layer and tilset mixing
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
+
+	WorldObjects = {}
+
 	Boat = NewBoat(EntitiesImage)
+	table.insert(WorldObjects, Boat)
 
-	local packagesTileset = tilesets[PackageTileLayerIndex]
 	Packages = {}
-	for _, object in ipairs(Tilemap.layers[PackageTileLayerIndex].objects) do
-		table.insert(Packages, NewPackage(Tilemap, packagesTileset, object))
-	end
+	for _, object in ipairs(Tilemap.layers[ObjectTileLayerIndex].objects) do
+		local tilesetIndex = object.tilesetIndex
+		if (tilesetIndex == PackageTilesetIndex) then
+			table.insert(Packages, ConvertToPackage(object))
+		end
 
-	local mailboxTileset = tilesets[MailboxTileLayerIndex]
-	Mailboxes = {}
-	for _, object in ipairs(Tilemap.layers[MailboxTileLayerIndex].objects) do
-		local objColIdx, objRowIdx = object.transform:transformPoint(0, 0)
-		local colIdx, rowIdx = Tilemap.tilemapIndexToWorldTransform:transformPoint(objColIdx, objRowIdx)
-		local tileId = object.tileId
-		table.insert(Mailboxes, {
-			tileId = tileId,
-			image = mailboxTileset.image,
-			quad = mailboxTileset.quads[tileId],
-			transform = love.math.newTransform(colIdx, rowIdx),
-		})
-	end
-
-	local buildingTileset = tilesets[BuildingTileLayerIndex]
-	Buildings = {}
-	for _, object in ipairs(Tilemap.layers[BuildingTileLayerIndex].objects) do
-		local objColIdx, objRowIdx = object.transform:transformPoint(0, 0)
-		local colIdx, rowIdx = Tilemap.tilemapIndexToWorldTransform:transformPoint(objColIdx, objRowIdx)
-		local tileId = object.tileId
-		table.insert(Buildings, {
-			tileId = tileId,
-			image = buildingTileset.image,
-			quad = buildingTileset.quads[tileId],
-			transform = love.math.newTransform(colIdx, rowIdx),
-		})
+		table.insert(WorldObjects, object)
 	end
 
 	ui:load()
@@ -156,6 +140,15 @@ function love.update(dt)
 		local boatX, boatY = Boat.transform:transformPoint(0, 0)
 		Camera.transform:setTransformation(boatX, boatY)
 	end
+
+	table.sort(
+		WorldObjects,
+		function(d1, d2)
+			local _, d1Y = d1.transform:transformPoint(0, 0)
+			local _, d2Y = d2.transform:transformPoint(0, 0)
+			return d1Y < d2Y
+		end
+	)
 end
 
 function love.draw()
@@ -171,38 +164,9 @@ function love.draw()
 			love.graphics.push()
 			love.graphics.scale(Camera.zoom, Camera.zoom)
 			love.graphics.applyTransform(GetWorldToCanvasTransform(Camera))
-
-			Tilemap:draw(LandTileLayerIndex, Camera)
-
-			Boat:draw()
-
-			for _, package in ipairs(Packages) do
-				if Boat:indexOfPackage(package) then
-					goto continue
-				end
-
-				love.graphics.push()
-				love.graphics.applyTransform(package.transform)
-				local _, _, width, height = package.quad:getViewport()
-				love.graphics.draw(package.image, package.quad, -width / 2, -height)
-				love.graphics.pop()
-				::continue::
-			end
-
-			for _, mailbox in ipairs(Mailboxes) do
-				love.graphics.push()
-				love.graphics.applyTransform(mailbox.transform)
-				local _, _, width, height = mailbox.quad:getViewport()
-				love.graphics.draw(mailbox.image, mailbox.quad, -width / 2, -height)
-				love.graphics.pop()
-			end
-
-			for _, building in ipairs(Buildings) do
-				love.graphics.push()
-				love.graphics.applyTransform(building.transform)
-				local _, _, width, height = building.quad:getViewport()
-				love.graphics.draw(building.image, building.quad, -width / 2, -height)
-				love.graphics.pop()
+			Tilemap:draw(LandTilesetIndex, Camera) -- TODO: add tiles to world objects
+			for _, worldObject in ipairs(WorldObjects) do
+				Draw(worldObject)
 			end
 			love.graphics.pop()
 
