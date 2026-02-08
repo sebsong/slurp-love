@@ -40,7 +40,7 @@ function love.load()
 	LandTilesetIndex = 1
 	PackageTilesetIndex = 2
 	BuildingTilesetIndex = 3
-	MailboxTilesetIndex = 4 -- TODO: layer and tileset index are different, need to support better layer and tilset mixing
+	MailboxTilesetIndex = 4
 	local tilesets = {
 		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
 		NewTileset("assets/art/tileset.png", 16),
@@ -141,6 +141,7 @@ function love.update(dt)
 		Camera.transform:setTransformation(boatX, boatY)
 	end
 
+	-- TODO: intersect world objects with what the camera can see and only sort + draw those
 	table.sort(
 		WorldObjects,
 		function(d1, d2)
@@ -164,7 +165,9 @@ function love.draw()
 			love.graphics.push()
 			love.graphics.scale(Camera.zoom, Camera.zoom)
 			love.graphics.applyTransform(GetWorldToCanvasTransform(Camera))
-			Tilemap:draw(LandTilesetIndex, Camera) -- TODO: add tiles to world objects
+
+			Tilemap:draw(LandTilesetIndex, Camera)
+
 			for _, worldObject in ipairs(WorldObjects) do
 				Draw(worldObject)
 			end
