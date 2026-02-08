@@ -58,10 +58,13 @@ function love.load()
 	table.insert(WorldObjects, Boat)
 
 	Packages = {}
+	Mailboxes = {}
 	for _, object in ipairs(Tilemap.layers[ObjectTileLayerIndex].objects) do
 		local tilesetIndex = object.tilesetIndex
 		if (tilesetIndex == PackageTilesetIndex) then
 			table.insert(Packages, ConvertToPackage(object))
+		elseif (tilesetIndex == MailboxTilesetIndex) then
+			table.insert(Mailboxes, object)
 		end
 
 		table.insert(WorldObjects, object)
