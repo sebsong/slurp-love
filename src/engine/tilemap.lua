@@ -136,6 +136,25 @@ local function getTileId(gid, tilesetInfo)
 	return gid - tilesetInfo.firstgid + 1
 end
 
+local function newTileObject(tilesetInfos, tilesets, gid, worldX, worldY)
+	local tilesetIndex = getTilesetIndex(gid, tilesetInfos)
+	local tileset = tilesets[tilesetIndex]
+	local tileId = getTileId(gid, tilesetInfos[tilesetIndex])
+	local quad = tileset.quads[tileId]
+	local _, _, width, height = quad:getViewport()
+	return {
+		tilesetIndex = tilesetIndex,
+		tileId = tileId,
+
+		shouldDraw = true,
+		image = tileset.image,
+		quad = quad,
+		offsetX = -width / 2,
+		offsetY = -height,
+		transform = love.math.newTransform(worldX, worldY),
+	}
+end
+
 -- NOTE: tilesets must match order of tilesets in tilemap
 -- NOTE: tilesets and layers are 1:1
 function NewTilemapLua(luaFilepath, tilesets)
@@ -164,9 +183,6 @@ function NewTilemapLua(luaFilepath, tilesets)
 	for i, layer in ipairs(tilemapInfo.layers) do
 		if layer.type == "tilelayer" then
 			local tiles = {}
-			for _ = 1, tilemapInfo.height do
-				table.insert(tiles, {})
-			end
 			for _, chunk in ipairs(layer.chunks) do
 				for j = 1, chunk.height do
 					local rowIdx = chunk.y + j
@@ -177,53 +193,28 @@ function NewTilemapLua(luaFilepath, tilesets)
 						end
 						local gid = chunk.data[(j - 1) * chunk.width + (i - 1) + 1]
 						if gid == 0 then
-							tiles[rowIdx][colIdx] = {
-								tilesetIndex = nil,
-								tileId = nil,
-							}
 							goto continue
 						end
-						local tilesetIndex = getTilesetIndex(gid, tilesetInfos)
-						local tileId = getTileId(gid, tilesetInfos[tilesetIndex])
-						tiles[rowIdx][colIdx] = {
-							tilesetIndex = tilesetIndex,
-							tileId = tileId,
-						}
+						local worldX, worldY = tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
+						local tileObject = newTileObject(tilesetInfos, tilesets, gid, worldX, worldY)
+						table.insert(tiles, tileObject)
 						::continue::
 					end
 				end
 			end
 
-			layers[i] = {
-				tiles = tiles,
-			}
+			layers[i] = tiles
 		elseif layer.type == "objectgroup" then
 			local objects = {}
 			for _, object in ipairs(layer.objects) do
 				local colIdx = object.x / (tileHeight) + 1
 				local rowIdx = object.y / (tileHeight) + 1
-				local tilesetIndex = getTilesetIndex(object.gid, tilesetInfos)
-				local tileset = tilesets[tilesetIndex]
-				local tileId = getTileId(object.gid, tilesetInfos[tilesetIndex])
 				local worldX, worldY = tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
-				local quad = tileset.quads[tileId]
-				local _, _, width, height = quad:getViewport()
-				table.insert(objects, {
-					tilesetIndex = tilesetIndex,
-					tileId = tileId,
-
-					shouldDraw = true,
-					image = tileset.image,
-					quad = quad,
-					offsetX = -width / 2,
-					offsetY = -height,
-					transform = love.math.newTransform(worldX, worldY),
-				})
+				local tileObject = newTileObject(tilesetInfos, tilesets, object.gid, worldX, worldY)
+				table.insert(objects, tileObject)
 			end
 
-			layers[i] = {
-				objects = objects,
-			}
+			layers[i] = objects
 		end
 	end
 	return {

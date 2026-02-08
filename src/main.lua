@@ -58,7 +58,10 @@ function love.load()
 	table.insert(WorldObjects, Boat)
 
 	Packages = {}
-	for _, object in ipairs(Tilemap.layers[ObjectTileLayerIndex].objects) do
+	for _, tile in ipairs(Tilemap.layers[LandTileLayerIndex]) do
+		table.insert(WorldObjects, tile)
+	end
+	for _, object in ipairs(Tilemap.layers[ObjectTileLayerIndex]) do
 		local tilesetIndex = object.tilesetIndex
 		if (tilesetIndex == PackageTilesetIndex) then
 			table.insert(Packages, ConvertToPackage(object))
@@ -164,7 +167,7 @@ function love.draw()
 			love.graphics.push()
 			love.graphics.scale(Camera.zoom, Camera.zoom)
 			love.graphics.applyTransform(GetWorldToCanvasTransform(Camera))
-			Tilemap:draw(LandTilesetIndex, Camera) -- TODO: add tiles to world objects
+			-- Tilemap:draw(LandTilesetIndex, Camera) -- TODO: add tiles to world objects
 			for _, worldObject in ipairs(WorldObjects) do
 				Draw(worldObject)
 			end
