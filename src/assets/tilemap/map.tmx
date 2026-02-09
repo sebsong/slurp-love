@@ -2478,9 +2478,21 @@
   </data>
  </layer>
  <objectgroup id="2" name="objects">
-  <object id="4" gid="3" x="864" y="648" width="16" height="16"/>
-  <object id="5" gid="5" x="976" y="640" width="16" height="16"/>
-  <object id="6" gid="4" x="1032" y="800" width="16" height="16"/>
+  <object id="4" gid="3" x="864" y="648" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="86"/>
+   </properties>
+  </object>
+  <object id="5" gid="5" x="976" y="640" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="87"/>
+   </properties>
+  </object>
+  <object id="6" gid="4" x="1032" y="800" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="85"/>
+   </properties>
+  </object>
   <object id="85" gid="9" x="552" y="536" width="16" height="16"/>
   <object id="86" gid="9" x="648" y="384" width="16" height="16"/>
   <object id="87" gid="9" x="1096" y="680" width="16" height="16"/>

@@ -2959,7 +2959,9 @@ return {
           rotation = 0,
           gid = 3,
           visible = true,
-          properties = {}
+          properties = {
+            ["destination"] = { id = 86 }
+          }
         },
         {
           id = 5,
@@ -2973,7 +2975,9 @@ return {
           rotation = 0,
           gid = 5,
           visible = true,
-          properties = {}
+          properties = {
+            ["destination"] = { id = 87 }
+          }
         },
         {
           id = 6,
@@ -2987,7 +2991,9 @@ return {
           rotation = 0,
           gid = 4,
           visible = true,
-          properties = {}
+          properties = {
+            ["destination"] = { id = 85 }
+          }
         },
         {
           id = 85,

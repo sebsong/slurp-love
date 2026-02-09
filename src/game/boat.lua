@@ -103,17 +103,28 @@ local function pickupPackages(self, packages)
 	return pickedUp
 end
 
-local function dropOffPackage(self)
+local function deliverPackage(self, mailboxes)
 	if #self.packages == 0 then
 		return
 	end
 
 	local boatX, boatY = self.transform:transformPoint(0, 0)
-	local package = table.remove(self.packages, #self.packages)
-	local packageX, packageY = package.transform:transformPoint(0, 0)
-	package.transform:translate(-packageX + boatX, -packageY + boatY)
-	package.shouldDraw = true
-	package:removeEffect(self)
+	local package = self.packages[#self.packages]
+
+	for _, mailbox in ipairs(mailboxes) do
+		local mailboxX, mailboxY = mailbox.transform:transformPoint(0, 0)
+		if Distance({ x = boatX, y = boatY }, { x = mailboxX, y = mailboxY }) <= self.interactionRadius and
+			mailbox.id == package.destinationId then
+			table.remove(self.packages, #self.packages)
+			package:removeEffect(self)
+			print("MAILBOX RETURN")
+			break
+		end
+	end
+
+	-- local packageX, packageY = package.transform:transformPoint(0, 0)
+	-- package.transform:translate(-packageX + boatX, -packageY + boatY)
+	-- package.shouldDraw = true
 end
 
 function NewBoat(entitiesImage)
@@ -155,6 +166,6 @@ function NewBoat(entitiesImage)
 		update = update,
 		indexOfPackage = indexOfPackage,
 		pickupPackages = pickupPackages,
-		dropOffPackage = dropOffPackage,
+		deliverPackage = deliverPackage,
 	}
 end

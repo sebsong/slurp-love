@@ -22,6 +22,7 @@ local function removeEffect(self, boat)
 end
 
 function ConvertToPackage(tileObject)
+	tileObject.destinationId = tileObject.properties.destination.id
 	tileObject.applyEffect = applyEffect
 	tileObject.removeEffect = removeEffect
 	return tileObject

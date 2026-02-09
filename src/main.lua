@@ -97,7 +97,7 @@ end
 function love.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
 		if not Boat:pickupPackages(Packages) then
-			Boat:dropOffPackage()
+			Boat:deliverPackage(Mailboxes)
 		end
 	end
 
