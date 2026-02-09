@@ -72,10 +72,6 @@ function love.load()
 
 	ui:load()
 
-	IsCameraPanning = false
-	CameraPanSpeed = 0.5
-	CameraZoomSpeed = 1.1
-
 	Bgm = love.audio.newSource("assets/sound/bgm.ogg", "stream")
 	Bgm:setVolume(0.2)
 	Bgm:setLooping(true)
@@ -85,15 +81,6 @@ function love.load()
 	love.graphics.setBackgroundColor(0, 0, 0)
 end
 
-local function toggleCameraPan()
-	IsCameraPanning = not IsCameraPanning
-	love.mouse.setRelativeMode(IsCameraPanning)
-
-	if not IsCameraPanning then
-		Camera:resetZoom()
-	end
-end
-
 function love.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
 		if not Boat:pickupPackages(Packages) then
@@ -101,35 +88,19 @@ function love.keypressed(key, scancode, isRepeat)
 		end
 	end
 
-	if key == "return" and not isRepeat then
-		Camera:toggleZoom()
-	end
-
-	if key == "`" and not isRepeat then
-		toggleCameraPan()
-	end
+	Camera:keypressed(key, scancode, isRepeat)
 end
 
 function love.mousepressed(x, y, button, isTouch, presses)
-	if button == 3 then
-		toggleCameraPan()
-	end
+	Camera:mousepressed(x, y, button, isTouch, presses)
 end
 
 function love.mousemoved(x, y, dx, dy, isTouch)
-	if IsCameraPanning then
-		Camera.transform:translate(dx * CameraPanSpeed, dy * CameraPanSpeed)
-	end
+	Camera:mousemoved(x, y, dx, dy, isTouch)
 end
 
 function love.wheelmoved(x, y)
-	if IsCameraPanning and y ~= 0 then
-		local cameraZoomMultiplier = CameraZoomSpeed
-		if y < 0 then
-			cameraZoomMultiplier = 1 / cameraZoomMultiplier
-		end
-		Camera.zoom = Camera.zoom * cameraZoomMultiplier
-	end
+	Camera:wheelmoved(x, y)
 end
 
 function love.update(dt)
@@ -138,11 +109,7 @@ function love.update(dt)
 	end
 
 	Boat:update(dt)
-
-	if not IsCameraPanning then
-		local boatX, boatY = Boat.transform:transformPoint(0, 0)
-		Camera.transform:setTransformation(boatX, boatY)
-	end
+	Camera:update(dt, Boat)
 
 	-- TODO: intersect world objects with what the camera can see and only sort + draw those
 	table.sort(
