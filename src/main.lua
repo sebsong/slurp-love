@@ -143,7 +143,7 @@ function love.draw()
 			end
 			love.graphics.pop()
 
-			ui:draw()
+			ui:draw(Boat.packages)
 
 			love.graphics.pop()
 		end
