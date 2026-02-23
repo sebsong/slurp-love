@@ -138,7 +138,7 @@ function love.draw()
 			love.graphics.scale(Camera.zoom, Camera.zoom)
 			love.graphics.applyTransform(GetWorldToCanvasTransform(Camera))
 
-			Tilemap:draw(LandTilesetIndex, Camera)
+			Tilemap:draw(LandTileLayerIndex, Camera)
 
 			for _, worldObject in ipairs(WorldObjects) do
 				Draw(worldObject)

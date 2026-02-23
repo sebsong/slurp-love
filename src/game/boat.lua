@@ -147,8 +147,8 @@ function NewBoat(entitiesImage)
 		image = entitiesImage,
 		quad = quad,
 		offsetX = -width / 2,
-		offsetY = -height,
-		transform = love.math.newTransform(),
+		offsetY = -height + (8 / 2), -- TODO: build the boat from a tile object
+		transform = love.math.newTransform(0, -100),
 		draw = draw,
 
 		quads = boatQuads,

@@ -59,7 +59,7 @@ local function drawTileLayer(tilemap, layerIndex, camera)
 
 			local x, y = tilemap.tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
 			local _, _, width, height = tileQuad:getViewport()
-			love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height + (tilemap.tileHeight))
+			love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height + tilemap.tileHeight / 2)
 
 			::continue::
 		end
@@ -111,9 +111,9 @@ local function getTilemapTransforms(tileWidth, tileHeight, width, height, isIsom
 		local tileScale = math.sqrt((tileWidth / 2) ^ 2 + (tileHeight / 2) ^ 2)
 		tilemapIndexToWorldTransform = love.math.newTransform()
 		tilemapIndexToWorldTransform:scale(tileScale, tileScale)
-		tilemapIndexToWorldTransform:scale(shearCorrectionScale, shearCorrectionScale)
-		tilemapIndexToWorldTransform:translate(0, -height / 2)
+		tilemapIndexToWorldTransform:translate(0, (-height / 2))
 		tilemapIndexToWorldTransform:rotate(math.pi / 4)
+		tilemapIndexToWorldTransform:scale(shearCorrectionScale, shearCorrectionScale)
 		tilemapIndexToWorldTransform:shear(shearFactor, shearFactor)
 	else
 		tilemapIndexToWorldTransform = love.math.newTransform()
@@ -216,20 +216,20 @@ function NewTilemapLua(luaFilepath, tilesets)
 		elseif layer.type == "objectgroup" then
 			local objects = {}
 			for _, object in ipairs(layer.objects) do
-				local colIdx = object.x / (tileHeight) + 1
-				local rowIdx = object.y / (tileHeight) + 1
+				local colIdx = object.x / (tileHeight)
+				local rowIdx = object.y / (tileHeight)
 				local tilesetIndex = getTilesetIndex(object.gid, tilesetInfos)
 				local tileset = tilesets[tilesetIndex]
 				local tileId = getTileId(object.gid, tilesetInfos[tilesetIndex])
 				local worldX, worldY = tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
 				local quad = tileset.quads[tileId]
-				local _, _, width, height = quad:getViewport()
+				local _, _, objWidth, objHeight = quad:getViewport()
 				table.insert(objects, {
 					shouldDraw = true,
 					image = tileset.image,
 					quad = quad,
-					offsetX = -width / 2,
-					offsetY = -height,
+					offsetX = -objWidth / 2,
+					offsetY = -objHeight + tileHeight / 2,
 					transform = love.math.newTransform(worldX, worldY),
 
 					id = object.id,
