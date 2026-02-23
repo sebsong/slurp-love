@@ -44,10 +44,11 @@ function love.load()
 	MailboxTilesetIndex = 4
 	local tilesets = {
 		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
-		NewTileset("assets/art/tileset.png", 16),
-		NewTileset("assets/art/packages.png", 16),
-		NewTileset("assets/art/buildings.png", 64),
-		NewTileset("assets/art/mailboxes.png", 16),
+		NewTileset("assets/art/tileset.png", 16, 16),
+		NewTileset("assets/art/packages.png", 16, 16),
+		NewTileset("assets/art/buildings.png", 64, 64),
+		NewTileset("assets/art/mailboxes.png", 16, 16),
+		NewTileset("assets/art/walls.png", 16, 256),
 	}
 	Tilemap = NewTilemapLua("assets/tilemap/map.lua", tilesets)
 

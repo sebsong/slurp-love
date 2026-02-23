@@ -18,11 +18,15 @@ local function getIntersectionTiles(tilemap, camera)
 		endColIdx, endRowIdx = tilemap.worldToTilemapIndexTransform:transformPoint(endX, endY)
 	end
 
-	return
-		math.floor(math.max(startColIdx, 1)),
-		math.floor(math.min(startRowIdx, tilemap.width)),
-		math.ceil(math.max(endColIdx, 1)),
-		math.ceil(math.min(endRowIdx, tilemap.height))
+	-- return
+	-- 	math.floor(math.max(startColIdx, 1)),
+	-- 	math.floor(math.min(startRowIdx, tilemap.width)),
+	-- 	math.ceil(math.max(endColIdx, 1)),
+	-- 	math.ceil(math.min(endRowIdx, tilemap.height))
+
+	-- TODO: need to account for large tiles whose bases are offscreen
+	-- TODO: maybe some unified system for also not drawing objects that are offscreen
+	return 0, 0, tilemap.width, tilemap.height
 end
 
 local function drawTileLayer(tilemap, layerIndex, camera)
@@ -55,7 +59,7 @@ local function drawTileLayer(tilemap, layerIndex, camera)
 
 			local x, y = tilemap.tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
 			local _, _, width, height = tileQuad:getViewport()
-			love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height / 2)
+			love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height + (tilemap.tileHeight))
 
 			::continue::
 		end
@@ -77,16 +81,16 @@ local function draw(self, layerIndex, camera)
 	end
 end
 
-function NewTileset(imageFilePath, tileImageSize)
+function NewTileset(imageFilePath, tileWidth, tileHeight)
 	local image = love.graphics.newImage(imageFilePath)
 	local tileQuads = {}
-	local numCols = image:getPixelWidth() / tileImageSize
-	local numRows = image:getPixelHeight() / tileImageSize
+	local numCols = image:getPixelWidth() / tileWidth
+	local numRows = image:getPixelHeight() / tileHeight
 	for rowIdx = 1, numRows, 1 do
-		local rowYOffset = (rowIdx - 1) * tileImageSize
+		local rowYOffset = (rowIdx - 1) * tileHeight
 		for colIdx = 1, numCols, 1 do
-			local colXOffset = (colIdx - 1) * tileImageSize
-			local tileQuad = love.graphics.newQuad(colXOffset, rowYOffset, tileImageSize, tileImageSize, image)
+			local colXOffset = (colIdx - 1) * tileWidth
+			local tileQuad = love.graphics.newQuad(colXOffset, rowYOffset, tileWidth, tileHeight, image)
 			table.insert(tileQuads, tileQuad)
 		end
 	end
@@ -136,6 +140,27 @@ local function getTileId(gid, tilesetInfo)
 	return gid - tilesetInfo.firstgid + 1
 end
 
+local function insertTile(tiles, gid, rowIdx, colIdx, tilesetInfos)
+	if not tiles[rowIdx] then
+		tiles[rowIdx] = {}
+	end
+
+	if gid == 0 then
+		tiles[rowIdx][colIdx] = {
+			tilesetIndex = nil,
+			tileId = nil,
+		}
+		goto continue
+	end
+	local tilesetIndex = getTilesetIndex(gid, tilesetInfos)
+	local tileId = getTileId(gid, tilesetInfos[tilesetIndex])
+	tiles[rowIdx][colIdx] = {
+		tilesetIndex = tilesetIndex,
+		tileId = tileId,
+	}
+	::continue::
+end
+
 -- NOTE: tilesets must match order of tilesets in tilemap
 -- NOTE: tilesets and layers are 1:1
 function NewTilemapLua(luaFilepath, tilesets)
@@ -164,35 +189,26 @@ function NewTilemapLua(luaFilepath, tilesets)
 	for i, layer in ipairs(tilemapInfo.layers) do
 		if layer.type == "tilelayer" then
 			local tiles = {}
-			for _ = 1, tilemapInfo.height do
-				table.insert(tiles, {})
-			end
-			for _, chunk in ipairs(layer.chunks) do
-				for j = 1, chunk.height do
-					local rowIdx = chunk.y + j
-					for i = 1, chunk.width do
-						local colIdx = chunk.x + i
-						if rowIdx > tilemapInfo.width or colIdx > tilemapInfo.height then
-							goto continue
+			if layer.chunks then
+				for _, chunk in ipairs(layer.chunks) do
+					for j = 1, chunk.height do
+						local rowIdx = chunk.y + j
+						for i = 1, chunk.width do
+							local colIdx = chunk.x + i
+							local gid = chunk.data[(j - 1) * chunk.width + (i - 1) + 1]
+							insertTile(tiles, gid, rowIdx, colIdx, tilesetInfos)
 						end
-						local gid = chunk.data[(j - 1) * chunk.width + (i - 1) + 1]
-						if gid == 0 then
-							tiles[rowIdx][colIdx] = {
-								tilesetIndex = nil,
-								tileId = nil,
-							}
-							goto continue
-						end
-						local tilesetIndex = getTilesetIndex(gid, tilesetInfos)
-						local tileId = getTileId(gid, tilesetInfos[tilesetIndex])
-						tiles[rowIdx][colIdx] = {
-							tilesetIndex = tilesetIndex,
-							tileId = tileId,
-						}
-						::continue::
+					end
+				end
+			else
+				for rowIdx = 1, width do
+					for colIdx = 1, height do
+						local gid = layer.data[(rowIdx - 1) * width + (colIdx - 1) + 1] or 0
+						insertTile(tiles, gid, rowIdx, colIdx, tilesetInfos)
 					end
 				end
 			end
+
 
 			layers[i] = {
 				tiles = tiles,
