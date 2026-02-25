@@ -67,9 +67,9 @@ local function draw(self)
 	love.graphics.push()
 	local boatX, boatY = self.transform:transformPoint(0, 0)
 	love.graphics.draw(self.image, self.quad, boatX + self.offsetX, boatY + self.offsetY)
-	love.graphics.setColor(ColorPalette[3])
-	love.graphics.circle("line", boatX, boatY + self.offsetY / 2, self.interactionRadius)
-	love.graphics.setColor(1, 1, 1, 1)
+	-- love.graphics.setColor(ColorPalette[3])
+	-- love.graphics.circle("line", boatX, boatY + self.offsetY / 2, self.interactionRadius)
+	-- love.graphics.setColor(1, 1, 1, 1)
 	love.graphics.pop()
 end
 
