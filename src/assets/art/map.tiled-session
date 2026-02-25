@@ -1,5 +1,5 @@
 {
-    "activeFile": "map.tmx",
+    "activeFile": "",
     "expandedProjectPaths": [
         "."
     ],
@@ -49,8 +49,6 @@
     },
     "last.imagePath": "C:/Users/sebys/Workspace/slurp-love/src/assets/art",
     "openFiles": [
-        "map.tmx",
-        "tileset.tsx"
     ],
     "project": "map.tiled-project",
     "property.type": "object",
