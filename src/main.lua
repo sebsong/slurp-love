@@ -7,6 +7,7 @@ require("engine/draw_utils")
 require("game/boat")
 require("game/package")
 local ui = require("game/ui")
+local music = require("game/music")
 
 function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
@@ -73,11 +74,7 @@ function love.load()
 	end
 
 	ui:load()
-
-	Bgm = love.audio.newSource("assets/sound/bgm.ogg", "stream")
-	Bgm:setVolume(0.2)
-	Bgm:setLooping(true)
-	Bgm:play()
+	music:load()
 
 	love.graphics.setPointSize(5)
 	love.graphics.setBackgroundColor(0, 0, 0)
@@ -111,7 +108,8 @@ function love.update(dt)
 	end
 
 	Boat:update(dt)
-	Camera:update(dt, Boat)
+	Camera:update(Boat, dt)
+	music:update(Boat, dt)
 
 	-- TODO: intersect world objects with what the camera can see and only sort + draw those
 	table.sort(

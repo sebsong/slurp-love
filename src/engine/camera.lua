@@ -75,7 +75,7 @@ function NewCamera()
 		end
 	end
 
-	local function update(self, dt, boat)
+	local function update(self, boat, dt)
 		if not isPanning then
 			local boatX, boatY = boat.transform:transformPoint(0, 0)
 			self.transform:setTransformation(boatX, boatY)

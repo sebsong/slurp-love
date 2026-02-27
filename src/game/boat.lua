@@ -1,5 +1,6 @@
 require("engine/math")
 require("engine/color")
+require("game/values")
 local ui = require("game/ui")
 
 local numBoatAngles = 16
@@ -117,7 +118,6 @@ local function deliverPackage(self, mailboxes)
 			mailbox.id == package.destinationId then
 			table.remove(self.packages, #self.packages)
 			package:removeEffect(self)
-			print("MAILBOX RETURN")
 			break
 		end
 	end
@@ -140,7 +140,7 @@ function NewBoat(entitiesImage)
 	local quad = boatQuads[1]
 	local _, _, width, height = quad:getViewport()
 
-	local maxSpeed = 75
+	local maxSpeed = BOAT_MAX_SPEED_DEFAULT
 	local acceleration = 2 * maxSpeed
 	return {
 		shouldDraw = true,
