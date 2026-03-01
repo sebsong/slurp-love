@@ -7,7 +7,6 @@ local numBoatAngles = 16
 local boatWidth, boatHeight = 16, 16
 local initialGas = 100
 local gasDepletionRate = 1.
-local lanternShader = love.graphics.newShader("assets/shader/lantern.glsl")
 
 local function update(self, dt)
 	local didMove = false

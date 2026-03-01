@@ -78,6 +78,12 @@ function love.load()
 
 	love.graphics.setPointSize(5)
 	love.graphics.setBackgroundColor(0, 0, 0)
+
+	LanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
+	LanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
+	LanternShader:send("lanternLightImage", LanternLightImage)
+	LanternShader:send("colorPalette", unpack(colorPalette))
+	LanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 6, 7 }))
 end
 
 function love.keypressed(key, scancode, isRepeat)
@@ -148,5 +154,7 @@ function love.draw()
 			love.graphics.pop()
 		end
 	)
+	love.graphics.setShader(LanternShader)
 	love.graphics.draw(Canvas, CanvasToScreenTransform)
+	love.graphics.setShader()
 end

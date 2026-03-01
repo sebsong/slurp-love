@@ -13,8 +13,14 @@ end
 
 function LoadColorPalette(hexFilePath)
 	local colorPalette = {}
+	local isBlankColor = true
 	for hexColor in love.filesystem.lines(hexFilePath) do
+		if isBlankColor then
+			isBlankColor = false
+			goto continue
+		end
 		table.insert(colorPalette, hexToRGBA(hexColor))
+		::continue::
 	end
 
 	ColorPalette = colorPalette
