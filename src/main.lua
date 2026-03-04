@@ -81,9 +81,9 @@ function love.load()
 
 	LanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
 	LanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
-	LanternShader:send("lanternLightImage", LanternLightImage)
+	LanternShader:send("canvasDimensions", { canvasWidth, canvasHeight })
 	LanternShader:send("colorPalette", unpack(colorPalette))
-	LanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 6, 7 }))
+	LanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
 end
 
 function love.keypressed(key, scancode, isRepeat)
@@ -129,6 +129,9 @@ function love.update(dt)
 end
 
 function love.draw()
+	love.graphics.setCanvas(Canvas)
+
+	love.graphics.setCanvas()
 	Canvas:renderTo(
 		function()
 			love.graphics.clear()
@@ -147,6 +150,16 @@ function love.draw()
 			for _, worldObject in ipairs(WorldObjects) do
 				Draw(worldObject)
 			end
+
+			if Boat.isLanternActive then
+				local boatX, boatY = Boat.transform:transformPoint(0, 0)
+				local lanternWidth, lanternHeight = LanternLightImage:getDimensions()
+				love.graphics.setShader(LanternShader)
+				LanternShader:send("canvasImage", Canvas)
+				love.graphics.draw(LanternLightImage, boatX - lanternWidth / 2, boatY - lanternHeight / 2)
+				love.graphics.setShader()
+			end
+
 			love.graphics.pop()
 
 			ui:draw(Boat.packages)
@@ -154,7 +167,5 @@ function love.draw()
 			love.graphics.pop()
 		end
 	)
-	love.graphics.setShader(LanternShader)
 	love.graphics.draw(Canvas, CanvasToScreenTransform)
-	love.graphics.setShader()
 end

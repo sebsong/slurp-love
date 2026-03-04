@@ -9,6 +9,7 @@ local function applyEffect(self, boat)
 	elseif tileId == BOULDER then
 		boat.maxSpeed = boat.maxSpeed * 2
 	elseif tileId == LANTERN then
+		boat.isLanternActive = true
 	end
 end
 
@@ -18,6 +19,7 @@ local function removeEffect(self, boat)
 	elseif tileId == BOULDER then
 		boat.maxSpeed = boat.maxSpeed / 2
 	elseif tileId == LANTERN then
+		boat.isLanternActive = false
 	end
 end
 

@@ -69,10 +69,6 @@ local function draw(self)
 	local boatX, boatY = self.transform:transformPoint(0, 0)
 	love.graphics.draw(self.image, self.quad, boatX + self.offsetX, boatY + self.offsetY)
 
-	local lanternWidth, lanternHeight = self.lanternLightImage:getDimensions()
-	-- love.graphics.setShader(lanternShader)
-	-- love.graphics.draw(self.lanternLightImage, boatX - lanternWidth / 2, boatY - lanternHeight / 2)
-	-- love.graphics.setShader()
 	love.graphics.pop()
 end
 
@@ -142,8 +138,6 @@ function NewBoat(entitiesImage)
 	local quad = boatQuads[1]
 	local _, _, width, height = quad:getViewport()
 
-	local lanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
-
 	local maxSpeed = BOAT_MAX_SPEED_DEFAULT
 	local acceleration = 2 * maxSpeed
 	return {
@@ -167,7 +161,7 @@ function NewBoat(entitiesImage)
 		packages = {},
 		gas = initialGas,
 
-		lanternLightImage = lanternLightImage,
+		isLanternActive = false,
 
 		update = update,
 		indexOfPackage = indexOfPackage,
