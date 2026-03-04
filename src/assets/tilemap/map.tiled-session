@@ -65,6 +65,7 @@
         "tileset.tsx"
     ],
     "project": "map.tiled-project",
+    "property.type": "object",
     "recentFiles": [
         "map.tmx",
         "walls.tsx",

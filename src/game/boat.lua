@@ -5,8 +5,6 @@ local ui = require("game/ui")
 
 local numBoatAngles = 16
 local boatWidth, boatHeight = 16, 16
-local initialGas = 100
-local gasDepletionRate = 1.
 
 local function update(self, dt)
 	local didMove = false
@@ -24,8 +22,8 @@ local function update(self, dt)
 	end
 
 	if didMove then
-		self.gas = self.gas - gasDepletionRate * dt
-		ui.gasMeterShader:send("progress", self.gas / initialGas)
+		self.gas = self.gas - self.gasDepletionRate * dt
+		ui.gasMeterShader:send("progress", self.gas / INITIAL_GAS)
 		if self.gas <= 0 then
 			print("OUT OF GAS")
 		end
@@ -119,10 +117,6 @@ local function deliverPackage(self, mailboxes)
 			break
 		end
 	end
-
-	-- local packageX, packageY = package.transform:transformPoint(0, 0)
-	-- package.transform:translate(-packageX + boatX, -packageY + boatY)
-	-- package.shouldDraw = true
 end
 
 function NewBoat(entitiesImage)
@@ -138,8 +132,6 @@ function NewBoat(entitiesImage)
 	local quad = boatQuads[1]
 	local _, _, width, height = quad:getViewport()
 
-	local maxSpeed = BOAT_MAX_SPEED_DEFAULT
-	local acceleration = 2 * maxSpeed
 	return {
 		shouldDraw = true,
 		image = entitiesImage,
@@ -151,15 +143,16 @@ function NewBoat(entitiesImage)
 
 		quads = boatQuads,
 		speed = 0,
-		maxSpeed = maxSpeed,
-		maxBackwardsSpeed = maxSpeed * 0.5,
-		acceleration = 2 * maxSpeed,
-		deceleration = acceleration / 4,
+		maxSpeed = BOAT_MAX_SPEED_DEFAULT,
+		maxBackwardsSpeed = BOAT_MAX_BACKWARD_SPEED_DEFAULT,
+		acceleration = BOAT_ACCELERATION_DEFAULT,
+		deceleration = BOAT_DECELERATION_DEFAULT,
 		rotation = 0,
 		rotationSpeed = math.pi / 2,
 		interactionRadius = 75,
 		packages = {},
-		gas = initialGas,
+		gas = INITIAL_GAS,
+		gasDepletionRate = GAS_DEPLETION_RATE_DEFAULT,
 
 		isLanternActive = false,
 
