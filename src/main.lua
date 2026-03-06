@@ -114,6 +114,9 @@ function love.update(dt)
 	end
 
 	Boat:update(dt)
+	for _, package in ipairs(Boat.packages) do
+		package:update(dt)
+	end
 	Camera:update(Boat, dt)
 	music:update(Boat, dt)
 
