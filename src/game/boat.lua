@@ -1,12 +1,13 @@
 require("engine/math")
 require("engine/color")
+local collision = require("engine/collision")
 require("game/values")
 local ui = require("game/ui")
 
 local numBoatAngles = 16
 local boatWidth, boatHeight = 16, 16
 
-local function update(self, dt)
+local function update(self, tilemap, dt)
 	local didMove = false
 	if love.keyboard.isDown("up") or love.keyboard.isDown("w") then
 		self.speed = self.speed + self.acceleration * dt
@@ -59,7 +60,29 @@ local function update(self, dt)
 	) + 1
 	self.quad = self.quads[boatQuadIdx]
 
-	self.transform:translate(0, -self.speed * dt)
+	local positionUpdate = { 0, -self.speed * dt }
+	local newPositionTileIndices = {
+		tilemap.worldToTilemapIndexTransform:transformPoint(
+			self.transform:transformPoint(unpack(positionUpdate))
+		)
+	}
+	local willHitTile = false
+	for rowIdx, row in ipairs(tilemap.layers[1].tiles) do
+		for colIdx, tile in ipairs(row) do
+			if
+				tile.tileId and
+				collision.intersects(self.collider, newPositionTileIndices, { width = 1, height = 1 }, { colIdx, rowIdx })
+			then
+				willHitTile = true
+				goto endCollisionTest
+			end
+		end
+	end
+	::endCollisionTest::
+
+	if not willHitTile then
+		self.transform:translate(unpack(positionUpdate))
+	end
 end
 
 local function draw(self)
@@ -140,6 +163,8 @@ function NewBoat(entitiesImage)
 		offsetY = -height + (8 / 2), -- TODO: build the boat from a tile object
 		transform = love.math.newTransform(0, -100),
 		draw = draw,
+
+		collider = { width = 1, height = 1 },
 
 		quads = boatQuads,
 		speed = 0,

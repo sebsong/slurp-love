@@ -3,6 +3,7 @@ require("engine/color")
 require("engine/tilemap")
 require("engine/camera")
 require("engine/draw_utils")
+local collision = require("engine/collision")
 
 require("game/boat")
 require("game/package")
@@ -76,7 +77,8 @@ function love.load()
 	ui:load()
 	music:load()
 
-	love.graphics.setPointSize(5)
+	love.graphics.setPointSize(8)
+	love.graphics.setLineWidth(.1)
 	love.graphics.setBackgroundColor(0, 0, 0)
 
 	LanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
@@ -113,7 +115,7 @@ function love.update(dt)
 		love.event.quit()
 	end
 
-	Boat:update(dt)
+	Boat:update(Tilemap, dt)
 	for _, package in ipairs(Boat.packages) do
 		package:update(dt)
 	end
@@ -149,7 +151,6 @@ function love.draw()
 			love.graphics.applyTransform(GetWorldToCanvasTransform(Camera))
 
 			Tilemap:draw(LandTileLayerIndex, Camera)
-
 			for _, worldObject in ipairs(WorldObjects) do
 				Draw(worldObject)
 			end
@@ -162,6 +163,14 @@ function love.draw()
 				love.graphics.draw(LanternLightImage, boatX - lanternWidth / 2, boatY - lanternHeight / 2)
 				love.graphics.setShader()
 			end
+
+			love.graphics.push()
+			love.graphics.applyTransform(Tilemap.tilemapIndexToWorldTransform)
+			local boatColIdx, boatRowIdx = Tilemap.worldToTilemapIndexTransform:transformPoint(Boat.transform
+				:transformPoint(0, 0))
+			collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
+			love.graphics.pop()
+			collision.drawTileColliders(Tilemap, LandTileLayerIndex)
 
 			love.graphics.pop()
 
