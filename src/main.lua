@@ -61,6 +61,14 @@ function love.load()
 	Boat = NewBoat(EntitiesImage)
 	table.insert(WorldObjects, Boat)
 
+	for rowIdx, row in ipairs(Tilemap.layers[LandTileLayerIndex].tiles) do
+		for colIdx, tile in ipairs(row) do
+			if tile.tileId then
+				collision.register({ position = { colIdx, rowIdx }, collider = { width = 1, height = 1 } })
+			end
+		end
+	end
+
 	Packages = {}
 	Mailboxes = {}
 	for _, object in ipairs(Tilemap.layers[ObjectTileLayerIndex].objects) do
@@ -168,9 +176,9 @@ function love.draw()
 			love.graphics.applyTransform(Tilemap.tilemapIndexToWorldTransform)
 			local boatColIdx, boatRowIdx = Tilemap.worldToTilemapIndexTransform:transformPoint(Boat.transform
 				:transformPoint(0, 0))
-			collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
+			-- collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
 			love.graphics.pop()
-			collision.drawTileColliders(Tilemap, LandTileLayerIndex)
+			-- collision.drawTileColliders(Tilemap, LandTileLayerIndex)
 
 			love.graphics.pop()
 

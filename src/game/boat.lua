@@ -60,7 +60,8 @@ local function update(self, tilemap, dt)
 	) + 1
 	self.quad = self.quads[boatQuadIdx]
 
-	local positionUpdate = { 0, -self.speed * dt }
+	local positionUpdate = collision.getPositionUpdate(self, { 0, -self.speed * dt })
+
 	local newPositionTileIndices = {
 		tilemap.worldToTilemapIndexTransform:transformPoint(
 			self.transform:transformPoint(unpack(positionUpdate))
@@ -142,6 +143,10 @@ local function deliverPackage(self, mailboxes)
 	end
 end
 
+local function getPosition(self)
+	return self.transform:transformPoint(0, 0)
+end
+
 function NewBoat(entitiesImage)
 	local boatQuads = {}
 	for i = 1, numBoatAngles do
@@ -164,6 +169,7 @@ function NewBoat(entitiesImage)
 		transform = love.math.newTransform(0, -100),
 		draw = draw,
 
+		getPosition = getPosition,
 		collider = { width = 1, height = 1 },
 
 		quads = boatQuads,
