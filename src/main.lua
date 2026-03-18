@@ -1,10 +1,10 @@
 require("engine/settings")
 require("engine/color")
-require("engine/tilemap")
 require("engine/camera")
 require("engine/draw_utils")
 local collision = require("engine/collision")
 
+local game = require("game/game")
 require("game/boat")
 require("game/package")
 local ui = require("game/ui")
@@ -37,22 +37,7 @@ function love.load()
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
-	LandTileLayerIndex = 1
-	ObjectTileLayerIndex = 2
-
-	LandTilesetIndex = 1
-	PackageTilesetIndex = 2
-	BuildingTilesetIndex = 3
-	MailboxTilesetIndex = 4
-	local tilesets = {
-		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
-		NewTileset("assets/art/tileset.png", 16, 16),
-		NewTileset("assets/art/packages.png", 16, 16),
-		NewTileset("assets/art/buildings.png", 64, 64),
-		NewTileset("assets/art/mailboxes.png", 16, 16),
-		NewTileset("assets/art/walls.png", 16, 256),
-	}
-	Tilemap = NewTilemapLua("assets/tilemap/map.lua", tilesets)
+	game.load()
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 
@@ -61,7 +46,7 @@ function love.load()
 	Boat = NewBoat(EntitiesImage)
 	table.insert(WorldObjects, Boat)
 
-	for rowIdx, row in ipairs(Tilemap.layers[LandTileLayerIndex].tiles) do
+	for rowIdx, row in ipairs(game.tilemap.layers[game.landTileLayerIndex].tiles) do
 		for colIdx, tile in ipairs(row) do
 			if tile.tileId then
 				collision.register({ position = { colIdx, rowIdx }, collider = { width = 1, height = 1 } })
@@ -71,11 +56,11 @@ function love.load()
 
 	Packages = {}
 	Mailboxes = {}
-	for _, object in ipairs(Tilemap.layers[ObjectTileLayerIndex].objects) do
+	for _, object in ipairs(game.tilemap.layers[game.objectTileLayerIndex].objects) do
 		local tilesetIndex = object.tilesetIndex
-		if (tilesetIndex == PackageTilesetIndex) then
+		if (tilesetIndex == game.packageTilesetIndex) then
 			table.insert(Packages, ConvertToPackage(object))
-		elseif (tilesetIndex == MailboxTilesetIndex) then
+		elseif (tilesetIndex == game.mailboxTilesetIndex) then
 			table.insert(Mailboxes, object)
 		end
 
@@ -158,7 +143,7 @@ function love.draw()
 			love.graphics.scale(Camera.zoom, Camera.zoom)
 			love.graphics.applyTransform(GetWorldToCanvasTransform(Camera))
 
-			Tilemap:draw(LandTileLayerIndex, Camera)
+			game.tilemap:draw(game.landTileLayerIndex, Camera)
 			for _, worldObject in ipairs(WorldObjects) do
 				Draw(worldObject)
 			end
@@ -173,8 +158,8 @@ function love.draw()
 			end
 
 			love.graphics.push()
-			love.graphics.applyTransform(Tilemap.tilemapIndexToWorldTransform)
-			local boatColIdx, boatRowIdx = Tilemap.worldToTilemapIndexTransform:transformPoint(Boat.transform
+			love.graphics.applyTransform(game.tilemap.tilemapIndexToWorldTransform)
+			local boatColIdx, boatRowIdx = game.tilemap.worldToTilemapIndexTransform:transformPoint(Boat.transform
 				:transformPoint(0, 0))
 			-- collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
 			love.graphics.pop()
