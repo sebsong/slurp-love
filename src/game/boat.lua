@@ -83,8 +83,31 @@ local function update(self, tilemap, dt)
 	-- ::endCollisionTest::
 
 	-- if not willHitTile then
-	local positionUpdate = collision.getPositionUpdate(self, { 0, -self.speed * dt })
-	self.transform:translate(unpack(positionUpdate))
+	local tilemapPosition = { game.tilemap.worldToTilemapIndexTransform:transformPoint(
+		self.transform:transformPoint(0, 0)
+	) }
+	local newTilemapPosition = { game.tilemap.worldToTilemapIndexTransform:transformPoint(
+		self.transform:transformPoint(0, -self.speed * dt)
+	) }
+	local tilemapPositionUpdate = {
+		newTilemapPosition[1] - tilemapPosition[1],
+		newTilemapPosition[2] - tilemapPosition[2]
+	}
+
+	local tileFrom = { 0, 0 }
+	local tileTo = collision.getPositionUpdate(
+		self,
+		tilemapPositionUpdate
+	)
+	local worldFrom = { game.tilemap.tilemapIndexToWorldTransform:transformPoint(unpack(tileFrom)) }
+	local worldTo = { game.tilemap.tilemapIndexToWorldTransform:transformPoint(unpack(tileTo)) }
+
+	local boatFrom = { self.transform:inverse():transformPoint(unpack(worldFrom)) }
+	local boatTo = { self.transform:inverse():transformPoint(unpack(worldTo)) }
+	self.transform:translate(
+		boatTo[1] - boatFrom[1],
+		boatTo[2] - boatFrom[2]
+	)
 	-- end
 end
 
