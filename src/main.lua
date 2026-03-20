@@ -161,9 +161,9 @@ function love.draw()
 			love.graphics.applyTransform(game.tilemap.tilemapIndexToWorldTransform)
 			local boatColIdx, boatRowIdx = game.tilemap.worldToTilemapIndexTransform:transformPoint(Boat.transform
 				:transformPoint(0, 0))
-			collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
+			-- collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
 			love.graphics.pop()
-			collision.drawTileColliders(game.tilemap, game.landTileLayerIndex)
+			-- collision.drawTileColliders(game.tilemap, game.landTileLayerIndex)
 
 			love.graphics.pop()
 

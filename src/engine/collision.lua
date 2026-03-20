@@ -18,32 +18,6 @@ function collision.register(collidable)
 	table.insert(collidables, collidable)
 end
 
-function collision.intersects(collider, position, otherCollider, otherPosition)
-	local w1, h1 = collider.width, collider.height
-	local x1, y1 = unpack(position)
-
-	local w2, h2 = otherCollider.width, otherCollider.height
-	local x2, y2 = unpack(otherPosition)
-
-	local isLeft = x1 < x2
-	local xIntersects
-	if isLeft then
-		xIntersects = (x1 + w1 / 2) >= (x2 - w2 / 2)
-	else
-		xIntersects = (x1 - w1 / 2) <= (x2 + w2 / 2)
-	end
-
-	local isAbove = y1 < y2
-	local yIntersects
-	if isAbove then
-		yIntersects = (y1 + h1 / 2) >= (y2 - h2 / 2)
-	else
-		yIntersects = (y1 - h1 / 2) <= (y2 + h2 / 2)
-	end
-
-	return xIntersects and yIntersects
-end
-
 local function getCollidablePosition(collidable)
 	if collidable.position then
 		return collidable.position
@@ -103,16 +77,13 @@ function collision.getPositionUpdate(collidable, targetPositionUpdate)
 		end
 
 		if xIntersects and yIntersects then
-			if rightX <= otherLeftX then
-				positionUpdate[1] = slurp_math.absMin(otherLeftX - rightX, positionUpdate[1])
-			elseif leftX >= otherRightX then
-				positionUpdate[1] = slurp_math.absMin(otherRightX - leftX, positionUpdate[1])
-			end
+			local xCorrection = slurp_math.absMin(otherLeftX - targetRightX, otherRightX - targetLeftX)
+			local yCorrection = slurp_math.absMin(otherTopY - targetBottomY, otherBottomY - targetTopY)
 
-			if bottomY <= otherTopY then
-				positionUpdate[2] = slurp_math.absMin(otherTopY - bottomY, positionUpdate[2])
-			elseif topY >= otherBottomY then
-				positionUpdate[2] = slurp_math.absMin(otherBottomY - topY, positionUpdate[2])
+			if math.abs(xCorrection) <= math.abs(yCorrection) then
+				positionUpdate[1] = positionUpdate[1] + xCorrection
+			else
+				positionUpdate[2] = positionUpdate[2] + yCorrection
 			end
 
 			-- TODO: trigger collision callback
