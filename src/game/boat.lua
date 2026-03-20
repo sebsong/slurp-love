@@ -62,27 +62,6 @@ local function update(self, tilemap, dt)
 	) + 1
 	self.quad = self.quads[boatQuadIdx]
 
-
-	-- local newPositionTileIndices = {
-	-- 	tilemap.worldToTilemapIndexTransform:transformPoint(
-	-- 		self.transform:transformPoint(unpack(positionUpdate))
-	-- 	)
-	-- }
-	-- local willHitTile = false
-	-- for rowIdx, row in ipairs(tilemap.layers[1].tiles) do
-	-- 	for colIdx, tile in ipairs(row) do
-	-- 		if
-	-- 			tile.tileId and
-	-- 			collision.intersects(self.collider, newPositionTileIndices, { width = 1, height = 1 }, { colIdx, rowIdx })
-	-- 		then
-	-- 			willHitTile = true
-	-- 			goto endCollisionTest
-	-- 		end
-	-- 	end
-	-- end
-	-- ::endCollisionTest::
-
-	-- if not willHitTile then
 	local tilemapPosition = { game.tilemap.worldToTilemapIndexTransform:transformPoint(
 		self.transform:transformPoint(0, 0)
 	) }
@@ -108,7 +87,6 @@ local function update(self, tilemap, dt)
 		boatTo[1] - boatFrom[1],
 		boatTo[2] - boatFrom[2]
 	)
-	-- end
 end
 
 local function draw(self)
