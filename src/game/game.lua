@@ -48,22 +48,22 @@ function game.load()
 	MailboxTilesetIndex = 4
 	local tilesets = {
 		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
-		NewTileset("assets/art/tileset.png", 16, 16),
-		NewTileset("assets/art/packages.png", 16, 16),
-		NewTileset("assets/art/buildings.png", 64, 64),
-		NewTileset("assets/art/mailboxes.png", 16, 16),
-		NewTileset("assets/art/walls.png", 16, 256),
+		tilemap.newTileset("assets/art/tileset.png", 16, 16),
+		tilemap.newTileset("assets/art/packages.png", 16, 16),
+		tilemap.newTileset("assets/art/buildings.png", 64, 64),
+		tilemap.newTileset("assets/art/mailboxes.png", 16, 16),
+		tilemap.newTileset("assets/art/walls.png", 16, 256),
 	}
-	Tilemap = NewTilemapLua("assets/tilemap/map.lua", tilesets)
+	game.tilemap = tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
 
 	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
 
 	WorldObjects = {}
 
-	Boat = NewBoat(EntitiesImage)
+	Boat = NewBoat(EntitiesImage, game.tilemap)
 	table.insert(WorldObjects, Boat)
 
-	for rowIdx, row in ipairs(Tilemap.layers[LandTileLayerIndex].tiles) do
+	for rowIdx, row in ipairs(game.tilemap.layers[LandTileLayerIndex].tiles) do
 		for colIdx, tile in ipairs(row) do
 			if tile.tileId then
 				collision.register({ position = { colIdx, rowIdx }, collider = { width = 1, height = 1 } })
@@ -73,7 +73,7 @@ function game.load()
 
 	Packages = {}
 	Mailboxes = {}
-	for _, object in ipairs(Tilemap.layers[ObjectTileLayerIndex].objects) do
+	for _, object in ipairs(game.tilemap.layers[ObjectTileLayerIndex].objects) do
 		local tilesetIndex = object.tilesetIndex
 		if (tilesetIndex == PackageTilesetIndex) then
 			table.insert(Packages, ConvertToPackage(object))
@@ -128,7 +128,7 @@ function game.update(dt)
 		love.event.quit()
 	end
 
-	Boat:update(Tilemap, dt)
+	Boat:update(dt)
 	for _, package in ipairs(Boat.packages) do
 		package:update(dt)
 	end
@@ -163,7 +163,7 @@ function game.draw()
 			love.graphics.scale(Camera.zoom, Camera.zoom)
 			love.graphics.applyTransform(GetWorldToCanvasTransform(Camera))
 
-			Tilemap:draw(LandTileLayerIndex, Camera)
+			game.tilemap:draw(LandTileLayerIndex, Camera)
 			for _, worldObject in ipairs(WorldObjects) do
 				Draw(worldObject)
 			end
@@ -178,8 +178,8 @@ function game.draw()
 			end
 
 			love.graphics.push()
-			love.graphics.applyTransform(Tilemap.tilemapIndexToWorldTransform)
-			local boatColIdx, boatRowIdx = Tilemap.worldToTilemapIndexTransform:transformPoint(Boat.transform
+			love.graphics.applyTransform(game.tilemap.tilemapIndexToWorldTransform)
+			local boatColIdx, boatRowIdx = game.tilemap.worldToTilemapIndexTransform:transformPoint(Boat.transform
 				:transformPoint(0, 0))
 			-- collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
 			love.graphics.pop()

@@ -2,14 +2,13 @@ local slurp_math = require("engine/math")
 require("engine/color")
 local collision = require("engine/collision")
 
-local game = require("game/game")
 require("game/values")
 local ui = require("game/ui")
 
 local numBoatAngles = 16
 local boatWidth, boatHeight = 16, 16
 
-local function update(self, tilemap, dt)
+local function update(self, dt)
 	local didMove = false
 	if love.keyboard.isDown("up") or love.keyboard.isDown("w") then
 		self.speed = self.speed + self.acceleration * dt
@@ -62,10 +61,10 @@ local function update(self, tilemap, dt)
 	) + 1
 	self.quad = self.quads[boatQuadIdx]
 
-	local tilemapPosition = { game.tilemap.worldToTilemapIndexTransform:transformPoint(
+	local tilemapPosition = { self.tilemap.worldToTilemapIndexTransform:transformPoint(
 		self.transform:transformPoint(0, 0)
 	) }
-	local newTilemapPosition = { game.tilemap.worldToTilemapIndexTransform:transformPoint(
+	local newTilemapPosition = { self.tilemap.worldToTilemapIndexTransform:transformPoint(
 		self.transform:transformPoint(0, -self.speed * dt)
 	) }
 	local tilemapPositionUpdate = {
@@ -78,8 +77,8 @@ local function update(self, tilemap, dt)
 		self,
 		tilemapPositionUpdate
 	)
-	local worldFrom = { game.tilemap.tilemapIndexToWorldTransform:transformPoint(unpack(tileFrom)) }
-	local worldTo = { game.tilemap.tilemapIndexToWorldTransform:transformPoint(unpack(tileTo)) }
+	local worldFrom = { self.tilemap.tilemapIndexToWorldTransform:transformPoint(unpack(tileFrom)) }
+	local worldTo = { self.tilemap.tilemapIndexToWorldTransform:transformPoint(unpack(tileTo)) }
 
 	local boatFrom = { self.transform:inverse():transformPoint(unpack(worldFrom)) }
 	local boatTo = { self.transform:inverse():transformPoint(unpack(worldTo)) }
@@ -147,10 +146,10 @@ local function deliverPackage(self, mailboxes)
 end
 
 local function getPosition(self)
-	return { game.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)) }
+	return { self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)) }
 end
 
-function NewBoat(entitiesImage)
+function NewBoat(entitiesImage, tilemap)
 	local boatQuads = {}
 	for i = 1, numBoatAngles do
 		local boatQuad = love.graphics.newQuad(
@@ -189,6 +188,7 @@ function NewBoat(entitiesImage)
 		gasDepletionRate = GAS_DEPLETION_RATE_DEFAULT,
 
 		isLanternActive = false,
+		tilemap = tilemap,
 
 		update = update,
 		indexOfPackage = indexOfPackage,
