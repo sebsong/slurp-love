@@ -2,91 +2,85 @@ local scene = {}
 
 local scenes = {}
 
-local function new(
-	load,
-	unload,
-	update,
-	draw
-)
-	return {
-		isActive = false,
-		isPaused = false,
-		shouldLoad = false,
-		shouldUnload = false,
+local function init(_scene)
+	assert(_scene.load, "Scene missing load method")
+	assert(_scene.unload, "Scene missing unload method")
+	assert(_scene.update, "Scene missing update method")
+	assert(_scene.draw, "Scene missing draw method")
 
-		load,
-		unload,
-		update,
-		draw
-	}
+	_scene.isActive = false
+	_scene.isPaused = false
+	_scene.shouldLoad = false
+	_scene.shouldUnload = false
+	return _scene
 end
 
-function scene.registerScene(
-	load,
-	unload,
-	update,
-	draw
-)
-	local newScene = new(
-		load,
-		unload,
-		update,
-		draw
-	)
-	table.insert(scenes, newScene)
+function scene.register(_scene)
+	table.insert(scenes, init(_scene))
 
 	return #scenes
 end
 
-function scene.start(sceneIdx)
-	scene.isPaused = false
-	scene.shouldLoad = true
+function scene.start(_scene)
+	_scene.isPaused = false
+	_scene.shouldLoad = true
 end
 
-function scene.stop(sceneIdx)
-	scene.shouldUnload = true
+function scene.stop(_scene)
+	_scene.shouldUnload = true
 end
 
-function scene.pause(sceneIdx)
-	scene.isPaused = true
+function scene.pause(_scene)
+	_scene.isPaused = true
 end
 
-function scene.resume(sceneIdx)
-	scene.isPaused = false
+function scene.resume(_scene)
+	_scene.isPaused = false
 end
 
-function scene.transition(fromSceneIdx, toSceneIdx)
-	scene.stop(fromSceneIdx)
-	scene.start(toSceneIdx)
+function scene.transition(fromScene, toScene)
+	scene.stop(fromScene)
+	scene.start(toScene)
 end
 
-local function load(sceneToLoad)
-	sceneToLoad.load()
-	sceneToLoad.isActive = true
-	sceneToLoad.shouldLoad = false
+local function load(_scene)
+	_scene.load()
+	_scene.isActive = true
+	_scene.shouldLoad = false
 end
 
-local function unload(sceneToUnload)
-	sceneToUnload.unload()
-	sceneToUnload.isActive = false
-	sceneToUnload.shouldUnload = false
+local function unload(_scene)
+	_scene.unload()
+	_scene.isActive = false
+	_scene.shouldUnload = false
 end
 
-function scene.update()
-	for _, scene in ipairs(scenes) do
-		if scene.shouldUnload then
-			load(scene)
+function scene.update(dt)
+	for _, _scene in ipairs(scenes) do
+		if _scene.shouldUnload then
+			unload(_scene);
 		end
-		if scene.shouldLoad then
-			unload(scene);
+		if _scene.shouldLoad then
+			load(_scene)
 		end
 
-		if not scene.isActive or scene.isPaused then
+		if not _scene.isActive or _scene.isPaused then
 			goto continue
 		end
 
-		scene.update()
-		scene.draw()
+		_scene.update(dt)
+
+		::continue::
+	end
+end
+
+function scene.draw()
+	for _, _scene in ipairs(scenes) do
+		if not _scene.isActive or _scene.isPaused then
+			goto continue
+		end
+
+		_scene.draw()
 
 		::continue::
 	end
