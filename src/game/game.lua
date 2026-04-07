@@ -1,6 +1,6 @@
 require("engine/settings")
 require("engine/color")
-require("engine/tilemap")
+local tilemap = require("engine/tilemap")
 require("engine/camera")
 require("engine/draw_utils")
 local collision = require("engine/collision")

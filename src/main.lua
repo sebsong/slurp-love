@@ -1,11 +1,11 @@
 require("engine/settings")
 require("engine/color")
-require("engine/tilemap")
 require("engine/camera")
 require("engine/draw_utils")
 local collision = require("engine/collision")
 local scene = require("engine/scene")
 
+local game = require("game/game")
 require("game/boat")
 require("game/package")
 local ui = require("game/ui")

@@ -1,6 +1,8 @@
-require("engine/math")
+local slurp_math = require("engine/math")
 require("engine/color")
 local collision = require("engine/collision")
+
+local game = require("game/game")
 require("game/values")
 local ui = require("game/ui")
 
@@ -60,30 +62,31 @@ local function update(self, tilemap, dt)
 	) + 1
 	self.quad = self.quads[boatQuadIdx]
 
-	local positionUpdate = collision.getPositionUpdate(self, { 0, -self.speed * dt })
-
-	local newPositionTileIndices = {
-		tilemap.worldToTilemapIndexTransform:transformPoint(
-			self.transform:transformPoint(unpack(positionUpdate))
-		)
+	local tilemapPosition = { game.tilemap.worldToTilemapIndexTransform:transformPoint(
+		self.transform:transformPoint(0, 0)
+	) }
+	local newTilemapPosition = { game.tilemap.worldToTilemapIndexTransform:transformPoint(
+		self.transform:transformPoint(0, -self.speed * dt)
+	) }
+	local tilemapPositionUpdate = {
+		newTilemapPosition[1] - tilemapPosition[1],
+		newTilemapPosition[2] - tilemapPosition[2]
 	}
-	local willHitTile = false
-	for rowIdx, row in ipairs(tilemap.layers[1].tiles) do
-		for colIdx, tile in ipairs(row) do
-			if
-				tile.tileId and
-				collision.intersects(self.collider, newPositionTileIndices, { width = 1, height = 1 }, { colIdx, rowIdx })
-			then
-				willHitTile = true
-				goto endCollisionTest
-			end
-		end
-	end
-	::endCollisionTest::
 
-	if not willHitTile then
-		self.transform:translate(unpack(positionUpdate))
-	end
+	local tileFrom = { 0, 0 }
+	local tileTo = collision.getPositionUpdate(
+		self,
+		tilemapPositionUpdate
+	)
+	local worldFrom = { game.tilemap.tilemapIndexToWorldTransform:transformPoint(unpack(tileFrom)) }
+	local worldTo = { game.tilemap.tilemapIndexToWorldTransform:transformPoint(unpack(tileTo)) }
+
+	local boatFrom = { self.transform:inverse():transformPoint(unpack(worldFrom)) }
+	local boatTo = { self.transform:inverse():transformPoint(unpack(worldTo)) }
+	self.transform:translate(
+		boatTo[1] - boatFrom[1],
+		boatTo[2] - boatFrom[2]
+	)
 end
 
 local function draw(self)
@@ -112,7 +115,7 @@ local function pickupPackages(self, packages)
 		end
 		local boatX, boatY = self.transform:transformPoint(0, 0)
 		local packageX, packageY = package.transform:transformPoint(0, 0)
-		if Distance({ x = boatX, y = boatY }, { x = packageX, y = packageY }) <= self.interactionRadius then
+		if slurp_math.distance({ x = boatX, y = boatY }, { x = packageX, y = packageY }) <= self.interactionRadius then
 			table.insert(self.packages, package)
 			pickedUp = true
 			package.shouldDraw = false
@@ -134,7 +137,7 @@ local function deliverPackage(self, mailboxes)
 
 	for _, mailbox in ipairs(mailboxes) do
 		local mailboxX, mailboxY = mailbox.transform:transformPoint(0, 0)
-		if Distance({ x = boatX, y = boatY }, { x = mailboxX, y = mailboxY }) <= self.interactionRadius and
+		if slurp_math.distance({ x = boatX, y = boatY }, { x = mailboxX, y = mailboxY }) <= self.interactionRadius and
 			mailbox.id == package.destinationId then
 			table.remove(self.packages, #self.packages)
 			package:removeEffect(self)
@@ -144,7 +147,7 @@ local function deliverPackage(self, mailboxes)
 end
 
 local function getPosition(self)
-	return self.transform:transformPoint(0, 0)
+	return { game.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)) }
 end
 
 function NewBoat(entitiesImage)

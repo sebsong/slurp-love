@@ -1,6 +1,8 @@
 -- Based on Tiled (https://www.mapeditor.org/)
 require("engine/file")
 
+local tilemap = {}
+
 local function getIntersectionTiles(tilemap, camera)
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
 	local startX, startY = cameraX - (camera:getScreenWidth() / 2), cameraY - (camera:getScreenHeight() / 2)
@@ -81,7 +83,7 @@ local function draw(self, layerIndex, camera)
 	end
 end
 
-function NewTileset(imageFilePath, tileWidth, tileHeight)
+function tilemap.newTileset(imageFilePath, tileWidth, tileHeight)
 	local image = love.graphics.newImage(imageFilePath)
 	local tileQuads = {}
 	local numCols = image:getPixelWidth() / tileWidth
@@ -163,7 +165,7 @@ end
 
 -- NOTE: tilesets must match order of tilesets in tilemap
 -- NOTE: tilesets and layers are 1:1
-function NewTilemapLua(luaFilepath, tilesets)
+function tilemap.newTilemapLua(luaFilepath, tilesets)
 	AssertFileExt(luaFilepath, ".lua")
 
 	local tilemapInfo = require(StripFileExtension(luaFilepath))
@@ -260,3 +262,5 @@ function NewTilemapLua(luaFilepath, tilesets)
 		draw = draw,
 	}
 end
+
+return tilemap

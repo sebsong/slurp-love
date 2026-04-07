@@ -1,3 +1,5 @@
+local slurp_math = require("engine/math")
+
 local collision = {}
 
 -- collidable:
@@ -16,32 +18,6 @@ function collision.register(collidable)
 	table.insert(collidables, collidable)
 end
 
-function collision.intersects(collider, position, otherCollider, otherPosition)
-	local w1, h1 = collider.width, collider.height
-	local x1, y1 = unpack(position)
-
-	local w2, h2 = otherCollider.width, otherCollider.height
-	local x2, y2 = unpack(otherPosition)
-
-	local isLeft = x1 < x2
-	local xIntersects
-	if isLeft then
-		xIntersects = (x1 + w1 / 2) >= (x2 - w2 / 2)
-	else
-		xIntersects = (x1 - w1 / 2) <= (x2 + w2 / 2)
-	end
-
-	local isAbove = y1 < y2
-	local yIntersects
-	if isAbove then
-		yIntersects = (y1 + h1 / 2) >= (y2 - h2 / 2)
-	else
-		yIntersects = (y1 - h1 / 2) <= (y2 + h2 / 2)
-	end
-
-	return xIntersects and yIntersects
-end
-
 local function getCollidablePosition(collidable)
 	if collidable.position then
 		return collidable.position
@@ -52,10 +28,17 @@ local function getCollidablePosition(collidable)
 	end
 end
 
+local function getRectExtents(x, y, halfWidth, halfHeight)
+	return (x - halfWidth), (x + halfWidth), (y - halfHeight), (y + halfHeight)
+end
+
 function collision.getPositionUpdate(collidable, targetPositionUpdate)
 	local positionUpdate = targetPositionUpdate
 	local position = getCollidablePosition(collidable)
 	local x, y = unpack(position)
+	local collider = collidable.collider
+	local halfWidth, halfHeight = collider.width / 2, collider.height / 2
+	local leftX, rightX, topY, bottomY = getRectExtents(x, y, halfWidth, halfHeight)
 	for _, otherCollidable in ipairs(collidables) do
 		if collidable == otherCollidable then
 			goto continue
@@ -64,35 +47,44 @@ function collision.getPositionUpdate(collidable, targetPositionUpdate)
 		local targetPosition = { position[1] + positionUpdate[1], position[2] + positionUpdate[2] }
 
 		local otherPosition = getCollidablePosition(otherCollidable)
-		local collider, otherCollider = collidable.collider, otherCollidable.collider
-		local w1, h1 = collider.width, collider.height
-		local x1, y1 = unpack(targetPosition)
+		local otherCollider = otherCollidable.collider
+		local targetX, targetY = unpack(targetPosition)
 
-		local w2, h2 = otherCollider.width, otherCollider.height
-		local x2, y2 = unpack(otherPosition)
+		local otherHalfWidth, otherHalfHeight = otherCollider.width / 2, otherCollider.height / 2
+		local otherX, otherY = unpack(otherPosition)
 
-		local isLeft = x1 < x2
+		local targetLeftX, targetRightX, targetTopY, targetBottomY = getRectExtents(
+			targetX, targetY, halfWidth, halfHeight
+		)
+		local otherLeftX, otherRightX, otherTopY, otherBottomY = getRectExtents(
+			otherX, otherY, otherHalfWidth, otherHalfHeight
+		)
+
+		local isLeft = targetX < otherX
 		local xIntersects
 		if isLeft then
-			xIntersects = (x1 + w1 / 2) >= (x2 - w2 / 2)
+			xIntersects = targetRightX >= otherLeftX
 		else
-			xIntersects = (x1 - w1 / 2) <= (x2 + w2 / 2)
+			xIntersects = targetLeftX <= otherRightX
 		end
 
-		local isAbove = y1 < y2
+		local isAbove = targetY < otherY
 		local yIntersects
 		if isAbove then
-			yIntersects = (y1 + h1 / 2) >= (y2 - h2 / 2)
+			yIntersects = targetBottomY >= otherTopY
 		else
-			yIntersects = (y1 - h1 / 2) <= (y2 + h2 / 2)
+			yIntersects = targetTopY <= otherBottomY
 		end
 
 		if xIntersects and yIntersects then
-			-- left
-			if (x + w1 / 2) <= (x2 - w2 / 2) then
-			elseif (x - w1 / 2) >= (x2 + w2 / 2) then
+			local xCorrection = slurp_math.absMin(otherLeftX - targetRightX, otherRightX - targetLeftX)
+			local yCorrection = slurp_math.absMin(otherTopY - targetBottomY, otherBottomY - targetTopY)
+
+			if math.abs(xCorrection) <= math.abs(yCorrection) then
+				positionUpdate[1] = positionUpdate[1] + xCorrection
+			else
+				positionUpdate[2] = positionUpdate[2] + yCorrection
 			end
-			-- positionUpdate[1] =
 
 			-- TODO: trigger collision callback
 		end
@@ -101,7 +93,7 @@ function collision.getPositionUpdate(collidable, targetPositionUpdate)
 	end
 
 
-	return position
+	return positionUpdate
 end
 
 function collision.drawTileColliders(tilemap, layerIndex)
