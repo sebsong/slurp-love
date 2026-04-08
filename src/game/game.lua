@@ -1,7 +1,7 @@
 require("engine/settings")
 require("engine/color")
 local tilemap = require("engine/tilemap")
-require("engine/camera")
+local camera = require("engine/camera")
 require("engine/draw_utils")
 local collision = require("engine/collision")
 
@@ -32,7 +32,7 @@ function game.load()
 		0
 	)
 
-	Camera = NewCamera()
+	Camera = camera.new()
 
 	local colorPalette = LoadColorPalette("assets/art/retrotronic-dx.hex")
 	LoadShader(colorPalette)
@@ -101,7 +101,7 @@ end
 function game.unload()
 end
 
-function love.keypressed(key, scancode, isRepeat)
+function game.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
 		if not Boat:pickupPackages(Packages) then
 			Boat:deliverPackage(Mailboxes)
@@ -111,17 +111,17 @@ function love.keypressed(key, scancode, isRepeat)
 	Camera:keypressed(key, scancode, isRepeat)
 end
 
--- function love.mousepressed(x, y, button, isTouch, presses)
--- 	Camera:mousepressed(x, y, button, isTouch, presses)
--- end
+function game.mousepressed(x, y, button, isTouch, presses)
+	Camera:mousepressed(x, y, button, isTouch, presses)
+end
 
--- function love.mousemoved(x, y, dx, dy, isTouch)
--- 	Camera:mousemoved(x, y, dx, dy, isTouch)
--- end
+function game.mousemoved(x, y, dx, dy, isTouch)
+	Camera:mousemoved(x, y, dx, dy, isTouch)
+end
 
--- function love.wheelmoved(x, y)
--- 	Camera:wheelmoved(x, y)
--- end
+function game.wheelmoved(x, y)
+	Camera:wheelmoved(x, y)
+end
 
 function game.update(dt)
 	if love.keyboard.isDown("escape") then
@@ -161,7 +161,7 @@ function game.draw()
 
 			love.graphics.push()
 			love.graphics.scale(Camera.zoom, Camera.zoom)
-			love.graphics.applyTransform(GetWorldToCanvasTransform(Camera))
+			love.graphics.applyTransform(camera.getWorldToCanvasTransform(Camera))
 
 			game.tilemap:draw(LandTileLayerIndex, Camera)
 			for _, worldObject in ipairs(WorldObjects) do
