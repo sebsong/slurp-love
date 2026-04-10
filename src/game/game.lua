@@ -1,5 +1,5 @@
-require("engine/settings")
-require("engine/color")
+local settings = require("engine/settings")
+local color = require("engine/color")
 local tilemap = require("engine/tilemap")
 local camera = require("engine/camera")
 require("engine/draw_utils")
@@ -16,15 +16,15 @@ function game.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	local windowWidth, windowHeight = love.graphics.getDimensions()
-	ScreenScale = math.min(windowWidth / BaseCanvasWidth, windowHeight / BaseCanvasHeight)
+	ScreenScale = math.min(windowWidth / settings.baseCanvasWidth, windowHeight / settings.baseCanvasHeight)
 
 	-- if ScreenScale > 1 then
 	-- if display is smaller than the canvas, we can't enforce integer scaling
 	-- ScreenScale = math.floor(ScreenScale)
 	-- end
 
-	local canvasWidth = BaseCanvasWidth * ScreenScale
-	local canvasHeight = BaseCanvasHeight * ScreenScale
+	local canvasWidth = settings.baseCanvasWidth * ScreenScale
+	local canvasHeight = settings.baseCanvasHeight * ScreenScale
 	Canvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
 	CanvasToScreenTransform = love.math.newTransform(
 		(windowWidth - canvasWidth) / 2,
@@ -34,8 +34,8 @@ function game.load()
 
 	Camera = camera.new()
 
-	local colorPalette = LoadColorPalette("assets/art/retrotronic-dx.hex")
-	LoadShader(colorPalette)
+	color.loadPalette("assets/art/retrotronic-dx.hex")
+	LoadShader(color.palette)
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
@@ -94,7 +94,7 @@ function game.load()
 	LanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
 	LanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
 	LanternShader:send("canvasDimensions", { canvasWidth, canvasHeight })
-	LanternShader:send("colorPalette", unpack(colorPalette))
+	LanternShader:send("colorPalette", unpack(color.palette))
 	LanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
 end
 

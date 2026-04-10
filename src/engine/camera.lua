@@ -1,4 +1,4 @@
-require("engine/settings")
+local settings = require("engine/settings")
 
 local camera = {}
 
@@ -11,8 +11,8 @@ function camera.getWorldToCanvasTransform(_camera)
 end
 
 function camera.new()
-	local screenWidth = BaseCanvasWidth
-	local screenHeight = BaseCanvasHeight
+	local screenWidth = settings.baseCanvasWidth
+	local screenHeight = settings.baseCanvasHeight
 	local zoomToggleIdx = 1
 	local zoomToggles = { 1, 0.5 }
 	local panSpeed = 0.5

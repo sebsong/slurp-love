@@ -1,6 +1,3 @@
-require("engine/matrix")
-require("engine/color")
-
 local shader
 
 function LoadShader(colorPalette)

@@ -1,5 +1,4 @@
 local slurp_math = require("engine/math")
-require("engine/color")
 local collision = require("engine/collision")
 
 require("game/values")

@@ -1,5 +1,7 @@
-BaseCanvasWidth = 640
-BaseCanvasHeight = 360
+local settings = {}
+
+settings.baseCanvasWidth = 640
+settings.baseCanvasHeight = 360
 
 -- BaseCanvasWidth = 1280
 -- BaseCanvasHeight = 720
@@ -9,3 +11,5 @@ BaseCanvasHeight = 360
 
 -- BaseCanvasWidth = 7680
 -- BaseCanvasHeight = 4320
+
+return settings
