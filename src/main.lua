@@ -2,12 +2,15 @@ local scene = require("engine/scene")
 
 local mainMenu = require("game/main_menu")
 local game = require("game/game")
+local debug = require("game/debug")
 
 function love.load()
 	scene.register(mainMenu)
 	scene.register(game)
+	scene.register(debug)
 
 	scene.start(mainMenu)
+	scene.start(debug)
 end
 
 function love.keypressed(key, scancode, isRepeat)

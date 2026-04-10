@@ -125,10 +125,6 @@ function game.wheelmoved(x, y)
 end
 
 function game.update(dt)
-	if love.keyboard.isDown("escape") then
-		love.event.quit()
-	end
-
 	Boat:update(dt)
 	for _, package in ipairs(Boat.packages) do
 		package:update(dt)

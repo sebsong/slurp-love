@@ -4,6 +4,7 @@ local scene = require("engine/scene")
 local game = require("game/game")
 
 function mainMenu.load()
+	BackgroundImage = love.graphics.newImage("assets/art/main_menu.png")
 end
 
 function mainMenu.unload()
@@ -28,6 +29,7 @@ function mainMenu.update(dt)
 end
 
 function mainMenu.draw()
+	love.graphics.draw(BackgroundImage)
 end
 
 return mainMenu
