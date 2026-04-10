@@ -1,7 +1,7 @@
 local slurp_math = require("engine/math")
 local collision = require("engine/collision")
 
-require("game/values")
+local values = require("game/values")
 local ui = require("game/ui")
 
 local numBoatAngles = 16
@@ -24,7 +24,7 @@ local function update(self, dt)
 
 	if didMove then
 		self.gas = self.gas - self.gasDepletionRate * dt
-		ui.gasMeterShader:send("progress", self.gas / INITIAL_GAS)
+		ui.gasMeterShader:send("progress", self.gas / values.INITIAL_GAS)
 		if self.gas <= 0 then
 			print("OUT OF GAS")
 		end
@@ -175,16 +175,16 @@ function NewBoat(entitiesImage, tilemap)
 
 		quads = boatQuads,
 		speed = 0,
-		maxSpeed = BOAT_MAX_SPEED_DEFAULT,
-		maxBackwardsSpeed = BOAT_MAX_BACKWARD_SPEED_DEFAULT,
-		acceleration = BOAT_ACCELERATION_DEFAULT,
-		deceleration = BOAT_DECELERATION_DEFAULT,
+		maxSpeed = values.BOAT_MAX_SPEED_DEFAULT,
+		maxBackwardsSpeed = values.BOAT_MAX_BACKWARD_SPEED_DEFAULT,
+		acceleration = values.BOAT_ACCELERATION_DEFAULT,
+		deceleration = values.BOAT_DECELERATION_DEFAULT,
 		rotation = 0,
 		rotationSpeed = math.pi / 2,
 		interactionRadius = 75,
 		packages = {},
-		gas = INITIAL_GAS,
-		gasDepletionRate = GAS_DEPLETION_RATE_DEFAULT,
+		gas = values.INITIAL_GAS,
+		gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT,
 
 		isLanternActive = false,
 		tilemap = tilemap,

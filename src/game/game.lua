@@ -2,7 +2,7 @@ local settings = require("engine/settings")
 local color = require("engine/color")
 local tilemap = require("engine/tilemap")
 local camera = require("engine/camera")
-require("engine/draw_utils")
+local draw = require("engine/draw")
 local collision = require("engine/collision")
 
 require("game/boat")
@@ -35,7 +35,7 @@ function game.load()
 	Camera = camera.new()
 
 	color.loadPalette("assets/art/retrotronic-dx.hex")
-	LoadShader(color.palette)
+	draw.loadShader(color.palette)
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
@@ -165,7 +165,7 @@ function game.draw()
 
 			game.tilemap:draw(LandTileLayerIndex, Camera)
 			for _, worldObject in ipairs(WorldObjects) do
-				Draw(worldObject)
+				draw.draw(worldObject)
 			end
 
 			if Boat.isLanternActive then

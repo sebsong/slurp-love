@@ -1,4 +1,4 @@
-require("game/values")
+local values = require("game/values")
 
 local music = {}
 
@@ -73,9 +73,9 @@ function music:deactivateDrums()
 end
 
 function music:update(boat, dt)
-	if (boat.speed > BOAT_MAX_SPEED_DEFAULT) then
+	if (boat.speed > values.BOAT_MAX_SPEED_DEFAULT) then
 		self:activateDrumsHype()
-	elseif (boat.speed > BOAT_MAX_SPEED_DEFAULT / 2) then
+	elseif (boat.speed > values.BOAT_MAX_SPEED_DEFAULT / 2) then
 		self:activateDrumsMellow()
 	else
 		self:deactivateDrums()

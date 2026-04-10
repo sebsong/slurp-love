@@ -1,10 +1,12 @@
+local draw = {}
+
 local shader
 
-function LoadShader(colorPalette)
+function draw.loadShader(colorPalette)
 	shader = love.graphics.newShader("assets/shader/color_swap.glsl")
 end
 
-function Draw(drawable)
+function draw.draw(drawable)
 	if not drawable.shouldDraw then
 		return
 	end
@@ -23,3 +25,5 @@ function Draw(drawable)
 	love.graphics.setShader()
 	love.graphics.pop()
 end
+
+return draw
