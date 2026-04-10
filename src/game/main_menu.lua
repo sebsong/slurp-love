@@ -1,7 +1,7 @@
+local mainMenu = {}
+
 local scene = require("engine/scene")
 local game = require("game/game")
-
-local mainMenu = {}
 
 function mainMenu.load()
 end

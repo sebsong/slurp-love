@@ -1,6 +1,6 @@
-local values = require("game/values")
-
 local music = {}
+
+local values = require("game/values")
 
 local volume = 0.6
 local chords

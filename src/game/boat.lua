@@ -1,3 +1,5 @@
+local boat = {}
+
 local slurp_math = require("engine/math")
 local collision = require("engine/collision")
 
@@ -148,7 +150,7 @@ local function getPosition(self)
 	return { self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)) }
 end
 
-function NewBoat(entitiesImage, tilemap)
+function boat.new(entitiesImage, tilemap)
 	local boatQuads = {}
 	for i = 1, numBoatAngles do
 		local boatQuad = love.graphics.newQuad(
@@ -195,3 +197,5 @@ function NewBoat(entitiesImage, tilemap)
 		deliverPackage = deliverPackage,
 	}
 end
+
+return boat

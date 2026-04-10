@@ -1,6 +1,6 @@
-local slurp_math = require("engine/math")
-
 local collision = {}
+
+local slurp_math = require("engine/math")
 
 -- collidable:
 -- {

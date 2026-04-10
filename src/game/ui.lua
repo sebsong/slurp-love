@@ -1,3 +1,5 @@
+local ui = {}
+
 local settings = require("engine/settings")
 
 local gasMeterWidth, gasMeterHeight = 16, 128
@@ -12,8 +14,6 @@ local packageUiLocation = {
 local packageUiVerticalSpacing = -18
 local packageOffsetXInitial = 2
 local packageOffsetYInitial = packageContainerHeight + packageUiVerticalSpacing
-
-local ui = {}
 
 function ui.load(self)
 	ui.image = love.graphics.newImage("assets/art/ui.png")

@@ -1,7 +1,8 @@
--- Based on Tiled (https://www.mapeditor.org/)
-require("engine/file")
-
 local tilemap = {}
+
+-- Based on Tiled (https://www.mapeditor.org/)
+
+local file = require("engine/file")
 
 local function getIntersectionTiles(tilemap, camera)
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
@@ -166,9 +167,9 @@ end
 -- NOTE: tilesets must match order of tilesets in tilemap
 -- NOTE: tilesets and layers are 1:1
 function tilemap.newTilemapLua(luaFilepath, tilesets)
-	AssertFileExt(luaFilepath, ".lua")
+	file.assertFileExtension(luaFilepath, ".lua")
 
-	local tilemapInfo = require(StripFileExtension(luaFilepath))
+	local tilemapInfo = require(file.stripFileExtension(luaFilepath))
 
 	-- TODO: can we process tilesets here?
 	local tilesetInfos = tilemapInfo.tilesets

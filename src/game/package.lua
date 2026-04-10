@@ -1,3 +1,7 @@
+local package = {}
+
+local values = require("game/values")
+
 -- package types
 local BASIC = 1
 local RADIOACTIVE_JUNK = 2
@@ -18,8 +22,8 @@ local function applyEffect(self, boat)
 		boat.gasDepletionRate = boat.gasDepletionRate / 2
 	elseif tileId == FUEL_CELL then
 		boat.gasDepletionRate = 0
-		self.meta.gas = FUEL_CELL_INITIAL_GAS
-		self.meta.gasDepletionRate = GAS_DEPLETION_RATE_DEFAULT
+		self.meta.gas = values.FUEL_CELL_INITIAL_GAS
+		self.meta.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
 	end
 end
 
@@ -32,10 +36,10 @@ local function removeEffect(self, boat)
 	elseif tileId == LANTERN then
 		boat.isLanternActive = false
 	elseif tileId == LEAD_FOOT then
-		boat.deceleration = BOAT_DECELERATION_DEFAULT
+		boat.deceleration = values.BOAT_DECELERATION_DEFAULT
 		boat.gasDepletionRate = boat.gasDepletionRate * 2
 	elseif tileId == FUEL_CELL then
-		boat.gasDepletionRate = GAS_DEPLETION_RATE_DEFAULT
+		boat.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
 	end
 end
 
@@ -50,7 +54,7 @@ local function update(self, dt)
 	end
 end
 
-function ConvertToPackage(tileObject)
+function package.toPackage(tileObject)
 	tileObject.destinationId = tileObject.properties.destination.id
 	tileObject.applyEffect = applyEffect
 	tileObject.removeEffect = removeEffect
@@ -58,3 +62,5 @@ function ConvertToPackage(tileObject)
 	tileObject.meta = {}
 	return tileObject
 end
+
+return package

@@ -1,6 +1,6 @@
-local settings = require("engine/settings")
-
 local camera = {}
+
+local settings = require("engine/settings")
 
 function camera.getWorldToCanvasTransform(_camera)
 	local camX, camY = _camera.transform:transformPoint(0, 0)

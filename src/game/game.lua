@@ -1,3 +1,5 @@
+local game = {}
+
 local settings = require("engine/settings")
 local color = require("engine/color")
 local tilemap = require("engine/tilemap")
@@ -5,12 +7,11 @@ local camera = require("engine/camera")
 local draw = require("engine/draw")
 local collision = require("engine/collision")
 
-require("game/boat")
-require("game/package")
+local boat = require("game/boat")
+local package = require("game/package")
 local ui = require("game/ui")
 local music = require("game/music")
 
-local game = {}
 
 function game.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
@@ -60,7 +61,7 @@ function game.load()
 
 	WorldObjects = {}
 
-	Boat = NewBoat(EntitiesImage, game.tilemap)
+	Boat = boat.new(EntitiesImage, game.tilemap)
 	table.insert(WorldObjects, Boat)
 
 	for rowIdx, row in ipairs(game.tilemap.layers[LandTileLayerIndex].tiles) do
@@ -76,7 +77,7 @@ function game.load()
 	for _, object in ipairs(game.tilemap.layers[ObjectTileLayerIndex].objects) do
 		local tilesetIndex = object.tilesetIndex
 		if (tilesetIndex == PackageTilesetIndex) then
-			table.insert(Packages, ConvertToPackage(object))
+			table.insert(Packages, package.toPackage(object))
 		elseif (tilesetIndex == MailboxTilesetIndex) then
 			table.insert(Mailboxes, object)
 		end

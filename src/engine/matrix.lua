@@ -1,6 +1,6 @@
-local debug = require("engine/debug")
+local matrix = {}
 
-function GetTransposed(matrix)
+function matrix.getTransposed(matrix)
 	local transposed = {}
 	for i, row in ipairs(matrix) do
 		for j, val in ipairs(row) do
@@ -13,3 +13,5 @@ function GetTransposed(matrix)
 
 	return transposed
 end
+
+return matrix
