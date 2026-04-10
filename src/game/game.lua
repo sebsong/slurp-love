@@ -1,15 +1,51 @@
+require("engine/settings")
+require("engine/color")
 local tilemap = require("engine/tilemap")
+local camera = require("engine/camera")
+require("engine/draw_utils")
+local collision = require("engine/collision")
+
+require("game/boat")
+require("game/package")
+local ui = require("game/ui")
+local music = require("game/music")
 
 local game = {}
 
 function game.load()
-	game.landTileLayerIndex = 1
-	game.objectTileLayerIndex = 2
+	love.graphics.setDefaultFilter("nearest", "nearest")
 
-	game.landTilesetIndex = 1
-	game.packageTilesetIndex = 2
-	game.buildingTilesetIndex = 3
-	game.mailboxTilesetIndex = 4
+	local windowWidth, windowHeight = love.graphics.getDimensions()
+	ScreenScale = math.min(windowWidth / BaseCanvasWidth, windowHeight / BaseCanvasHeight)
+
+	-- if ScreenScale > 1 then
+	-- if display is smaller than the canvas, we can't enforce integer scaling
+	-- ScreenScale = math.floor(ScreenScale)
+	-- end
+
+	local canvasWidth = BaseCanvasWidth * ScreenScale
+	local canvasHeight = BaseCanvasHeight * ScreenScale
+	Canvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
+	CanvasToScreenTransform = love.math.newTransform(
+		(windowWidth - canvasWidth) / 2,
+		(windowHeight - canvasHeight) / 2,
+		0
+	)
+
+	Camera = camera.new()
+
+	local colorPalette = LoadColorPalette("assets/art/retrotronic-dx.hex")
+	LoadShader(colorPalette)
+
+	BackgroundImage = love.graphics.newImage("assets/art/background.png")
+
+	LandTileLayerIndex = 1
+	ObjectTileLayerIndex = 2
+
+	LandTilesetIndex = 1
+	PackageTilesetIndex = 2
+	BuildingTilesetIndex = 3
+	MailboxTilesetIndex = 4
 	local tilesets = {
 		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
 		tilemap.newTileset("assets/art/tileset.png", 16, 16),
@@ -19,6 +55,144 @@ function game.load()
 		tilemap.newTileset("assets/art/walls.png", 16, 256),
 	}
 	game.tilemap = tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
+
+	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
+
+	WorldObjects = {}
+
+	Boat = NewBoat(EntitiesImage, game.tilemap)
+	table.insert(WorldObjects, Boat)
+
+	for rowIdx, row in ipairs(game.tilemap.layers[LandTileLayerIndex].tiles) do
+		for colIdx, tile in ipairs(row) do
+			if tile.tileId then
+				collision.register({ position = { colIdx, rowIdx }, collider = { width = 1, height = 1 } })
+			end
+		end
+	end
+
+	Packages = {}
+	Mailboxes = {}
+	for _, object in ipairs(game.tilemap.layers[ObjectTileLayerIndex].objects) do
+		local tilesetIndex = object.tilesetIndex
+		if (tilesetIndex == PackageTilesetIndex) then
+			table.insert(Packages, ConvertToPackage(object))
+		elseif (tilesetIndex == MailboxTilesetIndex) then
+			table.insert(Mailboxes, object)
+		end
+
+		table.insert(WorldObjects, object)
+	end
+
+	ui:load()
+	music:load()
+
+	love.graphics.setPointSize(8)
+	love.graphics.setLineWidth(.1)
+	love.graphics.setBackgroundColor(0, 0, 0)
+
+	LanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
+	LanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
+	LanternShader:send("canvasDimensions", { canvasWidth, canvasHeight })
+	LanternShader:send("colorPalette", unpack(colorPalette))
+	LanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
+end
+
+function game.unload()
+end
+
+function game.keypressed(key, scancode, isRepeat)
+	if key == "space" and not isRepeat then
+		if not Boat:pickupPackages(Packages) then
+			Boat:deliverPackage(Mailboxes)
+		end
+	end
+
+	Camera:keypressed(key, scancode, isRepeat)
+end
+
+function game.mousepressed(x, y, button, isTouch, presses)
+	Camera:mousepressed(x, y, button, isTouch, presses)
+end
+
+function game.mousemoved(x, y, dx, dy, isTouch)
+	Camera:mousemoved(x, y, dx, dy, isTouch)
+end
+
+function game.wheelmoved(x, y)
+	Camera:wheelmoved(x, y)
+end
+
+function game.update(dt)
+	if love.keyboard.isDown("escape") then
+		love.event.quit()
+	end
+
+	Boat:update(dt)
+	for _, package in ipairs(Boat.packages) do
+		package:update(dt)
+	end
+	Camera:update(Boat, dt)
+	music:update(Boat, dt)
+
+	-- TODO: intersect world objects with what the camera can see and only sort + draw those
+	table.sort(
+		WorldObjects,
+		function(d1, d2)
+			local _, d1Y = d1.transform:transformPoint(0, 0)
+			local _, d2Y = d2.transform:transformPoint(0, 0)
+			return d1Y < d2Y
+		end
+	)
+end
+
+function game.draw()
+	love.graphics.setCanvas(Canvas)
+
+	love.graphics.setCanvas()
+	Canvas:renderTo(
+		function()
+			love.graphics.clear()
+
+			love.graphics.push()
+			love.graphics.scale(ScreenScale, ScreenScale)
+
+			love.graphics.draw(BackgroundImage)
+
+			love.graphics.push()
+			love.graphics.scale(Camera.zoom, Camera.zoom)
+			love.graphics.applyTransform(camera.getWorldToCanvasTransform(Camera))
+
+			game.tilemap:draw(LandTileLayerIndex, Camera)
+			for _, worldObject in ipairs(WorldObjects) do
+				Draw(worldObject)
+			end
+
+			if Boat.isLanternActive then
+				local boatX, boatY = Boat.transform:transformPoint(0, 0)
+				local lanternWidth, lanternHeight = LanternLightImage:getDimensions()
+				love.graphics.setShader(LanternShader)
+				LanternShader:send("canvasImage", Canvas)
+				love.graphics.draw(LanternLightImage, boatX - lanternWidth / 2, boatY - lanternHeight / 2)
+				love.graphics.setShader()
+			end
+
+			love.graphics.push()
+			love.graphics.applyTransform(game.tilemap.tilemapIndexToWorldTransform)
+			local boatColIdx, boatRowIdx = game.tilemap.worldToTilemapIndexTransform:transformPoint(Boat.transform
+				:transformPoint(0, 0))
+			-- collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
+			love.graphics.pop()
+			-- collision.drawTileColliders(Tilemap, LandTileLayerIndex)
+
+			love.graphics.pop()
+
+			ui:draw(Boat.packages)
+
+			love.graphics.pop()
+		end
+	)
+	love.graphics.draw(Canvas, CanvasToScreenTransform)
 end
 
 return game

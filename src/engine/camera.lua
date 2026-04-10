@@ -1,14 +1,16 @@
 require("engine/settings")
 
-function GetWorldToCanvasTransform(camera)
-	local camX, camY = camera.transform:transformPoint(0, 0)
+local camera = {}
+
+function camera.getWorldToCanvasTransform(_camera)
+	local camX, camY = _camera.transform:transformPoint(0, 0)
 	return love.math.newTransform(
-		-camX + (camera:getScreenWidth() / 2),
-		-camY + (camera:getScreenHeight() / 2)
+		-camX + (_camera:getScreenWidth() / 2),
+		-camY + (_camera:getScreenHeight() / 2)
 	)
 end
 
-function NewCamera()
+function camera.new()
 	local screenWidth = BaseCanvasWidth
 	local screenHeight = BaseCanvasHeight
 	local zoomToggleIdx = 1
@@ -99,3 +101,5 @@ function NewCamera()
 		update = update,
 	}
 end
+
+return camera
