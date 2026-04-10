@@ -13,27 +13,7 @@ local package = require("game/package")
 local ui = require("game/ui")
 local music = require("game/music")
 
-
 function game.load()
-	love.graphics.setDefaultFilter("nearest", "nearest")
-
-	local windowWidth, windowHeight = love.graphics.getDimensions()
-	ScreenScale = math.min(windowWidth / settings.baseCanvasWidth, windowHeight / settings.baseCanvasHeight)
-
-	-- if ScreenScale > 1 then
-	-- if display is smaller than the canvas, we can't enforce integer scaling
-	-- ScreenScale = math.floor(ScreenScale)
-	-- end
-
-	local canvasWidth = settings.baseCanvasWidth * ScreenScale
-	local canvasHeight = settings.baseCanvasHeight * ScreenScale
-	Canvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
-	CanvasToScreenTransform = love.math.newTransform(
-		(windowWidth - canvasWidth) / 2,
-		(windowHeight - canvasHeight) / 2,
-		0
-	)
-
 	Camera = camera.new()
 
 	color.loadPalette("assets/art/retrotronic-dx.hex")
@@ -89,13 +69,9 @@ function game.load()
 	ui:load()
 	music:load()
 
-	love.graphics.setPointSize(8)
-	love.graphics.setLineWidth(.1)
-	love.graphics.setBackgroundColor(0, 0, 0)
-
 	LanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
 	LanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
-	LanternShader:send("canvasDimensions", { canvasWidth, canvasHeight })
+	LanternShader:send("canvasDimensions", { draw.canvas:getPixelWidth(), draw.canvas:getPixelHeight() })
 	LanternShader:send("colorPalette", unpack(color.palette))
 	LanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
 end
@@ -147,52 +123,37 @@ function game.update(dt)
 end
 
 function game.draw()
-	love.graphics.setCanvas(Canvas)
+	love.graphics.draw(BackgroundImage)
 
-	love.graphics.setCanvas()
-	Canvas:renderTo(
-		function()
-			love.graphics.clear()
+	love.graphics.push()
+	love.graphics.scale(Camera.zoom, Camera.zoom)
+	love.graphics.applyTransform(camera.getWorldToCanvasTransform(Camera))
 
-			love.graphics.push()
-			love.graphics.scale(ScreenScale, ScreenScale)
+	game.tilemap:draw(LandTileLayerIndex, Camera)
+	for _, worldObject in ipairs(WorldObjects) do
+		draw.draw(worldObject)
+	end
 
-			love.graphics.draw(BackgroundImage)
+	if Boat.isLanternActive then
+		local boatX, boatY = Boat.transform:transformPoint(0, 0)
+		local lanternWidth, lanternHeight = LanternLightImage:getDimensions()
+		love.graphics.setShader(LanternShader)
+		LanternShader:send("canvasImage", Canvas)
+		love.graphics.draw(LanternLightImage, boatX - lanternWidth / 2, boatY - lanternHeight / 2)
+		love.graphics.setShader()
+	end
 
-			love.graphics.push()
-			love.graphics.scale(Camera.zoom, Camera.zoom)
-			love.graphics.applyTransform(camera.getWorldToCanvasTransform(Camera))
+	love.graphics.push()
+	love.graphics.applyTransform(game.tilemap.tilemapIndexToWorldTransform)
+	local boatColIdx, boatRowIdx = game.tilemap.worldToTilemapIndexTransform:transformPoint(Boat.transform
+		:transformPoint(0, 0))
+	-- collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
+	love.graphics.pop()
+	-- collision.drawTileColliders(Tilemap, LandTileLayerIndex)
 
-			game.tilemap:draw(LandTileLayerIndex, Camera)
-			for _, worldObject in ipairs(WorldObjects) do
-				draw.draw(worldObject)
-			end
+	love.graphics.pop()
 
-			if Boat.isLanternActive then
-				local boatX, boatY = Boat.transform:transformPoint(0, 0)
-				local lanternWidth, lanternHeight = LanternLightImage:getDimensions()
-				love.graphics.setShader(LanternShader)
-				LanternShader:send("canvasImage", Canvas)
-				love.graphics.draw(LanternLightImage, boatX - lanternWidth / 2, boatY - lanternHeight / 2)
-				love.graphics.setShader()
-			end
-
-			love.graphics.push()
-			love.graphics.applyTransform(game.tilemap.tilemapIndexToWorldTransform)
-			local boatColIdx, boatRowIdx = game.tilemap.worldToTilemapIndexTransform:transformPoint(Boat.transform
-				:transformPoint(0, 0))
-			-- collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
-			love.graphics.pop()
-			-- collision.drawTileColliders(Tilemap, LandTileLayerIndex)
-
-			love.graphics.pop()
-
-			ui:draw(Boat.packages)
-
-			love.graphics.pop()
-		end
-	)
-	love.graphics.draw(Canvas, CanvasToScreenTransform)
+	ui:draw(Boat.packages)
 end
 
 return game
