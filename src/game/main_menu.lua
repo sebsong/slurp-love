@@ -1,19 +1,17 @@
 local mainMenu = {}
 
 local scene = require("engine/scene")
-local game = require("game/game")
+
+local backgroundImage
 
 function mainMenu.load()
-	BackgroundImage = love.graphics.newImage("assets/art/main_menu.png")
+	backgroundImage = love.graphics.newImage("assets/art/main_menu.png")
 end
 
 function mainMenu.unload()
 end
 
 function mainMenu.keypressed(key, scancode, isRepeat)
-	if key == "space" and not isRepeat then
-		scene.transition(mainMenu, game)
-	end
 end
 
 function mainMenu.mousepressed(x, y, button, isTouch, presses)
@@ -29,7 +27,7 @@ function mainMenu.update(dt)
 end
 
 function mainMenu.draw()
-	love.graphics.draw(BackgroundImage)
+	love.graphics.draw(backgroundImage)
 end
 
 return mainMenu

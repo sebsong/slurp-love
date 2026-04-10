@@ -5,12 +5,12 @@ local game = require("game/game")
 local debug = require("game/debug")
 
 function love.load()
-	scene.register(mainMenu)
-	scene.register(game)
-	scene.register(debug)
+	scene.register("mainMenu", mainMenu)
+	scene.register("game", game)
+	scene.register("debug", debug)
 
-	scene.start(mainMenu)
-	scene.start(debug)
+	scene.start(scene.scenes.debug)
+	scene.start(scene.scenes.mainMenu)
 end
 
 function love.keypressed(key, scancode, isRepeat)

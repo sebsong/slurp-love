@@ -1,6 +1,6 @@
-local scene = {}
-
-local scenes = {}
+local scene = {
+	scenes = {}
+}
 
 local function init(_scene)
 	assert(_scene.load, "Scene missing load method")
@@ -15,10 +15,8 @@ local function init(_scene)
 	return _scene
 end
 
-function scene.register(_scene)
-	table.insert(scenes, init(_scene))
-
-	return #scenes
+function scene.register(sceneName, _scene)
+	scene.scenes[sceneName] = init(_scene)
 end
 
 function scene.start(_scene)
@@ -60,7 +58,7 @@ local function shouldSkip(_scene)
 end
 
 function scene.keypressed(key, scancode, isRepeat)
-	for _, _scene in ipairs(scenes) do
+	for _, _scene in pairs(scene.scenes) do
 		if shouldSkip(_scene) then
 			goto continue
 		end
@@ -74,7 +72,7 @@ function scene.keypressed(key, scancode, isRepeat)
 end
 
 function scene.mousepressed(x, y, button, isTouch, presses)
-	for _, _scene in ipairs(scenes) do
+	for _, _scene in pairs(scene.scenes) do
 		if shouldSkip(_scene) then
 			goto continue
 		end
@@ -88,7 +86,7 @@ function scene.mousepressed(x, y, button, isTouch, presses)
 end
 
 function scene.mousemoved(x, y, dx, dy, isTouch)
-	for _, _scene in ipairs(scenes) do
+	for _, _scene in pairs(scene.scenes) do
 		if shouldSkip(_scene) then
 			goto continue
 		end
@@ -102,7 +100,7 @@ function scene.mousemoved(x, y, dx, dy, isTouch)
 end
 
 function scene.wheelmoved(x, y)
-	for _, _scene in ipairs(scenes) do
+	for _, _scene in pairs(scene.scenes) do
 		if shouldSkip(_scene) then
 			goto continue
 		end
@@ -116,7 +114,7 @@ function scene.wheelmoved(x, y)
 end
 
 function scene.update(dt)
-	for _, _scene in ipairs(scenes) do
+	for _, _scene in pairs(scene.scenes) do
 		if _scene.shouldUnload then
 			unload(_scene);
 		end
@@ -135,7 +133,7 @@ function scene.update(dt)
 end
 
 function scene.draw()
-	for _, _scene in ipairs(scenes) do
+	for _, _scene in pairs(scene.scenes) do
 		if shouldSkip(_scene) then
 			goto continue
 		end

@@ -6,6 +6,7 @@ local tilemap = require("engine/tilemap")
 local camera = require("engine/camera")
 local draw = require("engine/draw")
 local collision = require("engine/collision")
+local scene = require("engine/scene")
 
 local boat = require("game/boat")
 local package = require("game/package")
@@ -100,6 +101,8 @@ function game.load()
 end
 
 function game.unload()
+	music:unload()
+	collision.clearAll()
 end
 
 function game.keypressed(key, scancode, isRepeat)

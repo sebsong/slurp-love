@@ -96,6 +96,10 @@ function collision.getPositionUpdate(collidable, targetPositionUpdate)
 	return positionUpdate
 end
 
+function collision.clearAll()
+	collidables = {}
+end
+
 function collision.drawTileColliders(tilemap, layerIndex)
 	love.graphics.push()
 	love.graphics.applyTransform(tilemap.tilemapIndexToWorldTransform)

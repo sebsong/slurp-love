@@ -57,6 +57,12 @@ function music:load()
 	drums_hype:play()
 end
 
+function music:unload()
+	chords:stop()
+	drums_mellow:stop()
+	drums_hype:stop()
+end
+
 function music:activateDrumsMellow()
 	fadeIn(drums_mellow)
 	fadeOut(drums_hype)
