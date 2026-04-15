@@ -1,3 +1,4 @@
+local canvas = require("engine/canvas")
 local draw = require("engine/draw")
 local scene = require("engine/scene")
 
@@ -6,6 +7,7 @@ local game = require("game/game")
 local debug = require("game/debug")
 
 function love.load()
+	canvas.computeScale()
 	draw.load()
 
 	scene.register("mainMenu", mainMenu)
@@ -21,10 +23,12 @@ function love.keypressed(key, scancode, isRepeat)
 end
 
 function love.mousepressed(x, y, button, isTouch, presses)
+	x, y = canvas.screenToCanvasTransform:transformPoint(x, y)
 	scene.mousepressed(x, y, button, isTouch, presses)
 end
 
 function love.mousemoved(x, y, dx, dy, isTouch)
+	x, y = canvas.screenToCanvasTransform:transformPoint(x, y)
 	scene.mousemoved(x, y, dx, dy, isTouch)
 end
 

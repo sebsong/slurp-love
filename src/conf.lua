@@ -24,8 +24,8 @@ function love.conf(t)
 
 	t.window.title          = "slurp's up!"
 	t.window.icon           = nil
-	t.window.width          = settings.baseCanvasWidth
-	t.window.height         = settings.baseCanvasHeight
+	t.window.width          = settings.canvasPixelWidth
+	t.window.height         = settings.canvasPixelHeight
 	t.window.borderless     = false
 	t.window.resizable      = false
 	t.window.minwidth       = 1

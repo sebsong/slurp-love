@@ -1,12 +1,11 @@
 local game = {}
 
-local settings = require("engine/settings")
+local canvas = require("engine/canvas")
 local color = require("engine/color")
 local tilemap = require("engine/tilemap")
 local camera = require("engine/camera")
 local draw = require("engine/draw")
 local collision = require("engine/collision")
-local scene = require("engine/scene")
 
 local boat = require("game/boat")
 local package = require("game/package")
@@ -71,7 +70,7 @@ function game.load()
 
 	LanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
 	LanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
-	LanternShader:send("canvasDimensions", { draw.canvas:getPixelWidth(), draw.canvas:getPixelHeight() })
+	LanternShader:send("canvasDimensions", { canvas.canvas:getPixelWidth(), canvas.canvas:getPixelHeight() })
 	LanternShader:send("colorPalette", unpack(color.palette))
 	LanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
 end

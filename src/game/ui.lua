@@ -8,8 +8,8 @@ local gasMeterWidth, gasMeterHeight = 16, 128
 local packageContainerWidth, packageContainerHeight = 20, 74
 local padding = 10
 local packageUiLocation = {
-	x = settings.baseCanvasWidth - padding - packageContainerWidth,
-	y = settings.baseCanvasHeight - padding - packageContainerHeight
+	x = settings.canvasPixelWidth - padding - packageContainerWidth,
+	y = settings.canvasPixelHeight - padding - packageContainerHeight
 }
 local packageUiVerticalSpacing = -18
 local packageOffsetXInitial = 2
@@ -39,9 +39,9 @@ end
 
 function ui.draw(self, packages)
 	local _, _, gasMeterWidth, gasMeterHeight = ui.gasMeterQuad:getViewport()
-	love.graphics.draw(ui.image, ui.gasMeterQuad, padding, settings.baseCanvasHeight - gasMeterHeight - padding)
+	love.graphics.draw(ui.image, ui.gasMeterQuad, padding, settings.canvasPixelHeight - gasMeterHeight - padding)
 	love.graphics.setShader(ui.gasMeterShader)
-	love.graphics.draw(ui.image, ui.gasMeterProgressQuad, padding, settings.baseCanvasHeight - gasMeterHeight - padding)
+	love.graphics.draw(ui.image, ui.gasMeterProgressQuad, padding, settings.canvasPixelHeight - gasMeterHeight - padding)
 	love.graphics.setShader()
 
 	love.graphics.draw(

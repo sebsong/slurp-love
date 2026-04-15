@@ -11,8 +11,8 @@ function camera.getWorldToCanvasTransform(_camera)
 end
 
 function camera.new()
-	local screenWidth = settings.baseCanvasWidth
-	local screenHeight = settings.baseCanvasHeight
+	local screenWidth = settings.canvasPixelWidth
+	local screenHeight = settings.canvasPixelHeight
 	local zoomToggleIdx = 1
 	local zoomToggles = { 1, 0.5 }
 	local panSpeed = 0.5

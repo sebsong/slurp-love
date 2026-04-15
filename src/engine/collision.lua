@@ -18,6 +18,14 @@ function collision.register(collidable)
 	table.insert(collidables, collidable)
 end
 
+function collision.hitTest(x, y, collider, colliderPosition)
+	local colliderX, colliderY = unpack(colliderPosition)
+	local xMin, xMax = colliderX, colliderX + collider.width
+	local yMin, yMax = colliderY, colliderY + collider.height
+
+	return x >= xMin and x < xMax and y >= yMin and y < yMax
+end
+
 local function getCollidablePosition(collidable)
 	if collidable.position then
 		return collidable.position

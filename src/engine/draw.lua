@@ -1,10 +1,7 @@
-local draw = {
-	canvas = nil
-}
+local draw = {}
 
-local settings = require("engine/settings")
+local canvas = require("engine/canvas")
 
-local screenScale
 local canvasToScreenTransform
 local shader
 
@@ -13,23 +10,6 @@ function draw.load()
 	love.graphics.setPointSize(8)
 	love.graphics.setLineWidth(.1)
 	love.graphics.setBackgroundColor(0, 0, 0)
-
-	local windowWidth, windowHeight = love.graphics.getDimensions()
-	screenScale = math.min(windowWidth / settings.baseCanvasWidth, windowHeight / settings.baseCanvasHeight)
-
-	-- if ScreenScale > 1 then
-	-- if display is smaller than the canvas, we can't enforce integer scaling
-	-- ScreenScale = math.floor(ScreenScale)
-	-- end
-
-	local canvasWidth = settings.baseCanvasWidth * screenScale
-	local canvasHeight = settings.baseCanvasHeight * screenScale
-	draw.canvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
-	canvasToScreenTransform = love.math.newTransform(
-		(windowWidth - canvasWidth) / 2,
-		(windowHeight - canvasHeight) / 2,
-		0
-	)
 end
 
 function draw.loadShader(colorPalette)
@@ -50,25 +30,29 @@ function draw.draw(drawable)
 	-- shader:send("src_color", ColorPalette[3])
 	-- shader:send("dst_color", ColorPalette[8])
 	love.graphics.setShader(shader)
-	love.graphics.draw(drawable.image, drawable.quad, drawable.offsetX, drawable.offsetY)
+	if drawable.quad then
+		love.graphics.draw(drawable.image, drawable.quad, drawable.offsetX, drawable.offsetY)
+	else
+		love.graphics.draw(drawable.image, drawable.offsetX, drawable.offsetY)
+	end
 	love.graphics.setShader()
 	love.graphics.pop()
 end
 
 function draw.drawToCanvas(drawFunction)
-	draw.canvas:renderTo(
+	canvas.canvas:renderTo(
 		function()
 			love.graphics.clear()
 
 			love.graphics.push()
-			love.graphics.scale(screenScale, screenScale)
+			love.graphics.scale(canvas.scale, canvas.scale)
 
 			drawFunction()
 
 			love.graphics.pop()
 		end
 	)
-	love.graphics.draw(draw.canvas, canvasToScreenTransform)
+	love.graphics.draw(canvas.canvas, canvasToScreenTransform)
 end
 
 return draw
