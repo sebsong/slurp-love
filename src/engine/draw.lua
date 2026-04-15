@@ -2,7 +2,6 @@ local draw = {}
 
 local canvas = require("engine/canvas")
 
-local canvasToScreenTransform
 local shader
 
 function draw.load()
@@ -52,7 +51,7 @@ function draw.drawToCanvas(drawFunction)
 			love.graphics.pop()
 		end
 	)
-	love.graphics.draw(canvas.canvas, canvasToScreenTransform)
+	love.graphics.draw(canvas.canvas, canvas.canvasToScreenTransform)
 end
 
 return draw
