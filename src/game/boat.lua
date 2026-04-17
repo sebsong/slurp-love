@@ -2,12 +2,13 @@ local boat = {}
 
 local slurp_math = require("engine/math")
 local collision = require("engine/collision")
+local animation = require("engine/animation")
 
 local values = require("game/values")
 local ui = require("game/ui")
 
-local numBoatAngles = 16
-local boatWidth, boatHeight = 16, 16
+local NUM_BOAT_ANGLES = 16
+local BOAT_WIDTH, BOATH_HEIGHT = 16, 16
 
 local function update(self, dt)
 	local didMove = false
@@ -53,14 +54,14 @@ local function update(self, dt)
 		self.transform:rotate(self.rotationSpeed * dt)
 	end
 
-	local rotSegmentLength = 2 * math.pi / #self.quads
-	local boatQuadIdx = math.floor(
+	local rotSegmentLength = 2 * math.pi / #self.drawComponent.quads
+	local frameIdx = math.floor(
 		(
 			((self.rotation + (rotSegmentLength / 2)) % (2 * math.pi)) /
 			(rotSegmentLength)
 		)
 	) + 1
-	self.quad = self.quads[boatQuadIdx]
+	self.drawComponent.currentFrame = frameIdx
 
 	local tilemapPosition = { self.tilemap.worldToTilemapIndexTransform:transformPoint(
 		self.transform:transformPoint(0, 0)
@@ -89,11 +90,15 @@ local function update(self, dt)
 	)
 end
 
-local function draw(self)
+local function draw(animation, transform)
 	love.graphics.push()
-	local boatX, boatY = self.transform:transformPoint(0, 0)
-	love.graphics.draw(self.image, self.quad, boatX + self.offsetX, boatY + self.offsetY)
-
+	local boatX, boatY = transform:transformPoint(0, 0)
+	love.graphics.draw(
+		animation.image,
+		animation.quads[animation.currentFrame],
+		boatX + animation.xOffset,
+		boatY + animation.yOffset
+	)
 	love.graphics.pop()
 end
 
@@ -150,32 +155,31 @@ local function getPosition(self)
 	return { self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)) }
 end
 
-function boat.new(entitiesImage, tilemap)
+function boat.new(tilemap)
+	local boatImage = love.graphics.newImage("assets/art/boat.png")
 	local boatQuads = {}
-	for i = 1, numBoatAngles do
+	for i = 0, NUM_BOAT_ANGLES - 1 do
 		local boatQuad = love.graphics.newQuad(
-			(6 + i - 1) * boatWidth, 2 * boatHeight,
-			boatWidth, boatHeight,
-			entitiesImage:getWidth(), entitiesImage:getHeight()
+			i * BOAT_WIDTH, 0,
+			BOAT_WIDTH, BOATH_HEIGHT,
+			boatImage
 		)
 		table.insert(boatQuads, boatQuad)
 	end
 	local quad = boatQuads[1]
 	local _, _, width, height = quad:getViewport()
 
+	local animation = animation.new(boatImage, NUM_BOAT_ANGLES, -width / 2, -height + (8 / 2))
+	animation.draw = draw
+
 	return {
-		shouldDraw = true,
-		image = entitiesImage,
-		quad = quad,
-		offsetX = -width / 2,
-		offsetY = -height + (8 / 2), -- TODO: build the boat from a tile object
+		-- TODO: build the boat from a tile object
+		drawComponent = animation,
 		transform = love.math.newTransform(0, -100),
-		draw = draw,
 
 		getPosition = getPosition,
 		collider = { width = 1, height = 1 },
 
-		quads = boatQuads,
 		speed = 0,
 		maxSpeed = values.BOAT_MAX_SPEED_DEFAULT,
 		maxBackwardsSpeed = values.BOAT_MAX_BACKWARD_SPEED_DEFAULT,

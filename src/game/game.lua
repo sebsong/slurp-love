@@ -37,11 +37,9 @@ function game.load()
 	}
 	game.tilemap = tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
 
-	EntitiesImage = love.graphics.newImage("assets/art/entities.png")
-
 	WorldObjects = {}
 
-	Boat = boat.new(EntitiesImage, game.tilemap)
+	Boat = boat.new(game.tilemap)
 	table.insert(WorldObjects, Boat)
 
 	for rowIdx, row in ipairs(game.tilemap.layers[LandTileLayerIndex].tiles) do
@@ -130,7 +128,7 @@ function game.draw()
 
 	game.tilemap:draw(LandTileLayerIndex, Camera)
 	for _, worldObject in ipairs(WorldObjects) do
-		draw.draw(worldObject, worldObject.transform)
+		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
 
 	if Boat.isLanternActive then

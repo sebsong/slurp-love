@@ -228,11 +228,13 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 				local quad = tileset.quads[tileId]
 				local _, _, objWidth, objHeight = quad:getViewport()
 				table.insert(objects, {
-					shouldDraw = true,
-					image = tileset.image,
-					quad = quad,
-					offsetX = -objWidth / 2,
-					offsetY = -objHeight + tileHeight / 2,
+					drawComponent = {
+						shouldDraw = true,
+						image = tileset.image,
+						quad = quad,
+						xOffset = -objWidth / 2,
+						yOffset = -objHeight + tileHeight / 2,
+					},
 					transform = love.math.newTransform(worldX, worldY),
 
 					id = object.id,

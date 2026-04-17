@@ -1,6 +1,6 @@
 local animation = {}
 
-function animation.new(image, numFrames)
+function animation.new(image, numFrames, xOffset, yOffset)
 	local quads = {}
 	local imageWidth, imageHeight = image:getDimensions()
 	local quadWidth, quadHeight = imageWidth / numFrames, imageHeight
@@ -11,6 +11,8 @@ function animation.new(image, numFrames)
 	return {
 		image = image,
 		quads = quads,
+		xOffset = xOffset,
+		yOffset = yOffset,
 		shouldDraw = true,
 		currentFrame = 1
 	}

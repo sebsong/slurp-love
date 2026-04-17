@@ -14,12 +14,12 @@ function draw.loadShader(colorPalette)
 	shader = love.graphics.newShader("assets/shader/color_swap.glsl")
 end
 
-function draw.draw(drawable, transform)
-	if not drawable.shouldDraw then
+function draw.draw(drawComponent, transform)
+	if not drawComponent.shouldDraw then
 		return
 	end
-	if drawable.draw then
-		drawable:draw()
+	if drawComponent.draw then
+		drawComponent.draw(drawComponent, transform)
 		return
 	end
 
@@ -28,12 +28,26 @@ function draw.draw(drawable, transform)
 	-- shader:send("src_color", ColorPalette[3])
 	-- shader:send("dst_color", ColorPalette[8])
 	love.graphics.setShader(shader)
-	if drawable.quad then
-		love.graphics.draw(drawable.image, drawable.quad, drawable.offsetX, drawable.offsetY)
-	elseif drawable.quads then
-		love.graphics.draw(drawable.image, drawable.quads[drawable.currentFrame], drawable.offsetX, drawable.offsetY)
+	if drawComponent.quad then
+		love.graphics.draw(
+			drawComponent.image,
+			drawComponent.quad,
+			drawComponent.xOffset,
+			drawComponent.yOffset
+		)
+	elseif drawComponent.quads then
+		love.graphics.draw(
+			drawComponent.image,
+			drawComponent.quads[drawComponent.currentFrame],
+			drawComponent.xOffset,
+			drawComponent.yOffset
+		)
 	else
-		love.graphics.draw(drawable.image, drawable.offsetX, drawable.offsetY)
+		love.graphics.draw(
+			drawComponent.image,
+			drawComponent.xOffset,
+			drawComponent.yOffset
+		)
 	end
 	love.graphics.setShader()
 	love.graphics.pop()
