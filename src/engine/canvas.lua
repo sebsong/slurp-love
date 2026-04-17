@@ -1,5 +1,6 @@
 local canvas = {
 	scale = nil,
+	scaledCanvasToScreenTransform = nil,
 	canvasToScreenTransform = nil,
 	screenToCanvasTransform = nil,
 	canvas = nil,
@@ -7,7 +8,7 @@ local canvas = {
 
 local settings = require("engine/settings")
 
-function canvas.computeScale()
+function canvas.load()
 	local screenWidth, screenHeight = love.graphics.getDimensions()
 	canvas.scale = math.min(screenWidth / settings.canvasPixelWidth, screenHeight / settings.canvasPixelHeight)
 	-- if canvas.scale > 1 then
@@ -17,16 +18,20 @@ function canvas.computeScale()
 
 	local canvasWidth = settings.canvasPixelWidth * canvas.scale
 	local canvasHeight = settings.canvasPixelHeight * canvas.scale
-	-- canvas.canvasToScreenTransform = love.math.newTransform(
-	-- 	(screenWidth - canvasWidth) / 2,
-	-- 	(screenHeight - canvasHeight) / 2,
-	-- 	0,
-	-- 	canvas.scale,
-	-- 	canvas.scale
-	-- )
+	local xAdjust = (screenWidth - canvasWidth) / 2
+	local yAdjust = (screenHeight - canvasHeight) / 2
+
+	canvas.scaledCanvasToScreenTransform = love.math.newTransform(
+		xAdjust,
+		yAdjust
+	)
+
 	canvas.canvasToScreenTransform = love.math.newTransform(
-		(screenWidth - canvasWidth) / 2,
-		(screenHeight - canvasHeight) / 2
+		xAdjust,
+		yAdjust,
+		0,
+		canvas.scale,
+		canvas.scale
 	)
 	canvas.screenToCanvasTransform = canvas.canvasToScreenTransform:inverse()
 

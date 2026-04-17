@@ -5,7 +5,6 @@ local canvas = require("engine/canvas")
 local shader
 
 function draw.load()
-	love.graphics.setDefaultFilter("nearest", "nearest")
 	love.graphics.setPointSize(8)
 	love.graphics.setLineWidth(.1)
 	love.graphics.setBackgroundColor(0, 0, 0)
@@ -51,7 +50,7 @@ function draw.drawToCanvas(drawFunction)
 			love.graphics.pop()
 		end
 	)
-	love.graphics.draw(canvas.canvas, canvas.canvasToScreenTransform)
+	love.graphics.draw(canvas.canvas, canvas.scaledCanvasToScreenTransform)
 end
 
 return draw

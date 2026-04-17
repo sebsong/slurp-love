@@ -7,7 +7,8 @@ local game = require("game/game")
 local debug = require("game/debug")
 
 function love.load()
-	canvas.computeScale()
+	love.graphics.setDefaultFilter("nearest", "nearest")
+	canvas.load()
 	draw.load()
 
 	scene.register("mainMenu", mainMenu)
@@ -24,14 +25,11 @@ end
 
 function love.mousepressed(x, y, button, isTouch, presses)
 	x, y = canvas.screenToCanvasTransform:transformPoint(x, y)
-	x, y = x / canvas.scale, y / canvas.scale
 	scene.mousepressed(x, y, button, isTouch, presses)
 end
 
 function love.mousemoved(x, y, dx, dy, isTouch)
 	x, y = canvas.screenToCanvasTransform:transformPoint(x, y)
-	-- TODO: bake this into the screenToCanvasTransform
-	x, y = x / canvas.scale, y / canvas.scale
 	scene.mousemoved(x, y, dx, dy, isTouch)
 end
 

@@ -137,7 +137,7 @@ function game.draw()
 		local boatX, boatY = Boat.transform:transformPoint(0, 0)
 		local lanternWidth, lanternHeight = LanternLightImage:getDimensions()
 		love.graphics.setShader(LanternShader)
-		LanternShader:send("canvasImage", Canvas)
+		LanternShader:send("canvasImage", canvas.canvas)
 		love.graphics.draw(LanternLightImage, boatX - lanternWidth / 2, boatY - lanternHeight / 2)
 		love.graphics.setShader()
 	end
