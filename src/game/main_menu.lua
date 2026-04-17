@@ -5,6 +5,7 @@ local scene = require("engine/scene")
 local collision = require("engine/collision")
 local animation = require("engine/animation")
 
+local font
 local backgroundImage
 local playButton
 local exitButton
@@ -13,8 +14,7 @@ local DEFAULT_FRAME = 1
 local HOVER_FRAME = 2
 
 function mainMenu.load()
-	local font = love.graphics.newImageFont("assets/art/font.png", "abcdefghijklmnopqrstuvwxyz")
-	love.graphics.setFont(font)
+	font = love.graphics.newImageFont("assets/art/font.png", "abcdefghijklmnopqrstuvwxyz")
 
 	backgroundImage = love.graphics.newImage("assets/art/main_menu.png")
 
@@ -78,11 +78,14 @@ function mainMenu.update(dt)
 end
 
 function mainMenu.draw()
+	love.graphics.setFont(font)
+
 	love.graphics.draw(backgroundImage)
 	draw.draw(playButton.animation, playButton.transform)
-	love.graphics.print("play", playButton.transform:transformPoint(30, 25))
+	love.graphics.print("play", playButton.transform:transformPoint(10, 15))
 	draw.draw(exitButton.animation, exitButton.transform)
-	love.graphics.print("exit", exitButton.transform:transformPoint(30, 25))
+	love.graphics.print("exit", exitButton.transform:transformPoint(10, 15))
+	love.graphics.print("abcdefghijklm\nnopqrstuvwxyz", 220, 360 - 64 - 16)
 end
 
 return mainMenu
