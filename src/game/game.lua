@@ -130,7 +130,7 @@ function game.draw()
 
 	game.tilemap:draw(LandTileLayerIndex, Camera)
 	for _, worldObject in ipairs(WorldObjects) do
-		draw.draw(worldObject)
+		draw.draw(worldObject, worldObject.transform)
 	end
 
 	if Boat.isLanternActive then

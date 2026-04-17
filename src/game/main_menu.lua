@@ -3,46 +3,38 @@ local mainMenu = {}
 local draw = require("engine/draw")
 local scene = require("engine/scene")
 local collision = require("engine/collision")
+local animation = require("engine/animation")
 
 local backgroundImage
 local playButton
 local exitButton
+
+local DEFAULT_FRAME = 1
+local HOVER_FRAME = 2
 
 function mainMenu.load()
 	backgroundImage = love.graphics.newImage("assets/art/main_menu.png")
 
 	local buttonImage = love.graphics.newImage("assets/art/button.png")
 
+	local numButtonFrames = 2
 	local buttonImageWidth, buttonImageHeight = buttonImage:getDimensions()
-	local buttonDefaultQuad = love.graphics.newQuad(0, 0, buttonImageWidth / 2, buttonImageHeight, buttonImage)
-	local buttonHoverQuad = love.graphics.newQuad(buttonImageWidth / 2, 0, buttonImageWidth / 2, buttonImageHeight,
-		buttonImage)
-	local _, _, buttonColliderWidth, buttonColliderHeight = buttonDefaultQuad:getViewport()
-	print(buttonColliderWidth, buttonColliderHeight)
+	local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
+
 	playButton = {
-		shouldDraw = true,
-		image = buttonImage,
-		quad = buttonDefaultQuad,
-		defaultQuad = buttonDefaultQuad,
-		hoverQuad = buttonHoverQuad,
+		animation = animation.new(buttonImage, numButtonFrames),
 		transform = love.math.newTransform(75, 175),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
-
 		isPressed = false,
-		isHovered = false,
+		isHovered = false
 	}
 
 	exitButton = {
-		shouldDraw = true,
-		image = buttonImage,
-		quad = buttonDefaultQuad,
-		defaultQuad = buttonDefaultQuad,
-		hoverQuad = buttonHoverQuad,
+		animation = animation.new(buttonImage, numButtonFrames),
 		transform = love.math.newTransform(75, 250),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
-
 		isPressed = false,
-		isHovered = false,
+		isHovered = false
 	}
 end
 
@@ -53,26 +45,26 @@ function mainMenu.keypressed(key, scancode, isRepeat)
 end
 
 function mainMenu.mousepressed(x, y, button, isTouch, presses)
-	if collision.hitTest(x, y, playButton.collider, { playButton.transform:transformPoint(0, 0) }) then
+	if collision.hitTest(x, y, playButton.collider, playButton.transform) then
 		scene.transition(scene.scenes.mainMenu, scene.scenes.game)
 	end
 
-	if collision.hitTest(x, y, exitButton.collider, { exitButton.transform:transformPoint(0, 0) }) then
+	if collision.hitTest(x, y, exitButton.collider, exitButton.transform) then
 		love.event.quit()
 	end
 end
 
 function mainMenu.mousemoved(x, y, dx, dy, isTouch)
-	if collision.hitTest(x, y, playButton.collider, { playButton.transform:transformPoint(0, 0) }) then
-		playButton.quad = playButton.hoverQuad
+	if collision.hitTest(x, y, playButton.collider, playButton.transform) then
+		playButton.animation.currentFrame = HOVER_FRAME
 	else
-		playButton.quad = playButton.defaultQuad
+		playButton.animation.currentFrame = DEFAULT_FRAME
 	end
 
-	if collision.hitTest(x, y, exitButton.collider, { exitButton.transform:transformPoint(0, 0) }) then
-		exitButton.quad = exitButton.hoverQuad
+	if collision.hitTest(x, y, exitButton.collider, exitButton.transform) then
+		exitButton.animation.currentFrame = HOVER_FRAME
 	else
-		exitButton.quad = exitButton.defaultQuad
+		exitButton.animation.currentFrame = DEFAULT_FRAME
 	end
 end
 
@@ -84,9 +76,8 @@ end
 
 function mainMenu.draw()
 	love.graphics.draw(backgroundImage)
-	draw.draw(playButton)
-	draw.draw(exitButton)
-	-- love.graphics.draw(buttonImage, 75, 250)
+	draw.draw(playButton.animation, playButton.transform)
+	draw.draw(exitButton.animation, exitButton.transform)
 end
 
 return mainMenu

@@ -18,8 +18,8 @@ function collision.register(collidable)
 	table.insert(collidables, collidable)
 end
 
-function collision.hitTest(x, y, collider, colliderPosition)
-	local colliderX, colliderY = unpack(colliderPosition)
+function collision.hitTest(x, y, collider, transform)
+	local colliderX, colliderY = transform:transformPoint(0, 0)
 	local xMin, xMax = colliderX, colliderX + collider.width
 	local yMin, yMax = colliderY, colliderY + collider.height
 
