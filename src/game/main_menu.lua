@@ -13,6 +13,9 @@ local DEFAULT_FRAME = 1
 local HOVER_FRAME = 2
 
 function mainMenu.load()
+	local font = love.graphics.newImageFont("assets/art/font.png", "abcdefghijklmnopqrstuvwxyz")
+	love.graphics.setFont(font)
+
 	backgroundImage = love.graphics.newImage("assets/art/main_menu.png")
 
 	local buttonImage = love.graphics.newImage("assets/art/button.png")
@@ -77,7 +80,9 @@ end
 function mainMenu.draw()
 	love.graphics.draw(backgroundImage)
 	draw.draw(playButton.animation, playButton.transform)
+	love.graphics.print("play", playButton.transform:transformPoint(30, 25))
 	draw.draw(exitButton.animation, exitButton.transform)
+	love.graphics.print("exit", exitButton.transform:transformPoint(30, 25))
 end
 
 return mainMenu
