@@ -7,16 +7,16 @@ local camera = require("engine/camera")
 local draw = require("engine/draw")
 local collision = require("engine/collision")
 
-local boat = require("game/boat")
-local package = require("game/package")
 local ui = require("game/ui")
 local music = require("game/music")
+local boat = require("game/boat")
+local package = require("game/package")
 
 function game.load()
-	Camera = camera.new()
-
 	color.loadPalette("assets/art/retrotronic-dx.hex")
 	draw.loadShader(color.palette)
+
+	Camera = camera.new()
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 

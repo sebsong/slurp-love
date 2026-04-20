@@ -5,7 +5,8 @@ local scene = require("engine/scene")
 local collision = require("engine/collision")
 local animation = require("engine/animation")
 
-local font
+local font = require("game/font")
+
 local backgroundImage
 local playButton
 local exitButton
@@ -14,8 +15,6 @@ local DEFAULT_FRAME = 1
 local HOVER_FRAME = 2
 
 function mainMenu.load()
-	font = love.graphics.newImageFont("assets/art/font.png", "abcdefghijklmnopqrstuvwxyz")
-
 	backgroundImage = love.graphics.newImage("assets/art/main_menu.png")
 
 	local buttonImage = love.graphics.newImage("assets/art/button.png")
@@ -49,7 +48,7 @@ end
 
 function mainMenu.mousepressed(x, y, button, isTouch, presses)
 	if collision.hitTest(x, y, playButton.collider, playButton.transform) then
-		scene.transition(scene.scenes.mainMenu, scene.scenes.game)
+		scene.transition(scene.scenes.mainMenu, scene.scenes.dayTracker)
 	end
 
 	if collision.hitTest(x, y, exitButton.collider, exitButton.transform) then
@@ -78,7 +77,7 @@ function mainMenu.update(dt)
 end
 
 function mainMenu.draw()
-	love.graphics.setFont(font)
+	love.graphics.setFont(font.default)
 
 	love.graphics.draw(backgroundImage)
 	draw.draw(playButton.animation, playButton.transform)

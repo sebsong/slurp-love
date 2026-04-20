@@ -2,7 +2,10 @@ local canvas = require("engine/canvas")
 local draw = require("engine/draw")
 local scene = require("engine/scene")
 
+local font = require("game/font")
+
 local mainMenu = require("game/main_menu")
+local dayTracker = require("game/day_tracker")
 local game = require("game/game")
 local debug = require("game/debug")
 
@@ -10,8 +13,10 @@ function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 	canvas.load()
 	draw.load()
+	font.load()
 
 	scene.register("mainMenu", mainMenu)
+	scene.register("dayTracker", dayTracker)
 	scene.register("game", game)
 	scene.register("debug", debug)
 
