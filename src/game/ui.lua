@@ -1,6 +1,7 @@
 local ui = {}
 
 local settings = require("engine/settings")
+local draw = require("engine/draw")
 
 local gasMeterWidth, gasMeterHeight = 16, 128
 
@@ -52,8 +53,8 @@ function ui.draw(self, packages)
 	local packageOffsetY = packageOffsetYInitial
 	for _, package in ipairs(packages) do
 		love.graphics.draw(
-			package.image,
-			package.quad,
+			package.drawComponent.image,
+			package.drawComponent.quad,
 			packageUiLocation.x + packageOffsetXInitial,
 			packageUiLocation.y + packageOffsetY
 		)

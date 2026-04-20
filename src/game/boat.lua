@@ -123,7 +123,7 @@ local function pickupPackages(self, packages)
 		if slurp_math.distance({ x = boatX, y = boatY }, { x = packageX, y = packageY }) <= self.interactionRadius then
 			table.insert(self.packages, package)
 			pickedUp = true
-			package.shouldDraw = false
+			package.drawComponent.shouldDraw = false
 			package:applyEffect(self)
 		end
 
