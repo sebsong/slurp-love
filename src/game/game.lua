@@ -13,21 +13,38 @@ local music = require("game/music")
 local boat = require("game/boat")
 local package = require("game/package")
 
+local DAY_TO_LAYER_NAME = {
+	"objects_1",
+	"objects_2",
+	"objects_3",
+	"objects_4",
+}
+
+local LAND_LAYER_NAME = "base"
+local OBJECT_LAYER_NAME = "objects_1"
+local DECORATION_LAYER_NAME = "decorations"
+
+local LAND_TILESET_INDEX = 1
+local PACKAGE_TILESET_INDEX = 2
+local BUILDING_TILESET_INDEX = 3
+local MAILBOX_TILESET_INDEX = 4
+
+local boatObj
+
+local worldObjects = {}
+local packages = {}
+local mailboxes = {}
+
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
 	draw.loadShader(color.palette)
+
+	OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[scene.scenes.dayTracker.currentDay] or OBJECT_LAYER_NAME
 
 	Camera = camera.new()
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
-	LandTileLayerIndex = 1
-	ObjectTileLayerIndex = 2
-
-	LandTilesetIndex = 1
-	PackageTilesetIndex = 2
-	BuildingTilesetIndex = 3
-	MailboxTilesetIndex = 4
 	local tilesets = {
 		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
 		tilemap.newTileset("assets/art/tileset.png", 16, 16),
@@ -38,12 +55,14 @@ function game.load()
 	}
 	game.tilemap = tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
 
-	WorldObjects = {}
+	worldObjects = {}
+	packages = {}
+	mailboxes = {}
 
-	Boat = boat.new(game.tilemap)
-	table.insert(WorldObjects, Boat)
+	boatObj = boat.new(game.tilemap)
+	table.insert(worldObjects, boatObj)
 
-	for rowIdx, row in ipairs(game.tilemap.layers[LandTileLayerIndex].tiles) do
+	for rowIdx, row in ipairs(game.tilemap.layers[LAND_LAYER_NAME].tiles) do
 		for colIdx, tile in ipairs(row) do
 			if tile.tileId then
 				collision.register({ position = { colIdx, rowIdx }, collider = { width = 1, height = 1 } })
@@ -51,17 +70,19 @@ function game.load()
 		end
 	end
 
-	Packages = {}
-	Mailboxes = {}
-	for _, object in ipairs(game.tilemap.layers[ObjectTileLayerIndex].objects) do
+	for _, object in ipairs(game.tilemap.layers[OBJECT_LAYER_NAME].objects) do
 		local tilesetIndex = object.tilesetIndex
-		if (tilesetIndex == PackageTilesetIndex) then
-			table.insert(Packages, package.toPackage(object))
-		elseif (tilesetIndex == MailboxTilesetIndex) then
-			table.insert(Mailboxes, object)
+		if (tilesetIndex == PACKAGE_TILESET_INDEX) then
+			table.insert(packages, package.toPackage(object))
+		elseif (tilesetIndex == MAILBOX_TILESET_INDEX) then
+			table.insert(mailboxes, object)
 		end
 
-		table.insert(WorldObjects, object)
+		table.insert(worldObjects, object)
+	end
+
+	for _, object in ipairs(game.tilemap.layers[DECORATION_LAYER_NAME].objects) do
+		table.insert(worldObjects, object)
 	end
 
 	ui:load()
@@ -81,8 +102,8 @@ end
 
 function game.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
-		if not Boat:pickupPackages(Packages) then
-			Boat:deliverPackage(Mailboxes)
+		if not boatObj:pickupPackages(packages) then
+			boatObj:deliverPackage(mailboxes)
 		end
 	end
 
@@ -102,16 +123,16 @@ function game.wheelmoved(x, y)
 end
 
 function game.update(dt)
-	Boat:update(dt)
-	for _, package in ipairs(Boat.packages) do
+	boatObj:update(dt)
+	for _, package in ipairs(boatObj.packages) do
 		package:update(dt)
 	end
-	Camera:update(Boat, dt)
-	music:update(Boat, dt)
+	Camera:update(boatObj, dt)
+	music:update(boatObj, dt)
 
 	-- TODO: intersect world objects with what the camera can see and only sort + draw those
 	table.sort(
-		WorldObjects,
+		worldObjects,
 		function(d1, d2)
 			local _, d1Y = d1.transform:transformPoint(0, 0)
 			local _, d2Y = d2.transform:transformPoint(0, 0)
@@ -127,13 +148,13 @@ function game.draw()
 	love.graphics.scale(Camera.zoom, Camera.zoom)
 	love.graphics.applyTransform(camera.getWorldToCanvasTransform(Camera))
 
-	game.tilemap:draw(LandTileLayerIndex, Camera)
-	for _, worldObject in ipairs(WorldObjects) do
+	game.tilemap:draw(LAND_LAYER_NAME, Camera)
+	for _, worldObject in ipairs(worldObjects) do
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
 
-	if Boat.isLanternActive then
-		local boatX, boatY = Boat.transform:transformPoint(0, 0)
+	if boatObj.isLanternActive then
+		local boatX, boatY = boatObj.transform:transformPoint(0, 0)
 		local lanternWidth, lanternHeight = LanternLightImage:getDimensions()
 		love.graphics.setShader(LanternShader)
 		LanternShader:send("canvasImage", canvas.canvas)
@@ -143,7 +164,7 @@ function game.draw()
 
 	love.graphics.push()
 	love.graphics.applyTransform(game.tilemap.tilemapIndexToWorldTransform)
-	local boatColIdx, boatRowIdx = game.tilemap.worldToTilemapIndexTransform:transformPoint(Boat.transform
+	local boatColIdx, boatRowIdx = game.tilemap.worldToTilemapIndexTransform:transformPoint(boatObj.transform
 		:transformPoint(0, 0))
 	-- collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
 	love.graphics.pop()
@@ -151,11 +172,10 @@ function game.draw()
 
 	love.graphics.pop()
 
-	ui:draw(Boat.packages)
+	ui:draw(boatObj.packages)
 end
 
-function game.nextDay()
-	scene.scenes.dayTracker.nextDay()
+function game.finishDay()
 	scene.transition(scene.scenes.game, scene.scenes.dayTracker)
 end
 

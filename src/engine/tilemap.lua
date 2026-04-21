@@ -213,7 +213,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 			end
 
 
-			layers[i] = {
+			layers[layer.name] = {
 				tiles = tiles,
 			}
 		elseif layer.type == "objectgroup" then
@@ -244,7 +244,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 				})
 			end
 
-			layers[i] = {
+			layers[layer.name] = {
 				objects = objects,
 			}
 		end

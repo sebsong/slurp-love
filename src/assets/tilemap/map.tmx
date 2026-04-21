@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="231" height="230" tilewidth="16" tileheight="8" infinite="0" backgroundcolor="#423952" nextlayerid="6" nextobjectid="93">
+<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="231" height="230" tilewidth="16" tileheight="8" infinite="0" backgroundcolor="#423952" nextlayerid="12" nextobjectid="151">
  <editorsettings>
   <export target="map.lua" format="lua"/>
  </editorsettings>
@@ -242,7 +242,76 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,0
 </data>
  </layer>
- <objectgroup id="2" name="objects">
+ <objectgroup id="8" name="decorations" visible="0">
+  <object id="111" gid="12" x="863.352" y="631.729" width="64" height="64"/>
+  <object id="112" gid="12" x="847.352" y="647.729" width="64" height="64"/>
+  <object id="113" gid="11" x="1047.35" y="823.729" width="64" height="64"/>
+  <object id="114" gid="11" x="1071.35" y="711.729" width="64" height="64"/>
+  <object id="115" gid="11" x="1063.35" y="727.729" width="64" height="64"/>
+  <object id="116" gid="11" x="1087.35" y="727.729" width="64" height="64"/>
+  <object id="117" gid="11" x="1087.35" y="703.729" width="64" height="64"/>
+  <object id="118" gid="11" x="1071.35" y="783.729" width="64" height="64"/>
+  <object id="119" gid="11" x="1119.35" y="799.729" width="64" height="64"/>
+  <object id="120" gid="11" x="1135.35" y="767.729" width="64" height="64"/>
+  <object id="121" gid="11" x="1095.35" y="839.729" width="64" height="64"/>
+  <object id="122" gid="11" x="1070.48" y="863.604" width="64" height="64"/>
+  <object id="123" gid="11" x="1133.23" y="841.854" width="64" height="64"/>
+  <object id="124" gid="11" x="1089.48" y="753.104" width="64" height="64"/>
+  <object id="125" gid="11" x="1089.48" y="753.104" width="64" height="64"/>
+  <object id="126" gid="11" x="1130.98" y="714.604" width="64" height="64"/>
+  <object id="127" gid="11" x="1187.98" y="806.604" width="64" height="64"/>
+  <object id="128" gid="12" x="855.352" y="487.729" width="64" height="64"/>
+  <object id="35" gid="12" x="24" y="24" width="64" height="64"/>
+ </objectgroup>
+ <objectgroup id="2" name="objects_1" visible="0">
+  <object id="131" gid="3" x="896" y="776" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="132"/>
+   </properties>
+  </object>
+  <object id="132" gid="13" x="352" y="1464" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup id="10" name="objects_2" visible="0">
+  <object id="135" gid="3" x="896" y="776" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="136"/>
+   </properties>
+  </object>
+  <object id="136" gid="13" x="352" y="1464" width="16" height="16"/>
+  <object id="137" gid="4" x="976" y="640" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="138"/>
+   </properties>
+  </object>
+  <object id="138" gid="13" x="136" y="272" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup id="11" name="objects_3" visible="0">
+  <object id="139" gid="3" x="896" y="776" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="140"/>
+   </properties>
+  </object>
+  <object id="140" gid="13" x="352" y="1464" width="16" height="16"/>
+  <object id="141" gid="4" x="976" y="640" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="142"/>
+   </properties>
+  </object>
+  <object id="142" gid="13" x="136" y="272" width="16" height="16"/>
+  <object id="147" gid="6" x="1504" y="856" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="148"/>
+   </properties>
+  </object>
+  <object id="148" gid="13" x="1184" y="432" width="16" height="16"/>
+  <object id="149" gid="7" x="1200" y="528" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="150"/>
+   </properties>
+  </object>
+  <object id="150" gid="13" x="1096" y="696" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup id="9" name="objects_4" visible="0">
   <object id="4" gid="3" x="864" y="648" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="86"/>
@@ -261,36 +330,29 @@
   <object id="85" gid="13" x="552" y="536" width="16" height="16"/>
   <object id="86" gid="13" x="648" y="384" width="16" height="16"/>
   <object id="87" gid="13" x="1096" y="680" width="16" height="16"/>
-  <object id="28" gid="12" x="864" y="632" width="64" height="64"/>
-  <object id="30" gid="12" x="848" y="648" width="64" height="64"/>
-  <object id="31" gid="11" x="1048" y="824" width="64" height="64"/>
-  <object id="35" gid="12" x="24" y="24" width="64" height="64"/>
-  <object id="68" gid="11" x="1072" y="712" width="64" height="64"/>
-  <object id="64" gid="11" x="1064" y="728" width="64" height="64"/>
-  <object id="63" gid="11" x="1088" y="728" width="64" height="64"/>
-  <object id="69" gid="11" x="1088" y="704" width="64" height="64"/>
-  <object id="72" gid="11" x="1072" y="784" width="64" height="64"/>
-  <object id="73" gid="11" x="1120" y="800" width="64" height="64"/>
-  <object id="74" gid="11" x="1136" y="768" width="64" height="64"/>
-  <object id="75" gid="11" x="1096" y="840" width="64" height="64"/>
-  <object id="76" gid="11" x="1071.13" y="863.875" width="64" height="64"/>
-  <object id="77" gid="11" x="1133.88" y="842.125" width="64" height="64"/>
-  <object id="78" gid="11" x="1090.13" y="753.375" width="64" height="64"/>
-  <object id="79" gid="11" x="1090.13" y="753.375" width="64" height="64"/>
-  <object id="80" gid="11" x="1131.63" y="714.875" width="64" height="64"/>
-  <object id="81" gid="11" x="1188.63" y="806.875" width="64" height="64"/>
-  <object id="82" gid="12" x="856" y="488" width="64" height="64"/>
   <object id="89" gid="6" x="944" y="520" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="90"/>
    </properties>
   </object>
+  <object id="144" gid="6" x="944" y="520" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="143"/>
+   </properties>
+  </object>
   <object id="90" gid="13" x="1200" y="536" width="16" height="16"/>
+  <object id="143" gid="13" x="1200" y="536" width="16" height="16"/>
   <object id="91" gid="7" x="1072" y="928" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="92"/>
    </properties>
   </object>
+  <object id="146" gid="7" x="1072" y="928" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="145"/>
+   </properties>
+  </object>
   <object id="92" gid="13" x="1048" y="1016" width="16" height="16"/>
+  <object id="145" gid="13" x="1048" y="1016" width="16" height="16"/>
  </objectgroup>
 </map>
