@@ -42,12 +42,14 @@ function scene.transition(fromScene, toScene)
 end
 
 local function load(_scene)
+	assert(not _scene.isActive, "can't load an active scene")
 	_scene.load()
 	_scene.isActive = true
 	_scene.shouldLoad = false
 end
 
 local function unload(_scene)
+	assert(_scene.isActive, "can't unload an inactive scene")
 	_scene.unload()
 	_scene.isActive = false
 	_scene.shouldUnload = false

@@ -8,8 +8,8 @@ local font = require("game/font")
 
 local dayTransitionBackgroundImage
 
-local showContinueText = true
-local blinkTimer = 0
+local showContinueText
+local blinkTimer
 local BLINK_HOLD_TIME = 1
 
 function dayTracker.nextDay()
@@ -18,6 +18,8 @@ end
 
 function dayTracker.load()
 	dayTransitionBackgroundImage = love.graphics.newImage("assets/art/day_transition_background.png")
+	blinkTimer = 0
+	showContinueText = true
 end
 
 function dayTracker.unload()

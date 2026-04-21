@@ -6,6 +6,7 @@ local tilemap = require("engine/tilemap")
 local camera = require("engine/camera")
 local draw = require("engine/draw")
 local collision = require("engine/collision")
+local scene = require("engine/scene")
 
 local ui = require("game/ui")
 local music = require("game/music")
@@ -151,6 +152,11 @@ function game.draw()
 	love.graphics.pop()
 
 	ui:draw(Boat.packages)
+end
+
+function game.nextDay()
+	scene.scenes.dayTracker.nextDay()
+	scene.transition(scene.scenes.game, scene.scenes.dayTracker)
 end
 
 return game
