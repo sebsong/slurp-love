@@ -129,11 +129,11 @@ local function getTilemapTransforms(tileWidth, tileHeight, width, height, isIsom
 	return tilemapIndexToWorldTransform, worldToTilemapIndexTransform
 end
 
-local function getTilesetIndex(gid, tilesetInfos)
+local function getTilesetInfo(gid, tilesetInfos)
 	for i = #tilesetInfos, 1, -1 do
 		local tilesetInfo = tilesetInfos[i]
 		if gid >= tilesetInfo.firstgid then
-			return i
+			return i, tilesetInfo
 		end
 	end
 	assert(false, string.format("Object gid: %s should map to a tileset", gid))
@@ -155,7 +155,7 @@ local function insertTile(tiles, gid, rowIdx, colIdx, tilesetInfos)
 		}
 		goto continue
 	end
-	local tilesetIndex = getTilesetIndex(gid, tilesetInfos)
+	local tilesetIndex, _ = getTilesetInfo(gid, tilesetInfos)
 	local tileId = getTileId(gid, tilesetInfos[tilesetIndex])
 	tiles[rowIdx][colIdx] = {
 		tilesetIndex = tilesetIndex,
@@ -221,7 +221,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 			for _, object in ipairs(layer.objects) do
 				local colIdx = object.x / (tileHeight)
 				local rowIdx = object.y / (tileHeight)
-				local tilesetIndex = getTilesetIndex(object.gid, tilesetInfos)
+				local tilesetIndex, tilesetInfo = getTilesetInfo(object.gid, tilesetInfos)
 				local tileset = tilesets[tilesetIndex]
 				local tileId = getTileId(object.gid, tilesetInfos[tilesetIndex])
 				local worldX, worldY = tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
@@ -238,7 +238,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 					transform = love.math.newTransform(worldX, worldY),
 
 					id = object.id,
-					tilesetIndex = tilesetIndex,
+					tilesetName = tilesetInfo.name,
 					tileId = tileId,
 					properties = object.properties,
 				})

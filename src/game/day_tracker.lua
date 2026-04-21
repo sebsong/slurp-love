@@ -41,7 +41,6 @@ function dayTracker.keypressed(key, scancode, isRepeat)
 end
 
 function dayTracker.mousepressed(x, y, button, isTouch, presses)
-	scene.transition(scene.scenes.dayTracker, scene.scenes.game)
 end
 
 function dayTracker.mousemoved(x, y, dx, dy, isTouch)

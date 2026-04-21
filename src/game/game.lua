@@ -24,16 +24,19 @@ local LAND_LAYER_NAME = "base"
 local OBJECT_LAYER_NAME = "objects_1"
 local DECORATION_LAYER_NAME = "decorations"
 
-local LAND_TILESET_INDEX = 1
-local PACKAGE_TILESET_INDEX = 2
-local BUILDING_TILESET_INDEX = 3
-local MAILBOX_TILESET_INDEX = 4
+local LAND_TILESET_NAME = "tileset"
+local PACKAGE_TILESET_NAME = "packages"
+local BUILDING_TILESET_NAME = "buildings"
+local MAILBOX_TILESET_NAME = "mailboxes"
 
 local boatObj
 
 local worldObjects = {}
 local packages = {}
 local mailboxes = {}
+
+local lanternLightImage
+local lanternShader
 
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
@@ -72,9 +75,9 @@ function game.load()
 
 	for _, object in ipairs(game.tilemap.layers[OBJECT_LAYER_NAME].objects) do
 		local tilesetIndex = object.tilesetIndex
-		if (tilesetIndex == PACKAGE_TILESET_INDEX) then
+		if (tilesetIndex == PACKAGE_TILESET_NAME) then
 			table.insert(packages, package.toPackage(object))
-		elseif (tilesetIndex == MAILBOX_TILESET_INDEX) then
+		elseif (tilesetIndex == MAILBOX_TILESET_NAME) then
 			table.insert(mailboxes, object)
 		end
 
@@ -88,11 +91,11 @@ function game.load()
 	ui:load()
 	music:load()
 
-	LanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
-	LanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
-	LanternShader:send("canvasDimensions", { canvas.canvas:getPixelWidth(), canvas.canvas:getPixelHeight() })
-	LanternShader:send("colorPalette", unpack(color.palette))
-	LanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
+	lanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
+	lanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
+	lanternShader:send("canvasDimensions", { canvas.canvas:getPixelWidth(), canvas.canvas:getPixelHeight() })
+	lanternShader:send("colorPalette", unpack(color.palette))
+	lanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
 end
 
 function game.unload()
@@ -155,10 +158,10 @@ function game.draw()
 
 	if boatObj.isLanternActive then
 		local boatX, boatY = boatObj.transform:transformPoint(0, 0)
-		local lanternWidth, lanternHeight = LanternLightImage:getDimensions()
-		love.graphics.setShader(LanternShader)
-		LanternShader:send("canvasImage", canvas.canvas)
-		love.graphics.draw(LanternLightImage, boatX - lanternWidth / 2, boatY - lanternHeight / 2)
+		local lanternWidth, lanternHeight = lanternLightImage:getDimensions()
+		love.graphics.setShader(lanternShader)
+		lanternShader:send("canvasImage", canvas.canvas)
+		love.graphics.draw(lanternLightImage, boatX - lanternWidth / 2, boatY - lanternHeight / 2)
 		love.graphics.setShader()
 	end
 
