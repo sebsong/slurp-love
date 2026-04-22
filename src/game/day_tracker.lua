@@ -18,13 +18,16 @@ function dayTracker.isEndScreen()
 	return dayTracker.currentDay >= FINAL_DAY
 end
 
-function dayTracker.nextDay()
+local function startDay()
 	if (dayTracker.isEndScreen()) then
 		print("YOU WIN")
 	else
 		scene.transition(scene.scenes.dayTracker, scene.scenes.game)
-		dayTracker.currentDay = dayTracker.currentDay + 1
 	end
+end
+
+function dayTracker.nextDay()
+	dayTracker.currentDay = dayTracker.currentDay + 1
 end
 
 function dayTracker.load()
@@ -37,7 +40,7 @@ function dayTracker.unload()
 end
 
 function dayTracker.keypressed(key, scancode, isRepeat)
-	dayTracker.nextDay()
+	startDay()
 end
 
 function dayTracker.mousepressed(x, y, button, isTouch, presses)

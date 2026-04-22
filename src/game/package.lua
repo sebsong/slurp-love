@@ -59,6 +59,7 @@ function package.toPackage(tileObject)
 	tileObject.applyEffect = applyEffect
 	tileObject.removeEffect = removeEffect
 	tileObject.update = update
+	tileObject.isDelivered = false
 	tileObject.meta = {}
 	return tileObject
 end

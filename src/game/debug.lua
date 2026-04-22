@@ -17,12 +17,15 @@ function debug.keypressed(key, scancode, isRepeat)
 		if scene.scenes.mainMenu.isActive then
 			scene.transition(scene.scenes.mainMenu, scene.scenes.dayTracker)
 		elseif scene.scenes.game.isActive then
-			scene.scenes.game.finishDay()
+			scene.scenes.game.endDay()
 		end
 	end
 end
 
 function debug.mousepressed(x, y, button, isTouch, presses)
+	if button == 1 and scene.scenes.game.isActive then
+		scene.scenes.game.debugTeleportBoatToCanvasPoint(x, y)
+	end
 end
 
 function debug.mousemoved(x, y, dx, dy, isTouch)

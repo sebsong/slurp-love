@@ -10,6 +10,10 @@ function camera.getWorldToCanvasTransform(_camera)
 	)
 end
 
+function camera.getCanvasToWorldTransform(_camera)
+	return camera.getWorldToCanvasTransform(_camera):inverse()
+end
+
 function camera.new()
 	local screenWidth = settings.canvasPixelWidth
 	local screenHeight = settings.canvasPixelHeight
@@ -17,7 +21,6 @@ function camera.new()
 	local zoomToggles = { 1, 0.5 }
 	local panSpeed = 0.5
 	local zoomSpeed = 1.1
-	local isPanning = false
 
 	local function getScreenWidth(self)
 		return screenWidth / self.zoom
@@ -37,10 +40,10 @@ function camera.new()
 	end
 
 	local function togglePan(self)
-		isPanning = not isPanning
-		love.mouse.setRelativeMode(isPanning)
+		self.isPanning = not self.isPanning
+		love.mouse.setRelativeMode(self.isPanning)
 
-		if not isPanning then
+		if not self.isPanning then
 			self:resetZoom()
 		end
 	end
@@ -62,13 +65,13 @@ function camera.new()
 	end
 
 	local function mousemoved(self, x, y, dx, dy, isTouch)
-		if isPanning then
+		if self.isPanning then
 			self.transform:translate(dx * panSpeed, dy * panSpeed)
 		end
 	end
 
 	local function wheelmoved(self, x, y)
-		if isPanning and y ~= 0 then
+		if self.isPanning and y ~= 0 then
 			local cameraZoomMultiplier = zoomSpeed
 			if y < 0 then
 				cameraZoomMultiplier = 1 / cameraZoomMultiplier
@@ -77,16 +80,13 @@ function camera.new()
 		end
 	end
 
-	local function update(self, boat, dt)
-		if not isPanning then
-			local boatX, boatY = boat.transform:transformPoint(0, 0)
-			self.transform:setTransformation(boatX, boatY)
-		end
+	local function update(self, dt)
 	end
 
 	return {
 		transform = love.math.newTransform(),
 		zoom = zoomToggles[1],
+		isPanning = false,
 
 		getScreenWidth = getScreenWidth,
 		getScreenHeight = getScreenHeight,

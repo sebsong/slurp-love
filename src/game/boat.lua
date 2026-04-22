@@ -134,7 +134,7 @@ end
 
 local function deliverPackage(self, mailboxes)
 	if #self.packages == 0 then
-		return
+		return false
 	end
 
 	local boatX, boatY = self.transform:transformPoint(0, 0)
@@ -146,9 +146,12 @@ local function deliverPackage(self, mailboxes)
 			mailbox.id == package.destinationId then
 			table.remove(self.packages, #self.packages)
 			package:removeEffect(self)
-			break
+			package.isDelivered = true
+			return true
 		end
 	end
+
+	return false
 end
 
 local function getPosition(self)

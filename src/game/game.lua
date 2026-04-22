@@ -29,6 +29,7 @@ local PACKAGE_TILESET_NAME = "packages"
 local BUILDING_TILESET_NAME = "buildings"
 local MAILBOX_TILESET_NAME = "mailboxes"
 
+local cameraObj
 local boatObj
 
 local worldObjects = {}
@@ -44,7 +45,7 @@ function game.load()
 
 	OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[scene.scenes.dayTracker.currentDay] or OBJECT_LAYER_NAME
 
-	Camera = camera.new()
+	cameraObj = camera.new()
 
 	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
@@ -74,10 +75,10 @@ function game.load()
 	end
 
 	for _, object in ipairs(game.tilemap.layers[OBJECT_LAYER_NAME].objects) do
-		local tilesetIndex = object.tilesetIndex
-		if (tilesetIndex == PACKAGE_TILESET_NAME) then
+		local tilesetName = object.tilesetName
+		if (tilesetName == PACKAGE_TILESET_NAME) then
 			table.insert(packages, package.toPackage(object))
-		elseif (tilesetIndex == MAILBOX_TILESET_NAME) then
+		elseif (tilesetName == MAILBOX_TILESET_NAME) then
 			table.insert(mailboxes, object)
 		end
 
@@ -103,26 +104,44 @@ function game.unload()
 	collision.clearAll()
 end
 
-function game.keypressed(key, scancode, isRepeat)
-	if key == "space" and not isRepeat then
-		if not boatObj:pickupPackages(packages) then
-			boatObj:deliverPackage(mailboxes)
+function game.endDay()
+	scene.scenes.dayTracker.nextDay()
+	scene.transition(scene.scenes.game, scene.scenes.dayTracker)
+end
+
+local function evaluateWinCondition()
+	for _, package in ipairs(packages) do
+		if not package.isDelivered then
+			return
 		end
 	end
 
-	Camera:keypressed(key, scancode, isRepeat)
+	game.endDay()
+end
+
+function game.keypressed(key, scancode, isRepeat)
+	if key == "space" and not isRepeat then
+		if not boatObj:pickupPackages(packages) then
+			local didDeliver = boatObj:deliverPackage(mailboxes)
+			if didDeliver then
+				evaluateWinCondition()
+			end
+		end
+	end
+
+	cameraObj:keypressed(key, scancode, isRepeat)
 end
 
 function game.mousepressed(x, y, button, isTouch, presses)
-	Camera:mousepressed(x, y, button, isTouch, presses)
+	cameraObj:mousepressed(x, y, button, isTouch, presses)
 end
 
 function game.mousemoved(x, y, dx, dy, isTouch)
-	Camera:mousemoved(x, y, dx, dy, isTouch)
+	cameraObj:mousemoved(x, y, dx, dy, isTouch)
 end
 
 function game.wheelmoved(x, y)
-	Camera:wheelmoved(x, y)
+	cameraObj:wheelmoved(x, y)
 end
 
 function game.update(dt)
@@ -130,7 +149,12 @@ function game.update(dt)
 	for _, package in ipairs(boatObj.packages) do
 		package:update(dt)
 	end
-	Camera:update(boatObj, dt)
+
+	if not cameraObj.isPanning then
+		local boatX, boatY = boatObj.transform:transformPoint(0, 0)
+		cameraObj.transform:setTransformation(boatX, boatY)
+	end
+
 	music:update(boatObj, dt)
 
 	-- TODO: intersect world objects with what the camera can see and only sort + draw those
@@ -148,10 +172,10 @@ function game.draw()
 	love.graphics.draw(BackgroundImage)
 
 	love.graphics.push()
-	love.graphics.scale(Camera.zoom, Camera.zoom)
-	love.graphics.applyTransform(camera.getWorldToCanvasTransform(Camera))
+	love.graphics.scale(cameraObj.zoom, cameraObj.zoom)
+	love.graphics.applyTransform(camera.getWorldToCanvasTransform(cameraObj))
 
-	game.tilemap:draw(LAND_LAYER_NAME, Camera)
+	game.tilemap:draw(LAND_LAYER_NAME, cameraObj)
 	for _, worldObject in ipairs(worldObjects) do
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
@@ -178,8 +202,10 @@ function game.draw()
 	ui:draw(boatObj.packages)
 end
 
-function game.finishDay()
-	scene.transition(scene.scenes.game, scene.scenes.dayTracker)
+function game.debugTeleportBoatToCanvasPoint(x, y)
+	local canvasToWorldTransform = camera.getCanvasToWorldTransform(cameraObj)
+	local targetWorldPoint = { canvasToWorldTransform:transformPoint(x, y) }
+	boatObj.transform:setTransformation(targetWorldPoint[1], targetWorldPoint[2], boatObj.rotation)
 end
 
 return game
