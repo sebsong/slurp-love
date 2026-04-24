@@ -43,32 +43,28 @@ end
 function collision.getPositionUpdate(collidable, targetPositionUpdate)
 	local positionUpdate = targetPositionUpdate
 	local position = getCollidablePosition(collidable)
-	local x, y = unpack(position)
 	local collider = collidable.collider
 	local halfWidth, halfHeight = collider.width / 2, collider.height / 2
-	local leftX, rightX, topY, bottomY = getRectExtents(x, y, halfWidth, halfHeight)
 	for _, otherCollidable in ipairs(collidables) do
 		if collidable == otherCollidable then
 			goto continue
 		end
 
-		local targetPosition = { position[1] + positionUpdate[1], position[2] + positionUpdate[2] }
+		local targetPosition = position + positionUpdate
 
 		local otherPosition = getCollidablePosition(otherCollidable)
 		local otherCollider = otherCollidable.collider
-		local targetX, targetY = unpack(targetPosition)
 
 		local otherHalfWidth, otherHalfHeight = otherCollider.width / 2, otherCollider.height / 2
-		local otherX, otherY = unpack(otherPosition)
 
 		local targetLeftX, targetRightX, targetTopY, targetBottomY = getRectExtents(
-			targetX, targetY, halfWidth, halfHeight
+			targetPosition.x, targetPosition.y, halfWidth, halfHeight
 		)
 		local otherLeftX, otherRightX, otherTopY, otherBottomY = getRectExtents(
-			otherX, otherY, otherHalfWidth, otherHalfHeight
+			otherPosition.x, otherPosition.y, otherHalfWidth, otherHalfHeight
 		)
 
-		local isLeft = targetX < otherX
+		local isLeft = targetPosition.x < otherPosition.x
 		local xIntersects
 		if isLeft then
 			xIntersects = targetRightX >= otherLeftX
@@ -76,7 +72,7 @@ function collision.getPositionUpdate(collidable, targetPositionUpdate)
 			xIntersects = targetLeftX <= otherRightX
 		end
 
-		local isAbove = targetY < otherY
+		local isAbove = targetPosition.y < otherPosition.y
 		local yIntersects
 		if isAbove then
 			yIntersects = targetBottomY >= otherTopY
@@ -89,9 +85,9 @@ function collision.getPositionUpdate(collidable, targetPositionUpdate)
 			local yCorrection = slurp_math.absMin(otherTopY - targetBottomY, otherBottomY - targetTopY)
 
 			if math.abs(xCorrection) <= math.abs(yCorrection) then
-				positionUpdate[1] = positionUpdate[1] + xCorrection
+				positionUpdate.x = positionUpdate.x + xCorrection
 			else
-				positionUpdate[2] = positionUpdate[2] + yCorrection
+				positionUpdate.y = positionUpdate.y + yCorrection
 			end
 
 			-- TODO: trigger collision callback

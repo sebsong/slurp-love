@@ -263,7 +263,7 @@
   <object id="128" gid="12" x="855.352" y="487.729" width="64" height="64"/>
   <object id="35" gid="12" x="24" y="24" width="64" height="64"/>
  </objectgroup>
- <objectgroup id="2" name="objects_1" visible="0">
+ <objectgroup id="2" name="objects_1">
   <object id="131" gid="3" x="896" y="776" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="132"/>

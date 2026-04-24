@@ -3,6 +3,7 @@ local boat = {}
 local slurp_math = require("engine/math")
 local collision = require("engine/collision")
 local animation = require("engine/animation")
+local vec2 = require("engine/vec2")
 
 local values = require("game/values")
 local ui = require("game/ui")
@@ -63,31 +64,25 @@ local function update(self, dt)
 	) + 1
 	self.drawComponent.currentFrame = frameIdx
 
-	local tilemapPosition = { self.tilemap.worldToTilemapIndexTransform:transformPoint(
-		self.transform:transformPoint(0, 0)
-	) }
-	local newTilemapPosition = { self.tilemap.worldToTilemapIndexTransform:transformPoint(
-		self.transform:transformPoint(0, -self.speed * dt)
-	) }
-	local tilemapPositionUpdate = {
-		newTilemapPosition[1] - tilemapPosition[1],
-		newTilemapPosition[2] - tilemapPosition[2]
-	}
-
-	local tileFrom = { 0, 0 }
+	local tilemapPosition = vec2.new(
+		self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0))
+	)
+	local newTilemapPosition = vec2.new(
+		self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, -self.speed * dt))
+	)
+	local tilemapPositionUpdate = newTilemapPosition - tilemapPosition
+	local tileFrom = vec2.new()
 	local tileTo = collision.getPositionUpdate(
 		self,
 		tilemapPositionUpdate
 	)
-	local worldFrom = { self.tilemap.tilemapIndexToWorldTransform:transformPoint(unpack(tileFrom)) }
-	local worldTo = { self.tilemap.tilemapIndexToWorldTransform:transformPoint(unpack(tileTo)) }
+	local worldFrom = vec2.new(self.tilemap.tilemapIndexToWorldTransform:transformPoint(tileFrom.x, tileFrom.y))
+	local worldTo = vec2.new(self.tilemap.tilemapIndexToWorldTransform:transformPoint(tileTo.x, tileTo.y))
 
-	local boatFrom = { self.transform:inverse():transformPoint(unpack(worldFrom)) }
-	local boatTo = { self.transform:inverse():transformPoint(unpack(worldTo)) }
-	self.transform:translate(
-		boatTo[1] - boatFrom[1],
-		boatTo[2] - boatFrom[2]
-	)
+	local boatFrom = vec2.new(self.transform:inverse():transformPoint(worldFrom.x, worldFrom.y))
+	local boatTo = vec2.new(self.transform:inverse():transformPoint(worldTo.x, worldTo.y))
+	local boatUpdate = boatTo - boatFrom
+	self.transform:translate(boatUpdate.x, boatUpdate.y)
 end
 
 local function draw(animation, transform)
@@ -155,7 +150,7 @@ local function deliverPackage(self, mailboxes)
 end
 
 local function getPosition(self)
-	return { self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)) }
+	return vec2.new(self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)))
 end
 
 function boat.new(tilemap)

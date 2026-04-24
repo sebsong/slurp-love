@@ -7,6 +7,7 @@ local camera = require("engine/camera")
 local draw = require("engine/draw")
 local collision = require("engine/collision")
 local scene = require("engine/scene")
+local vec2 = require("engine/vec2")
 
 local ui = require("game/ui")
 local music = require("game/music")
@@ -69,7 +70,7 @@ function game.load()
 	for rowIdx, row in ipairs(game.tilemap.layers[LAND_LAYER_NAME].tiles) do
 		for colIdx, tile in ipairs(row) do
 			if tile.tileId then
-				collision.register({ position = { colIdx, rowIdx }, collider = { width = 1, height = 1 } })
+				collision.register({ position = vec2.new(colIdx, rowIdx), collider = { width = 1, height = 1 } })
 			end
 		end
 	end
@@ -204,8 +205,8 @@ end
 
 function game.debugTeleportBoatToCanvasPoint(x, y)
 	local canvasToWorldTransform = camera.getCanvasToWorldTransform(cameraObj)
-	local targetWorldPoint = { canvasToWorldTransform:transformPoint(x, y) }
-	boatObj.transform:setTransformation(targetWorldPoint[1], targetWorldPoint[2], boatObj.rotation)
+	local targetWorldPoint = vec2.new(canvasToWorldTransform:transformPoint(x, y))
+	boatObj.transform:setTransformation(targetWorldPoint.x, targetWorldPoint.y, boatObj.rotation)
 end
 
 return game
