@@ -90,7 +90,12 @@ function collision.getPositionUpdate(collidable, targetPositionUpdate)
 				positionUpdate.y = positionUpdate.y + yCorrection
 			end
 
-			-- TODO: trigger collision callback
+			if collidable.onCollision then
+				collidable:onCollision(otherCollidable)
+			end
+			if otherCollidable.onCollision then
+				otherCollidable:onCollision(collidable)
+			end
 		end
 
 		::continue::

@@ -153,6 +153,21 @@ local function getPosition(self)
 	return vec2.new(self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)))
 end
 
+-- local tableMeta = getmetatable(table)
+-- function tableMeta.__tostring(_table)
+-- 	local str = ""
+-- 	str = str + "{"
+-- 	for key, val in pairs(_table) do
+-- 		str = str + string.format("	%s: %s", key, val)
+-- 	end
+-- 	str = str + "}"
+-- 	return str
+-- end
+
+local function onCollision(self, collidable)
+	print(collidable.position)
+end
+
 function boat.new(tilemap)
 	local boatImage = love.graphics.newImage("assets/art/boat.png")
 	local boatQuads = {}
@@ -176,6 +191,7 @@ function boat.new(tilemap)
 		transform = love.math.newTransform(0, -100),
 
 		getPosition = getPosition,
+		onCollision = onCollision,
 		collider = { width = 1, height = 1 },
 
 		speed = 0,
