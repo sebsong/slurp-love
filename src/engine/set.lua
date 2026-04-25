@@ -12,17 +12,31 @@ function set.new(...)
 	return newSet
 end
 
-function meta:insert(...)
-	local items = { ... }
-	-- if getmetatable(items) == meta
-	for _, item in ipairs(items) do
-		self[item] = true
+function meta:insert(val, ...)
+	if getmetatable(val) == meta then
+		assert(... == nil, "shouldn't pass in more args if val is a set")
+		for item, _ in pairs(val) do
+			self[item] = true
+		end
+	else
+		local items = { val, ... }
+		for _, item in ipairs(items) do
+			self[item] = true
+		end
 	end
 end
 
-function meta:remove(...)
-	for _, item in ipairs(...) do
-		self[item] = nil
+function meta:remove(val, ...)
+	if getmetatable(val) == meta then
+		assert(... == nil, "shouldn't pass in more args if val is a set")
+		for item, _ in pairs(val) do
+			self[item] = nil
+		end
+	else
+		local items = { val, ... }
+		for _, item in ipairs(items) do
+			self[item] = nil
+		end
 	end
 end
 
@@ -34,31 +48,24 @@ function meta:size()
 	return #self
 end
 
--- function meta.__add(_set, _otherSet)
--- 	return _set.new(_set.x + _otherSet.x, _set.y + _otherSet.y)
--- end
-
--- function meta.__sub(_set, _otherSet)
--- 	return _set.new(_set.x - _otherSet.x, _set.y - _otherSet.y)
--- end
-
--- function meta.__unm(_set)
--- 	return _set.new(-_set.x, -_set.y)
--- end
-
-function meta.__tostring(_set)
-	local str = ""
-	for k, v in pairs(_set) do
-		str = str .. string.format("%s, ", k)
-	end
-	return str
+function meta.__add(_set, _otherSet)
+	local union = set.new(_set)
+	union:insert(_otherSet)
+	return union
 end
 
-local test = set.new(1, 2, 3)
-print(test)
-print(test:contains(2))
-print(test:contains(4))
-test:insert(4)
-print(test:contains(4))
+function meta.__sub(_set, _otherSet)
+	local intersection = set.new(_set)
+	intersection:remove(_otherSet)
+	return intersection
+end
+
+function meta.__tostring(_set)
+	local items = {}
+	for key, _ in pairs(_set) do
+		table.insert(items, key)
+	end
+	return string.format("{%s}", table.concat(items, ", "))
+end
 
 return set
