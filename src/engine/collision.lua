@@ -1,6 +1,7 @@
 local collision = {}
 
 local slurp_math = require("engine/math")
+local set = require("engine/set")
 
 -- collidable:
 -- {
@@ -15,6 +16,9 @@ local slurp_math = require("engine/math")
 local collidables = {}
 
 function collision.register(collidable)
+	assert(collidable.collider ~= nil, "collidables must have a collider")
+	assert(collidable.position ~= nil or collidable.getPosition ~= nil, "collidables must have a position")
+	collidable.collidingWith = set.new()
 	table.insert(collidables, collidable)
 end
 
@@ -90,12 +94,18 @@ function collision.getPositionUpdate(collidable, targetPositionUpdate)
 				positionUpdate.y = positionUpdate.y + yCorrection
 			end
 
-			if collidable.onCollision then
+			if collidable.onCollision and not collidable.collidingWith:contains(otherCollidable) then
 				collidable:onCollision(otherCollidable)
 			end
-			if otherCollidable.onCollision then
+			if otherCollidable.onCollision and not otherCollidable.collidingWith:contains(collidable) then
 				otherCollidable:onCollision(collidable)
 			end
+
+			collidable.collidingWith:insert(otherCollidable)
+			otherCollidable.collidingWith:insert(collidable)
+		else
+			collidable.collidingWith:remove(otherCollidable)
+			otherCollidable.collidingWith:remove(collidable)
 		end
 
 		::continue::

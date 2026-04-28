@@ -67,6 +67,7 @@ function game.load()
 	boatObj = boat.new(game.tilemap)
 	table.insert(worldObjects, boatObj)
 
+	collision.register(boatObj)
 	for rowIdx, row in ipairs(game.tilemap.layers[LAND_LAYER_NAME].tiles) do
 		for colIdx, tile in ipairs(row) do
 			if tile.tileId then
