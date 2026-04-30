@@ -2,6 +2,8 @@ local debug = {}
 
 local scene = require("engine/scene")
 
+local font = require("game/font")
+
 function debug.load()
 end
 
@@ -38,6 +40,10 @@ function debug.update(dt)
 end
 
 function debug.draw()
+	love.graphics.setFont(font.small)
+	love.graphics.setColor(1, 0, 0)
+	love.graphics.print(string.format("fps: %s", love.timer.getFPS()))
+	love.graphics.setColor(1, 1, 1)
 end
 
 return debug
