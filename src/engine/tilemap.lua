@@ -3,8 +3,10 @@ local tilemap = {}
 -- Based on Tiled (https://www.mapeditor.org/)
 
 local file = require("engine/file")
+local vec2 = require("engine/vec2")
 
-local function getIntersectionTiles(tilemap, camera)
+local function getIntersectionTiles(tilemap, tiles, camera)
+	-- TODO: account for zoom
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
 	local startX, startY = cameraX - (camera:getScreenWidth() / 2), cameraY - (camera:getScreenHeight() / 2)
 	local endX, endY = startX + camera:getScreenWidth(), startY + camera:getScreenHeight()
@@ -21,27 +23,16 @@ local function getIntersectionTiles(tilemap, camera)
 		endColIdx, endRowIdx = tilemap.worldToTilemapIndexTransform:transformPoint(endX, endY)
 	end
 
-	-- return
-	-- 	math.floor(math.max(startColIdx, 1)),
-	-- 	math.floor(math.min(startRowIdx, tilemap.width)),
-	-- 	math.ceil(math.max(endColIdx, 1)),
-	-- 	math.ceil(math.min(endRowIdx, tilemap.height))
+	startColIdx = math.floor(math.max(startColIdx, 1))
+	startRowIdx = math.floor(math.min(startRowIdx, tilemap.width))
+	endColIdx = math.ceil(math.max(endColIdx, 1))
+	endRowIdx = math.ceil(math.min(endRowIdx, tilemap.height))
 
-	-- TODO: need to account for large tiles whose bases are offscreen
-	-- TODO: maybe some unified system for also not drawing objects that are offscreen
-	return 0, 0, tilemap.width, tilemap.height
-end
-
-local function drawTileLayer(tilemap, layerIndex, camera)
-	local layer = tilemap.layers[layerIndex]
-	local startColIdx, startRowIdx, endColIdx, endRowIdx = getIntersectionTiles(tilemap, camera)
-
-	assert(startColIdx <= endColIdx)
-	assert(startRowIdx <= endRowIdx)
+	local intersectionTiles = {}
 
 	for rowIdx = startRowIdx, endRowIdx do
 		for colIdx = startColIdx, endColIdx do
-			local rowTiles = layer.tiles[rowIdx]
+			local rowTiles = tiles[rowIdx]
 			if not rowTiles then
 				goto continue
 			end
@@ -49,23 +40,41 @@ local function drawTileLayer(tilemap, layerIndex, camera)
 			if not tile then
 				goto continue
 			end
-			local tilesetIndex = tile.tilesetIndex
-			local tileId = tile.tileId
-			if not tilesetIndex or not tileId then
-				goto continue
-			end
-			local tileset = tilemap.tilesets[tilesetIndex]
-			local tileQuad = tileset.quads[tileId]
-			if not tileQuad then
-				goto continue
-			end
 
-			local x, y = tilemap.tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
-			local _, _, width, height = tileQuad:getViewport()
-			love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height + tilemap.tileHeight / 2)
+			table.insert(intersectionTiles, tile)
 
 			::continue::
 		end
+	end
+
+	return intersectionTiles
+
+	-- TODO: need to account for large tiles whose bases are offscreen
+	-- TODO: maybe some unified system for also not drawing objects that are offscreen
+	-- return 0, 0, tilemap.width, tilemap.height
+end
+
+local function drawTileLayer(tilemap, layerIndex, camera)
+	local tiles = tilemap.layers[layerIndex].tiles
+	local intersectionTiles = getIntersectionTiles(tilemap, tiles, camera)
+
+	for _, tile in ipairs(intersectionTiles) do
+		local tilesetIndex = tile.tilesetIndex
+		local tileId = tile.tileId
+		if not tilesetIndex or not tileId then
+			goto continue
+		end
+		local tileset = tilemap.tilesets[tilesetIndex]
+		local tileQuad = tileset.quads[tileId]
+		if not tileQuad then
+			goto continue
+		end
+
+		local x, y = tilemap.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
+		local _, _, width, height = tileQuad:getViewport()
+		love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height + tilemap.tileHeight / 2)
+
+		::continue::
 	end
 end
 
@@ -160,6 +169,7 @@ local function insertTile(tiles, gid, rowIdx, colIdx, tilesetInfos)
 	tiles[rowIdx][colIdx] = {
 		tilesetIndex = tilesetIndex,
 		tileId = tileId,
+		position = vec2.new(colIdx, rowIdx)
 	}
 	::continue::
 end

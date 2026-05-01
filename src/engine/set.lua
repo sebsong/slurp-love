@@ -44,8 +44,12 @@ function meta:contains(item)
 	return self[item] ~= nil
 end
 
-function meta:size()
-	return #self
+function meta:toArray()
+	local array = {}
+	for item, _ in pairs(self) do
+		table.insert(array, item)
+	end
+	return array
 end
 
 function meta.__add(_set, _otherSet)

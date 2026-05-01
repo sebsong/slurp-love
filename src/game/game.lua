@@ -8,6 +8,7 @@ local draw = require("engine/draw")
 local collision = require("engine/collision")
 local scene = require("engine/scene")
 local vec2 = require("engine/vec2")
+local set = require("engine/set")
 
 local ui = require("game/ui")
 local music = require("game/music")
@@ -33,9 +34,10 @@ local MAILBOX_TILESET_NAME = "mailboxes"
 local cameraObj
 local boatObj
 
-local worldObjects = {}
-local packages = {}
-local mailboxes = {}
+local worldObjectsSet
+local worldObjectsArray
+local packages
+local mailboxes
 
 local lanternLightImage
 local lanternShader
@@ -60,18 +62,20 @@ function game.load()
 	}
 	game.tilemap = tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
 
-	worldObjects = {}
+	worldObjectsSet = set.new()
 	packages = {}
 	mailboxes = {}
 
 	boatObj = boat.new(game.tilemap)
-	table.insert(worldObjects, boatObj)
+	worldObjectsSet:insert(boatObj)
 
 	collision.register(boatObj)
 	for rowIdx, row in ipairs(game.tilemap.layers[LAND_LAYER_NAME].tiles) do
 		for colIdx, tile in ipairs(row) do
 			if tile.tileId then
-				collision.register({ position = vec2.new(colIdx, rowIdx), collider = { width = 1, height = 1 } })
+				tile.position = vec2.new(colIdx, rowIdx)
+				tile.collider = { width = 1, height = 1 }
+				collision.register(tile)
 			end
 		end
 	end
@@ -84,11 +88,11 @@ function game.load()
 			table.insert(mailboxes, object)
 		end
 
-		table.insert(worldObjects, object)
+		worldObjectsSet:insert(object)
 	end
 
 	for _, object in ipairs(game.tilemap.layers[DECORATION_LAYER_NAME].objects) do
-		table.insert(worldObjects, object)
+		worldObjectsSet:insert(object)
 	end
 
 	ui:load()
@@ -160,8 +164,9 @@ function game.update(dt)
 	music:update(boatObj, dt)
 
 	-- TODO: intersect world objects with what the camera can see and only sort + draw those
+	worldObjectsArray = worldObjectsSet:toArray()
 	table.sort(
-		worldObjects,
+		worldObjectsArray,
 		function(d1, d2)
 			local _, d1Y = d1.transform:transformPoint(0, 0)
 			local _, d2Y = d2.transform:transformPoint(0, 0)
@@ -178,7 +183,7 @@ function game.draw()
 	love.graphics.applyTransform(camera.getWorldToCanvasTransform(cameraObj))
 
 	game.tilemap:draw(LAND_LAYER_NAME, cameraObj)
-	for _, worldObject in ipairs(worldObjects) do
+	for _, worldObject in ipairs(worldObjectsArray) do
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
 

@@ -13,13 +13,17 @@ local set = require("engine/set")
 -- 		height: y
 -- 	}
 -- }
-local collidables = {}
+local collidables = set.new()
 
 function collision.register(collidable)
 	assert(collidable.collider ~= nil, "collidables must have a collider")
 	assert(collidable.position ~= nil or collidable.getPosition ~= nil, "collidables must have a position")
 	collidable.collidingWith = set.new()
-	table.insert(collidables, collidable)
+	collidables:insert(collidable)
+end
+
+function collision.remove(collidable)
+	collidables:remove(collidable)
 end
 
 function collision.hitTest(x, y, collider, transform)
@@ -49,7 +53,7 @@ function collision.getPositionUpdate(collidable, targetPositionUpdate)
 	local position = getCollidablePosition(collidable)
 	local collider = collidable.collider
 	local halfWidth, halfHeight = collider.width / 2, collider.height / 2
-	for _, otherCollidable in ipairs(collidables) do
+	for otherCollidable, _ in pairs(collidables) do
 		if collidable == otherCollidable then
 			goto continue
 		end
