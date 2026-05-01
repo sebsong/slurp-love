@@ -47,8 +47,5 @@ function love.update(dt)
 end
 
 function love.draw()
-	draw.drawToCanvas(function()
-		scene.draw()
-	end
-	)
+	draw.drawToCanvas(scene.draw)
 end

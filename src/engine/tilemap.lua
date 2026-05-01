@@ -6,7 +6,6 @@ local file = require("engine/file")
 local vec2 = require("engine/vec2")
 
 local function getIntersectionTiles(tilemap, tiles, camera)
-	-- TODO: account for zoom
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
 	local startX, startY = cameraX - (camera:getScreenWidth() / 2), cameraY - (camera:getScreenHeight() / 2)
 	local endX, endY = startX + camera:getScreenWidth(), startY + camera:getScreenHeight()
@@ -37,7 +36,7 @@ local function getIntersectionTiles(tilemap, tiles, camera)
 				goto continue
 			end
 			local tile = rowTiles[colIdx]
-			if not tile then
+			if not tile or not tile.tileId then
 				goto continue
 			end
 
@@ -48,17 +47,10 @@ local function getIntersectionTiles(tilemap, tiles, camera)
 	end
 
 	return intersectionTiles
-
-	-- TODO: need to account for large tiles whose bases are offscreen
-	-- TODO: maybe some unified system for also not drawing objects that are offscreen
-	-- return 0, 0, tilemap.width, tilemap.height
 end
 
-local function drawTileLayer(tilemap, layerIndex, camera)
-	local tiles = tilemap.layers[layerIndex].tiles
-	local intersectionTiles = getIntersectionTiles(tilemap, tiles, camera)
-
-	for _, tile in ipairs(intersectionTiles) do
+local function drawTiles(tilemap, tiles)
+	for _, tile in ipairs(tiles) do
 		local tilesetIndex = tile.tilesetIndex
 		local tileId = tile.tileId
 		if not tilesetIndex or not tileId then
@@ -75,21 +67,6 @@ local function drawTileLayer(tilemap, layerIndex, camera)
 		love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height + tilemap.tileHeight / 2)
 
 		::continue::
-	end
-end
-
-local function drawObjectLayer(tilemap, layerIndex, camera)
-	assert(false, "TODO implement")
-end
-
-local function draw(self, layerIndex, camera)
-	local layer = self.layers[layerIndex]
-	if layer.tiles then
-		drawTileLayer(self, layerIndex, camera)
-	elseif layer.objects then
-		drawObjectLayer(self, layerIndex, camera)
-	else
-		assert(false, string.format("Layer should have tiles or objects: %s", layer))
 	end
 end
 
@@ -199,7 +176,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 	)
 
 	local layers = {}
-	for i, layer in ipairs(tilemapInfo.layers) do
+	for _, layer in ipairs(tilemapInfo.layers) do
 		if layer.type == "tilelayer" then
 			local tiles = {}
 			if layer.chunks then
@@ -272,7 +249,8 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 		tilesets = tilesets,
 		layers = layers,
 
-		draw = draw,
+		getIntersectionTiles = getIntersectionTiles,
+		drawTiles = drawTiles,
 	}
 end
 

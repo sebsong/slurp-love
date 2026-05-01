@@ -2,9 +2,16 @@ local debug = {}
 
 local scene = require("engine/scene")
 
-local font = require("game/font")
+local profile = require("external/profile")
+
+local defaultFont
+local frame
+local report
 
 function debug.load()
+	defaultFont = love.graphics.getFont()
+	frame = 0
+	profile.start()
 end
 
 function debug.unload()
@@ -37,11 +44,18 @@ function debug.wheelmoved(x, y)
 end
 
 function debug.update(dt)
+	frame = frame + 1
+	if frame % 100 == 0 then
+		report = profile.report(20)
+		profile.reset()
+		-- print(report)
+	end
 end
 
 function debug.draw()
-	love.graphics.setFont(font.small)
-	love.graphics.setColor(1, 0, 0)
+	love.graphics.setFont(defaultFont)
+
+	love.graphics.setColor(0, 1, 0)
 	love.graphics.print(string.format("fps: %s", love.timer.getFPS()))
 	love.graphics.setColor(1, 1, 1)
 end

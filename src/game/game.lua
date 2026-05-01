@@ -31,6 +31,9 @@ local PACKAGE_TILESET_NAME = "packages"
 local BUILDING_TILESET_NAME = "buildings"
 local MAILBOX_TILESET_NAME = "mailboxes"
 
+local tilemapSpriteBatch
+
+local tilemapObj
 local cameraObj
 local boatObj
 
@@ -60,19 +63,24 @@ function game.load()
 		tilemap.newTileset("assets/art/mailboxes.png", 16, 16),
 		tilemap.newTileset("assets/art/walls.png", 16, 256),
 	}
-	game.tilemap = tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
+	tilemapObj = tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
+	tilemapSpriteBatch = love.graphics.newSpriteBatch(tilesets[1].image, 3000, "static")
 
 	worldObjectsSet = set.new()
 	packages = {}
 	mailboxes = {}
 
-	boatObj = boat.new(game.tilemap)
+	boatObj = boat.new(tilemapObj)
 	worldObjectsSet:insert(boatObj)
 
 	collision.register(boatObj)
-	for rowIdx, row in ipairs(game.tilemap.layers[LAND_LAYER_NAME].tiles) do
+	for rowIdx, row in ipairs(tilemapObj.layers[LAND_LAYER_NAME].tiles) do
 		for colIdx, tile in ipairs(row) do
 			if tile.tileId then
+				local tileQuad = tilesets[1].quads[tile.tileId]
+				local x, y = tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
+				local _, _, width, height = tileQuad:getViewport()
+				tilemapSpriteBatch:add(tileQuad, x - width / 2, y - height + tilemapObj.tileHeight / 2)
 				tile.position = vec2.new(colIdx, rowIdx)
 				tile.collider = { width = 1, height = 1 }
 				collision.register(tile)
@@ -80,7 +88,7 @@ function game.load()
 		end
 	end
 
-	for _, object in ipairs(game.tilemap.layers[OBJECT_LAYER_NAME].objects) do
+	for _, object in ipairs(tilemapObj.layers[OBJECT_LAYER_NAME].objects) do
 		local tilesetName = object.tilesetName
 		if (tilesetName == PACKAGE_TILESET_NAME) then
 			table.insert(packages, package.toPackage(object))
@@ -91,7 +99,7 @@ function game.load()
 		worldObjectsSet:insert(object)
 	end
 
-	for _, object in ipairs(game.tilemap.layers[DECORATION_LAYER_NAME].objects) do
+	for _, object in ipairs(tilemapObj.layers[DECORATION_LAYER_NAME].objects) do
 		worldObjectsSet:insert(object)
 	end
 
@@ -182,7 +190,7 @@ function game.draw()
 	love.graphics.scale(cameraObj.zoom, cameraObj.zoom)
 	love.graphics.applyTransform(camera.getWorldToCanvasTransform(cameraObj))
 
-	game.tilemap:draw(LAND_LAYER_NAME, cameraObj)
+	love.graphics.draw(tilemapSpriteBatch)
 	for _, worldObject in ipairs(worldObjectsArray) do
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
@@ -195,14 +203,6 @@ function game.draw()
 		love.graphics.draw(lanternLightImage, boatX - lanternWidth / 2, boatY - lanternHeight / 2)
 		love.graphics.setShader()
 	end
-
-	love.graphics.push()
-	love.graphics.applyTransform(game.tilemap.tilemapIndexToWorldTransform)
-	local boatColIdx, boatRowIdx = game.tilemap.worldToTilemapIndexTransform:transformPoint(boatObj.transform
-		:transformPoint(0, 0))
-	-- collision.drawCollider(Boat.collider, { boatColIdx, boatRowIdx })
-	love.graphics.pop()
-	-- collision.drawTileColliders(Tilemap, LandTileLayerIndex)
 
 	love.graphics.pop()
 
