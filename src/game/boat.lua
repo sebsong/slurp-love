@@ -24,8 +24,36 @@ local function updateNeighborTiles(self)
 			-- TODO: better way to specify layer
 			local tile = self.tilemap.layers["base"].tiles[neighborRowIdx][neighborColIdx]
 			if tile.tileId then
+				if not tile.drawComponent then
+					-- TODO: this is a temp hack
+					local tilesetIndex = tile.tilesetIndex
+					local tileId = tile.tileId
+					if not tilesetIndex or not tileId then
+						goto continue
+					end
+					local tileset = self.tilemap.tilesets[tilesetIndex]
+					local tileQuad = tileset.quads[tileId]
+					if not tileQuad then
+						goto continue
+					end
+					print("TILE col row: ", neighborColIdx, neighborRowIdx)
+					print("TILE POS: ", tile.position)
+					local x, y = self.tilemap.tilemapIndexToWorldTransform:transformPoint(tile.position.x,
+						tile.position.y)
+					print("TILE XY: ", x, y)
+					local _, _, width, height = tileQuad:getViewport()
+					tile.drawComponent = {
+						shouldDraw = true,
+						image = tileset.image,
+						quad = tileQuad,
+						xOffset = -width / 2,
+						yOffset = -height + self.tilemap.tileHeight / 2,
+					}
+					tile.transform = love.math.newTransform(x, y)
+				end
 				table.insert(self.neighborTiles, tile)
 			end
+			::continue::
 		end
 	end
 end
@@ -187,7 +215,7 @@ end
 -- end
 
 local function onCollision(self, collidable)
-	print(collidable.position)
+	-- print(collidable.position)
 end
 
 function boat.new(tilemap)

@@ -173,6 +173,10 @@ function game.update(dt)
 
 	-- TODO: intersect world objects with what the camera can see and only sort + draw those
 	worldObjectsArray = worldObjectsSet:toArray()
+	for _, tile in ipairs(boatObj.neighborTiles) do
+		table.insert(worldObjectsArray, tile)
+	end
+
 	table.sort(
 		worldObjectsArray,
 		function(d1, d2)
@@ -191,9 +195,11 @@ function game.draw()
 	love.graphics.applyTransform(camera.getWorldToCanvasTransform(cameraObj))
 
 	love.graphics.draw(tilemapSpriteBatch)
+	love.graphics.setColor(1, 0, 0)
 	for _, worldObject in ipairs(worldObjectsArray) do
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
+	love.graphics.setColor(1, 1, 1)
 
 	if boatObj.isLanternActive then
 		local boatX, boatY = boatObj.transform:transformPoint(0, 0)
