@@ -4,6 +4,7 @@ local tilemap = {}
 
 local file = require("engine/file")
 local vec2 = require("engine/vec2")
+local set = require("engine/set")
 
 local function getIntersectionTiles(tilemap, tiles, camera)
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
@@ -146,7 +147,11 @@ local function insertTile(tiles, gid, rowIdx, colIdx, tilesetInfos)
 	tiles[rowIdx][colIdx] = {
 		tilesetIndex = tilesetIndex,
 		tileId = tileId,
-		position = vec2.new(colIdx, rowIdx)
+
+		-- TODO: initialize collision info somewhere else?
+		position = vec2.new(colIdx, rowIdx),
+		collider = { width = 1, height = 1 },
+		collidingWith = set.new()
 	}
 	::continue::
 end

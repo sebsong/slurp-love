@@ -73,7 +73,7 @@ function game.load()
 	boatObj = boat.new(tilemapObj)
 	worldObjectsSet:insert(boatObj)
 
-	collision.register(boatObj)
+	-- collision.register(boatObj)
 	for rowIdx, row in ipairs(tilemapObj.layers[LAND_LAYER_NAME].tiles) do
 		for colIdx, tile in ipairs(row) do
 			if tile.tileId then
@@ -81,9 +81,9 @@ function game.load()
 				local x, y = tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
 				local _, _, width, height = tileQuad:getViewport()
 				tilemapSpriteBatch:add(tileQuad, x - width / 2, y - height + tilemapObj.tileHeight / 2)
-				tile.position = vec2.new(colIdx, rowIdx)
-				tile.collider = { width = 1, height = 1 }
-				collision.register(tile)
+				-- tile.position = vec2.new(colIdx, rowIdx)
+				-- tile.collider = { width = 1, height = 1 }
+				-- collision.register(tile)
 			end
 		end
 	end
@@ -115,7 +115,7 @@ end
 
 function game.unload()
 	music:unload()
-	collision.clearAll()
+	-- collision.clearAll()
 end
 
 function game.endDay()

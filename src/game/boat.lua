@@ -4,12 +4,31 @@ local slurp_math = require("engine/math")
 local collision = require("engine/collision")
 local animation = require("engine/animation")
 local vec2 = require("engine/vec2")
+local set = require("engine/set")
 
 local values = require("game/values")
 local ui = require("game/ui")
 
 local NUM_BOAT_ANGLES = 16
 local BOAT_WIDTH, BOATH_HEIGHT = 16, 16
+
+local function updateNeighborTiles(self)
+	local tilemapCol, tilemapRow = self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform
+		:transformPoint(0, 0))
+	local tilemapColIdx = math.floor(tilemapCol)
+	local tilemapRowIdx = math.floor(tilemapRow)
+	self.neighborTiles = {}
+
+	for neighborRowIdx = tilemapRowIdx - 1, tilemapRowIdx + 1 do
+		for neighborColIdx = tilemapColIdx - 1, tilemapColIdx + 1 do
+			-- TODO: better way to specify layer
+			local tile = self.tilemap.layers["base"].tiles[neighborRowIdx][neighborColIdx]
+			if tile.tileId then
+				table.insert(self.neighborTiles, tile)
+			end
+		end
+	end
+end
 
 local function update(self, dt)
 	local didMove = false
@@ -64,6 +83,8 @@ local function update(self, dt)
 	) + 1
 	self.drawComponent.currentFrame = frameIdx
 
+	self:updateNeighborTiles()
+
 	local tilemapPosition = vec2.new(
 		self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0))
 	)
@@ -74,6 +95,7 @@ local function update(self, dt)
 	local tileFrom = vec2.new()
 	local tileTo = collision.getPositionUpdate(
 		self,
+		self.neighborTiles,
 		tilemapPositionUpdate
 	)
 	local worldFrom = vec2.new(self.tilemap.tilemapIndexToWorldTransform:transformPoint(tileFrom.x, tileFrom.y))
@@ -193,6 +215,10 @@ function boat.new(tilemap)
 		getPosition = getPosition,
 		onCollision = onCollision,
 		collider = { width = 1, height = 1 },
+		collidingWith = set.new(),
+
+		neighborTiles = {},
+		updateNeighborTiles = updateNeighborTiles,
 
 		speed = 0,
 		maxSpeed = values.BOAT_MAX_SPEED_DEFAULT,

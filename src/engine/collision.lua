@@ -13,20 +13,24 @@ local set = require("engine/set")
 -- 		height: y
 -- 	}
 -- }
-local collidables = set.new()
+-- local collidables = set.new()
 
-function collision.register(collidable)
-	assert(collidable.collider ~= nil, "collidables must have a collider")
-	assert(collidable.position ~= nil or collidable.getPosition ~= nil, "collidables must have a position")
-	if not collidables:contains(collidable) then
-		collidable.collidingWith = set.new()
-		collidables:insert(collidable)
-	end
-end
+-- function collision.register(collidable)
+-- 	assert(collidable.collider ~= nil, "collidables must have a collider")
+-- 	assert(collidable.position ~= nil or collidable.getPosition ~= nil, "collidables must have a position")
+-- 	if not collidables:contains(collidable) then
+-- 		collidable.collidingWith = set.new()
+-- 		collidables:insert(collidable)
+-- 	end
+-- end
 
-function collision.remove(collidable)
-	collidables:remove(collidable)
-end
+-- function collision.remove(collidable)
+-- 	collidables:remove(collidable)
+-- end
+
+-- function collision.clearAll()
+-- 	collidables = set.new()
+-- end
 
 function collision.hitTest(x, y, collider, transform)
 	local colliderX, colliderY = transform:transformPoint(0, 0)
@@ -50,80 +54,76 @@ local function getRectExtents(x, y, halfWidth, halfHeight)
 	return (x - halfWidth), (x + halfWidth), (y - halfHeight), (y + halfHeight)
 end
 
-function collision.getPositionUpdate(collidable, targetPositionUpdate)
-	return targetPositionUpdate
-	-- local positionUpdate = targetPositionUpdate
-	-- local position = getCollidablePosition(collidable)
-	-- local collider = collidable.collider
-	-- local halfWidth, halfHeight = collider.width / 2, collider.height / 2
-	-- for otherCollidable, _ in pairs(collidables) do
-	-- 	if collidable == otherCollidable then
-	-- 		goto continue
-	-- 	end
+function collision.getPositionUpdate(collidable, collidables, targetPositionUpdate)
+	local positionUpdate = targetPositionUpdate
+	local position = getCollidablePosition(collidable)
+	local collider = collidable.collider
+	local halfWidth, halfHeight = collider.width / 2, collider.height / 2
 
-	-- 	local targetPosition = position + positionUpdate
+	for _, otherCollidable in ipairs(collidables) do
+		if collidable == otherCollidable then
+			goto continue
+		end
 
-	-- 	local otherPosition = getCollidablePosition(otherCollidable)
-	-- 	local otherCollider = otherCollidable.collider
+		local targetPosition = position + positionUpdate
 
-	-- 	local otherHalfWidth, otherHalfHeight = otherCollider.width / 2, otherCollider.height / 2
+		local otherPosition = getCollidablePosition(otherCollidable)
+		local otherCollider = otherCollidable.collider
 
-	-- 	local targetLeftX, targetRightX, targetTopY, targetBottomY = getRectExtents(
-	-- 		targetPosition.x, targetPosition.y, halfWidth, halfHeight
-	-- 	)
-	-- 	local otherLeftX, otherRightX, otherTopY, otherBottomY = getRectExtents(
-	-- 		otherPosition.x, otherPosition.y, otherHalfWidth, otherHalfHeight
-	-- 	)
+		local otherHalfWidth, otherHalfHeight = otherCollider.width / 2, otherCollider.height / 2
 
-	-- 	local isLeft = targetPosition.x < otherPosition.x
-	-- 	local xIntersects
-	-- 	if isLeft then
-	-- 		xIntersects = targetRightX >= otherLeftX
-	-- 	else
-	-- 		xIntersects = targetLeftX <= otherRightX
-	-- 	end
+		local targetLeftX, targetRightX, targetTopY, targetBottomY = getRectExtents(
+			targetPosition.x, targetPosition.y, halfWidth, halfHeight
+		)
+		local otherLeftX, otherRightX, otherTopY, otherBottomY = getRectExtents(
+			otherPosition.x, otherPosition.y, otherHalfWidth, otherHalfHeight
+		)
 
-	-- 	local isAbove = targetPosition.y < otherPosition.y
-	-- 	local yIntersects
-	-- 	if isAbove then
-	-- 		yIntersects = targetBottomY >= otherTopY
-	-- 	else
-	-- 		yIntersects = targetTopY <= otherBottomY
-	-- 	end
+		local isLeft = targetPosition.x < otherPosition.x
+		local xIntersects
+		if isLeft then
+			xIntersects = targetRightX >= otherLeftX
+		else
+			xIntersects = targetLeftX <= otherRightX
+		end
 
-	-- 	if xIntersects and yIntersects then
-	-- 		local xCorrection = slurp_math.absMin(otherLeftX - targetRightX, otherRightX - targetLeftX)
-	-- 		local yCorrection = slurp_math.absMin(otherTopY - targetBottomY, otherBottomY - targetTopY)
+		local isAbove = targetPosition.y < otherPosition.y
+		local yIntersects
+		if isAbove then
+			yIntersects = targetBottomY >= otherTopY
+		else
+			yIntersects = targetTopY <= otherBottomY
+		end
 
-	-- 		if math.abs(xCorrection) <= math.abs(yCorrection) then
-	-- 			positionUpdate.x = positionUpdate.x + xCorrection
-	-- 		else
-	-- 			positionUpdate.y = positionUpdate.y + yCorrection
-	-- 		end
+		if xIntersects and yIntersects then
+			local xCorrection = slurp_math.absMin(otherLeftX - targetRightX, otherRightX - targetLeftX)
+			local yCorrection = slurp_math.absMin(otherTopY - targetBottomY, otherBottomY - targetTopY)
 
-	-- 		if collidable.onCollision and not collidable.collidingWith:contains(otherCollidable) then
-	-- 			collidable:onCollision(otherCollidable)
-	-- 		end
-	-- 		if otherCollidable.onCollision and not otherCollidable.collidingWith:contains(collidable) then
-	-- 			otherCollidable:onCollision(collidable)
-	-- 		end
+			if math.abs(xCorrection) <= math.abs(yCorrection) then
+				positionUpdate.x = positionUpdate.x + xCorrection
+			else
+				positionUpdate.y = positionUpdate.y + yCorrection
+			end
 
-	-- 		collidable.collidingWith:insert(otherCollidable)
-	-- 		otherCollidable.collidingWith:insert(collidable)
-	-- 	else
-	-- 		collidable.collidingWith:remove(otherCollidable)
-	-- 		otherCollidable.collidingWith:remove(collidable)
-	-- 	end
+			if collidable.onCollision and not collidable.collidingWith:contains(otherCollidable) then
+				collidable:onCollision(otherCollidable)
+			end
+			if otherCollidable.onCollision and not otherCollidable.collidingWith:contains(collidable) then
+				otherCollidable:onCollision(collidable)
+			end
 
-	-- 	::continue::
-	-- end
+			collidable.collidingWith:insert(otherCollidable)
+			otherCollidable.collidingWith:insert(collidable)
+		else
+			collidable.collidingWith:remove(otherCollidable)
+			otherCollidable.collidingWith:remove(collidable)
+		end
+
+		::continue::
+	end
 
 
-	-- return positionUpdate
-end
-
-function collision.clearAll()
-	collidables = set.new()
+	return positionUpdate
 end
 
 function collision.drawTileColliders(tilemap, layerIndex)
