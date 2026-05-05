@@ -11,6 +11,7 @@ local ui = require("game/ui")
 
 local NUM_BOAT_ANGLES = 16
 local BOAT_WIDTH, BOATH_HEIGHT = 16, 16
+local NEIGHBOR_TILE_DISTANCE = 2
 
 local function updateNeighborTiles(self)
 	local tilemapCol, tilemapRow = self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform
@@ -19,8 +20,8 @@ local function updateNeighborTiles(self)
 	local tilemapRowIdx = math.floor(tilemapRow)
 	self.neighborTiles = {}
 
-	for neighborRowIdx = tilemapRowIdx - 1, tilemapRowIdx + 1 do
-		for neighborColIdx = tilemapColIdx - 1, tilemapColIdx + 1 do
+	for neighborRowIdx = tilemapRowIdx - NEIGHBOR_TILE_DISTANCE, tilemapRowIdx + NEIGHBOR_TILE_DISTANCE do
+		for neighborColIdx = tilemapColIdx - NEIGHBOR_TILE_DISTANCE, tilemapColIdx + NEIGHBOR_TILE_DISTANCE do
 			-- TODO: better way to specify layer
 			local tile = self.tilemap.layers["base"].tiles[neighborRowIdx][neighborColIdx]
 			if tile.tileId then
@@ -36,11 +37,8 @@ local function updateNeighborTiles(self)
 					if not tileQuad then
 						goto continue
 					end
-					print("TILE col row: ", neighborColIdx, neighborRowIdx)
-					print("TILE POS: ", tile.position)
 					local x, y = self.tilemap.tilemapIndexToWorldTransform:transformPoint(tile.position.x,
 						tile.position.y)
-					print("TILE XY: ", x, y)
 					local _, _, width, height = tileQuad:getViewport()
 					tile.drawComponent = {
 						shouldDraw = true,
