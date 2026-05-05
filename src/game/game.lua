@@ -177,6 +177,7 @@ function game.update(dt)
 		table.insert(worldObjectsArray, tile)
 	end
 
+	-- TODO: batch tiles into vertical rows, sort and draw the rows relative to other world objects
 	table.sort(
 		worldObjectsArray,
 		function(d1, d2)
