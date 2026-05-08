@@ -39,6 +39,7 @@ local tilemapObj
 local cameraObj
 local boatObj
 
+local worldEntities
 local worldObjects
 local packages
 local mailboxes
@@ -106,7 +107,7 @@ function game.load()
 					},
 				}
 				tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
-				table.insert(worldObjects, tilemapWorldRow)
+				-- table.insert(worldObjects, tilemapWorldRow)
 			end
 			tilemapWorldRow.drawComponent.image:add(
 				tileQuad,
@@ -200,16 +201,32 @@ function game.update(dt)
 
 	music:update(boatObj, dt)
 
-	-- TODO: intersect world objects with what the camera can see and only sort + draw those
-	-- for _, tile in ipairs(boatObj.neighborTiles) do
-	-- 	table.insert(worldObjectsArray, tile)
-	-- end
+	local cameraX, cameraY = cameraObj.transform:transformPoint(0, 0)
+	local cameraHalfHeight = cameraObj:getScreenHeight() / 2
+	local startY, endY = cameraY - cameraHalfHeight, cameraY + cameraHalfHeight
 
-	-- TODO: batch tiles into vertical rows, sort and draw the rows relative to other world objects
+	local startColIdx, startRowIdx = tilemapObj.worldToTilemapIndexTransform:transformPoint(cameraX, startY)
+	local endColIdx, endRowIdx = tilemapObj.worldToTilemapIndexTransform:transformPoint(cameraX, endY)
+	startColIdx = math.floor(math.max(startColIdx, 1))
+	startRowIdx = math.floor(math.min(startRowIdx, tilemapObj.width))
+	endColIdx = math.ceil(math.max(endColIdx, 1))
+	endRowIdx = math.ceil(math.min(endRowIdx, tilemapObj.height))
+
+	local startWorldRowIdx = tilemap.getWorldRowIdx(startColIdx, startRowIdx)
+	local endWorldRowIdx = tilemap.getWorldRowIdx(endColIdx, endRowIdx) + 2
+
+	worldEntities = {}
+	for worldRowIdx = startWorldRowIdx, endWorldRowIdx do
+		table.insert(worldEntities, tilemapWorldRows[worldRowIdx])
+	end
+	for _, worldObject in ipairs(worldObjects) do
+		table.insert(worldEntities, worldObject)
+	end
+
 	table.sort(
-		worldObjects,
-		function(obj, otherObj)
-			return obj.drawComponent.zIndex < otherObj.drawComponent.zIndex
+		worldEntities,
+		function(entity, otherEntity)
+			return entity.drawComponent.zIndex < otherEntity.drawComponent.zIndex
 		end
 	)
 end
@@ -222,7 +239,7 @@ function game.draw()
 	love.graphics.applyTransform(camera.getWorldToCanvasTransform(cameraObj))
 
 	love.graphics.draw(tilemapWallsSpriteBatch)
-	for _, worldObject in ipairs(worldObjects) do
+	for _, worldObject in ipairs(worldEntities) do
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
 
