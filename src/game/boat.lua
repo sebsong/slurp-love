@@ -5,6 +5,7 @@ local collision = require("engine/collision")
 local animation = require("engine/animation")
 local vec2 = require("engine/vec2")
 local set = require("engine/set")
+local tilemap = require("engine/tilemap")
 
 local values = require("game/values")
 local ui = require("game/ui")
@@ -25,35 +26,40 @@ local function updateNeighborTiles(self)
 			-- TODO: better way to specify layer
 			local tile = self.tilemap.layers["base"].tiles[neighborRowIdx][neighborColIdx]
 			if tile.tileId then
-				if not tile.drawComponent then
-					-- TODO: this is a temp hack
-					local tilesetIndex = tile.tilesetIndex
-					local tileId = tile.tileId
-					if not tilesetIndex or not tileId then
-						goto continue
-					end
-					local tileset = self.tilemap.tilesets[tilesetIndex]
-					local tileQuad = tileset.quads[tileId]
-					if not tileQuad then
-						goto continue
-					end
-					local x, y = self.tilemap.tilemapIndexToWorldTransform:transformPoint(tile.position.x,
-						tile.position.y)
-					local _, _, width, height = tileQuad:getViewport()
-					tile.drawComponent = {
-						shouldDraw = true,
-						image = tileset.image,
-						quad = tileQuad,
-						xOffset = -width / 2,
-						yOffset = -height + self.tilemap.tileHeight / 2,
-					}
-					tile.transform = love.math.newTransform(x, y)
-				end
+				-- if not tile.drawComponent then
+				-- 	-- TODO: this is a temp hack
+				-- 	local tilesetIndex = tile.tilesetIndex
+				-- 	local tileId = tile.tileId
+				-- 	if not tilesetIndex or not tileId then
+				-- 		goto continue
+				-- 	end
+				-- 	local tileset = self.tilemap.tilesets[tilesetIndex]
+				-- 	local tileQuad = tileset.quads[tileId]
+				-- 	if not tileQuad then
+				-- 		goto continue
+				-- 	end
+				-- 	local x, y = self.tilemap.tilemapIndexToWorldTransform:transformPoint(tile.position.x,
+				-- 		tile.position.y)
+				-- 	local _, _, width, height = tileQuad:getViewport()
+				-- 	tile.drawComponent = {
+				-- 		shouldDraw = true,
+				-- 		image = tileset.image,
+				-- 		quad = tileQuad,
+				-- 		xOffset = -width / 2,
+				-- 		yOffset = -height + self.tilemap.tileHeight / 2,
+				-- 	}
+				-- 	tile.transform = love.math.newTransform(x, y)
+				-- end
 				table.insert(self.neighborTiles, tile)
 			end
 			::continue::
 		end
 	end
+end
+
+local function getWorldRowIdx(self)
+	local colIdx, rowIdx = self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0))
+	return tilemap.getWorldRowIdx(colIdx, rowIdx)
 end
 
 local function update(self, dt)
@@ -131,6 +137,8 @@ local function update(self, dt)
 	local boatTo = vec2.new(self.transform:inverse():transformPoint(worldTo.x, worldTo.y))
 	local boatUpdate = boatTo - boatFrom
 	self.transform:translate(boatUpdate.x, boatUpdate.y)
+
+	self.drawComponent.zIndex = self:getWorldRowIdx()
 end
 
 local function draw(animation, transform)
@@ -232,6 +240,7 @@ function boat.new(tilemap)
 
 	local animation = animation.new(boatImage, NUM_BOAT_ANGLES, -width / 2, -height + (8 / 2))
 	animation.draw = draw
+	animation.zIndex = 0
 
 	return {
 		-- TODO: build the boat from a tile object
@@ -265,6 +274,7 @@ function boat.new(tilemap)
 		indexOfPackage = indexOfPackage,
 		pickupPackages = pickupPackages,
 		deliverPackage = deliverPackage,
+		getWorldRowIdx = getWorldRowIdx
 	}
 end
 

@@ -6,7 +6,7 @@ local file = require("engine/file")
 local vec2 = require("engine/vec2")
 local set = require("engine/set")
 
-local function getIntersectionTiles(tilemap, tiles, camera)
+function tilemap.getIntersectionTiles(tilemap, tiles, camera)
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
 	local startX, startY = cameraX - (camera:getScreenWidth() / 2), cameraY - (camera:getScreenHeight() / 2)
 	local endX, endY = startX + camera:getScreenWidth(), startY + camera:getScreenHeight()
@@ -50,7 +50,7 @@ local function getIntersectionTiles(tilemap, tiles, camera)
 	return intersectionTiles
 end
 
-local function drawTiles(tilemap, tiles)
+function tilemap.drawTiles(tilemap, tiles)
 	for _, tile in ipairs(tiles) do
 		local tilesetIndex = tile.tilesetIndex
 		local tileId = tile.tileId
@@ -123,14 +123,22 @@ local function getTilesetInfo(gid, tilesetInfos)
 			return i, tilesetInfo
 		end
 	end
-	assert(false, string.format("Object gid: %s should map to a tileset", gid))
+	error(("Object gid: %s should map to a tileset"):format(gid))
 end
 
 local function getTileId(gid, tilesetInfo)
 	return gid - tilesetInfo.firstgid + 1
 end
 
-local function insertTile(tiles, gid, rowIdx, colIdx, tilesetInfos)
+-- the diagonal rows in tilemap space representing horizontal rows in world space
+--     *		1
+--   *   *		2 (1, 2) => 2, (2, 1) => 2
+-- *   *   * 	3
+function tilemap.getWorldRowIdx(colIdx, rowIdx)
+	return (colIdx + rowIdx) - 1
+end
+
+local function insertTile(tiles, gid, tilesetInfos, rowIdx, colIdx, zIndexOffset)
 	if not tiles[rowIdx] then
 		tiles[rowIdx] = {}
 	end
@@ -144,12 +152,15 @@ local function insertTile(tiles, gid, rowIdx, colIdx, tilesetInfos)
 	end
 	local tilesetIndex, _ = getTilesetInfo(gid, tilesetInfos)
 	local tileId = getTileId(gid, tilesetInfos[tilesetIndex])
+	local worldRowIdx = tilemap.getWorldRowIdx(colIdx, rowIdx)
 	tiles[rowIdx][colIdx] = {
 		tilesetIndex = tilesetIndex,
 		tileId = tileId,
 
 		-- TODO: initialize collision info somewhere else?
 		position = vec2.new(colIdx, rowIdx),
+		worldRowIdx = worldRowIdx,
+		zIndex = worldRowIdx + zIndexOffset,
 		collider = { width = 1, height = 1 },
 		collidingWith = set.new()
 	}
@@ -182,6 +193,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 
 	local layers = {}
 	for _, layer in ipairs(tilemapInfo.layers) do
+		local zIndexOffset = layer.properties.zIndexOffset or 0
 		if layer.type == "tilelayer" then
 			local tiles = {}
 			if layer.chunks then
@@ -191,7 +203,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 						for i = 1, chunk.width do
 							local colIdx = chunk.x + i
 							local gid = chunk.data[(j - 1) * chunk.width + (i - 1) + 1]
-							insertTile(tiles, gid, rowIdx, colIdx, tilesetInfos)
+							insertTile(tiles, gid, tilesetInfos, rowIdx, colIdx, zIndexOffset)
 						end
 					end
 				end
@@ -199,7 +211,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 				for rowIdx = 1, width do
 					for colIdx = 1, height do
 						local gid = layer.data[(rowIdx - 1) * width + (colIdx - 1) + 1] or 0
-						insertTile(tiles, gid, rowIdx, colIdx, tilesetInfos)
+						insertTile(tiles, gid, tilesetInfos, rowIdx, colIdx, zIndexOffset)
 					end
 				end
 			end
@@ -207,6 +219,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 
 			layers[layer.name] = {
 				tiles = tiles,
+				properties = layer.properties,
 			}
 		elseif layer.type == "objectgroup" then
 			local objects = {}
@@ -217,6 +230,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 				local tileset = tilesets[tilesetIndex]
 				local tileId = getTileId(object.gid, tilesetInfos[tilesetIndex])
 				local worldX, worldY = tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
+				local worldRowIdx = tilemap.getWorldRowIdx(colIdx, rowIdx)
 				local quad = tileset.quads[tileId]
 				local _, _, objWidth, objHeight = quad:getViewport()
 				table.insert(objects, {
@@ -226,6 +240,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 						quad = quad,
 						xOffset = -objWidth / 2,
 						yOffset = -objHeight + tileHeight / 2,
+						zIndex = worldRowIdx + zIndexOffset
 					},
 					transform = love.math.newTransform(worldX, worldY),
 
@@ -238,7 +253,10 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 
 			layers[layer.name] = {
 				objects = objects,
+				properties = layer.properties,
 			}
+		else
+			error(("unsupported tile layer type: %s"):format(layer.type))
 		end
 	end
 	return {
@@ -253,9 +271,6 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 
 		tilesets = tilesets,
 		layers = layers,
-
-		getIntersectionTiles = getIntersectionTiles,
-		drawTiles = drawTiles,
 	}
 end
 

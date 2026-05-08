@@ -9,6 +9,9 @@
  <tileset firstgid="13" source="mailboxes.tsx"/>
  <tileset firstgid="14" source="walls.tsx"/>
  <layer id="1" name="base" width="231" height="230">
+  <properties>
+   <property name="zIndexOffset" type="int" value="0"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -243,6 +246,9 @@
 </data>
  </layer>
  <objectgroup id="8" name="decorations" visible="0">
+  <properties>
+   <property name="zIndexOffset" type="int" value="3"/>
+  </properties>
   <object id="111" gid="12" x="863.352" y="631.729" width="64" height="64"/>
   <object id="112" gid="12" x="847.352" y="647.729" width="64" height="64"/>
   <object id="113" gid="11" x="1047.35" y="823.729" width="64" height="64"/>
@@ -264,6 +270,9 @@
   <object id="35" gid="12" x="24" y="24" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="2" name="objects_1">
+  <properties>
+   <property name="zIndexOffset" type="int" value="3"/>
+  </properties>
   <object id="131" gid="3" x="896" y="776" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="132"/>
@@ -272,6 +281,9 @@
   <object id="132" gid="13" x="352" y="1464" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="10" name="objects_2" visible="0">
+  <properties>
+   <property name="zIndexOffset" type="int" value="3"/>
+  </properties>
   <object id="135" gid="3" x="896" y="776" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="136"/>
@@ -286,6 +298,9 @@
   <object id="138" gid="13" x="136" y="272" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="11" name="objects_3" visible="0">
+  <properties>
+   <property name="zIndexOffset" type="int" value="3"/>
+  </properties>
   <object id="139" gid="3" x="896" y="776" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="140"/>
@@ -311,7 +326,10 @@
   </object>
   <object id="150" gid="13" x="1096" y="696" width="16" height="16"/>
  </objectgroup>
- <objectgroup id="9" name="objects_4" visible="0">
+ <objectgroup id="9" name="objects_4">
+  <properties>
+   <property name="zIndexOffset" type="int" value="3"/>
+  </properties>
   <object id="4" gid="3" x="864" y="648" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="86"/>

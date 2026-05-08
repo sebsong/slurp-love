@@ -16,11 +16,11 @@
             "scaleInDock": 1
         },
         "map.tmx": {
-            "scale": 2,
-            "selectedLayer": 2,
+            "scale": 0.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 1965.5,
-                "y": 859.75
+                "x": 1666,
+                "y": 557
             }
         },
         "map_iso.tmx": {
@@ -65,7 +65,7 @@
         "tileset.tsx"
     ],
     "project": "map.tiled-project",
-    "property.type": "object",
+    "property.type": "int",
     "recentFiles": [
         "tileset.tsx",
         "map.tmx",

@@ -32,13 +32,14 @@ local BUILDING_TILESET_NAME = "buildings"
 local MAILBOX_TILESET_NAME = "mailboxes"
 
 local tilemapSpriteBatch
+-- represents tilemap rows in world space (i.e. diagonal rows)
+local tilemapWorldRows
 
 local tilemapObj
 local cameraObj
 local boatObj
 
-local worldObjectsSet
-local worldObjectsArray
+local worldObjects
 local packages
 local mailboxes
 
@@ -66,25 +67,43 @@ function game.load()
 	tilemapObj = tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
 	tilemapSpriteBatch = love.graphics.newSpriteBatch(tilesets[1].image, 3000, "static")
 
-	worldObjectsSet = set.new()
+	worldObjects = {}
 	packages = {}
 	mailboxes = {}
 
 	boatObj = boat.new(tilemapObj)
-	worldObjectsSet:insert(boatObj)
+	table.insert(worldObjects, boatObj)
 
-	-- collision.register(boatObj)
-	for rowIdx, row in ipairs(tilemapObj.layers[LAND_LAYER_NAME].tiles) do
-		for colIdx, tile in ipairs(row) do
-			if tile.tileId then
-				local tileQuad = tilesets[1].quads[tile.tileId]
-				local x, y = tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
-				local _, _, width, height = tileQuad:getViewport()
-				tilemapSpriteBatch:add(tileQuad, x - width / 2, y - height + tilemapObj.tileHeight / 2)
-				-- tile.position = vec2.new(colIdx, rowIdx)
-				-- tile.collider = { width = 1, height = 1 }
-				-- collision.register(tile)
+	local spriteBatchSize = math.max(tilemapObj.width, tilemapObj.height)
+	tilemapWorldRows = {}
+	for _, row in ipairs(tilemapObj.layers[LAND_LAYER_NAME].tiles) do
+		for _, tile in ipairs(row) do
+			if not tile.tileId then
+				goto continue
 			end
+
+			local x, y = tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
+			local tilemapWorldRow = tilemapWorldRows[tile.worldRowIdx]
+			if not tilemapWorldRow then
+				tilemapWorldRow = {
+					transform = love.math.newTransform(0, y),
+					drawComponent = {
+						shouldDraw = true,
+						image = love.graphics.newSpriteBatch(tilesets[1].image, spriteBatchSize, "static"),
+						zIndex = tile.zIndex
+					},
+				}
+				tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
+				table.insert(worldObjects, tilemapWorldRow)
+			end
+			local tileQuad = tilesets[1].quads[tile.tileId]
+			local _, _, width, height = tileQuad:getViewport()
+			tilemapWorldRow.drawComponent.image:add(
+				tileQuad,
+				x - width / 2,
+				-height + tilemapObj.tileHeight / 2
+			)
+			::continue::
 		end
 	end
 
@@ -96,11 +115,11 @@ function game.load()
 			table.insert(mailboxes, object)
 		end
 
-		worldObjectsSet:insert(object)
+		table.insert(worldObjects, object)
 	end
 
 	for _, object in ipairs(tilemapObj.layers[DECORATION_LAYER_NAME].objects) do
-		worldObjectsSet:insert(object)
+		table.insert(worldObjects, object)
 	end
 
 	ui:load()
@@ -172,18 +191,15 @@ function game.update(dt)
 	music:update(boatObj, dt)
 
 	-- TODO: intersect world objects with what the camera can see and only sort + draw those
-	worldObjectsArray = worldObjectsSet:toArray()
-	for _, tile in ipairs(boatObj.neighborTiles) do
-		table.insert(worldObjectsArray, tile)
-	end
+	-- for _, tile in ipairs(boatObj.neighborTiles) do
+	-- 	table.insert(worldObjectsArray, tile)
+	-- end
 
 	-- TODO: batch tiles into vertical rows, sort and draw the rows relative to other world objects
 	table.sort(
-		worldObjectsArray,
-		function(d1, d2)
-			local _, d1Y = d1.transform:transformPoint(0, 0)
-			local _, d2Y = d2.transform:transformPoint(0, 0)
-			return d1Y < d2Y
+		worldObjects,
+		function(obj, otherObj)
+			return obj.drawComponent.zIndex < otherObj.drawComponent.zIndex
 		end
 	)
 end
@@ -195,12 +211,10 @@ function game.draw()
 	love.graphics.scale(cameraObj.zoom, cameraObj.zoom)
 	love.graphics.applyTransform(camera.getWorldToCanvasTransform(cameraObj))
 
-	love.graphics.draw(tilemapSpriteBatch)
-	love.graphics.setColor(1, 0, 0)
-	for _, worldObject in ipairs(worldObjectsArray) do
+	-- love.graphics.draw(tilemapSpriteBatch)
+	for _, worldObject in ipairs(worldObjects) do
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
-	love.graphics.setColor(1, 1, 1)
 
 	if boatObj.isLanternActive then
 		local boatX, boatY = boatObj.transform:transformPoint(0, 0)
