@@ -30,10 +30,10 @@ local LAND_TILESET_NAME = "tileset"
 local PACKAGE_TILESET_NAME = "packages"
 local BUILDING_TILESET_NAME = "buildings"
 local MAILBOX_TILESET_NAME = "mailboxes"
+local WALLS_TILESET_NAME = "walls"
 
-local tilemapSpriteBatch
--- represents tilemap rows in world space (i.e. diagonal rows)
 local tilemapWorldRows
+local tilemapWallsSpriteBatch
 
 local tilemapObj
 local cameraObj
@@ -65,7 +65,6 @@ function game.load()
 		tilemap.newTileset("assets/art/walls.png", 16, 256),
 	}
 	tilemapObj = tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
-	tilemapSpriteBatch = love.graphics.newSpriteBatch(tilesets[1].image, 3000, "static")
 
 	worldObjects = {}
 	packages = {}
@@ -75,6 +74,7 @@ function game.load()
 	table.insert(worldObjects, boatObj)
 
 	local spriteBatchSize = math.max(tilemapObj.width, tilemapObj.height)
+	tilemapWallsSpriteBatch = love.graphics.newSpriteBatch(tilesets[5].image, spriteBatchSize * 4, "static")
 	tilemapWorldRows = {}
 	for _, row in ipairs(tilemapObj.layers[LAND_LAYER_NAME].tiles) do
 		for _, tile in ipairs(row) do
@@ -82,7 +82,19 @@ function game.load()
 				goto continue
 			end
 
+			local tileQuad = tilesets[tile.tilesetIndex].quads[tile.tileId]
+			local _, _, width, height = tileQuad:getViewport()
 			local x, y = tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
+
+			if tile.tilesetName == WALLS_TILESET_NAME then
+				tilemapWallsSpriteBatch:add(
+					tileQuad,
+					x - width / 2,
+					y - height + tilemapObj.tileHeight / 2
+				)
+				goto continue
+			end
+
 			local tilemapWorldRow = tilemapWorldRows[tile.worldRowIdx]
 			if not tilemapWorldRow then
 				tilemapWorldRow = {
@@ -96,8 +108,6 @@ function game.load()
 				tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
 				table.insert(worldObjects, tilemapWorldRow)
 			end
-			local tileQuad = tilesets[1].quads[tile.tileId]
-			local _, _, width, height = tileQuad:getViewport()
 			tilemapWorldRow.drawComponent.image:add(
 				tileQuad,
 				x - width / 2,
@@ -211,7 +221,7 @@ function game.draw()
 	love.graphics.scale(cameraObj.zoom, cameraObj.zoom)
 	love.graphics.applyTransform(camera.getWorldToCanvasTransform(cameraObj))
 
-	-- love.graphics.draw(tilemapSpriteBatch)
+	love.graphics.draw(tilemapWallsSpriteBatch)
 	for _, worldObject in ipairs(worldObjects) do
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end

@@ -48,7 +48,7 @@ function debug.update(dt)
 	if frame % 1000 == 0 then
 		report = profile.report(20)
 		profile.reset()
-		-- print(report)
+		print(report)
 	end
 end
 

@@ -150,11 +150,12 @@ local function insertTile(tiles, gid, tilesetInfos, rowIdx, colIdx, zIndexOffset
 		}
 		goto continue
 	end
-	local tilesetIndex, _ = getTilesetInfo(gid, tilesetInfos)
+	local tilesetIndex, tilesetInfo = getTilesetInfo(gid, tilesetInfos)
 	local tileId = getTileId(gid, tilesetInfos[tilesetIndex])
 	local worldRowIdx = tilemap.getWorldRowIdx(colIdx, rowIdx)
 	tiles[rowIdx][colIdx] = {
 		tilesetIndex = tilesetIndex,
+		tilesetName = tilesetInfo.name,
 		tileId = tileId,
 
 		-- TODO: initialize collision info somewhere else?
