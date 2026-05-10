@@ -207,10 +207,10 @@ function game.update(dt)
 
 	local startColIdx, startRowIdx = tilemapObj.worldToTilemapIndexTransform:transformPoint(cameraX, startY)
 	local endColIdx, endRowIdx = tilemapObj.worldToTilemapIndexTransform:transformPoint(cameraX, endY)
-	startColIdx = math.floor(math.max(startColIdx, 1))
-	startRowIdx = math.floor(math.min(startRowIdx, tilemapObj.width))
-	endColIdx = math.ceil(math.max(endColIdx, 1))
-	endRowIdx = math.ceil(math.min(endRowIdx, tilemapObj.height))
+	startColIdx = math.floor(startColIdx)
+	startRowIdx = math.floor(startRowIdx)
+	endColIdx = math.ceil(endColIdx)
+	endRowIdx = math.ceil(endRowIdx)
 
 	local startWorldRowIdx = tilemap.getWorldRowIdx(startColIdx, startRowIdx)
 	local endWorldRowIdx = tilemap.getWorldRowIdx(endColIdx, endRowIdx) + 2
