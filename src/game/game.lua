@@ -44,8 +44,12 @@ local worldObjects
 local packages
 local mailboxes
 
+local waterImage
+local waterShader
+
 local lanternLightImage
 local lanternShader
+
 
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
@@ -54,8 +58,6 @@ function game.load()
 	OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[scene.scenes.dayTracker.currentDay] or OBJECT_LAYER_NAME
 
 	cameraObj = camera.new()
-
-	BackgroundImage = love.graphics.newImage("assets/art/background.png")
 
 	local tilesets = {
 		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
@@ -136,6 +138,11 @@ function game.load()
 	ui:load()
 	music:load()
 
+	waterImage  = love.graphics.newImage("assets/art/water.png")
+	waterShader = love.graphics.newShader("assets/shader/water.glsl")
+	waterShader:send("seed", love.timer.getTime())
+	waterShader:send("colorPalette", unpack(color.palette))
+
 	lanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
 	lanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
 	lanternShader:send("canvasDimensions", { canvas.canvas:getPixelWidth(), canvas.canvas:getPixelHeight() })
@@ -171,6 +178,10 @@ function game.keypressed(key, scancode, isRepeat)
 				evaluateWinCondition()
 			end
 		end
+	end
+
+	if key == "t" and not isRepeat then
+		waterShader:send("seed", love.timer.getTime())
 	end
 
 	cameraObj:keypressed(key, scancode, isRepeat)
@@ -232,7 +243,9 @@ function game.update(dt)
 end
 
 function game.draw()
-	love.graphics.draw(BackgroundImage)
+	love.graphics.setShader(waterShader)
+	love.graphics.draw(waterImage)
+	love.graphics.setShader()
 
 	love.graphics.push()
 	love.graphics.scale(cameraObj.zoom, cameraObj.zoom)
