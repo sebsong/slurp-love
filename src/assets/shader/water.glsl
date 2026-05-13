@@ -1,17 +1,25 @@
 #pragma language glsl3
 
 uniform float seed;
+// uniform float time;
 
 const int COLOR_PALETTE_SIZE = 8;
 uniform vec4 colorPalette[COLOR_PALETTE_SIZE];
 
-const float NUM_COLUMNS = 16;
-const float NUM_ROWS = 18;
+// const float NUM_COLUMNS = 16;
+// const float NUM_ROWS = 18;
+const float NUM_COLUMNS = 8;
+const float NUM_ROWS = 9;
 const float GRID_WIDTH = 1 / NUM_COLUMNS;
 const float GRID_HEIGHT = 1 / NUM_ROWS;
 
-const float OUTER_RING_DIST = 0.035;
-const float INNER_RING_DIST = 0.02;
+
+const float MAX_DIST = min(
+	sqrt(pow(GRID_WIDTH, 2) + pow(2*GRID_HEIGHT,2)),
+	sqrt(pow(2*GRID_WIDTH,2) + pow(GRID_HEIGHT,2))
+) * .7;
+const float OUTER_RING_DIST = 0.7;
+const float INNER_RING_DIST = 0.3;
 
 uniform vec2 canvasDimensions;
 uniform Image canvasImage;
@@ -43,10 +51,10 @@ vec4 effect( vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords ) {
 
 	vec2 closestGridFeaturePoint = getGridFeaturePoint(gridIndexes);
 	float closestDistance = distance(texture_coords, closestGridFeaturePoint);
-	int columnStart = int(max(gridIndexes.x - 1, 0));
-	int columnEnd = int(min(gridIndexes.x + 1, NUM_COLUMNS - 1));
-	int rowStart = int(max(gridIndexes.y - 1, 0));
-	int rowEnd = int(min(gridIndexes.y + 1, NUM_ROWS - 1));
+	int columnStart = int(gridIndexes.x) - 1;
+	int columnEnd = int(gridIndexes.x + 1);
+	int rowStart = int(gridIndexes.y - 1);
+	int rowEnd = int(gridIndexes.y + 1);
 	for (int i = columnStart; i <= columnEnd; i++) {
 		for (int j = rowStart; j <= rowEnd; j++) {
 			if (i == gridIndexes.x && j == gridIndexes.y) {
@@ -62,14 +70,22 @@ vec4 effect( vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords ) {
 		}
 	}
 
+	float normalizedDist = closestDistance / MAX_DIST;
 
-	if (closestDistance > OUTER_RING_DIST) {
-		return colorPalette[4];
-	} else if (closestDistance > INNER_RING_DIST) {
-		return colorPalette[2];
-	}
+	// if (normalizedDist > OUTER_RING_DIST) {
+	// 	return colorPalette[4];
+	// } else if (normalizedDist > INNER_RING_DIST) {
+	// 	return colorPalette[2];
+	// }
+	// if (normalizedDist > OUTER_RING_DIST) {
+	// 	return colorPalette[4];
+	// }
+
 
 	vec4 waterTexColor = Texel(tex, texture_coords);
-	return waterTexColor;
+	// if (normalizedDist < INNER_RING_DIST) {
+	// 	return waterTexColor;
+	// }
+	return mix(waterTexColor, colorPalette[4], normalizedDist);
 }
 #endif

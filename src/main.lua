@@ -21,7 +21,8 @@ function love.load()
 	scene.register("debug", debug)
 
 	scene.start(scene.scenes.debug)
-	scene.start(scene.scenes.mainMenu)
+	-- scene.start(scene.scenes.mainMenu)
+	scene.start(scene.scenes.game)
 end
 
 function love.keypressed(key, scancode, isRepeat)
