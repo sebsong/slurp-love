@@ -10,6 +10,9 @@ const float NUM_ROWS = 18;
 const float GRID_WIDTH = 1 / NUM_COLUMNS;
 const float GRID_HEIGHT = 1 / NUM_ROWS;
 
+const float OUTER_RING_DIST = 0.035;
+const float INNER_RING_DIST = 0.02;
+
 uniform vec2 canvasDimensions;
 uniform Image canvasImage;
 
@@ -40,9 +43,12 @@ vec4 effect( vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords ) {
 
 	vec2 closestGridFeaturePoint = getGridFeaturePoint(gridIndexes);
 	float closestDistance = distance(texture_coords, closestGridFeaturePoint);
-	// TODO: debug, seems like we aren't properly searching feature points across grids
-	for (int i = max(int(gridIndexes.x) - 1, 0); i < min(int(gridIndexes.x) + 1, NUM_COLUMNS); i++) {
-		for (int j = max(int(gridIndexes.y) - 1, 0); j < min(int(gridIndexes.y) + 1, NUM_ROWS); j++) {
+	int columnStart = int(max(gridIndexes.x - 1, 0));
+	int columnEnd = int(min(gridIndexes.x + 1, NUM_COLUMNS - 1));
+	int rowStart = int(max(gridIndexes.y - 1, 0));
+	int rowEnd = int(min(gridIndexes.y + 1, NUM_ROWS - 1));
+	for (int i = columnStart; i <= columnEnd; i++) {
+		for (int j = rowStart; j <= rowEnd; j++) {
 			if (i == gridIndexes.x && j == gridIndexes.y) {
 				continue;
 			}
@@ -57,10 +63,10 @@ vec4 effect( vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords ) {
 	}
 
 
-	if (closestDistance > 0.01) {
+	if (closestDistance > OUTER_RING_DIST) {
+		return colorPalette[4];
+	} else if (closestDistance > INNER_RING_DIST) {
 		return colorPalette[2];
-	} else if (closestDistance > 0.005) {
-		return colorPalette[3];
 	}
 
 	vec4 waterTexColor = Texel(tex, texture_coords);
