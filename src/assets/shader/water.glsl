@@ -13,7 +13,7 @@ const float NUM_ROWS = 18;
 const float GRID_WIDTH = 1 / NUM_COLUMNS;
 const float GRID_HEIGHT = 1 / NUM_ROWS;
 
-const float SPEED = 0.2;
+const float SPEED = .2;
 
 const float MAX_DIST = min(
         sqrt(pow(GRID_WIDTH, 2) + pow(2 * GRID_HEIGHT, 2)),
@@ -29,8 +29,10 @@ float random(vec2 st) {
     time;
     return fract(
         sin(dot(st.xy, vec2(12.9898, 78.233)) * seed) * 43758.5453123
-    );
-    // + sin(time * SPEED) * .5;
+    ) +
+        (sin(st.x + time * SPEED / 2) +
+            cos(st.y + time * SPEED)
+        ) / 10.0;
 }
 
 vec2 getGridFeaturePoint(vec2 gridIndexes) {
@@ -83,7 +85,10 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     //     return colorPalette[3];
     // }
 
-    float distDiff = (secondClosestDistance - closestDistance) + (sin(texture_coords.x * 10 + time) + cos(texture_coords.y * 50 + time)) / 500;
+    float distDiff = (secondClosestDistance - closestDistance) +
+            (sin(texture_coords.x * 10 + time) +
+                cos(texture_coords.y * 50 + time)
+            ) / 500;
     if (distDiff < 0.002) {
         return colorPalette[2];
     } else if (distDiff < 0.01) {
