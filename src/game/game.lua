@@ -138,9 +138,11 @@ function game.load()
 	ui:load()
 	music:load()
 
-	waterImage  = love.graphics.newImage("assets/art/water.png")
-	waterShader = love.graphics.newShader("assets/shader/water.glsl")
-	waterShader:send("seed", love.timer.getTime())
+	waterImage        = love.graphics.newImage("assets/art/water.png")
+	ShaderFileModTime = love.filesystem.getInfo("assets/shader/water.glsl").modtime
+	waterShader       = love.graphics.newShader("assets/shader/water.glsl")
+	Seed              = love.timer.getTime()
+	waterShader:send("seed", Seed)
 	waterShader:send("colorPalette", unpack(color.palette))
 
 	lanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
@@ -181,7 +183,10 @@ function game.keypressed(key, scancode, isRepeat)
 	end
 
 	if key == "t" and not isRepeat then
-		waterShader:send("seed", love.timer.getTime())
+		waterShader = love.graphics.newShader("assets/shader/water.glsl")
+		Seed = love.timer.getTime()
+		waterShader:send("seed", Seed)
+		waterShader:send("colorPalette", unpack(color.palette))
 	end
 
 	cameraObj:keypressed(key, scancode, isRepeat)
@@ -242,6 +247,13 @@ function game.update(dt)
 	)
 
 	waterShader:send("time", love.timer.getTime())
+	local modTime = love.filesystem.getInfo("assets/shader/water.glsl").modtime
+	if (modTime ~= ShaderFileModTime) then
+		ShaderFileModTime = modTime
+		waterShader = love.graphics.newShader("assets/shader/water.glsl")
+		waterShader:send("seed", Seed)
+		waterShader:send("colorPalette", unpack(color.palette))
+	end
 end
 
 function game.draw()
