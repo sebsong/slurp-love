@@ -24,8 +24,9 @@ local function updateNeighborTiles(self)
 	for neighborRowIdx = tilemapRowIdx - NEIGHBOR_TILE_DISTANCE, tilemapRowIdx + NEIGHBOR_TILE_DISTANCE do
 		for neighborColIdx = tilemapColIdx - NEIGHBOR_TILE_DISTANCE, tilemapColIdx + NEIGHBOR_TILE_DISTANCE do
 			-- TODO: better way to specify layer
-			local tile = self.tilemap.layers["base"].tiles[neighborRowIdx][neighborColIdx]
-			if tile.tileId then
+			local tileRow = self.tilemap.layers["base"].tiles[neighborRowIdx]
+			local tile = tileRow and tileRow[neighborColIdx]
+			if tile and tile.tileId then
 				-- if not tile.drawComponent then
 				-- 	-- TODO: this is a temp hack
 				-- 	local tilesetIndex = tile.tilesetIndex

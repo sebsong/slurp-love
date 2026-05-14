@@ -240,6 +240,8 @@ function game.update(dt)
 			return entity.drawComponent.zIndex < otherEntity.drawComponent.zIndex
 		end
 	)
+
+	waterShader:send("time", love.timer.getTime())
 end
 
 function game.draw()
