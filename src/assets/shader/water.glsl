@@ -29,16 +29,16 @@ float random(vec2 st) {
     time;
     return fract(
         sin(dot(st.xy, vec2(12.9898, 78.233)) * seed) * 43758.5453123
-    ) +
-        (sin(st.x + time * SPEED / 2) +
-            cos(st.y + time * SPEED)
-        ) / 10.0;
+    );
+    // (sin(st.x + time * SPEED / 2) +
+    //     cos(st.y + time * SPEED)
+    // ) / 10.0;
 }
 
 vec2 getGridFeaturePoint(vec2 gridIndexes) {
     return vec2(
-        (gridIndexes.x + random(gridIndexes.xy)) * GRID_WIDTH,
-        (gridIndexes.y + random(gridIndexes.yx)) * GRID_HEIGHT
+        (gridIndexes.x + random(gridIndexes.xy) + cos(gridIndexes.x + time * SPEED / 8) / 5) * GRID_WIDTH,
+        (gridIndexes.y + random(gridIndexes.yx) + sin(gridIndexes.y + time * SPEED / 2) / 2) * GRID_HEIGHT
     );
 }
 
@@ -59,8 +59,8 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     float closestDistance = 1;
     float secondClosestDistance = 1;
 
-    int columnStart = int(gridIndexes.x) - 1;
-    int columnEnd = int(gridIndexes.x + 1);
+    int columnStart = int(gridIndexes.x) - 2;
+    int columnEnd = int(gridIndexes.x + 2);
     int rowStart = int(gridIndexes.y - 3);
     int rowEnd = int(gridIndexes.y + 3);
     for (int i = columnStart; i <= columnEnd; i++) {
@@ -85,11 +85,11 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     //     return colorPalette[3];
     // }
 
-    float distDiff = (secondClosestDistance - closestDistance) +
-            (sin(texture_coords.x * 10 + time) +
-                cos(texture_coords.y * 50 + time)
-            ) / 500;
-    if (distDiff < 0.002) {
+    float distDiff = (secondClosestDistance - closestDistance);
+    // (sin(texture_coords.x * 10 + time) +
+    //     cos(texture_coords.y * 50 + time)
+    // ) / 500;
+    if (distDiff < 0.003) {
         return colorPalette[2];
     } else if (distDiff < 0.01) {
         return colorPalette[1];
