@@ -8,7 +8,7 @@ local draw = require("engine/draw")
 local collision = require("engine/collision")
 local scene = require("engine/scene")
 local vec2 = require("engine/vec2")
-local set = require("engine/set")
+local settings = require("engine/settings")
 
 local ui = require("game/ui")
 local music = require("game/music")
@@ -144,6 +144,7 @@ function game.load()
 	Seed              = love.timer.getTime()
 	waterShader:send("seed", Seed)
 	waterShader:send("colorPalette", unpack(color.palette))
+	waterShader:send("canvasDimensions", { settings.canvasPixelWidth, settings.canvasPixelHeight })
 
 	lanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
 	lanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
@@ -187,6 +188,7 @@ function game.keypressed(key, scancode, isRepeat)
 		Seed = love.timer.getTime()
 		waterShader:send("seed", Seed)
 		waterShader:send("colorPalette", unpack(color.palette))
+		waterShader:send("canvasDimensions", { settings.canvasPixelWidth, settings.canvasPixelHeight })
 	end
 
 	cameraObj:keypressed(key, scancode, isRepeat)
@@ -253,6 +255,7 @@ function game.update(dt)
 		waterShader = love.graphics.newShader("assets/shader/water.glsl")
 		waterShader:send("seed", Seed)
 		waterShader:send("colorPalette", unpack(color.palette))
+		waterShader:send("canvasDimensions", { settings.canvasPixelWidth, settings.canvasPixelHeight })
 	end
 end
 

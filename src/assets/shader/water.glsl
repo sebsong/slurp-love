@@ -2,6 +2,7 @@
 
 uniform float seed;
 uniform float time;
+uniform vec2 canvasDimensions;
 
 const int COLOR_PALETTE_SIZE = 8;
 uniform vec4 colorPalette[COLOR_PALETTE_SIZE];
@@ -21,9 +22,6 @@ const float MAX_DIST = min(
     ) * .7;
 const float OUTER_RING_DIST = 0.7;
 const float INNER_RING_DIST = 0.3;
-
-uniform vec2 canvasDimensions;
-uniform Image canvasImage;
 
 float random(vec2 st) {
     time;
@@ -51,6 +49,8 @@ vec4 position(mat4 transform_projection, vec4 vertex_position) {
 
 #ifdef PIXEL
 vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
+    vec2 pixelDimensions = vec2(1.0, 1.0) / canvasDimensions;
+    texture_coords = floor(texture_coords / pixelDimensions) * pixelDimensions;
     vec2 gridIndexes = vec2(
             floor(texture_coords.x / GRID_WIDTH),
             floor(texture_coords.y / GRID_HEIGHT)
