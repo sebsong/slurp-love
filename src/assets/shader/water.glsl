@@ -9,12 +9,12 @@ uniform vec4 colorPalette[COLOR_PALETTE_SIZE];
 
 // const float NUM_COLUMNS = 16;
 // const float NUM_ROWS = 18;
-const float NUM_COLUMNS = 8;
-const float NUM_ROWS = 18;
+const float NUM_COLUMNS = 64;
+const float NUM_ROWS = 16;
 const float GRID_WIDTH = 1 / NUM_COLUMNS;
 const float GRID_HEIGHT = 1 / NUM_ROWS;
 
-const float SPEED = .2;
+const float SPEED = .5;
 
 const float MAX_DIST = min(
         sqrt(pow(GRID_WIDTH, 2) + pow(2 * GRID_HEIGHT, 2)),
