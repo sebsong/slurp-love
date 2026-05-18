@@ -22,8 +22,9 @@ const float DEBUG_POINT_SIZE = 0.002;
 const float DEBUG_GRID_LINE_SIZE = 0.003;
 
 const float HORIZONTAL_SPEED = 1;
-const float HORIZONTAL_AMPLITUDE = .1;
 const float VERTICAL_SPEED = 2;
+
+const float HORIZONTAL_AMPLITUDE = .1;
 const float VERTICAL_AMPLITUDE = .1;
 
 float random(vec2 st) {
@@ -90,10 +91,10 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     //     return colorPalette[3];
     // }
 
-    float distDiff = (secondClosestDistance - closestDistance);
-    // (sin(texture_coords.x * 10 + time) +
-    //     cos(texture_coords.y * 50 + time)
-    // ) / 500;
+    float distDiff = (secondClosestDistance - closestDistance) +
+            (sin(texture_coords.x * 9 + time * 1) +
+                sin(texture_coords.y * 13 + time * 2)
+            ) * .002;
     if (distDiff < PRIMARY_BORDER_SIZE) {
         return colorPalette[2];
     } else if (distDiff < SECONDARY_BORDER_SIZE) {
