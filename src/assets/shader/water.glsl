@@ -7,36 +7,41 @@ uniform vec2 canvasDimensions;
 const int COLOR_PALETTE_SIZE = 8;
 uniform vec4 colorPalette[COLOR_PALETTE_SIZE];
 
-const float NUM_COLUMNS = 8;
-const float NUM_ROWS = 1;
+const float NUM_COLUMNS = 16;
+const float NUM_ROWS = 32;
 const float GRID_WIDTH = 1 / NUM_COLUMNS;
 const float GRID_HEIGHT = 1 / NUM_ROWS;
 
-int COLUMN_SEARCH_DIST = max(int(ceil(NUM_ROWS / NUM_COLUMNS)), 1);
-int ROW_SEARCH_DIST = max(int(ceil(NUM_COLUMNS / NUM_ROWS)), 1);
+int COLUMN_SEARCH_DIST = 1;
+int ROW_SEARCH_DIST = 8;
 
-const float PRIMARY_BORDER_SIZE = 0.002;
-const float SECONDARY_BORDER_SIZE = 0.005;
+const float PRIMARY_BORDER_SIZE = 0.003;
+const float SECONDARY_BORDER_SIZE = 0.010;
 
-const float DEBUG_POINT_SIZE = 0.005;
-const float DEBUG_GRID_LINE_SIZE = 0.002;
+const float DEBUG_POINT_SIZE = 0.002;
+const float DEBUG_GRID_LINE_SIZE = 0.003;
 
-const float SPEED = .5;
+const float HORIZONTAL_SPEED = 1;
+const float HORIZONTAL_AMPLITUDE = .1;
+const float VERTICAL_SPEED = 2;
+const float VERTICAL_AMPLITUDE = .1;
 
 float random(vec2 st) {
-    time;
     return fract(
         sin(dot(st.xy, vec2(12.9898, 78.233)) * seed) * 43758.5453123
     );
-    // (sin(st.x + time * SPEED / 2) +
-    //     cos(st.y + time * SPEED)
-    // ) / 10.0;
 }
 
 vec2 getGridFeaturePoint(vec2 gridIndexes) {
     return vec2(
-        (gridIndexes.x + random(gridIndexes.xy) * GRID_WIDTH), // + cos(gridIndexes.x + time * SPEED / 8) / 5) * GRID_WIDTH,
-        (gridIndexes.y + random(gridIndexes.yx) * GRID_HEIGHT) // + sin(gridIndexes.y + time * SPEED / 2) / 2) * GRID_HEIGHT
+        (gridIndexes.x +
+            0.25 + random(gridIndexes.xy) / 2 +
+            sin(gridIndexes.x + time * HORIZONTAL_SPEED) * HORIZONTAL_AMPLITUDE
+        ) * GRID_WIDTH,
+        (gridIndexes.y +
+            0.25 + random(gridIndexes.yx) / 2 +
+            sin(gridIndexes.y + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE
+        ) * GRID_HEIGHT
     );
 }
 
@@ -77,13 +82,13 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     }
 
     // DEBUG GRID AND POINTS
-    if (closestDistance < DEBUG_POINT_SIZE) {
-        return colorPalette[3];
-    }
-    if ((texture_coords.x - gridIndexes.x * GRID_WIDTH < DEBUG_GRID_LINE_SIZE) ||
-            (texture_coords.y - gridIndexes.y * GRID_HEIGHT < DEBUG_GRID_LINE_SIZE)) {
-        return colorPalette[3];
-    }
+    // if (closestDistance < DEBUG_POINT_SIZE) {
+    //     return colorPalette[3];
+    // }
+    // if ((texture_coords.x - gridIndexes.x * GRID_WIDTH < DEBUG_GRID_LINE_SIZE / 4) ||
+    //         (texture_coords.y - gridIndexes.y * GRID_HEIGHT < DEBUG_GRID_LINE_SIZE)) {
+    //     return colorPalette[3];
+    // }
 
     float distDiff = (secondClosestDistance - closestDistance);
     // (sin(texture_coords.x * 10 + time) +
