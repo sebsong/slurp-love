@@ -7,21 +7,21 @@ uniform vec2 canvasDimensions;
 const int COLOR_PALETTE_SIZE = 8;
 uniform vec4 colorPalette[COLOR_PALETTE_SIZE];
 
-// const float NUM_COLUMNS = 16;
-// const float NUM_ROWS = 18;
-const float NUM_COLUMNS = 64;
-const float NUM_ROWS = 16;
+const float NUM_COLUMNS = 8;
+const float NUM_ROWS = 1;
 const float GRID_WIDTH = 1 / NUM_COLUMNS;
 const float GRID_HEIGHT = 1 / NUM_ROWS;
 
-const float SPEED = .5;
+int COLUMN_SEARCH_DIST = max(int(ceil(NUM_ROWS / NUM_COLUMNS)), 1);
+int ROW_SEARCH_DIST = max(int(ceil(NUM_COLUMNS / NUM_ROWS)), 1);
 
-const float MAX_DIST = min(
-        sqrt(pow(GRID_WIDTH, 2) + pow(2 * GRID_HEIGHT, 2)),
-        sqrt(pow(2 * GRID_WIDTH, 2) + pow(GRID_HEIGHT, 2))
-    ) * .7;
-const float OUTER_RING_DIST = 0.7;
-const float INNER_RING_DIST = 0.3;
+const float PRIMARY_BORDER_SIZE = 0.002;
+const float SECONDARY_BORDER_SIZE = 0.005;
+
+const float DEBUG_POINT_SIZE = 0.005;
+const float DEBUG_GRID_LINE_SIZE = 0.002;
+
+const float SPEED = .5;
 
 float random(vec2 st) {
     time;
@@ -35,8 +35,8 @@ float random(vec2 st) {
 
 vec2 getGridFeaturePoint(vec2 gridIndexes) {
     return vec2(
-        (gridIndexes.x + random(gridIndexes.xy) + cos(gridIndexes.x + time * SPEED / 8) / 5) * GRID_WIDTH,
-        (gridIndexes.y + random(gridIndexes.yx) + sin(gridIndexes.y + time * SPEED / 2) / 2) * GRID_HEIGHT
+        (gridIndexes.x + random(gridIndexes.xy) * GRID_WIDTH), // + cos(gridIndexes.x + time * SPEED / 8) / 5) * GRID_WIDTH,
+        (gridIndexes.y + random(gridIndexes.yx) * GRID_HEIGHT) // + sin(gridIndexes.y + time * SPEED / 2) / 2) * GRID_HEIGHT
     );
 }
 
@@ -59,10 +59,10 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     float closestDistance = 1;
     float secondClosestDistance = 1;
 
-    int columnStart = int(gridIndexes.x) - 2;
-    int columnEnd = int(gridIndexes.x + 2);
-    int rowStart = int(gridIndexes.y - 3);
-    int rowEnd = int(gridIndexes.y + 3);
+    int columnStart = int(gridIndexes.x - COLUMN_SEARCH_DIST);
+    int columnEnd = int(gridIndexes.x + COLUMN_SEARCH_DIST);
+    int rowStart = int(gridIndexes.y - ROW_SEARCH_DIST);
+    int rowEnd = int(gridIndexes.y + ROW_SEARCH_DIST);
     for (int i = columnStart; i <= columnEnd; i++) {
         for (int j = rowStart; j <= rowEnd; j++) {
             vec2 gridFeaturePoint = getGridFeaturePoint(vec2(i, j));
@@ -77,21 +77,21 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     }
 
     // DEBUG GRID AND POINTS
-    // if (closestDistance < 0.005) {
-    //     return colorPalette[3];
-    // }
-    // if (texture_coords.x - gridIndexes.x * GRID_WIDTH < 0.002 ||
-    //         texture_coords.y - gridIndexes.y * GRID_HEIGHT < 0.002) {
-    //     return colorPalette[3];
-    // }
+    if (closestDistance < DEBUG_POINT_SIZE) {
+        return colorPalette[3];
+    }
+    if ((texture_coords.x - gridIndexes.x * GRID_WIDTH < DEBUG_GRID_LINE_SIZE) ||
+            (texture_coords.y - gridIndexes.y * GRID_HEIGHT < DEBUG_GRID_LINE_SIZE)) {
+        return colorPalette[3];
+    }
 
     float distDiff = (secondClosestDistance - closestDistance);
     // (sin(texture_coords.x * 10 + time) +
     //     cos(texture_coords.y * 50 + time)
     // ) / 500;
-    if (distDiff < 0.003) {
+    if (distDiff < PRIMARY_BORDER_SIZE) {
         return colorPalette[2];
-    } else if (distDiff < 0.01) {
+    } else if (distDiff < SECONDARY_BORDER_SIZE) {
         return colorPalette[1];
     }
     return colorPalette[0];
