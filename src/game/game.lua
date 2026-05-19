@@ -50,6 +50,17 @@ local waterShader
 local lanternLightImage
 local lanternShader
 
+local function loadWaterShader(seed)
+	waterShader       = love.graphics.newShader("assets/shader/water.glsl")
+	ShaderFileModTime = love.filesystem.getInfo("assets/shader/water.glsl").modtime
+	Seed              = seed
+	waterShader:send("seed", seed)
+	waterShader:send("colorPalette", unpack(color.palette))
+	waterShader:send("cameraCanvasDimensions", { cameraObj:getScreenWidth(), cameraObj:getScreenHeight() })
+	waterShader:send("cameraCanvasPosition", {
+		cameraObj.transform:transformPoint(0, 0)
+	})
+end
 
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
@@ -138,13 +149,8 @@ function game.load()
 	ui:load()
 	music:load()
 
-	waterImage        = love.graphics.newImage("assets/art/water.png")
-	ShaderFileModTime = love.filesystem.getInfo("assets/shader/water.glsl").modtime
-	waterShader       = love.graphics.newShader("assets/shader/water.glsl")
-	Seed              = love.timer.getTime()
-	waterShader:send("seed", Seed)
-	waterShader:send("colorPalette", unpack(color.palette))
-	waterShader:send("canvasDimensions", { settings.canvasPixelWidth, settings.canvasPixelHeight })
+	waterImage = love.graphics.newImage("assets/art/water.png")
+	loadWaterShader(love.timer.getTime())
 
 	lanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
 	lanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
@@ -184,11 +190,7 @@ function game.keypressed(key, scancode, isRepeat)
 	end
 
 	if key == "t" and not isRepeat then
-		waterShader = love.graphics.newShader("assets/shader/water.glsl")
-		Seed = love.timer.getTime()
-		waterShader:send("seed", Seed)
-		waterShader:send("colorPalette", unpack(color.palette))
-		waterShader:send("canvasDimensions", { settings.canvasPixelWidth, settings.canvasPixelHeight })
+		loadWaterShader(love.timer.getTime())
 	end
 
 	cameraObj:keypressed(key, scancode, isRepeat)
@@ -248,15 +250,15 @@ function game.update(dt)
 		end
 	)
 
-	waterShader:send("time", love.timer.getTime())
 	local modTime = love.filesystem.getInfo("assets/shader/water.glsl").modtime
 	if (modTime ~= ShaderFileModTime) then
-		ShaderFileModTime = modTime
-		waterShader = love.graphics.newShader("assets/shader/water.glsl")
-		waterShader:send("seed", Seed)
-		waterShader:send("colorPalette", unpack(color.palette))
-		waterShader:send("canvasDimensions", { settings.canvasPixelWidth, settings.canvasPixelHeight })
+		loadWaterShader(Seed)
 	end
+	waterShader:send("time", love.timer.getTime())
+	waterShader:send("cameraCanvasDimensions", { cameraObj:getScreenWidth(), cameraObj:getScreenHeight() })
+	waterShader:send("cameraCanvasPosition", {
+		cameraObj.transform:transformPoint(0, 0)
+	})
 end
 
 function game.draw()

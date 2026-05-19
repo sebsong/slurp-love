@@ -4,9 +4,9 @@ const int COLOR_PALETTE_SIZE = 8;
 uniform vec4 colorPalette[COLOR_PALETTE_SIZE];
 uniform float seed;
 uniform float time;
-uniform vec2 canvasDimensions;
-vec2 pixelDimensions = vec2(1.0, 1.0) / canvasDimensions;
-// uniform vec2 cameraPosition;
+uniform vec2 cameraCanvasDimensions;
+vec2 pixelDimensions = vec2(1.0, 1.0) / cameraCanvasDimensions;
+uniform vec2 cameraCanvasPosition;
 
 const float NUM_COLUMNS = 16;
 const float NUM_ROWS = 32;
@@ -16,8 +16,8 @@ const float GRID_HEIGHT = 1 / NUM_ROWS;
 int COLUMN_SEARCH_DIST = 1;
 int ROW_SEARCH_DIST = 8;
 
-const float PRIMARY_BORDER_SIZE = 0.003;
-const float SECONDARY_BORDER_SIZE = 0.010;
+const float PRIMARY_BORDER_SIZE = 0.002;
+const float SECONDARY_BORDER_SIZE = 0.005;
 
 const float DEBUG_POINT_SIZE = 0.002;
 const float DEBUG_GRID_LINE_SIZE = 0.003;
@@ -28,7 +28,7 @@ const float HORIZONTAL_SPEED = -0.25;
 const float VERTICAL_SPEED = -1;
 const float HORIZONTAL_AMPLITUDE = .1;
 const float VERTICAL_AMPLITUDE = .1;
-const float FILL_MULTIPLIER = 0.03;
+const float FILL_MULTIPLIER = 0.02;
 
 float random(vec2 st) {
     return fract(
@@ -58,6 +58,8 @@ vec4 position(mat4 transform_projection, vec4 vertex_position) {
 
 #ifdef PIXEL
 vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
+    vec2 cameraCoords = cameraCanvasPosition / cameraCanvasDimensions;
+    texture_coords += cameraCoords;
     texture_coords = floor(texture_coords / pixelDimensions) * pixelDimensions;
     vec2 gridIndexes = vec2(
             floor(texture_coords.x / GRID_WIDTH),
