@@ -1,11 +1,12 @@
 #pragma language glsl3
 
+const int COLOR_PALETTE_SIZE = 8;
+uniform vec4 colorPalette[COLOR_PALETTE_SIZE];
 uniform float seed;
 uniform float time;
 uniform vec2 canvasDimensions;
-
-const int COLOR_PALETTE_SIZE = 8;
-uniform vec4 colorPalette[COLOR_PALETTE_SIZE];
+vec2 pixelDimensions = vec2(1.0, 1.0) / canvasDimensions;
+// uniform vec2 cameraPosition;
 
 const float NUM_COLUMNS = 16;
 const float NUM_ROWS = 32;
@@ -21,11 +22,13 @@ const float SECONDARY_BORDER_SIZE = 0.010;
 const float DEBUG_POINT_SIZE = 0.002;
 const float DEBUG_GRID_LINE_SIZE = 0.003;
 
-const float HORIZONTAL_SPEED = 1;
-const float VERTICAL_SPEED = 2;
-
+const float HORIZONTAL_FREQ = 5;
+const float VERTICAL_FREQ = 13;
+const float HORIZONTAL_SPEED = -0.25;
+const float VERTICAL_SPEED = -1;
 const float HORIZONTAL_AMPLITUDE = .1;
 const float VERTICAL_AMPLITUDE = .1;
+const float FILL_MULTIPLIER = 0.03;
 
 float random(vec2 st) {
     return fract(
@@ -37,11 +40,11 @@ vec2 getGridFeaturePoint(vec2 gridIndexes) {
     return vec2(
         (gridIndexes.x +
             0.25 + random(gridIndexes.xy) / 2 +
-            sin(gridIndexes.x + time * HORIZONTAL_SPEED) * HORIZONTAL_AMPLITUDE
+            cos(gridIndexes.x * HORIZONTAL_FREQ + time * HORIZONTAL_SPEED) * HORIZONTAL_AMPLITUDE
         ) * GRID_WIDTH,
         (gridIndexes.y +
             0.25 + random(gridIndexes.yx) / 2 +
-            sin(gridIndexes.y + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE
+            sin(gridIndexes.y * VERTICAL_FREQ + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE
         ) * GRID_HEIGHT
     );
 }
@@ -55,7 +58,6 @@ vec4 position(mat4 transform_projection, vec4 vertex_position) {
 
 #ifdef PIXEL
 vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
-    vec2 pixelDimensions = vec2(1.0, 1.0) / canvasDimensions;
     texture_coords = floor(texture_coords / pixelDimensions) * pixelDimensions;
     vec2 gridIndexes = vec2(
             floor(texture_coords.x / GRID_WIDTH),
@@ -92,9 +94,9 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     // }
 
     float distDiff = (secondClosestDistance - closestDistance) +
-            (sin(texture_coords.x * 9 + time * 1) +
-                sin(texture_coords.y * 13 + time * 2)
-            ) * .002;
+            (cos(texture_coords.x * HORIZONTAL_FREQ + time * HORIZONTAL_SPEED) * HORIZONTAL_AMPLITUDE +
+                sin(texture_coords.y * VERTICAL_FREQ + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE
+            ) * FILL_MULTIPLIER;
     if (distDiff < PRIMARY_BORDER_SIZE) {
         return colorPalette[2];
     } else if (distDiff < SECONDARY_BORDER_SIZE) {
