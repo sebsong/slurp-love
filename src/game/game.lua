@@ -57,8 +57,11 @@ local function loadWaterShader(seed)
 	waterShader:send("seed", seed)
 	waterShader:send("colorPalette", unpack(color.palette))
 	waterShader:send("cameraCanvasDimensions", { cameraObj:getScreenWidth(), cameraObj:getScreenHeight() })
-	waterShader:send("cameraCanvasPosition", {
+	waterShader:send("cameraPosition", {
 		cameraObj.transform:transformPoint(0, 0)
+	})
+	waterShader:send("boatPosition", {
+		boatObj.transform:transformPoint(0, 0)
 	})
 end
 
@@ -256,8 +259,11 @@ function game.update(dt)
 	end
 	waterShader:send("time", love.timer.getTime())
 	waterShader:send("cameraCanvasDimensions", { cameraObj:getScreenWidth(), cameraObj:getScreenHeight() })
-	waterShader:send("cameraCanvasPosition", {
+	waterShader:send("cameraPosition", {
 		cameraObj.transform:transformPoint(0, 0)
+	})
+	waterShader:send("boatPosition", {
+		boatObj.transform:transformPoint(0, 0)
 	})
 end
 

@@ -6,7 +6,8 @@ uniform float seed;
 uniform float time;
 uniform vec2 cameraCanvasDimensions;
 vec2 pixelDimensions = vec2(1.0, 1.0) / cameraCanvasDimensions;
-uniform vec2 cameraCanvasPosition;
+uniform vec2 cameraPosition;
+uniform vec2 boatPosition;
 
 const float NUM_COLUMNS = 16;
 const float NUM_ROWS = 32;
@@ -58,9 +59,11 @@ vec4 position(mat4 transform_projection, vec4 vertex_position) {
 
 #ifdef PIXEL
 vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
-    vec2 cameraCoords = cameraCanvasPosition / cameraCanvasDimensions;
+    vec2 boatCoords = (boatPosition / cameraCanvasDimensions) + 0.5;
+    vec2 cameraCoords = (cameraPosition / cameraCanvasDimensions);
     texture_coords += cameraCoords;
     texture_coords = floor(texture_coords / pixelDimensions) * pixelDimensions;
+
     vec2 gridIndexes = vec2(
             floor(texture_coords.x / GRID_WIDTH),
             floor(texture_coords.y / GRID_HEIGHT)
@@ -104,6 +107,11 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     } else if (distDiff < SECONDARY_BORDER_SIZE) {
         return colorPalette[1];
     }
+
+    if (distance(texture_coords, boatCoords) < 0.03) {
+        return colorPalette[3];
+    }
+
     return colorPalette[0];
 
     // vec4 waterTexColor = Texel(tex, texture_coords);
