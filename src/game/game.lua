@@ -212,7 +212,7 @@ function game.wheelmoved(x, y)
 end
 
 function game.update(dt)
-	boatObj:update(dt)
+	boatObj:update(cameraObj, dt)
 	for _, package in ipairs(boatObj.packages) do
 		package:update(dt)
 	end

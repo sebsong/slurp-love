@@ -108,9 +108,9 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
         return colorPalette[1];
     }
 
-    if (distance(texture_coords, boatCoords) < 0.03) {
-        return colorPalette[3];
-    }
+    // if (distance(texture_coords, boatCoords) < 0.03) {
+    //     return colorPalette[3];
+    // }
 
     return colorPalette[0];
 

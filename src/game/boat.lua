@@ -14,6 +14,14 @@ local NUM_BOAT_ANGLES = 16
 local BOAT_WIDTH, BOATH_HEIGHT = 16, 16
 local NEIGHBOR_TILE_DISTANCE = 2
 
+local boatShader;
+
+local function loadBoatShader(seed)
+	boatShader        = love.graphics.newShader("assets/shader/boat.glsl")
+	ShaderFileModTime = love.filesystem.getInfo("assets/shader/boat.glsl").modtime
+	Seed              = seed
+end
+
 local function updateNeighborTiles(self)
 	local tilemapCol, tilemapRow = self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform
 		:transformPoint(0, 0))
@@ -63,7 +71,7 @@ local function getWorldRowIdx(self)
 	return tilemap.getWorldRowIdx(colIdx, rowIdx)
 end
 
-local function update(self, dt)
+local function update(self, cameraObj, dt)
 	local didMove = false
 	if love.keyboard.isDown("up") or love.keyboard.isDown("w") then
 		self.speed = self.speed + self.acceleration * dt
@@ -140,17 +148,25 @@ local function update(self, dt)
 	self.transform:translate(boatUpdate.x, boatUpdate.y)
 
 	self.drawComponent.zIndex = self:getWorldRowIdx()
+
+	boatShader:send("time", love.timer.getTime())
+	boatShader:send("cameraCanvasDimensions", { cameraObj:getScreenWidth(), cameraObj:getScreenHeight() })
+	boatShader:send("cameraPosition", {
+		cameraObj.transform:transformPoint(0, 0)
+	})
 end
 
 local function draw(animation, transform)
 	love.graphics.push()
 	local boatX, boatY = transform:transformPoint(0, 0)
+	love.graphics.setShader(boatShader)
 	love.graphics.draw(
 		animation.image,
 		animation.quads[animation.currentFrame],
 		boatX + animation.xOffset,
 		boatY + animation.yOffset
 	)
+	love.graphics.setShader()
 	love.graphics.pop()
 end
 
@@ -242,6 +258,8 @@ function boat.new(tilemap)
 	local animation = animation.new(boatImage, NUM_BOAT_ANGLES, -width / 2, -height + (8 / 2))
 	animation.draw = draw
 	animation.zIndex = 0
+
+	loadBoatShader(love.timer.getTime())
 
 	return {
 		-- TODO: build the boat from a tile object
