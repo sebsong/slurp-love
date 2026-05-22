@@ -290,6 +290,10 @@ function game.draw()
 		love.graphics.setShader()
 	end
 
+	for _, position in ipairs(boatObj.trailPositions) do
+		love.graphics.points(position.x, position.y)
+	end
+
 	love.graphics.pop()
 
 	ui:draw(boatObj.packages)

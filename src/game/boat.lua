@@ -14,6 +14,8 @@ local NUM_BOAT_ANGLES = 16
 local BOAT_WIDTH, BOATH_HEIGHT = 16, 16
 local NEIGHBOR_TILE_DISTANCE = 2
 
+local NUM_TRAIL_POSITIONS = 8
+
 local boatShader;
 
 local function loadBoatShader(seed)
@@ -64,6 +66,30 @@ local function updateNeighborTiles(self)
 			::continue::
 		end
 	end
+end
+
+local function updateTrailPositions(self, dt)
+	local speed = self.speed * dt
+	for i = #self.trailPositions, 1, -1 do
+		local position = self.trailPositions[i]
+		local target
+		if i == 1 then
+			target = vec2.new(self.transform:transformPoint(0, 0))
+		else
+			target = self.trailPositions[i - 1]
+		end
+
+		print("TARGET: ", target)
+
+		local positionDiff = target - position
+		if positionDiff:magnitude() > speed then
+			self.trailPositions[i] = target
+		else
+			local direction = (positionDiff):normalized()
+			self.trailPositions[i] = self.trailPositions[i] + direction * speed
+		end
+	end
+	print("******************************************")
 end
 
 local function getWorldRowIdx(self)
@@ -125,6 +151,7 @@ local function update(self, cameraObj, dt)
 	self.drawComponent.currentFrame = frameIdx
 
 	self:updateNeighborTiles()
+	self:updateTrailPositions(dt)
 
 	local tilemapPosition = vec2.new(
 		self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0))
@@ -261,10 +288,17 @@ function boat.new(tilemap)
 
 	loadBoatShader(love.timer.getTime())
 
+	local transform = love.math.newTransform(0, -100)
+	local position = vec2.new(transform:transformPoint(0, 0))
+	local trailPositions = {}
+	for _ = 1, NUM_TRAIL_POSITIONS do
+		table.insert(trailPositions, position)
+	end
+
 	return {
 		-- TODO: build the boat from a tile object
 		drawComponent = animation,
-		transform = love.math.newTransform(0, -100),
+		transform = transform,
 
 		getPosition = getPosition,
 		onCollision = onCollision,
@@ -273,6 +307,9 @@ function boat.new(tilemap)
 
 		neighborTiles = {},
 		updateNeighborTiles = updateNeighborTiles,
+
+		trailPositions = trailPositions,
+		updateTrailPositions = updateTrailPositions,
 
 		speed = 0,
 		maxSpeed = values.BOAT_MAX_SPEED_DEFAULT,

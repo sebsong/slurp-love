@@ -12,6 +12,9 @@
 				"src",
 				"debug"
 			],
+			"scriptRoots": [
+				"src"
+			],
 		},
 		{
 			"type": "lua-local",

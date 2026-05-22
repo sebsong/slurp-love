@@ -17,6 +17,10 @@ function meta:magnitude()
 	return math.sqrt(self.x ^ 2 + self.y ^ 2)
 end
 
+function meta:normalized()
+	return self / self:magnitude()
+end
+
 function meta.__eq(vec, otherVec)
 	return vec.x == otherVec.x and vec.y == otherVec.y
 end
