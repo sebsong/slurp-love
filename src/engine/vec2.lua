@@ -18,6 +18,11 @@ function meta:magnitude()
 end
 
 function meta:normalized()
+	local magnitude = self:magnitude()
+	if magnitude == 0 then
+		return self
+	end
+
 	return self / self:magnitude()
 end
 

@@ -79,17 +79,14 @@ local function updateTrailPositions(self, dt)
 			target = self.trailPositions[i - 1]
 		end
 
-		print("TARGET: ", target)
-
 		local positionDiff = target - position
-		if positionDiff:magnitude() > speed then
+		if positionDiff:magnitude() < speed then
 			self.trailPositions[i] = target
 		else
-			local direction = (positionDiff):normalized()
+			local direction = positionDiff:normalized()
 			self.trailPositions[i] = self.trailPositions[i] + direction * speed
 		end
 	end
-	print("******************************************")
 end
 
 local function getWorldRowIdx(self)
