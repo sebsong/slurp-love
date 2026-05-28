@@ -265,6 +265,7 @@ function game.update(dt)
 	waterShader:send("boatPosition", {
 		boatObj.transform:transformPoint(0, 0)
 	})
+	waterShader:send("boatTrailPositions", unpack(boatObj.trailPositions))
 end
 
 function game.draw()
@@ -290,9 +291,9 @@ function game.draw()
 		love.graphics.setShader()
 	end
 
-	for _, position in ipairs(boatObj.trailPositions) do
-		love.graphics.points(position.x, position.y)
-	end
+	-- for _, position in ipairs(boatObj.trailPositions) do
+	-- 	love.graphics.points(position.x, position.y)
+	-- end
 
 	love.graphics.pop()
 

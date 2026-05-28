@@ -14,7 +14,7 @@ local NUM_BOAT_ANGLES = 16
 local BOAT_WIDTH, BOATH_HEIGHT = 16, 16
 local NEIGHBOR_TILE_DISTANCE = 2
 
-local NUM_TRAIL_POSITIONS = 8
+local NUM_TRAIL_POSITIONS = 16
 
 local boatShader;
 
@@ -69,7 +69,7 @@ local function updateNeighborTiles(self)
 end
 
 local function updateTrailPositions(self, dt)
-	local speed = self.speed * dt
+	local updateAmount = math.abs(self.maxSpeed) * dt
 	for i = #self.trailPositions, 1, -1 do
 		local position = self.trailPositions[i]
 		local target
@@ -80,11 +80,11 @@ local function updateTrailPositions(self, dt)
 		end
 
 		local positionDiff = target - position
-		if positionDiff:magnitude() < speed then
+		if positionDiff:magnitude() <= updateAmount then
 			self.trailPositions[i] = target
 		else
 			local direction = positionDiff:normalized()
-			self.trailPositions[i] = self.trailPositions[i] + direction * speed
+			self.trailPositions[i] = self.trailPositions[i] + direction * updateAmount
 		end
 	end
 end

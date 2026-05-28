@@ -8,6 +8,8 @@ uniform vec2 cameraCanvasDimensions;
 vec2 pixelDimensions = vec2(1.0, 1.0) / cameraCanvasDimensions;
 uniform vec2 cameraPosition;
 uniform vec2 boatPosition;
+const int NUM_TRAIL_POSITIONS = 16;
+uniform vec2 boatTrailPositions[NUM_TRAIL_POSITIONS];
 
 const float NUM_COLUMNS = 16;
 const float NUM_ROWS = 32;
@@ -60,9 +62,19 @@ vec4 position(mat4 transform_projection, vec4 vertex_position) {
 #ifdef PIXEL
 vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     vec2 boatCoords = (boatPosition / cameraCanvasDimensions) + 0.5;
+    vec2 boatTrailCoords[NUM_TRAIL_POSITIONS];
+    for (int i = 0; i < NUM_TRAIL_POSITIONS; i++) {
+        boatTrailCoords[i] = (boatTrailPositions[i] / cameraCanvasDimensions) + 0.5;
+    }
     vec2 cameraCoords = (cameraPosition / cameraCanvasDimensions);
     texture_coords += cameraCoords;
     texture_coords = floor(texture_coords / pixelDimensions) * pixelDimensions;
+
+    for (int i = 0; i < NUM_TRAIL_POSITIONS; i++) {
+        if (distance(texture_coords, boatTrailCoords[i]) < 0.005) {
+            return colorPalette[3];
+        }
+    }
 
     vec2 gridIndexes = vec2(
             floor(texture_coords.x / GRID_WIDTH),

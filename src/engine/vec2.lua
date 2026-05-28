@@ -1,13 +1,9 @@
 local vec2 = {}
 
 local meta = {}
-meta.__index = meta
 
 function vec2.new(x, y)
-	local newVec = {
-		x = x or 0,
-		y = y or 0,
-	}
+	local newVec = { x or 0, y or 0 }
 	setmetatable(newVec, meta)
 
 	return newVec
@@ -24,6 +20,28 @@ function meta:normalized()
 	end
 
 	return self / self:magnitude()
+end
+
+function meta.__index(vec, key)
+	if key == "x" then
+		return vec[1]
+	elseif key == "y" then
+		return vec[2]
+	end
+
+	return meta[key]
+end
+
+function meta.__newindex(vec, key, val)
+	if key == "x" then
+		vec[1] = val
+		return
+	elseif key == "y" then
+		vec[2] = val
+		return
+	end
+
+	rawset(vec, key, val)
 end
 
 function meta.__eq(vec, otherVec)
