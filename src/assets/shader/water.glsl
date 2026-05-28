@@ -71,8 +71,12 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     texture_coords = floor(texture_coords / pixelDimensions) * pixelDimensions;
 
     for (int i = 0; i < NUM_TRAIL_POSITIONS; i++) {
-        if (distance(texture_coords, boatTrailCoords[i]) < 0.005) {
-            return colorPalette[3];
+        vec2 trailCoords = boatTrailCoords[i];
+        float distanceToBoat = distance(trailCoords, boatCoords);
+        if (distance(texture_coords, trailCoords) < 0.005 * distanceToBoat * 50 + 0.01) {
+            return colorPalette[2];
+        } else if (distance(texture_coords, trailCoords) < 0.007 * distanceToBoat * 50 + 0.01) {
+            return colorPalette[2];
         }
     }
 
