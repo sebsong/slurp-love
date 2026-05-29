@@ -82,7 +82,7 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
         vec2 sideVec1 = vec2(-directionToPrev.y, directionToPrev.x);
         vec2 sideVec2 = vec2(directionToPrev.y, -directionToPrev.x);
         float distanceToBoat = distance(trailCoords, boatCoords);
-        float trailWidthMultiplier = .3 * distanceToBoat;
+        float trailWidthMultiplier = .001 + .1 * distanceToBoat;
 
         if (distance(texture_coords, trailCoords + sideVec1 * trailWidthMultiplier) < 0.003 || distance(texture_coords, trailCoords + sideVec2 * trailWidthMultiplier) < 0.003) {
             return colorPalette[2];
