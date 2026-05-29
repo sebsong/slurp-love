@@ -72,12 +72,31 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
 
     for (int i = 0; i < NUM_TRAIL_POSITIONS; i++) {
         vec2 trailCoords = boatTrailCoords[i];
+
+        vec2 directionToPrev;
+        if (i == 0) {
+            directionToPrev = normalize(boatCoords - trailCoords);
+        } else {
+            directionToPrev = normalize(boatTrailCoords[i - 1] - trailCoords);
+        }
+        vec2 sideVec1 = vec2(-directionToPrev.y, directionToPrev.x);
+        vec2 sideVec2 = vec2(directionToPrev.y, -directionToPrev.x);
         float distanceToBoat = distance(trailCoords, boatCoords);
-        if (distance(texture_coords, trailCoords) < 0.0065 * distanceToBoat * 50 + 0.01) {
-            return colorPalette[0];
-        } else if (distance(texture_coords, trailCoords) < 0.007 * distanceToBoat * 50 + 0.01) {
+        float trailWidthMultiplier = .3 * distanceToBoat;
+
+        if (distance(texture_coords, trailCoords + sideVec1 * trailWidthMultiplier) < 0.003 || distance(texture_coords, trailCoords + sideVec2 * trailWidthMultiplier) < 0.003) {
             return colorPalette[2];
         }
+
+        // if (distance(texture_coords, trailCoords) < 0.02) {
+        //     return colorPalette[2];
+        // }
+
+        // if (distance(texture_coords, trailCoords) < 0.0065 * distanceToBoat * 50 + 0.01) {
+        //     return colorPalette[1];
+        // } else if (distance(texture_coords, trailCoords) < 0.007 * distanceToBoat * 50 + 0.01) {
+        //     return colorPalette[2];
+        // }
     }
 
     vec2 gridIndexes = vec2(
