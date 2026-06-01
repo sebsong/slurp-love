@@ -1,4 +1,6 @@
 local package = {}
+local meta = {}
+meta.__index = meta
 
 local values = require("game/values")
 
@@ -11,7 +13,7 @@ local FUEL_CELL = 5
 local GLASS = 6
 local PORTAL = 7
 
-local function applyEffect(self, boat)
+function meta:applyEffect(boat)
 	local tileId = self.tileId
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
@@ -24,12 +26,12 @@ local function applyEffect(self, boat)
 		boat.gasDepletionRate = boat.gasDepletionRate / 2
 	elseif tileId == FUEL_CELL then
 		boat.gasDepletionRate = 0
-		self.meta.gas = values.FUEL_CELL_INITIAL_GAS
-		self.meta.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
+		self.gas = values.FUEL_CELL_INITIAL_GAS
+		self.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
 	end
 end
 
-local function removeEffect(self, boat)
+function meta:removeEffect(boat)
 	local tileId = self.tileId
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
@@ -45,7 +47,7 @@ local function removeEffect(self, boat)
 	end
 end
 
-local function onCollision(self, boat, _collidable)
+function meta:onCollision(boat, _collidable)
 	if self.tileId == GLASS then
 		if boat.collidingWith:isEmpty() and boat.speed >= values.GLASS_BREAK_MIN_SPEED then
 			print("BROKEN")
@@ -53,11 +55,11 @@ local function onCollision(self, boat, _collidable)
 	end
 end
 
-local function update(self, dt)
+function meta:update(dt)
 	if self.tileId == FUEL_CELL then
-		if self.meta.gas >= 0 then
-			self.meta.gas = self.meta.gas - self.meta.gasDepletionRate * dt
-			if self.meta.gas < 0 then
+		if self.gas >= 0 then
+			self.gas = self.gas - self.gasDepletionRate * dt
+			if self.gas < 0 then
 				print("explode")
 			end
 		end
@@ -66,12 +68,8 @@ end
 
 function package.toPackage(tileObject)
 	tileObject.destinationId = tileObject.properties.destination.id
-	tileObject.applyEffect = applyEffect
-	tileObject.removeEffect = removeEffect
-	tileObject.onCollision = onCollision
-	tileObject.update = update
+	setmetatable(tileObject, meta)
 	tileObject.isDelivered = false
-	tileObject.meta = {}
 	return tileObject
 end
 
