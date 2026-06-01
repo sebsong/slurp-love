@@ -39,6 +39,11 @@ function scene.resume(_scene)
 	_scene.isPaused = false
 end
 
+function scene.restart(_scene)
+	scene.stop(_scene)
+	scene.start(_scene)
+end
+
 function scene.transition(fromScene, toScene)
 	scene.stop(fromScene)
 	scene.start(toScene)

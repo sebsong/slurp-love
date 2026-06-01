@@ -16,14 +16,15 @@ local boat = require("game/boat")
 local package = require("game/package")
 
 local DAY_TO_LAYER_NAME = {
-	"objects_1",
-	"objects_2",
-	"objects_3",
-	"objects_4",
+	"objects_monday",
+	"objects_tuesday",
+	"objects_wednesday",
+	"objects_thursday",
+	"objects_friday",
 }
 
 local LAND_LAYER_NAME = "base"
-local OBJECT_LAYER_NAME = "objects_1"
+local OBJECT_LAYER_NAME = "objects_monday"
 local DECORATION_LAYER_NAME = "decorations"
 
 local LAND_TILESET_NAME = "tileset"
@@ -194,6 +195,10 @@ function game.keypressed(key, scancode, isRepeat)
 
 	if key == "t" and not isRepeat then
 		loadWaterShader(love.timer.getTime())
+	end
+
+	if key == "r" and not isRepeat then
+		scene.restart(game)
 	end
 
 	cameraObj:keypressed(key, scancode, isRepeat)

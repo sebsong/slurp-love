@@ -16,11 +16,11 @@
             "scaleInDock": 1
         },
         "map.tmx": {
-            "scale": 0.5,
-            "selectedLayer": 0,
+            "scale": 0.75,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 1666,
-                "y": 557
+                "x": 1884,
+                "y": 566
             }
         },
         "map_iso.tmx": {
@@ -36,7 +36,7 @@
             "scaleInEditor": 1
         },
         "packages.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 2
         },
         "tileset.tsx": {
             "scaleInDock": 1,

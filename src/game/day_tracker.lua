@@ -1,12 +1,20 @@
 local dayTracker = {
-	currentDay = 4
+	currentDay = 1
 }
 
 local settings = require("engine/settings")
 local scene = require("engine/scene")
 local font = require("game/font")
 
-local FINAL_DAY = 4
+local FINAL_DAY = 5
+
+local DAY_TO_NAME = {
+	"monday",
+	"tuesday",
+	"wednesday",
+	"thursday",
+	"friday",
+}
 
 local dayTransitionBackgroundImage
 
@@ -73,7 +81,7 @@ function dayTracker.draw()
 		)
 	else
 		love.graphics.printf(
-			string.format("day %s", dayTracker.currentDay),
+			DAY_TO_NAME[dayTracker.currentDay],
 			0,
 			2 * font.default:getHeight(),
 			settings.canvasPixelWidth,
