@@ -11,5 +11,6 @@ values.GAS_DEPLETION_RATE_DEFAULT = 1.
 
 -- packages
 values.FUEL_CELL_INITIAL_GAS = 30
+values.GLASS_BREAK_MIN_SPEED = 50
 
 return values

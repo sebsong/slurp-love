@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="231" height="230" tilewidth="16" tileheight="8" infinite="0" backgroundcolor="#423952" nextlayerid="12" nextobjectid="151">
+<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="231" height="230" tilewidth="16" tileheight="8" infinite="0" backgroundcolor="#423952" nextlayerid="12" nextobjectid="155">
  <editorsettings>
   <export target="map.lua" format="lua"/>
  </editorsettings>
@@ -353,11 +353,6 @@
     <property name="destination" type="object" value="90"/>
    </properties>
   </object>
-  <object id="144" gid="6" x="944" y="520" width="16" height="16">
-   <properties>
-    <property name="destination" type="object" value="143"/>
-   </properties>
-  </object>
   <object id="90" gid="13" x="1200" y="536" width="16" height="16"/>
   <object id="143" gid="13" x="1200" y="536" width="16" height="16"/>
   <object id="91" gid="7" x="1072" y="928" width="16" height="16">
@@ -372,5 +367,17 @@
   </object>
   <object id="92" gid="13" x="1048" y="1016" width="16" height="16"/>
   <object id="145" gid="13" x="1048" y="1016" width="16" height="16"/>
+  <object id="151" gid="8" x="936" y="560" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="153"/>
+   </properties>
+  </object>
+  <object id="152" gid="9" x="1168" y="744" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="154"/>
+   </properties>
+  </object>
+  <object id="153" gid="13" x="896" y="616" width="16" height="16"/>
+  <object id="154" gid="13" x="1480" y="840" width="16" height="16"/>
  </objectgroup>
 </map>

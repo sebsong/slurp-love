@@ -8,6 +8,8 @@ local RADIOACTIVE_JUNK = 2
 local LANTERN = 3
 local LEAD_FOOT = 4
 local FUEL_CELL = 5
+local GLASS = 6
+local PORTAL = 7
 
 local function applyEffect(self, boat)
 	local tileId = self.tileId
@@ -43,6 +45,14 @@ local function removeEffect(self, boat)
 	end
 end
 
+local function onCollision(self, boat, _collidable)
+	if self.tileId == GLASS then
+		if boat.collidingWith:isEmpty() and boat.speed >= values.GLASS_BREAK_MIN_SPEED then
+			print("BROKEN")
+		end
+	end
+end
+
 local function update(self, dt)
 	if self.tileId == FUEL_CELL then
 		if self.meta.gas >= 0 then
@@ -58,6 +68,7 @@ function package.toPackage(tileObject)
 	tileObject.destinationId = tileObject.properties.destination.id
 	tileObject.applyEffect = applyEffect
 	tileObject.removeEffect = removeEffect
+	tileObject.onCollision = onCollision
 	tileObject.update = update
 	tileObject.isDelivered = false
 	tileObject.meta = {}

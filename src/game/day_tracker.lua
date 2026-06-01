@@ -1,5 +1,5 @@
 local dayTracker = {
-	currentDay = 1
+	currentDay = 4
 }
 
 local settings = require("engine/settings")
@@ -15,7 +15,7 @@ local blinkTimer
 local BLINK_HOLD_TIME = 1
 
 function dayTracker.isEndScreen()
-	return dayTracker.currentDay >= FINAL_DAY
+	return dayTracker.currentDay > FINAL_DAY
 end
 
 local function startDay()

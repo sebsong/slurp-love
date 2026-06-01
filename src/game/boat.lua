@@ -262,6 +262,9 @@ end
 -- end
 
 local function onCollision(self, collidable)
+	for _, package in ipairs(self.packages) do
+		package:onCollision(self, collidable)
+	end
 	-- print(collidable.position)
 end
 
