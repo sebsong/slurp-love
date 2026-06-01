@@ -3,6 +3,7 @@ local meta = {}
 meta.__index = meta
 
 local values = require("game/values")
+local vec2 = require("engine/vec2")
 
 -- package types
 local BASIC = 1
@@ -13,7 +14,7 @@ local FUEL_CELL = 5
 local GLASS = 6
 local PORTAL = 7
 
-function meta:applyEffect(boat)
+function meta:onPickup(boat)
 	local tileId = self.tileId
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
@@ -31,7 +32,7 @@ function meta:applyEffect(boat)
 	end
 end
 
-function meta:removeEffect(boat)
+function meta:onDeliver(boat)
 	local tileId = self.tileId
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
@@ -44,7 +45,13 @@ function meta:removeEffect(boat)
 		boat.gasDepletionRate = boat.gasDepletionRate * 2
 	elseif tileId == FUEL_CELL then
 		boat.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
+	elseif tileId == PORTAL then
+		if boat.portalDestination then
+			boat.transform:setTransformation(boat.portalDestination.x, boat.portalDestination.y, boat.rotation)
+		end
 	end
+
+	boat.portalDestination = vec2.new(boat.transform:transformPoint(0, 0))
 end
 
 function meta:onCollision(boat, _collidable)

@@ -964,22 +964,6 @@ return {
           }
         },
         {
-          id = 144,
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 944,
-          y = 520,
-          width = 16,
-          height = 16,
-          rotation = 0,
-          gid = 6,
-          visible = true,
-          properties = {
-            ["destination"] = { id = 143 }
-          }
-        },
-        {
           id = 90,
           name = "",
           type = "",

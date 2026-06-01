@@ -216,7 +216,7 @@ local function pickupPackages(self, packages)
 			table.insert(self.packages, package)
 			pickedUp = true
 			package.drawComponent.shouldDraw = false
-			package:applyEffect(self)
+			package:onPickup(self)
 		end
 
 		::continue::
@@ -237,7 +237,7 @@ local function deliverPackage(self, mailboxes)
 		if slurp_math.distance({ x = boatX, y = boatY }, { x = mailboxX, y = mailboxY }) <= self.interactionRadius and
 			mailbox.id == package.destinationId then
 			table.remove(self.packages, #self.packages)
-			package:removeEffect(self)
+			package:onDeliver(self)
 			package.isDelivered = true
 			return true
 		end
