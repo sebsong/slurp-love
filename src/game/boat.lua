@@ -288,7 +288,7 @@ function boat.new(tilemap)
 
 	loadBoatShader(love.timer.getTime())
 
-	local transform = love.math.newTransform(0, -100)
+	local transform = love.math.newTransform(0, 300)
 	local position = vec2.new(transform:transformPoint(0, 0))
 	local trailPositions = {}
 	for _ = 1, NUM_TRAIL_POSITIONS do
@@ -317,8 +317,8 @@ function boat.new(tilemap)
 		acceleration = values.BOAT_ACCELERATION_DEFAULT,
 		deceleration = values.BOAT_DECELERATION_DEFAULT,
 		rotation = 0,
-		rotationSpeed = math.pi / 2,
-		interactionRadius = 75,
+		rotationSpeed = values.BOAT_ROTATION_SPEED_DEFAULT,
+		interactionRadius = values.BOAT_INTERACTION_RADIUS,
 		packages = {},
 		gas = values.INITIAL_GAS,
 		gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT,
