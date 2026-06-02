@@ -312,8 +312,10 @@ function game.draw()
 	love.graphics.draw(tilemapWallsSpriteBatch)
 	for _, worldObject in ipairs(worldEntities) do
 		if boatObj.isLanternActive and worldObject.isLanternRevealTile then
-			local inRange = vec2.new(boatObj.transform:transformPoint(0, 0)):distanceTo(vec2.new(worldObject.transform
-				:transformPoint(0, 0))) <= values.LANTERN_RADIUS
+			local boatPos = vec2.new(boatObj.transform:transformPoint(0, 0))
+			local tilePos = vec2.new(worldObject.transform:transformPoint(0, 0))
+			local posDiff = tilePos - boatPos
+			local inRange = (posDiff.x / (384 / 2)) ^ 2 + (posDiff.y / (192 / 2)) ^ 2 <= 1
 			lanternRevealShader:send("inRange", inRange)
 		end
 		draw.draw(worldObject.drawComponent, worldObject.transform)
