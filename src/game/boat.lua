@@ -37,30 +37,9 @@ local function updateNeighborTiles(self)
 			local tileRow = self.tilemap.layers["base"].tiles[neighborRowIdx]
 			local tile = tileRow and tileRow[neighborColIdx]
 			if tile and tile.tileId then
-				-- if not tile.drawComponent then
-				-- 	-- TODO: this is a temp hack
-				-- 	local tilesetIndex = tile.tilesetIndex
-				-- 	local tileId = tile.tileId
-				-- 	if not tilesetIndex or not tileId then
-				-- 		goto continue
-				-- 	end
-				-- 	local tileset = self.tilemap.tilesets[tilesetIndex]
-				-- 	local tileQuad = tileset.quads[tileId]
-				-- 	if not tileQuad then
-				-- 		goto continue
-				-- 	end
-				-- 	local x, y = self.tilemap.tilemapIndexToWorldTransform:transformPoint(tile.position.x,
-				-- 		tile.position.y)
-				-- 	local _, _, width, height = tileQuad:getViewport()
-				-- 	tile.drawComponent = {
-				-- 		shouldDraw = true,
-				-- 		image = tileset.image,
-				-- 		quad = tileQuad,
-				-- 		xOffset = -width / 2,
-				-- 		yOffset = -height + self.tilemap.tileHeight / 2,
-				-- 	}
-				-- 	tile.transform = love.math.newTransform(x, y)
-				-- end
+				if self.isLanternActive and tile.tileId == 3 then
+					goto continue
+				end
 				table.insert(self.neighborTiles, tile)
 			end
 			::continue::
