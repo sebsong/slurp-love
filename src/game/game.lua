@@ -14,6 +14,7 @@ local ui = require("game/ui")
 local music = require("game/music")
 local boat = require("game/boat")
 local package = require("game/package")
+local values = require("game/values")
 
 local DAY_TO_LAYER_NAME = {
 	"objects_monday",
@@ -33,6 +34,8 @@ local BUILDING_TILESET_NAME = "buildings"
 local MAILBOX_TILESET_NAME = "mailboxes"
 local WALLS_TILESET_NAME = "walls"
 
+local LANTERN_REVEAL_TILE_ID = 3
+
 local tilemapWorldRows
 local tilemapWallsSpriteBatch
 
@@ -50,6 +53,8 @@ local waterShader
 
 local lanternLightImage
 local lanternShader
+
+local lanternRevealShader
 
 local function loadWaterShader(seed)
 	waterShader       = love.graphics.newShader("assets/shader/water.glsl")
@@ -70,9 +75,9 @@ function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
 	draw.loadShader(color.palette)
 
-	OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[scene.scenes.dayTracker.currentDay] or OBJECT_LAYER_NAME
-
 	cameraObj = camera.new()
+
+	OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[scene.scenes.dayTracker.currentDay] or OBJECT_LAYER_NAME
 
 	local tilesets = {
 		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
@@ -91,6 +96,17 @@ function game.load()
 	boatObj = boat.new(tilemapObj)
 	table.insert(worldObjects, boatObj)
 
+	waterImage = love.graphics.newImage("assets/art/water.png")
+	loadWaterShader(love.timer.getTime())
+
+	lanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
+	lanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
+	lanternShader:send("canvasDimensions", { canvas.canvas:getPixelWidth(), canvas.canvas:getPixelHeight() })
+	lanternShader:send("colorPalette", unpack(color.palette))
+	lanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
+
+	lanternRevealShader = love.graphics.newShader("assets/shader/lantern_reveal.glsl")
+
 	local spriteBatchSize = math.max(tilemapObj.width, tilemapObj.height)
 	tilemapWallsSpriteBatch = love.graphics.newSpriteBatch(tilesets[5].image, spriteBatchSize * 4, "static")
 	tilemapWorldRows = {}
@@ -100,7 +116,9 @@ function game.load()
 				goto continue
 			end
 
-			local tileQuad = tilesets[tile.tilesetIndex].quads[tile.tileId]
+			local tileset = tilesets[tile.tilesetIndex]
+			local tileImage = tileset.image
+			local tileQuad = tileset.quads[tile.tileId]
 			local _, _, width, height = tileQuad:getViewport()
 			local x, y = tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
 
@@ -113,18 +131,34 @@ function game.load()
 				goto continue
 			end
 
+			if tile.tilesetName == LAND_TILESET_NAME and tile.tileId == LANTERN_REVEAL_TILE_ID then
+				table.insert(worldObjects, {
+					transform = love.math.newTransform(x, y),
+					drawComponent = {
+						shouldDraw = true,
+						image = tileImage,
+						quad = tileQuad,
+						xOffset = -width / 2,
+						yOffset = -height + tilemapObj.tileHeight / 2,
+						zIndex = tile.zIndex,
+						shader = lanternRevealShader,
+					},
+					isLanternRevealTile = true
+				})
+				goto continue
+			end
+
 			local tilemapWorldRow = tilemapWorldRows[tile.worldRowIdx]
 			if not tilemapWorldRow then
 				tilemapWorldRow = {
 					transform = love.math.newTransform(0, y),
 					drawComponent = {
 						shouldDraw = true,
-						image = love.graphics.newSpriteBatch(tilesets[1].image, spriteBatchSize, "static"),
+						image = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static"),
 						zIndex = tile.zIndex
 					},
 				}
 				tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
-				-- table.insert(worldObjects, tilemapWorldRow)
 			end
 			tilemapWorldRow.drawComponent.image:add(
 				tileQuad,
@@ -152,15 +186,6 @@ function game.load()
 
 	ui:load()
 	music:load()
-
-	waterImage = love.graphics.newImage("assets/art/water.png")
-	loadWaterShader(love.timer.getTime())
-
-	lanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
-	lanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
-	lanternShader:send("canvasDimensions", { canvas.canvas:getPixelWidth(), canvas.canvas:getPixelHeight() })
-	lanternShader:send("colorPalette", unpack(color.palette))
-	lanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
 end
 
 function game.unload()
@@ -271,6 +296,8 @@ function game.update(dt)
 		boatObj.transform:transformPoint(0, 0)
 	})
 	waterShader:send("boatTrailPositions", unpack(boatObj.trailPositions))
+
+	lanternRevealShader:send("isLanternActive", boatObj.isLanternActive)
 end
 
 function game.draw()
@@ -284,6 +311,11 @@ function game.draw()
 
 	love.graphics.draw(tilemapWallsSpriteBatch)
 	for _, worldObject in ipairs(worldEntities) do
+		if boatObj.isLanternActive and worldObject.isLanternRevealTile then
+			local inRange = vec2.new(boatObj.transform:transformPoint(0, 0)):distanceTo(vec2.new(worldObject.transform
+				:transformPoint(0, 0))) <= values.LANTERN_RADIUS
+			lanternRevealShader:send("inRange", inRange)
+		end
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
 

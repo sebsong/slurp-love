@@ -13,6 +13,10 @@ function meta:magnitude()
 	return math.sqrt(self.x ^ 2 + self.y ^ 2)
 end
 
+function meta:distanceTo(otherVec)
+	return (otherVec - self):magnitude()
+end
+
 function meta:normalized()
 	local magnitude = self:magnitude()
 	if magnitude == 0 then

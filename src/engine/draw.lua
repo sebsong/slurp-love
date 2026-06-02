@@ -27,7 +27,9 @@ function draw.draw(drawComponent, transform)
 	love.graphics.applyTransform(transform)
 	-- shader:send("src_color", ColorPalette[3])
 	-- shader:send("dst_color", ColorPalette[8])
-	love.graphics.setShader(shader)
+	if drawComponent.shader then
+		love.graphics.setShader(drawComponent.shader)
+	end
 	if drawComponent.quad then
 		love.graphics.draw(
 			drawComponent.image,
