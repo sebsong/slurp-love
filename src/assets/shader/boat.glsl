@@ -10,12 +10,6 @@ const float VERTICAL_FREQ = 13;
 const float VERTICAL_SPEED = -1;
 const float VERTICAL_AMPLITUDE = .01;
 
-float random(vec2 st) {
-    return fract(
-        sin(dot(st.xy, vec2(12.9898, 78.233)) * seed) * 43758.5453123
-    );
-}
-
 #ifdef VERTEX
 vec4 position(mat4 transform_projection, vec4 vertex_position) {
     vec2 cameraCoords = (cameraPosition / cameraCanvasDimensions);

@@ -54,7 +54,7 @@ local waterShader
 local lanternLightImage
 local lanternShader
 
-local lanternRevealShader
+local tileShader
 
 local function loadWaterShader(seed)
 	waterShader       = love.graphics.newShader("assets/shader/water.glsl")
@@ -105,7 +105,7 @@ function game.load()
 	lanternShader:send("colorPalette", unpack(color.palette))
 	lanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
 
-	lanternRevealShader = love.graphics.newShader("assets/shader/lantern_reveal.glsl")
+	tileShader = love.graphics.newShader("assets/shader/tile.glsl")
 
 	local spriteBatchSize = math.max(tilemapObj.width, tilemapObj.height)
 	tilemapWallsSpriteBatch = love.graphics.newSpriteBatch(tilesets[5].image, spriteBatchSize * 4, "static")
@@ -141,7 +141,7 @@ function game.load()
 						xOffset = -width / 2,
 						yOffset = -height + tilemapObj.tileHeight / 2,
 						zIndex = tile.zIndex,
-						shader = lanternRevealShader,
+						shader = tileShader,
 					},
 					isLanternRevealTile = true
 				})
@@ -155,7 +155,8 @@ function game.load()
 					drawComponent = {
 						shouldDraw = true,
 						image = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static"),
-						zIndex = tile.zIndex
+						zIndex = tile.zIndex,
+						shader = tileShader,
 					},
 				}
 				tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
@@ -297,7 +298,12 @@ function game.update(dt)
 	})
 	waterShader:send("boatTrailPositions", unpack(boatObj.trailPositions))
 
-	lanternRevealShader:send("isLanternActive", boatObj.isLanternActive)
+	tileShader:send("isLanternActive", boatObj.isLanternActive)
+	tileShader:send("time", love.timer.getTime())
+	tileShader:send("cameraCanvasDimensions", { cameraObj:getScreenWidth(), cameraObj:getScreenHeight() })
+	tileShader:send("cameraPosition", {
+		cameraObj.transform:transformPoint(0, 0)
+	})
 end
 
 function game.draw()
@@ -311,12 +317,17 @@ function game.draw()
 
 	love.graphics.draw(tilemapWallsSpriteBatch)
 	for _, worldObject in ipairs(worldEntities) do
+		tileShader:send("tilePosition", {
+			worldObject.transform:transformPoint(0, 0)
+		})
 		if boatObj.isLanternActive and worldObject.isLanternRevealTile then
 			local boatPos = vec2.new(boatObj.transform:transformPoint(0, 0))
 			local tilePos = vec2.new(worldObject.transform:transformPoint(0, 0))
 			local posDiff = tilePos - boatPos
 			local inRange = (posDiff.x / (384 / 2)) ^ 2 + (posDiff.y / (192 / 2)) ^ 2 <= 1
-			lanternRevealShader:send("inRange", inRange)
+			tileShader:send("inRange", inRange)
+		else
+			tileShader:send("inRange", false)
 		end
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
