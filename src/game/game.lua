@@ -321,7 +321,7 @@ function game.draw()
 			local boatPos = vec2.new(boatObj.transform:transformPoint(0, 0))
 			local tilePos = vec2.new(worldObject.transform:transformPoint(0, 0))
 			local posDiff = tilePos - boatPos
-			local inRange = (posDiff.x / (384 / 2)) ^ 2 + (posDiff.y / (192 / 2)) ^ 2 <= 1
+			local inRange = (posDiff.x / (192 / 2)) ^ 2 + (posDiff.y / (96 / 2)) ^ 2 <= 1
 			tileShader:send("inRange", inRange)
 		else
 			tileShader:send("inRange", false)
