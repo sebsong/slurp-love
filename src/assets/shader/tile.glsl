@@ -3,16 +3,14 @@
 uniform bool isLanternActive;
 uniform bool inRange;
 
-uniform float seed;
 uniform float time;
 uniform vec2 cameraCanvasDimensions;
-vec2 pixelDimensions = vec2(1.0, 1.0) / cameraCanvasDimensions;
-uniform vec2 cameraPosition;
 uniform vec2 tilePosition;
+uniform vec4 quadViewport;
 
 const float VERTICAL_FREQ = 13;
 const float VERTICAL_SPEED = -1;
-const float VERTICAL_AMPLITUDE = .3;
+const float VERTICAL_AMPLITUDE = .475;
 
 #ifdef VERTEX
 vec4 position(mat4 transform_projection, vec4 vertex_position) {
@@ -24,29 +22,19 @@ vec4 position(mat4 transform_projection, vec4 vertex_position) {
 #ifdef PIXEL
 vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords)
 {
-    vec2 cameraCoords = (cameraPosition / cameraCanvasDimensions);
+    vec2 texDimensions = textureSize(tex, 0);
+    vec2 quadOffset = quadViewport.xy;
+    vec2 quadDimensions = quadViewport.zw;
+    vec2 normalizedTextureCoords = (floor(texture_coords * texDimensions) + vec2(0.5, 0.5) - quadOffset) / quadDimensions;
+
     vec2 tileCoords = (tilePosition / cameraCanvasDimensions);
-    vec2 textureCoords = cameraCoords + 0.5;
 
     float waveValue = sin(tileCoords.y * VERTICAL_FREQ + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE;
 
-    texture_coords = floor(texture_coords / pixelDimensions) * pixelDimensions;
-
-    // TODO: figure these formulas out, also why is the texture_coords.x go from 0 - 0.2 instead of 0 to 1? something about sprite batches?
-    // TODO: pixel quantize this properly
-    float textureValue = 2 * texture_coords.x - texture_coords.y + 2;
-    float otherTextureValue = -2 * (texture_coords.x - .25) - texture_coords.y + 2;
-    if ((textureValue <= (1 - waveValue))) {
+    if ((normalizedTextureCoords.y > 0.5 * normalizedTextureCoords.x + 1 + waveValue) ||
+            (normalizedTextureCoords.y > -0.5 * normalizedTextureCoords.x + 1.5 + waveValue)) {
         discard;
     }
-
-    if (otherTextureValue <= (1 - waveValue)) {
-        discard;
-    }
-
-    // if (texture_coords.y > 1 + waveValue) {
-    // discard;
-    // }
 
     if (isLanternActive && inRange) {
         discard;

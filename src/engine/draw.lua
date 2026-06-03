@@ -1,8 +1,7 @@
 local draw = {}
 
 local canvas = require("engine/canvas")
-
-local shader
+local shader = require("engine/shader")
 
 function draw.load()
 	love.graphics.setPointSize(8)
@@ -10,14 +9,11 @@ function draw.load()
 	love.graphics.setBackgroundColor(0, 0, 0)
 end
 
-function draw.loadShader(colorPalette)
-	shader = love.graphics.newShader("assets/shader/color_swap.glsl")
-end
-
 function draw.draw(drawComponent, transform)
 	if not drawComponent.shouldDraw then
 		return
 	end
+
 	if drawComponent.draw then
 		drawComponent.draw(drawComponent, transform)
 		return
@@ -25,12 +21,29 @@ function draw.draw(drawComponent, transform)
 
 	love.graphics.push()
 	love.graphics.applyTransform(transform)
-	-- shader:send("src_color", ColorPalette[3])
-	-- shader:send("dst_color", ColorPalette[8])
-	if drawComponent.shader then
-		love.graphics.setShader(drawComponent.shader)
-	end
+
+	local quad
 	if drawComponent.quad then
+		quad = drawComponent.quad
+	elseif drawComponent.quads then
+		quad = drawComponent.quads[drawComponent.currentFrame]
+	end
+
+	local drawShader = drawComponent.shader
+	if drawShader then
+		if quad and drawShader:hasUniform(shader.QUAD_VIEWPORT_UNIFORM) then
+			drawShader:send(shader.QUAD_VIEWPORT_UNIFORM, { drawComponent.quad:getViewport() })
+		end
+		love.graphics.setShader(drawShader)
+	end
+
+	if drawComponent.spriteBatch then
+		love.graphics.draw(
+			drawComponent.spriteBatch,
+			drawComponent.xOffset,
+			drawComponent.yOffset
+		)
+	elseif drawComponent.quad then
 		love.graphics.draw(
 			drawComponent.image,
 			drawComponent.quad,
@@ -40,7 +53,7 @@ function draw.draw(drawComponent, transform)
 	elseif drawComponent.quads then
 		love.graphics.draw(
 			drawComponent.image,
-			drawComponent.quads[drawComponent.currentFrame],
+			quad,
 			drawComponent.xOffset,
 			drawComponent.yOffset
 		)

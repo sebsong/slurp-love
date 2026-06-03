@@ -73,7 +73,6 @@ end
 
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
-	draw.loadShader(color.palette)
 
 	cameraObj = camera.new()
 
@@ -154,14 +153,15 @@ function game.load()
 					transform = love.math.newTransform(0, y),
 					drawComponent = {
 						shouldDraw = true,
-						image = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static"),
+						spriteBatch = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static"),
+						quad = tileQuad,
 						zIndex = tile.zIndex,
 						shader = tileShader,
 					},
 				}
 				tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
 			end
-			tilemapWorldRow.drawComponent.image:add(
+			tilemapWorldRow.drawComponent.spriteBatch:add(
 				tileQuad,
 				x - width / 2,
 				-height + tilemapObj.tileHeight / 2
@@ -301,9 +301,6 @@ function game.update(dt)
 	tileShader:send("isLanternActive", boatObj.isLanternActive)
 	tileShader:send("time", love.timer.getTime())
 	tileShader:send("cameraCanvasDimensions", { cameraObj:getScreenWidth(), cameraObj:getScreenHeight() })
-	tileShader:send("cameraPosition", {
-		cameraObj.transform:transformPoint(0, 0)
-	})
 end
 
 function game.draw()
