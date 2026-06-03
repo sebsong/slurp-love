@@ -5,7 +5,7 @@ local color = require("engine/color")
 local tilemap = require("engine/tilemap")
 local camera = require("engine/camera")
 local draw = require("engine/draw")
-local collision = require("engine/collision")
+local slurp_math = require("engine/math")
 local scene = require("engine/scene")
 local vec2 = require("engine/vec2")
 local settings = require("engine/settings")
@@ -52,6 +52,8 @@ local waterImage
 local waterShader
 
 local lanternLightImage
+local lanternXRadius
+local lanternYRadius
 local lanternShader
 
 local tileShader
@@ -98,8 +100,10 @@ function game.load()
 	waterImage = love.graphics.newImage("assets/art/water.png")
 	loadWaterShader(love.timer.getTime())
 
-	lanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
-	lanternShader     = love.graphics.newShader("assets/shader/lantern.glsl")
+	lanternLightImage                        = love.graphics.newImage("assets/art/lantern_light.png")
+	local lanternXDiameter, lanternYDiameter = lanternLightImage:getDimensions()
+	lanternXRadius, lanternYRadius           = lanternXDiameter / 2, lanternYDiameter / 2
+	lanternShader                            = love.graphics.newShader("assets/shader/lantern.glsl")
 	lanternShader:send("canvasDimensions", { canvas.canvas:getPixelWidth(), canvas.canvas:getPixelHeight() })
 	lanternShader:send("colorPalette", unpack(color.palette))
 	lanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
@@ -320,8 +324,7 @@ function game.draw()
 		if boatObj.isLanternActive and worldObject.isLanternRevealTile then
 			local boatPos = vec2.new(boatObj.transform:transformPoint(0, 0))
 			local tilePos = vec2.new(worldObject.transform:transformPoint(0, 0))
-			local posDiff = tilePos - boatPos
-			local inRange = (posDiff.x / (192 / 2)) ^ 2 + (posDiff.y / (96 / 2)) ^ 2 <= 1
+			local inRange = slurp_math.inEllipse(lanternXRadius, lanternYRadius, boatPos, tilePos)
 			tileShader:send("inRange", inRange)
 		else
 			tileShader:send("inRange", false)
