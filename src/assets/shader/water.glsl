@@ -1,5 +1,28 @@
 #pragma language glsl3
 
+uniform vec4 BASE_COLOR;
+uniform vec4 FOAM_OUTER_COLOR;
+uniform float FOAM_OUTER_SIZE;
+uniform vec4 FOAM_INNER_COLOR;
+uniform float FOAM_INNER_SIZE;
+uniform vec4 TRAIL_COLOR;
+uniform float FOAM_FILL_MULTIPLIER;
+
+uniform float GRID_WIDTH;
+uniform float GRID_HEIGHT;
+uniform int COLUMN_SEARCH_DIST;
+uniform int ROW_SEARCH_DIST;
+
+uniform float VERTICAL_FREQ;
+uniform float VERTICAL_SPEED;
+uniform float VERTICAL_AMPLITUDE;
+uniform float HORIZONTAL_FREQ;
+uniform float HORIZONTAL_SPEED;
+uniform float HORIZONTAL_AMPLITUDE;
+
+uniform float DEBUG_POINT_SIZE;
+uniform float DEBUG_GRID_LINE_SIZE;
+
 uniform float seed;
 uniform float time;
 uniform vec2 cameraCanvasDimensions;
@@ -8,31 +31,6 @@ uniform vec2 cameraPosition;
 uniform vec2 boatPosition;
 const int NUM_TRAIL_POSITIONS = 16;
 uniform vec2 boatTrailPositions[NUM_TRAIL_POSITIONS];
-
-uniform vec4 WATER_BASE_COLOR;
-uniform vec4 WATER_FOAM_OUTER_COLOR;
-uniform vec4 WATER_FOAM_INNER_COLOR;
-uniform vec4 WATER_TRAIL_COLOR;
-
-uniform float GRID_WIDTH;
-uniform float GRID_HEIGHT;
-
-uniform int COLUMN_SEARCH_DIST;
-uniform int ROW_SEARCH_DIST;
-
-uniform float WATER_FOAM_INNER_SIZE;
-uniform float WATER_FOAM_OUTER_SIZE;
-
-uniform float DEBUG_POINT_SIZE;
-uniform float DEBUG_GRID_LINE_SIZE;
-
-uniform float HORIZONTAL_FREQ;
-uniform float VERTICAL_FREQ;
-uniform float HORIZONTAL_SPEED;
-uniform float VERTICAL_SPEED;
-uniform float HORIZONTAL_AMPLITUDE;
-uniform float VERTICAL_AMPLITUDE;
-uniform float FILL_MULTIPLIER;
 
 float random(vec2 st) {
     return fract(
@@ -87,7 +85,7 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
 
         if (distance(texture_coords, trailCoords + sideVec1 * trailWidthMultiplier) < 0.003 ||
                 distance(texture_coords, trailCoords + sideVec2 * trailWidthMultiplier) < 0.003) {
-            return WATER_TRAIL_COLOR;
+            return TRAIL_COLOR;
         }
 
         // if (distance(texture_coords, trailCoords) < 0.02) {
@@ -138,13 +136,13 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     float distDiff = (secondClosestDistance - closestDistance) +
             (cos(texture_coords.x * HORIZONTAL_FREQ + time * HORIZONTAL_SPEED) * HORIZONTAL_AMPLITUDE +
                 sin(texture_coords.y * VERTICAL_FREQ + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE
-            ) * FILL_MULTIPLIER;
-    if (distDiff < WATER_FOAM_INNER_SIZE) {
-        return WATER_FOAM_INNER_COLOR;
-    } else if (distDiff < WATER_FOAM_OUTER_SIZE) {
-        return WATER_FOAM_OUTER_COLOR;
+            ) * FOAM_FILL_MULTIPLIER;
+    if (distDiff < FOAM_INNER_SIZE) {
+        return FOAM_INNER_COLOR;
+    } else if (distDiff < FOAM_OUTER_SIZE) {
+        return FOAM_OUTER_COLOR;
     }
 
-    return WATER_BASE_COLOR;
+    return BASE_COLOR;
 }
 #endif
