@@ -9,20 +9,13 @@ local tilemap = require("engine/tilemap")
 
 local values = require("game/values")
 local ui = require("game/ui")
+local boatEffect = require("game/boat_effect")
 
 local NUM_BOAT_ANGLES = 16
 local BOAT_WIDTH, BOATH_HEIGHT = 16, 16
 local NEIGHBOR_TILE_DISTANCE = 2
 
 local NUM_TRAIL_POSITIONS = 16
-
-local boatShader;
-
-local function loadBoatShader(seed)
-	boatShader        = love.graphics.newShader("assets/shader/boat.glsl")
-	ShaderFileModTime = love.filesystem.getInfo("assets/shader/boat.glsl").modtime
-	Seed              = seed
-end
 
 local function updateNeighborTiles(self)
 	local tilemapCol, tilemapRow = self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform
@@ -152,17 +145,13 @@ local function update(self, cameraObj, dt)
 
 	self.drawComponent.zIndex = self:getWorldRowIdx()
 
-	boatShader:send("time", love.timer.getTime())
-	boatShader:send("cameraCanvasDimensions", { cameraObj:getScreenWidth(), cameraObj:getScreenHeight() })
-	boatShader:send("cameraPosition", {
-		cameraObj.transform:transformPoint(0, 0)
-	})
+	boatEffect.update(cameraObj)
 end
 
 local function draw(animation, transform)
 	love.graphics.push()
 	local boatX, boatY = transform:transformPoint(0, 0)
-	love.graphics.setShader(boatShader)
+	boatEffect.setShader()
 	love.graphics.draw(
 		animation.image,
 		animation.quads[animation.currentFrame],
@@ -264,7 +253,7 @@ function boat.new(tilemap)
 	animation.draw = draw
 	animation.zIndex = 0
 
-	loadBoatShader(love.timer.getTime())
+	boatEffect.load()
 
 	local transform = love.math.newTransform(0, 300)
 	local position = vec2.new(transform:transformPoint(0, 0))

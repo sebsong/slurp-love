@@ -1,14 +1,12 @@
 #pragma language glsl3
 
-uniform float seed;
-uniform float time;
-uniform vec2 cameraCanvasDimensions;
-vec2 pixelDimensions = vec2(1.0, 1.0) / cameraCanvasDimensions;
-uniform vec2 cameraPosition;
+uniform float VERTICAL_FREQ;
+uniform float VERTICAL_SPEED;
+uniform float VERTICAL_AMPLITUDE;
 
-uniform float VERTICAL_FREQ = 13;
-uniform float VERTICAL_SPEED = -1;
-uniform float VERTICAL_AMPLITUDE = .01;
+uniform vec2 cameraCanvasDimensions;
+uniform vec2 cameraPosition;
+uniform float time;
 
 #ifdef VERTEX
 vec4 position(mat4 transform_projection, vec4 vertex_position) {

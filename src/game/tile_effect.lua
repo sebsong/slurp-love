@@ -7,11 +7,9 @@ local waterEffect = require("game/water_effect")
 local SHADER_FILE_PATH = "assets/shader/tile.glsl"
 
 local shader
-local shaderFileModTime
 
 function tileEffect.load(camera, boat)
-	shader            = love.graphics.newShader(SHADER_FILE_PATH)
-	shaderFileModTime = love.filesystem.getInfo(SHADER_FILE_PATH).modtime
+	shader = love.graphics.newShader(SHADER_FILE_PATH)
 
 	shader:send("VERTICAL_FREQ", waterEffect.VERTICAL_FREQ)
 	shader:send("VERTICAL_SPEED", waterEffect.VERTICAL_SPEED)
@@ -19,11 +17,6 @@ function tileEffect.load(camera, boat)
 end
 
 function tileEffect.update(camera, boat)
-	local modTime = love.filesystem.getInfo(SHADER_FILE_PATH).modtime
-	if (modTime ~= shaderFileModTime) then
-		tileEffect.load(camera, boat)
-	end
-
 	shader:send("isLanternActive", boat.isLanternActive)
 	shader:send("time", love.timer.getTime())
 	shader:send("cameraCanvasDimensions", { camera:getScreenWidth(), camera:getScreenHeight() })
