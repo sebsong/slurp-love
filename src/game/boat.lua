@@ -217,22 +217,10 @@ local function getPosition(self)
 	return vec2.new(self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)))
 end
 
--- local tableMeta = getmetatable(table)
--- function tableMeta.__tostring(_table)
--- 	local str = ""
--- 	str = str + "{"
--- 	for key, val in pairs(_table) do
--- 		str = str + string.format("	%s: %s", key, val)
--- 	end
--- 	str = str + "}"
--- 	return str
--- end
-
 local function onCollision(self, collidable)
 	for _, package in ipairs(self.packages) do
 		package:onCollision(self, collidable)
 	end
-	-- print(collidable.position)
 end
 
 function boat.new(tilemap)

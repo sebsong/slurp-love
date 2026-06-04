@@ -175,11 +175,10 @@ function game.load()
 	tilemapBuildingsSpriteBatch = love.graphics.newSpriteBatch(tilesets[3].image, 200, "static")
 	for _, object in ipairs(tilemapObj.layers[BUILDINGS_LAYER_NAME].objects) do
 		local x, y = object.transform:transformPoint(0, 0)
-		local _, _, width, height = object.drawComponent.quad:getViewport()
 		tilemapBuildingsSpriteBatch:add(
 			object.drawComponent.quad,
-			x - width / 2,
-			y - height + tilemapObj.tileHeight / 2
+			x + object.drawComponent.xOffset,
+			y + object.drawComponent.yOffset
 		)
 	end
 
