@@ -10,7 +10,7 @@ uniform vec4 quadViewport;
 
 const float VERTICAL_FREQ = 13;
 const float VERTICAL_SPEED = -1;
-const float VERTICAL_AMPLITUDE = .475;
+const float VERTICAL_AMPLITUDE = .1;
 
 #ifdef VERTEX
 vec4 position(mat4 transform_projection, vec4 vertex_position) {
@@ -31,8 +31,8 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords)
 
     float waveValue = sin(tileCoords.y * VERTICAL_FREQ + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE;
 
-    if ((normalizedTextureCoords.y > 0.5 * normalizedTextureCoords.x + 1 + waveValue) ||
-            (normalizedTextureCoords.y > -0.5 * normalizedTextureCoords.x + 1.5 + waveValue)) {
+    if ((normalizedTextureCoords.y > 0.5 * normalizedTextureCoords.x + .65 + waveValue) ||
+            (normalizedTextureCoords.y > -0.5 * normalizedTextureCoords.x + 1.15 + waveValue)) {
         discard;
     }
 
