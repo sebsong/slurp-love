@@ -4,6 +4,8 @@ local scene = require("engine/scene")
 
 local profile = require("external/profile")
 
+local ENABLE_PROFILER = false
+
 local defaultFont
 local frame
 local report
@@ -11,7 +13,9 @@ local report
 function debug.load()
 	defaultFont = love.graphics.getFont()
 	frame = 0
-	profile.start()
+	if ENABLE_PROFILER then
+		profile.start()
+	end
 end
 
 function debug.unload()
@@ -44,11 +48,13 @@ function debug.wheelmoved(x, y)
 end
 
 function debug.update(dt)
-	frame = frame + 1
-	if frame % 1000 == 0 then
-		report = profile.report(20)
-		profile.reset()
-		-- print(report)
+	if ENABLE_PROFILER then
+		frame = frame + 1
+		if frame % 1000 == 0 then
+			report = profile.report(20)
+			profile.reset()
+			print(report)
+		end
 	end
 end
 
