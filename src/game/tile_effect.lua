@@ -2,7 +2,7 @@ local tileEffect = {}
 
 local vec2 = require("engine/vec2")
 local slurp_math = require("engine/math")
-local waterEffect = require("game/waterEffect")
+local waterEffect = require("game/water_effect")
 
 local SHADER_FILE_PATH = "assets/shader/tile.glsl"
 

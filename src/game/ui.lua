@@ -39,6 +39,8 @@ function ui.load(self)
 end
 
 function ui.draw(self, packages)
+	love.graphics.setShader()
+
 	local _, _, gasMeterWidth, gasMeterHeight = ui.gasMeterQuad:getViewport()
 	love.graphics.draw(ui.image, ui.gasMeterQuad, padding, settings.canvasPixelHeight - gasMeterHeight - padding)
 	love.graphics.setShader(ui.gasMeterShader)

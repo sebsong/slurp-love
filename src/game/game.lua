@@ -5,7 +5,6 @@ local color = require("engine/color")
 local tilemap = require("engine/tilemap")
 local camera = require("engine/camera")
 local draw = require("engine/draw")
-local slurp_math = require("engine/math")
 local scene = require("engine/scene")
 local vec2 = require("engine/vec2")
 
@@ -13,8 +12,9 @@ local ui = require("game/ui")
 local music = require("game/music")
 local boat = require("game/boat")
 local package = require("game/package")
-local waterEffect = require("game/waterEffect")
-local tileEffect = require("game/tileEffect")
+local waterEffect = require("game/water_effect")
+local tileEffect = require("game/tile_effect")
+local lanternEffect = require("game/lantern_effect")
 
 local DAY_TO_LAYER_NAME = {
 	"objects_monday",
@@ -54,7 +54,6 @@ local waterImage
 local lanternLightImage
 local lanternXRadius
 local lanternYRadius
-local lanternShader
 
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
@@ -82,15 +81,13 @@ function game.load()
 
 	waterImage = love.graphics.newImage("assets/art/water.png")
 	waterEffect.load(cameraObj, boatObj, love.timer.getTime())
+
 	tileEffect.load(cameraObj, boatObj)
 
 	lanternLightImage                        = love.graphics.newImage("assets/art/lantern_light.png")
 	local lanternXDiameter, lanternYDiameter = lanternLightImage:getDimensions()
 	lanternXRadius, lanternYRadius           = lanternXDiameter / 2, lanternYDiameter / 2
-	lanternShader                            = love.graphics.newShader("assets/shader/lantern.glsl")
-	lanternShader:send("canvasDimensions", { canvas.canvas:getPixelWidth(), canvas.canvas:getPixelHeight() })
-	lanternShader:send("colorPalette", unpack(color.palette))
-	lanternShader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
+	lanternEffect.load()
 
 	local spriteBatchSize = math.max(tilemapObj.width, tilemapObj.height)
 	tilemapWallsSpriteBatch = love.graphics.newSpriteBatch(tilesets[5].image, spriteBatchSize * 4, "static")
@@ -287,6 +284,7 @@ function game.update(dt)
 
 	waterEffect.update(cameraObj, boatObj)
 	tileEffect.update(cameraObj, boatObj)
+	lanternEffect.update(cameraObj)
 end
 
 function game.draw()
@@ -306,11 +304,8 @@ function game.draw()
 
 	if boatObj.isLanternActive then
 		local boatX, boatY = boatObj.transform:transformPoint(0, 0)
-		local lanternWidth, lanternHeight = lanternLightImage:getDimensions()
-		love.graphics.setShader(lanternShader)
-		lanternShader:send("canvasImage", canvas.canvas)
-		love.graphics.draw(lanternLightImage, boatX - lanternWidth / 2, boatY - lanternHeight / 2)
-		love.graphics.setShader()
+		lanternEffect.setShader()
+		love.graphics.draw(lanternLightImage, boatX - lanternXRadius, boatY - lanternYRadius)
 	end
 
 	love.graphics.pop()

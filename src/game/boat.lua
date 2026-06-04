@@ -169,7 +169,6 @@ local function draw(animation, transform)
 		boatX + animation.xOffset,
 		boatY + animation.yOffset
 	)
-	love.graphics.setShader()
 	love.graphics.pop()
 end
 
