@@ -1,7 +1,5 @@
 #pragma language glsl3
 
-const int COLOR_PALETTE_SIZE = 8;
-uniform vec4 colorPalette[COLOR_PALETTE_SIZE];
 uniform float seed;
 uniform float time;
 uniform vec2 cameraCanvasDimensions;
@@ -11,27 +9,30 @@ uniform vec2 boatPosition;
 const int NUM_TRAIL_POSITIONS = 16;
 uniform vec2 boatTrailPositions[NUM_TRAIL_POSITIONS];
 
-const float NUM_COLUMNS = 16;
-const float NUM_ROWS = 32;
-const float GRID_WIDTH = 1 / NUM_COLUMNS;
-const float GRID_HEIGHT = 1 / NUM_ROWS;
+uniform vec4 WATER_BASE_COLOR;
+uniform vec4 WATER_FOAM_OUTER_COLOR;
+uniform vec4 WATER_FOAM_INNER_COLOR;
+uniform vec4 WATER_TRAIL_COLOR;
 
-int COLUMN_SEARCH_DIST = 1;
-int ROW_SEARCH_DIST = 8;
+uniform float GRID_WIDTH;
+uniform float GRID_HEIGHT;
 
-const float PRIMARY_BORDER_SIZE = 0.002;
-const float SECONDARY_BORDER_SIZE = 0.005;
+uniform int COLUMN_SEARCH_DIST;
+uniform int ROW_SEARCH_DIST;
 
-const float DEBUG_POINT_SIZE = 0.002;
-const float DEBUG_GRID_LINE_SIZE = 0.003;
+uniform float WATER_FOAM_INNER_SIZE;
+uniform float WATER_FOAM_OUTER_SIZE;
 
-const float HORIZONTAL_FREQ = 5;
-const float VERTICAL_FREQ = 13;
-const float HORIZONTAL_SPEED = -0.25;
-const float VERTICAL_SPEED = -1;
-const float HORIZONTAL_AMPLITUDE = .1;
-const float VERTICAL_AMPLITUDE = .1;
-const float FILL_MULTIPLIER = 0.02;
+uniform float DEBUG_POINT_SIZE;
+uniform float DEBUG_GRID_LINE_SIZE;
+
+uniform float HORIZONTAL_FREQ;
+uniform float VERTICAL_FREQ;
+uniform float HORIZONTAL_SPEED;
+uniform float VERTICAL_SPEED;
+uniform float HORIZONTAL_AMPLITUDE;
+uniform float VERTICAL_AMPLITUDE;
+uniform float FILL_MULTIPLIER;
 
 float random(vec2 st) {
     return fract(
@@ -84,8 +85,9 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
         float distanceToBoat = distance(trailCoords, boatCoords);
         float trailWidthMultiplier = .001 + .1 * distanceToBoat;
 
-        if (distance(texture_coords, trailCoords + sideVec1 * trailWidthMultiplier) < 0.003 || distance(texture_coords, trailCoords + sideVec2 * trailWidthMultiplier) < 0.003) {
-            return colorPalette[2];
+        if (distance(texture_coords, trailCoords + sideVec1 * trailWidthMultiplier) < 0.003 ||
+                distance(texture_coords, trailCoords + sideVec2 * trailWidthMultiplier) < 0.003) {
+            return WATER_TRAIL_COLOR;
         }
 
         // if (distance(texture_coords, trailCoords) < 0.02) {
@@ -126,31 +128,23 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
 
     // DEBUG GRID AND POINTS
     // if (closestDistance < DEBUG_POINT_SIZE) {
-    //     return colorPalette[3];
+    //     return vec4(1, 0, 0, 1);
     // }
     // if ((texture_coords.x - gridIndexes.x * GRID_WIDTH < DEBUG_GRID_LINE_SIZE / 4) ||
     //         (texture_coords.y - gridIndexes.y * GRID_HEIGHT < DEBUG_GRID_LINE_SIZE)) {
-    //     return colorPalette[3];
+    //     return vec4(0, 1, 0, 1);
     // }
 
     float distDiff = (secondClosestDistance - closestDistance) +
             (cos(texture_coords.x * HORIZONTAL_FREQ + time * HORIZONTAL_SPEED) * HORIZONTAL_AMPLITUDE +
                 sin(texture_coords.y * VERTICAL_FREQ + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE
             ) * FILL_MULTIPLIER;
-    if (distDiff < PRIMARY_BORDER_SIZE) {
-        return colorPalette[2];
-    } else if (distDiff < SECONDARY_BORDER_SIZE) {
-        return colorPalette[1];
+    if (distDiff < WATER_FOAM_INNER_SIZE) {
+        return WATER_FOAM_INNER_COLOR;
+    } else if (distDiff < WATER_FOAM_OUTER_SIZE) {
+        return WATER_FOAM_OUTER_COLOR;
     }
 
-    //TODO: boat wake, maybe pass a list of prev location points? disrupt
-    // if (distance(texture_coords, boatCoords) < 0.03) {
-    //     return colorPalette[3];
-    // }
-
-    return colorPalette[0];
-
-    // vec4 waterTexColor = Texel(tex, texture_coords);
-    // return mix(waterTexColor, colorPalette[4], normalizedDist);
+    return WATER_BASE_COLOR;
 }
 #endif

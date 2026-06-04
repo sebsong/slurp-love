@@ -15,6 +15,7 @@ local music = require("game/music")
 local boat = require("game/boat")
 local package = require("game/package")
 local values = require("game/values")
+local waterEffect = require("game/waterEffect")
 
 local DAY_TO_LAYER_NAME = {
 	"objects_monday",
@@ -49,7 +50,6 @@ local packages
 local mailboxes
 
 local waterImage
-local waterShader
 
 local lanternLightImage
 local lanternXRadius
@@ -57,21 +57,6 @@ local lanternYRadius
 local lanternShader
 
 local tileShader
-
-local function loadWaterShader(seed)
-	waterShader       = love.graphics.newShader("assets/shader/water.glsl")
-	ShaderFileModTime = love.filesystem.getInfo("assets/shader/water.glsl").modtime
-	Seed              = seed
-	waterShader:send("seed", seed)
-	waterShader:send("colorPalette", unpack(color.palette))
-	waterShader:send("cameraCanvasDimensions", { cameraObj:getScreenWidth(), cameraObj:getScreenHeight() })
-	waterShader:send("cameraPosition", {
-		cameraObj.transform:transformPoint(0, 0)
-	})
-	waterShader:send("boatPosition", {
-		boatObj.transform:transformPoint(0, 0)
-	})
-end
 
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
@@ -98,7 +83,7 @@ function game.load()
 	table.insert(worldObjects, boatObj)
 
 	waterImage = love.graphics.newImage("assets/art/water.png")
-	loadWaterShader(love.timer.getTime())
+	waterEffect.load(cameraObj, boatObj, love.timer.getTime())
 
 	lanternLightImage                        = love.graphics.newImage("assets/art/lantern_light.png")
 	local lanternXDiameter, lanternYDiameter = lanternLightImage:getDimensions()
@@ -224,7 +209,7 @@ function game.keypressed(key, scancode, isRepeat)
 	end
 
 	if key == "t" and not isRepeat then
-		loadWaterShader(love.timer.getTime())
+		waterEffect.load(cameraObj, boatObj, love.timer.getTime())
 	end
 
 	if key == "r" and not isRepeat then
@@ -288,19 +273,7 @@ function game.update(dt)
 		end
 	)
 
-	local modTime = love.filesystem.getInfo("assets/shader/water.glsl").modtime
-	if (modTime ~= ShaderFileModTime) then
-		loadWaterShader(Seed)
-	end
-	waterShader:send("time", love.timer.getTime())
-	waterShader:send("cameraCanvasDimensions", { cameraObj:getScreenWidth(), cameraObj:getScreenHeight() })
-	waterShader:send("cameraPosition", {
-		cameraObj.transform:transformPoint(0, 0)
-	})
-	waterShader:send("boatPosition", {
-		boatObj.transform:transformPoint(0, 0)
-	})
-	waterShader:send("boatTrailPositions", unpack(boatObj.trailPositions))
+	waterEffect.update(cameraObj, boatObj)
 
 	tileShader:send("isLanternActive", boatObj.isLanternActive)
 	tileShader:send("time", love.timer.getTime())
@@ -308,7 +281,7 @@ function game.update(dt)
 end
 
 function game.draw()
-	love.graphics.setShader(waterShader)
+	waterEffect.setShader()
 	love.graphics.draw(waterImage)
 	love.graphics.setShader()
 
