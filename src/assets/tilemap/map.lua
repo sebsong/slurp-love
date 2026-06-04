@@ -195,7 +195,7 @@ return {
       type = "objectgroup",
       draworder = "topdown",
       id = 8,
-      name = "decorations",
+      name = "buildings",
       class = "",
       visible = true,
       opacity = 1,

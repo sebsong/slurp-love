@@ -252,6 +252,10 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 				})
 			end
 
+			table.sort(objects, function(o1, o2)
+				return o1.drawComponent.zIndex < o2.drawComponent.zIndex
+			end)
+
 			layers[layer.name] = {
 				objects = objects,
 				properties = layer.properties,

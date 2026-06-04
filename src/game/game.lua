@@ -26,11 +26,11 @@ local DAY_TO_LAYER_NAME = {
 
 local LAND_LAYER_NAME = "base"
 local OBJECT_LAYER_NAME = "objects_monday"
-local DECORATION_LAYER_NAME = "decorations"
+local BUILDINGS_LAYER_NAME = "buildings"
 
 local LAND_TILESET_NAME = "tileset"
-local PACKAGE_TILESET_NAME = "packages"
-local BUILDING_TILESET_NAME = "buildings"
+local PACKAGES_TILESET_NAME = "packages"
+local BUILDINGS_TILESET_NAME = "buildings"
 local MAILBOX_TILESET_NAME = "mailboxes"
 local WALLS_TILESET_NAME = "walls"
 
@@ -38,6 +38,7 @@ local LANTERN_REVEAL_TILE_ID = 3
 
 local tilemapWorldRows
 local tilemapWallsSpriteBatch
+local tilemapBuildingsSpriteBatch
 
 local tilemapObj
 local cameraObj
@@ -130,7 +131,7 @@ function game.load()
 					isLanternRevealTile = true
 				}
 				tileObj.drawComponent.setShader = function()
-					tileEffect.setShader(boatObj, tileObj, lanternXRadius, lanternYRadius)
+					tileEffect.setShader(tileObj, boatObj, lanternXRadius, lanternYRadius)
 				end
 				table.insert(worldObjects, tileObj)
 				goto continue
@@ -150,7 +151,7 @@ function game.load()
 					isLanternRevealTile = false
 				}
 				tilemapWorldRow.drawComponent.setShader = function()
-					tileEffect.setShader(boatObj, tilemapWorldRow, lanternXRadius, lanternYRadius)
+					tileEffect.setShader(tilemapWorldRow, boatObj, lanternXRadius, lanternYRadius)
 				end
 				tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
 			end
@@ -165,7 +166,7 @@ function game.load()
 
 	for _, object in ipairs(tilemapObj.layers[OBJECT_LAYER_NAME].objects) do
 		local tilesetName = object.tilesetName
-		if (tilesetName == PACKAGE_TILESET_NAME) then
+		if (tilesetName == PACKAGES_TILESET_NAME) then
 			table.insert(packages, package.toPackage(object))
 		elseif (tilesetName == MAILBOX_TILESET_NAME) then
 			table.insert(mailboxes, object)
@@ -174,8 +175,15 @@ function game.load()
 		table.insert(worldObjects, object)
 	end
 
-	for _, object in ipairs(tilemapObj.layers[DECORATION_LAYER_NAME].objects) do
-		table.insert(worldObjects, object)
+	tilemapBuildingsSpriteBatch = love.graphics.newSpriteBatch(tilesets[3].image, 200, "static")
+	for _, object in ipairs(tilemapObj.layers[BUILDINGS_LAYER_NAME].objects) do
+		local x, y = object.transform:transformPoint(0, 0)
+		local _, _, width, height = object.drawComponent.quad:getViewport()
+		tilemapBuildingsSpriteBatch:add(
+			object.drawComponent.quad,
+			x - width / 2,
+			y - height + tilemapObj.tileHeight / 2
+		)
 	end
 
 	ui:load()
@@ -294,6 +302,7 @@ function game.draw()
 	for _, worldObject in ipairs(worldEntities) do
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
+	love.graphics.draw(tilemapBuildingsSpriteBatch)
 
 	if boatObj.isLanternActive then
 		local boatX, boatY = boatObj.transform:transformPoint(0, 0)
