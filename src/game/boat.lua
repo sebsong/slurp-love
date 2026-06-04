@@ -68,9 +68,11 @@ end
 
 local function update(self, cameraObj, dt)
 	local didMove = false
+	local didMoveForward = false
 	if love.keyboard.isDown("up") or love.keyboard.isDown("w") then
 		self.speed = self.speed + self.acceleration * dt
 		didMove = true
+		didMoveForward = true
 	end
 	if love.keyboard.isDown("down") or love.keyboard.isDown("s") then
 		local acceleration = self.deceleration
@@ -81,8 +83,19 @@ local function update(self, cameraObj, dt)
 		didMove = true
 	end
 
+	local didAccelerate = false
+	if self.speed < self.maxBackwardsSpeed or self.speed > self.maxSpeed then
+		self.speed = slurp_math.clamped(self.speed, -self.maxBackwardsSpeed, self.maxSpeed)
+	else
+		didAccelerate = true
+	end
+
 	if didMove then
-		self.gas = self.gas - self.gasDepletionRate * dt
+		local depletionAmount = self.gasDepletionRate * dt
+		if didAccelerate and didMoveForward then
+			depletionAmount = depletionAmount * values.GAS_ACCELERATION_DEPLETION_MULTIPLIER
+		end
+		self.gas = self.gas - depletionAmount
 		ui.gasMeterShader:send("progress", self.gas / values.INITIAL_GAS)
 		if self.gas <= 0 then
 			print("OUT OF GAS")
@@ -95,11 +108,6 @@ local function update(self, cameraObj, dt)
 		end
 	end
 
-	if self.speed > 0 and self.speed > self.maxSpeed then
-		self.speed = self.maxSpeed
-	elseif self.speed < 0 and self.speed < -self.maxBackwardsSpeed then
-		self.speed = -self.maxBackwardsSpeed
-	end
 
 	if love.keyboard.isDown("left") or love.keyboard.isDown("a") then
 		self.rotation = self.rotation - self.rotationSpeed * dt
@@ -177,9 +185,9 @@ local function pickupPackages(self, packages)
 		if self:indexOfPackage(package) then
 			goto continue
 		end
-		local boatX, boatY = self.transform:transformPoint(0, 0)
-		local packageX, packageY = package.transform:transformPoint(0, 0)
-		if slurp_math.distance({ x = boatX, y = boatY }, { x = packageX, y = packageY }) <= self.interactionRadius then
+		local boatPos = vec2.new(self.transform:transformPoint(0, 0))
+		local packagePos = vec2.new(package.transform:transformPoint(0, 0))
+		if boatPos:distanceTo(packagePos) <= self.interactionRadius then
 			table.insert(self.packages, package)
 			pickedUp = true
 			package.drawComponent.shouldDraw = false

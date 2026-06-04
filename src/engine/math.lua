@@ -1,11 +1,5 @@
 local slurp_math = {}
 
-local vec2 = require("engine/vec2")
-
-function slurp_math.distance(from, to)
-	return math.sqrt((to.x - from.x) ^ 2 + (to.y - from.y) ^ 2)
-end
-
 function slurp_math.absMin(v1, ...)
 	local minAbs = math.abs(v1)
 	local min = v1
@@ -19,6 +13,10 @@ function slurp_math.absMin(v1, ...)
 	end
 
 	return min
+end
+
+function slurp_math.clamped(val, min, max)
+	return math.min(math.max(val, min), max)
 end
 
 function slurp_math.inEllipse(xRadius, yRadius, ellipsePosition, testPosition)
