@@ -1,16 +1,18 @@
 #pragma language glsl3
 
+uniform float VERTICAL_FREQ;
+uniform float VERTICAL_SPEED;
+uniform float VERTICAL_AMPLITUDE;
+
 uniform bool isLanternActive;
+// uniform bool isLanternRevealTile;
 uniform bool inRange;
 
 uniform float time;
 uniform vec2 cameraCanvasDimensions;
 uniform vec2 tilePosition;
+// uniform vec2 lanternPosition;
 uniform vec4 quadViewport;
-
-const float VERTICAL_FREQ = 13;
-const float VERTICAL_SPEED = -1;
-const float VERTICAL_AMPLITUDE = .1;
 
 #ifdef VERTEX
 vec4 position(mat4 transform_projection, vec4 vertex_position) {

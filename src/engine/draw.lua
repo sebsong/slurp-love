@@ -29,12 +29,10 @@ function draw.draw(drawComponent, transform)
 		quad = drawComponent.quads[drawComponent.currentFrame]
 	end
 
-	local drawShader = drawComponent.shader
-	if drawShader then
-		if quad and drawShader:hasUniform(shader.QUAD_VIEWPORT_UNIFORM) then
-			drawShader:send(shader.QUAD_VIEWPORT_UNIFORM, { drawComponent.quad:getViewport() })
-		end
-		love.graphics.setShader(drawShader)
+	if drawComponent.setShader then
+		drawComponent.setShader()
+	else
+		love.graphics.setShader()
 	end
 
 	if drawComponent.spriteBatch then
@@ -64,7 +62,6 @@ function draw.draw(drawComponent, transform)
 			drawComponent.yOffset
 		)
 	end
-	love.graphics.setShader()
 	love.graphics.pop()
 end
 

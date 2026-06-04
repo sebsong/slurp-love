@@ -19,9 +19,9 @@ local GRID_HEIGHT = 1 / NUM_ROWS;
 local COLUMN_SEARCH_DIST = 1;
 local ROW_SEARCH_DIST = 8;
 
-local VERTICAL_FREQ = 13;
-local VERTICAL_SPEED = -1;
-local VERTICAL_AMPLITUDE = .1;
+waterEffect.VERTICAL_FREQ = 13;
+waterEffect.VERTICAL_SPEED = -1;
+waterEffect.VERTICAL_AMPLITUDE = .1;
 local HORIZONTAL_FREQ = 5;
 local HORIZONTAL_SPEED = -0.25;
 local HORIZONTAL_AMPLITUDE = .1;
@@ -55,9 +55,9 @@ function waterEffect.load(camera, boat, newSeed)
 	shader:send("COLUMN_SEARCH_DIST", COLUMN_SEARCH_DIST)
 	shader:send("ROW_SEARCH_DIST", ROW_SEARCH_DIST)
 
-	shader:send("VERTICAL_FREQ", VERTICAL_FREQ)
-	shader:send("VERTICAL_SPEED", VERTICAL_SPEED)
-	shader:send("VERTICAL_AMPLITUDE", VERTICAL_AMPLITUDE)
+	shader:send("VERTICAL_FREQ", waterEffect.VERTICAL_FREQ)
+	shader:send("VERTICAL_SPEED", waterEffect.VERTICAL_SPEED)
+	shader:send("VERTICAL_AMPLITUDE", waterEffect.VERTICAL_AMPLITUDE)
 	shader:send("HORIZONTAL_FREQ", HORIZONTAL_FREQ)
 	shader:send("HORIZONTAL_SPEED", HORIZONTAL_SPEED)
 	shader:send("HORIZONTAL_AMPLITUDE", HORIZONTAL_AMPLITUDE)
