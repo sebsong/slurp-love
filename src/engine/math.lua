@@ -19,6 +19,10 @@ function slurp_math.clamped(val, min, max)
 	return math.min(math.max(val, min), max)
 end
 
+function slurp_math.inRange(val, min, max)
+	return val >= min and val <= max
+end
+
 function slurp_math.inEllipse(xRadius, yRadius, ellipsePosition, testPosition)
 	local positionDiff = testPosition - ellipsePosition
 	return ((positionDiff.x / xRadius) ^ 2 + (positionDiff.y / yRadius) ^ 2) <= 1

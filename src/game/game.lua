@@ -1,11 +1,11 @@
 local game = {}
 
-local canvas = require("engine/canvas")
 local color = require("engine/color")
 local tilemap = require("engine/tilemap")
 local camera = require("engine/camera")
 local draw = require("engine/draw")
 local scene = require("engine/scene")
+local slurp_math = require("engine/math")
 local vec2 = require("engine/vec2")
 
 local ui = require("game/ui")
@@ -14,6 +14,7 @@ local boat = require("game/boat")
 local package = require("game/package")
 local waterEffect = require("game/water_effect")
 local tileEffect = require("game/tile_effect")
+local floatingTileEffect = require("game/floating_tile_effect")
 local lanternEffect = require("game/lantern_effect")
 
 local DAY_TO_LAYER_NAME = {
@@ -34,9 +35,11 @@ local BUILDINGS_TILESET_NAME = "buildings"
 local MAILBOX_TILESET_NAME = "mailboxes"
 local WALLS_TILESET_NAME = "walls"
 
+local FLOATING_TILE_ID = 2
 local LANTERN_REVEAL_TILE_ID = 3
 
 local tilemapWorldRows
+local tilemapFloatingWorldRows
 local tilemapWallsSpriteBatch
 local tilemapBuildingsSpriteBatch
 
@@ -83,6 +86,7 @@ function game.load()
 	waterEffect.load(cameraObj, boatObj, love.timer.getTime())
 
 	tileEffect.load(cameraObj, boatObj)
+	floatingTileEffect.load()
 
 	lanternLightImage                        = love.graphics.newImage("assets/art/lantern_light.png")
 	local lanternXDiameter, lanternYDiameter = lanternLightImage:getDimensions()
@@ -92,6 +96,7 @@ function game.load()
 	local spriteBatchSize = math.max(tilemapObj.width, tilemapObj.height)
 	tilemapWallsSpriteBatch = love.graphics.newSpriteBatch(tilesets[5].image, spriteBatchSize * 4, "static")
 	tilemapWorldRows = {}
+	tilemapFloatingWorldRows = {}
 	for _, row in ipairs(tilemapObj.layers[LAND_LAYER_NAME].tiles) do
 		for _, tile in ipairs(row) do
 			if not tile.tileId then
@@ -131,6 +136,33 @@ function game.load()
 					tileEffect.setShader(tileObj, boatObj, lanternXRadius, lanternYRadius)
 				end
 				table.insert(worldObjects, tileObj)
+				goto continue
+			end
+
+			if tile.tilesetName == LAND_TILESET_NAME and tile.tileId == FLOATING_TILE_ID then
+				local tilemapWorldRow = tilemapFloatingWorldRows[tile.worldRowIdx]
+				if not tilemapWorldRow then
+					tilemapWorldRow = {
+						transform = love.math.newTransform(0, y),
+						drawComponent = {
+							shouldDraw = true,
+							spriteBatch = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static"),
+							quad = tileQuad,
+							zIndex = tile.zIndex,
+							setShader = nil,
+						},
+						isLanternRevealTile = false
+					}
+					tilemapWorldRow.drawComponent.setShader = function()
+						floatingTileEffect.setShader(tilemapWorldRow)
+					end
+					tilemapFloatingWorldRows[tile.worldRowIdx] = tilemapWorldRow
+				end
+				tilemapWorldRow.drawComponent.spriteBatch:add(
+					tileQuad,
+					x - width / 2,
+					-height + tilemapObj.tileHeight / 2
+				)
 				goto continue
 			end
 
@@ -268,10 +300,23 @@ function game.update(dt)
 
 	worldEntities = {}
 	for worldRowIdx = startWorldRowIdx, endWorldRowIdx do
-		table.insert(worldEntities, tilemapWorldRows[worldRowIdx])
+		local worldRow = tilemapWorldRows[worldRowIdx]
+		if worldRow then
+			table.insert(worldEntities, worldRow)
+		end
+		local floatingWorldRow = tilemapFloatingWorldRows[worldRowIdx]
+		if floatingWorldRow then
+			table.insert(worldEntities, floatingWorldRow)
+		end
 	end
 	for _, worldObject in ipairs(worldObjects) do
+		local zIndex = worldObject.drawComponent.zIndex
+		-- TODO: why does this cause buildings to stop rendering?
+		if not slurp_math.inRange(zIndex, startWorldRowIdx, endWorldRowIdx) then
+			goto continue
+		end
 		table.insert(worldEntities, worldObject)
+		::continue::
 	end
 
 	table.sort(
@@ -283,6 +328,7 @@ function game.update(dt)
 
 	waterEffect.update(cameraObj, boatObj)
 	tileEffect.update(cameraObj, boatObj)
+	floatingTileEffect.update(cameraObj)
 	lanternEffect.update(cameraObj)
 end
 
