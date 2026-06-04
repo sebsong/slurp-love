@@ -6,10 +6,10 @@ local SHADER_FILE_PATH = "assets/shader/water.glsl"
 
 local BASE_COLOR_IDX = 1
 local FOAM_OUTER_COLOR_IDX = 2
-local FOAM_OUTER_SIZE = 0.005;
+local FOAM_OUTER_SIZE = 0.004;
 local FOAM_INNER_COLOR_IDX = 3
-local FOAM_INNER_SIZE = 0.002;
-local FOAM_FILL_MULTIPLIER = 0.02;
+local FOAM_INNER_SIZE = 0.0005;
+local FOAM_FILL_MULTIPLIER = 0.015;
 local TRAIL_COLOR_IDX = 3
 
 local NUM_COLUMNS = 16;
