@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="128" height="128" tilewidth="16" tileheight="8" infinite="0" backgroundcolor="#423952" nextlayerid="14" nextobjectid="406">
+<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="128" height="128" tilewidth="16" tileheight="8" infinite="0" backgroundcolor="#423952" nextlayerid="15" nextobjectid="412">
  <editorsettings>
   <export target="map.lua" format="lua"/>
  </editorsettings>
@@ -158,7 +158,6 @@
   <object id="191" gid="13" x="304" y="728" width="64" height="64"/>
   <object id="192" gid="13" x="304" y="704" width="64" height="64"/>
   <object id="193" gid="13" x="304" y="680" width="64" height="64"/>
-  <object id="194" gid="13" x="304" y="656" width="64" height="64"/>
   <object id="198" gid="13" x="273.333" y="896" width="64" height="64"/>
   <object id="199" gid="13" x="272" y="872" width="64" height="64"/>
   <object id="200" gid="13" x="273.333" y="848" width="64" height="64"/>
@@ -226,7 +225,6 @@
   <object id="278" gid="13" x="224" y="976" width="64" height="64"/>
   <object id="280" gid="13" x="144" y="856" width="64" height="64"/>
   <object id="282" gid="13" x="144" y="568" width="64" height="64"/>
-  <object id="283" gid="13" x="272" y="656" width="64" height="64"/>
   <object id="288" gid="13" x="224" y="560" width="64" height="64"/>
   <object id="289" gid="13" x="248" y="560" width="64" height="64"/>
   <object id="290" gid="13" x="272" y="560" width="64" height="64"/>
@@ -236,7 +234,7 @@
   <object id="330" gid="13" x="48" y="896" width="64" height="64"/>
   <object id="331" gid="13" x="48" y="872" width="64" height="64"/>
   <object id="332" gid="13" x="48" y="848" width="64" height="64"/>
-  <object id="333" gid="14" x="176" y="568" width="64" height="64"/>
+  <object id="333" gid="14" x="304" y="656" width="64" height="64"/>
   <object id="338" gid="13" x="176" y="880" width="64" height="64"/>
   <object id="339" gid="13" x="176" y="832" width="64" height="64"/>
   <object id="340" gid="13" x="176" y="808" width="64" height="64"/>
@@ -276,42 +274,39 @@
   <object id="395" gid="14" x="512" y="624" width="64" height="64"/>
   <object id="396" gid="14" x="392" y="560" width="64" height="64"/>
   <object id="397" gid="14" x="392" y="536" width="64" height="64"/>
-  <object id="398" gid="14" x="144" y="536" width="64" height="64"/>
+  <object id="398" gid="14" x="272" y="656" width="64" height="64"/>
   <object id="399" gid="13" x="432" y="664" width="64" height="64"/>
   <object id="403" gid="13" x="464" y="624" width="64" height="64"/>
   <object id="404" gid="13" x="488" y="624" width="64" height="64"/>
+  <object id="408" gid="13" x="144" y="528" width="64" height="64"/>
  </objectgroup>
- <objectgroup id="2" name="objects_monday" visible="0">
+ <objectgroup id="2" name="objects_monday">
   <properties>
    <property name="zIndexOffset" type="int" value="3"/>
   </properties>
-  <object id="131" gid="5" x="968" y="968" width="16" height="16">
+  <object id="131" gid="10" x="968" y="968" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="132"/>
    </properties>
   </object>
-  <object id="132" gid="15" x="64" y="64" width="16" height="16"/>
-  <object id="334" gid="7" x="632" y="632" width="16" height="16">
-   <properties>
-    <property name="destination" type="object" value="334"/>
-   </properties>
-  </object>
+  <object id="132" gid="15" x="384" y="384" width="16" height="16"/>
  </objectgroup>
- <objectgroup id="10" name="objects_tuesday" visible="0">
+ <objectgroup id="14" name="objects_tuesday" visible="0">
   <properties>
    <property name="zIndexOffset" type="int" value="3"/>
   </properties>
-  <object id="135" gid="5" x="896" y="776" width="16" height="16">
+  <object id="406" gid="5" x="968" y="968" width="16" height="16">
    <properties>
-    <property name="destination" type="object" value="136"/>
+    <property name="destination" type="object" value="407"/>
    </properties>
   </object>
-  <object id="137" gid="6" x="976" y="640" width="16" height="16">
+  <object id="407" gid="15" x="64" y="64" width="16" height="16"/>
+  <object id="410" gid="6" x="736" y="304" width="16" height="16">
    <properties>
-    <property name="destination" type="object" value="138"/>
+    <property name="destination" type="object" value="411"/>
    </properties>
   </object>
-  <object id="138" gid="15" x="136" y="272" width="16" height="16"/>
+  <object id="411" gid="15" x="624" y="624" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="11" name="objects_wednesday" visible="0">
   <properties>

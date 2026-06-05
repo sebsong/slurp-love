@@ -60,6 +60,7 @@ local lanternYRadius
 
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
+	package.load()
 
 	cameraObj = camera.new()
 

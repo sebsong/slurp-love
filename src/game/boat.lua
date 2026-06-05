@@ -204,13 +204,12 @@ local function deliverPackage(self, mailboxes)
 		return false
 	end
 
-	local boatX, boatY = self.transform:transformPoint(0, 0)
+	local boatPosition = vec2.new(self.transform:transformPoint(0, 0))
 	local package = self.packages[#self.packages]
 
 	for _, mailbox in ipairs(mailboxes) do
-		local mailboxX, mailboxY = mailbox.transform:transformPoint(0, 0)
-		if slurp_math.distance({ x = boatX, y = boatY }, { x = mailboxX, y = mailboxY }) <= self.interactionRadius and
-			mailbox.id == package.destinationId then
+		local mailboxPosition = vec2.new(mailbox.transform:transformPoint(0, 0))
+		if boatPosition:distanceTo(mailboxPosition) <= self.interactionRadius and mailbox.id == package.destinationId then
 			table.remove(self.packages, #self.packages)
 			package:onDeliver(self)
 			package.isDelivered = true
@@ -226,6 +225,10 @@ local function getPosition(self)
 end
 
 local function onCollision(self, collidable)
+	if self.collidingWith:isEmpty() then
+		self.bumpSound:stop()
+		self.bumpSound:play()
+	end
 	for _, package in ipairs(self.packages) do
 		package:onCollision(self, collidable)
 	end
@@ -262,6 +265,8 @@ function boat.new(tilemap)
 		-- TODO: build the boat from a tile object
 		drawComponent = animation,
 		transform = transform,
+
+		bumpSound = love.audio.newSource("assets/sound/bump.ogg", "static"),
 
 		getPosition = getPosition,
 		onCollision = onCollision,

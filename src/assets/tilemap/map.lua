@@ -9,8 +9,8 @@ return {
   height = 128,
   tilewidth = 16,
   tileheight = 8,
-  nextlayerid = 14,
-  nextobjectid = 406,
+  nextlayerid = 15,
+  nextobjectid = 412,
   backgroundcolor = { 66, 57, 82 },
   properties = {},
   tilesets = {
@@ -354,20 +354,6 @@ return {
           shape = "rectangle",
           x = 304,
           y = 680,
-          width = 64,
-          height = 64,
-          rotation = 0,
-          gid = 13,
-          visible = true,
-          properties = {}
-        },
-        {
-          id = 194,
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 304,
-          y = 656,
           width = 64,
           height = 64,
           rotation = 0,
@@ -1314,20 +1300,6 @@ return {
           properties = {}
         },
         {
-          id = 283,
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 272,
-          y = 656,
-          width = 64,
-          height = 64,
-          rotation = 0,
-          gid = 13,
-          visible = true,
-          properties = {}
-        },
-        {
           id = 288,
           name = "",
           type = "",
@@ -1458,8 +1430,8 @@ return {
           name = "",
           type = "",
           shape = "rectangle",
-          x = 176,
-          y = 568,
+          x = 304,
+          y = 656,
           width = 64,
           height = 64,
           rotation = 0,
@@ -2018,8 +1990,8 @@ return {
           name = "",
           type = "",
           shape = "rectangle",
-          x = 144,
-          y = 536,
+          x = 272,
+          y = 656,
           width = 64,
           height = 64,
           rotation = 0,
@@ -2068,6 +2040,20 @@ return {
           gid = 13,
           visible = true,
           properties = {}
+        },
+        {
+          id = 408,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 144,
+          y = 528,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          gid = 13,
+          visible = true,
+          properties = {}
         }
       }
     },
@@ -2077,7 +2063,7 @@ return {
       id = 2,
       name = "objects_monday",
       class = "",
-      visible = false,
+      visible = true,
       opacity = 1,
       offsetx = 0,
       offsety = 0,
@@ -2097,7 +2083,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 5,
+          gid = 10,
           visible = true,
           properties = {
             ["destination"] = { id = 132 }
@@ -2108,37 +2094,21 @@ return {
           name = "",
           type = "",
           shape = "rectangle",
-          x = 64,
-          y = 64,
+          x = 384,
+          y = 384,
           width = 16,
           height = 16,
           rotation = 0,
           gid = 15,
           visible = true,
           properties = {}
-        },
-        {
-          id = 334,
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 632,
-          y = 632,
-          width = 16,
-          height = 16,
-          rotation = 0,
-          gid = 7,
-          visible = true,
-          properties = {
-            ["destination"] = { id = 334 }
-          }
         }
       }
     },
     {
       type = "objectgroup",
       draworder = "topdown",
-      id = 10,
+      id = 14,
       name = "objects_tuesday",
       class = "",
       visible = false,
@@ -2152,44 +2122,58 @@ return {
       },
       objects = {
         {
-          id = 135,
+          id = 406,
           name = "",
           type = "",
           shape = "rectangle",
-          x = 896,
-          y = 776,
+          x = 968,
+          y = 968,
           width = 16,
           height = 16,
           rotation = 0,
           gid = 5,
           visible = true,
           properties = {
-            ["destination"] = { id = 136 }
+            ["destination"] = { id = 407 }
           }
         },
         {
-          id = 137,
+          id = 407,
           name = "",
           type = "",
           shape = "rectangle",
-          x = 976,
-          y = 640,
+          x = 64,
+          y = 64,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 15,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 410,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 736,
+          y = 304,
           width = 16,
           height = 16,
           rotation = 0,
           gid = 6,
           visible = true,
           properties = {
-            ["destination"] = { id = 138 }
+            ["destination"] = { id = 411 }
           }
         },
         {
-          id = 138,
+          id = 411,
           name = "",
           type = "",
           shape = "rectangle",
-          x = 136,
-          y = 272,
+          x = 624,
+          y = 624,
           width = 16,
           height = 16,
           rotation = 0,

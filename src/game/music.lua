@@ -79,13 +79,13 @@ function music:deactivateDrums()
 end
 
 function music:update(boat, dt)
-	if (boat.speed > values.BOAT_MAX_SPEED_DEFAULT) then
-		self:activateDrumsHype()
-	elseif (boat.speed > values.BOAT_MAX_SPEED_DEFAULT / 2) then
-		self:activateDrumsMellow()
-	else
-		self:deactivateDrums()
-	end
+	-- if (boat.speed > values.BOAT_MAX_SPEED_DEFAULT) then
+	-- 	self:activateDrumsHype()
+	-- elseif (boat.speed > values.BOAT_MAX_SPEED_DEFAULT / 2) then
+	-- 	self:activateDrumsMellow()
+	-- else
+	-- 	self:deactivateDrums()
+	-- end
 
 	crossFadeUpdate(fadeInTargets, fadeOutTargets, dt)
 end

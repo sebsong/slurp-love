@@ -5,13 +5,11 @@ uniform float VERTICAL_SPEED;
 uniform float VERTICAL_AMPLITUDE;
 
 uniform bool isLanternActive;
-// uniform bool isLanternRevealTile;
 uniform bool inRange;
 
 uniform float time;
 uniform vec2 cameraCanvasDimensions;
 uniform vec2 tilePosition;
-// uniform vec2 lanternPosition;
 uniform vec4 quadViewport;
 
 #ifdef VERTEX

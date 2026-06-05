@@ -14,6 +14,12 @@ local FUEL_CELL = 5
 local GLASS = 6
 local PORTAL = 7
 
+local crack1Sound
+local crack2Sound
+local crack3Sound
+local crackSounds
+local shatterSound
+
 function meta:onPickup(boat)
 	local tileId = self.tileId
 	if tileId == BASIC then
@@ -29,6 +35,8 @@ function meta:onPickup(boat)
 		boat.gasDepletionRate = 0
 		self.gas = values.FUEL_CELL_INITIAL_GAS
 		self.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
+	elseif tileId == GLASS then
+		self.cracksRemaining = 3
 	end
 end
 
@@ -56,8 +64,14 @@ end
 
 function meta:onCollision(boat, _collidable)
 	if self.tileId == GLASS then
-		if boat.collidingWith:isEmpty() and boat.speed >= values.GLASS_BREAK_MIN_SPEED then
-			print("BROKEN")
+		if boat.collidingWith:isEmpty() then
+			self.cracksRemaining = self.cracksRemaining - 1
+			if self.cracksRemaining > 0 then
+				crackSounds[self.cracksRemaining]:play()
+			else
+				shatterSound:play()
+				print("BROKEN")
+			end
 		end
 	end
 end
@@ -71,6 +85,13 @@ function meta:update(dt)
 			end
 		end
 	end
+end
+
+function package.load()
+	crack1Sound = love.audio.newSource("assets/sound/crack_1.ogg", "static")
+	crack2Sound = love.audio.newSource("assets/sound/crack_2.ogg", "static")
+	crackSounds = { crack2Sound, crack1Sound }
+	shatterSound = love.audio.newSource("assets/sound/shatter.ogg", "static")
 end
 
 function package.toPackage(tileObject)
