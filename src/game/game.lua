@@ -221,6 +221,7 @@ end
 
 function game.unload()
 	music:unload()
+	love.audio.stop()
 end
 
 function game.endDay()

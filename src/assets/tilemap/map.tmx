@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="128" height="128" tilewidth="16" tileheight="8" infinite="0" backgroundcolor="#423952" nextlayerid="15" nextobjectid="412">
+<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="128" height="128" tilewidth="16" tileheight="8" infinite="0" backgroundcolor="#423952" nextlayerid="15" nextobjectid="416">
  <editorsettings>
   <export target="map.lua" format="lua"/>
  </editorsettings>
@@ -169,7 +169,6 @@
   <object id="208" gid="13" x="273.333" y="704" width="64" height="64"/>
   <object id="209" gid="13" x="273.333" y="680" width="64" height="64"/>
   <object id="211" gid="13" x="200" y="560" width="64" height="64"/>
-  <object id="212" gid="13" x="144" y="880" width="64" height="64"/>
   <object id="214" gid="13" x="144" y="832" width="64" height="64"/>
   <object id="215" gid="13" x="144" y="808" width="64" height="64"/>
   <object id="216" gid="13" x="145.333" y="784" width="64" height="64"/>
@@ -290,6 +289,12 @@
    </properties>
   </object>
   <object id="132" gid="15" x="384" y="384" width="16" height="16"/>
+  <object id="413" gid="6" x="784" y="320" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="415"/>
+   </properties>
+  </object>
+  <object id="415" gid="15" x="136" y="880" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="14" name="objects_tuesday" visible="0">
   <properties>
