@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="128" height="128" tilewidth="16" tileheight="8" infinite="0" backgroundcolor="#423952" nextlayerid="15" nextobjectid="416">
+<map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="128" height="128" tilewidth="16" tileheight="8" infinite="0" backgroundcolor="#423952" nextlayerid="15" nextobjectid="419">
  <editorsettings>
   <export target="map.lua" format="lua"/>
  </editorsettings>
@@ -295,6 +295,12 @@
    </properties>
   </object>
   <object id="415" gid="15" x="136" y="880" width="16" height="16"/>
+  <object id="416" gid="8" x="624" y="624" width="16" height="16">
+   <properties>
+    <property name="destination" type="object" value="418"/>
+   </properties>
+  </object>
+  <object id="418" gid="15" x="64" y="64" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="14" name="objects_tuesday" visible="0">
   <properties>

@@ -90,7 +90,7 @@ local function update(self, cameraObj, dt)
 		didAccelerate = true
 	end
 
-	if didMove then
+	if didMove or self.deceleration == 0 then
 		if not self.engineStartSound:isPlaying() and not self.engineLoopSound:isPlaying() then
 			-- TODO: have the engine start sound play first, also fade these sounds in and out
 			-- self.engineStartSound:play()
@@ -267,7 +267,7 @@ function boat.new(tilemap)
 	local engineStartSound = love.audio.newSource("assets/sound/engine_start.ogg", "static")
 	local engineLoopSound = love.audio.newSource("assets/sound/engine_loop.ogg", "static")
 	engineLoopSound:setLooping(true)
-	engineLoopSound:setVolume(0.4)
+	engineLoopSound:setVolume(0.25)
 
 	local transform = love.math.newTransform(0, 300)
 	local position = vec2.new(transform:transformPoint(0, 0))

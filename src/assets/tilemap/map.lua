@@ -10,7 +10,7 @@ return {
   tilewidth = 16,
   tileheight = 8,
   nextlayerid = 15,
-  nextobjectid = 416,
+  nextobjectid = 419,
   backgroundcolor = { 66, 57, 82 },
   properties = {},
   tilesets = {
@@ -2112,6 +2112,36 @@ return {
           shape = "rectangle",
           x = 136,
           y = 880,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 15,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 416,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 624,
+          y = 624,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 8,
+          visible = true,
+          properties = {
+            ["destination"] = { id = 418 }
+          }
+        },
+        {
+          id = 418,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 64,
+          y = 64,
           width = 16,
           height = 16,
           rotation = 0,

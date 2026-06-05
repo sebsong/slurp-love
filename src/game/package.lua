@@ -30,7 +30,7 @@ function meta:onPickup(boat)
 		boat.isLanternActive = true
 	elseif tileId == LEAD_FOOT then
 		boat.deceleration = 0
-		boat.gasDepletionRate = boat.gasDepletionRate / 2
+		-- boat.gasDepletionRate = boat.gasDepletionRate / 2
 	elseif tileId == FUEL_CELL then
 		boat.gasDepletionRate = 0
 		self.gas = values.FUEL_CELL_INITIAL_GAS
@@ -50,7 +50,7 @@ function meta:onDeliver(boat)
 		boat.isLanternActive = false
 	elseif tileId == LEAD_FOOT then
 		boat.deceleration = values.BOAT_DECELERATION_DEFAULT
-		boat.gasDepletionRate = boat.gasDepletionRate * 2
+		-- boat.gasDepletionRate = boat.gasDepletionRate * 2
 	elseif tileId == FUEL_CELL then
 		boat.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
 	elseif tileId == PORTAL then
@@ -89,9 +89,12 @@ end
 
 function package.load()
 	crack1Sound = love.audio.newSource("assets/sound/crack_1.ogg", "static")
+	crack1Sound:setVolume(0.5)
 	crack2Sound = love.audio.newSource("assets/sound/crack_2.ogg", "static")
+	crack2Sound:setVolume(0.5)
 	crackSounds = { crack2Sound, crack1Sound }
 	shatterSound = love.audio.newSource("assets/sound/shatter.ogg", "static")
+	shatterSound:setVolume(0.5)
 end
 
 function package.toPackage(tileObject)
