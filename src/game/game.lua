@@ -220,7 +220,6 @@ end
 
 function game.unload()
 	music:unload()
-	-- collision.clearAll()
 end
 
 function game.endDay()
@@ -311,12 +310,9 @@ function game.update(dt)
 	end
 	for _, worldObject in ipairs(worldObjects) do
 		local zIndex = worldObject.drawComponent.zIndex
-		-- TODO: why does this cause buildings to stop rendering?
-		if not slurp_math.inRange(zIndex, startWorldRowIdx, endWorldRowIdx) then
-			goto continue
+		if slurp_math.inRange(zIndex, startWorldRowIdx, endWorldRowIdx) then
+			table.insert(worldEntities, worldObject)
 		end
-		table.insert(worldEntities, worldObject)
-		::continue::
 	end
 
 	table.sort(
@@ -345,6 +341,7 @@ function game.draw()
 	for _, worldObject in ipairs(worldEntities) do
 		draw.draw(worldObject.drawComponent, worldObject.transform)
 	end
+	love.graphics.setShader()
 	love.graphics.draw(tilemapBuildingsSpriteBatch)
 
 	if boatObj.isLanternActive then
