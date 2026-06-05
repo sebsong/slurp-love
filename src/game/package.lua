@@ -25,7 +25,7 @@ function meta:onPickup(boat)
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
 		boat.maxSpeed = boat.maxSpeed * 2
-		boat.rotationSpeed = boat.rotationSpeed * 2
+		-- boat.rotationSpeed = boat.rotationSpeed * 2
 	elseif tileId == LANTERN then
 		boat.isLanternActive = true
 	elseif tileId == LEAD_FOOT then
@@ -45,7 +45,7 @@ function meta:onDeliver(boat)
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
 		boat.maxSpeed = boat.maxSpeed / 2
-		boat.rotationSpeed = boat.rotationSpeed / 2
+		-- boat.rotationSpeed = boat.rotationSpeed / 2
 	elseif tileId == LANTERN then
 		boat.isLanternActive = false
 	elseif tileId == LEAD_FOOT then

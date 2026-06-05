@@ -91,6 +91,12 @@ local function update(self, cameraObj, dt)
 	end
 
 	if didMove then
+		if not self.engineStartSound:isPlaying() and not self.engineLoopSound:isPlaying() then
+			-- TODO: have the engine start sound play first, also fade these sounds in and out
+			-- self.engineStartSound:play()
+			self.engineLoopSound:play()
+		end
+
 		local depletionAmount = self.gasDepletionRate * dt
 		if didAccelerate and didMoveForward then
 			depletionAmount = depletionAmount * values.GAS_ACCELERATION_DEPLETION_MULTIPLIER
@@ -101,6 +107,9 @@ local function update(self, cameraObj, dt)
 			print("OUT OF GAS")
 		end
 	else
+		self.engineStartSound:stop()
+		self.engineLoopSound:stop()
+
 		if self.speed > 0 then
 			self.speed = math.max(0, self.speed - self.deceleration * dt)
 		elseif self.speed < 0 then
@@ -254,6 +263,12 @@ function boat.new(tilemap)
 
 	boatEffect.load()
 
+	local bumpSound = love.audio.newSource("assets/sound/bump.ogg", "static")
+	local engineStartSound = love.audio.newSource("assets/sound/engine_start.ogg", "static")
+	local engineLoopSound = love.audio.newSource("assets/sound/engine_loop.ogg", "static")
+	engineLoopSound:setLooping(true)
+	engineLoopSound:setVolume(0.4)
+
 	local transform = love.math.newTransform(0, 300)
 	local position = vec2.new(transform:transformPoint(0, 0))
 	local trailPositions = {}
@@ -266,7 +281,9 @@ function boat.new(tilemap)
 		drawComponent = animation,
 		transform = transform,
 
-		bumpSound = love.audio.newSource("assets/sound/bump.ogg", "static"),
+		bumpSound = bumpSound,
+		engineStartSound = engineStartSound,
+		engineLoopSound = engineLoopSound,
 
 		getPosition = getPosition,
 		onCollision = onCollision,
