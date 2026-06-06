@@ -29,8 +29,7 @@ function meta:onPickup(boat)
 	elseif tileId == LANTERN then
 		boat.isLanternActive = true
 	elseif tileId == LEAD_FOOT then
-		boat.deceleration = 0
-		-- boat.gasDepletionRate = boat.gasDepletionRate / 2
+		boat.autoAccelerate = true
 	elseif tileId == FUEL_CELL then
 		boat.gasDepletionRate = 0
 		self.gas = values.FUEL_CELL_INITIAL_GAS
@@ -49,8 +48,7 @@ function meta:onDeliver(boat)
 	elseif tileId == LANTERN then
 		boat.isLanternActive = false
 	elseif tileId == LEAD_FOOT then
-		boat.deceleration = values.BOAT_DECELERATION_DEFAULT
-		-- boat.gasDepletionRate = boat.gasDepletionRate * 2
+		boat.autoAccelerate = false
 	elseif tileId == FUEL_CELL then
 		boat.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
 	elseif tileId == PORTAL then

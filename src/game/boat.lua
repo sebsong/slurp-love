@@ -69,12 +69,12 @@ end
 local function update(self, cameraObj, dt)
 	local didMove = false
 	local didMoveForward = false
-	if love.keyboard.isDown("up") or love.keyboard.isDown("w") then
+	if love.keyboard.isDown("up") or love.keyboard.isDown("w") or self.autoAccelerate then
 		self.speed = self.speed + self.acceleration * dt
 		didMove = true
 		didMoveForward = true
 	end
-	if love.keyboard.isDown("down") or love.keyboard.isDown("s") then
+	if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and not self.autoAccelerate then
 		local acceleration = self.deceleration
 		if self.speed > 0 then
 			acceleration = acceleration * 2
@@ -309,6 +309,7 @@ function boat.new(tilemap)
 		gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT,
 
 		isLanternActive = false,
+		autoAccelerate = false,
 		tilemap = tilemap,
 
 		update = update,
