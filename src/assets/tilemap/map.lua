@@ -10,7 +10,7 @@ return {
   tilewidth = 16,
   tileheight = 8,
   nextlayerid = 15,
-  nextobjectid = 419,
+  nextobjectid = 423,
   backgroundcolor = { 57, 43, 53 },
   properties = {},
   tilesets = {
@@ -2148,6 +2148,66 @@ return {
           gid = 15,
           visible = true,
           properties = {}
+        },
+        {
+          id = 419,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 712,
+          y = 712,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 7,
+          visible = true,
+          properties = {
+            ["destination"] = { id = 422 }
+          }
+        },
+        {
+          id = 420,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 816,
+          y = 712,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 11,
+          visible = true,
+          properties = {
+            ["destination"] = { id = 421 }
+          }
+        },
+        {
+          id = 421,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 816,
+          y = 816,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 15,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 422,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 712,
+          y = 816,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          gid = 15,
+          visible = true,
+          properties = {}
         }
       }
     },
@@ -2601,7 +2661,7 @@ return {
       id = 13,
       name = "objects_friday",
       class = "",
-      visible = true,
+      visible = false,
       opacity = 1,
       offsetx = 0,
       offsety = 0,

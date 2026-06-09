@@ -23,6 +23,10 @@ vec4 position(mat4 transform_projection, vec4 vertex_position) {
 #ifdef PIXEL
 vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords)
 {
+    if (isLanternActive && inRange) {
+        discard;
+    }
+
     vec2 texDimensions = textureSize(tex, 0);
     vec2 quadOffset = quadViewport.xy;
     vec2 quadDimensions = quadViewport.zw;
@@ -41,10 +45,6 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords)
         discard;
     } else if (normalizedTextureCoords.y == leftLineVal || normalizedTextureCoords.y == rightLineVal) {
         return FOAM_COLOR;
-    }
-
-    if (isLanternActive && inRange) {
-        discard;
     }
 
     vec4 texcolor = Texel(tex, texture_coords);
