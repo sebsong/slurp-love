@@ -69,8 +69,10 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
     texture_coords += cameraCoords;
     texture_coords = floor(texture_coords / pixelDimensions) * pixelDimensions;
 
+    float trailYOffset = sin(boatCoords.y * VERTICAL_FREQ + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE / 20;
     for (int i = 0; i < NUM_TRAIL_POSITIONS; i++) {
         vec2 trailCoords = boatTrailCoords[i];
+        trailCoords.y += trailYOffset;
 
         vec2 directionToPrev;
         if (i == 0) {

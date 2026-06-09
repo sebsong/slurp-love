@@ -7,7 +7,7 @@ local SHADER_FILE_PATH = "assets/shader/water.glsl"
 local BASE_COLOR_IDX = 1
 local FOAM_OUTER_COLOR_IDX = 2
 local FOAM_OUTER_SIZE = 0.004;
-local FOAM_INNER_COLOR_IDX = 3
+waterEffect.FOAM_INNER_COLOR_IDX = 3
 local FOAM_INNER_SIZE = 0.0005;
 local FOAM_FILL_MULTIPLIER = 0.015;
 local TRAIL_COLOR_IDX = 3
@@ -45,7 +45,7 @@ function waterEffect.load(camera, boat, newSeed)
 	shader:send("BASE_COLOR", color.palette[BASE_COLOR_IDX])
 	shader:send("FOAM_OUTER_COLOR", color.palette[FOAM_OUTER_COLOR_IDX])
 	shader:send("FOAM_OUTER_SIZE", FOAM_OUTER_SIZE)
-	shader:send("FOAM_INNER_COLOR", color.palette[FOAM_INNER_COLOR_IDX])
+	shader:send("FOAM_INNER_COLOR", color.palette[waterEffect.FOAM_INNER_COLOR_IDX])
 	shader:send("FOAM_INNER_SIZE", FOAM_INNER_SIZE)
 	shader:send("FOAM_FILL_MULTIPLIER", FOAM_FILL_MULTIPLIER)
 	shader:send("TRAIL_COLOR", color.palette[TRAIL_COLOR_IDX])

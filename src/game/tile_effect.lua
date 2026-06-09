@@ -2,6 +2,7 @@ local tileEffect = {}
 
 local vec2 = require("engine/vec2")
 local slurp_math = require("engine/math")
+local color = require("engine/color")
 local waterEffect = require("game/water_effect")
 
 local SHADER_FILE_PATH = "assets/shader/tile.glsl"
@@ -14,6 +15,7 @@ function tileEffect.load(camera, boat)
 	shader:send("VERTICAL_FREQ", waterEffect.VERTICAL_FREQ)
 	shader:send("VERTICAL_SPEED", waterEffect.VERTICAL_SPEED)
 	shader:send("VERTICAL_AMPLITUDE", waterEffect.VERTICAL_AMPLITUDE)
+	shader:send("FOAM_COLOR", color.palette[waterEffect.FOAM_INNER_COLOR_IDX])
 end
 
 function tileEffect.update(camera, boat)

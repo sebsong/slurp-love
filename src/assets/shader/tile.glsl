@@ -3,6 +3,7 @@
 uniform float VERTICAL_FREQ;
 uniform float VERTICAL_SPEED;
 uniform float VERTICAL_AMPLITUDE;
+uniform vec4 FOAM_COLOR;
 
 uniform bool isLanternActive;
 uniform bool inRange;
@@ -29,11 +30,17 @@ vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords)
 
     vec2 tileCoords = (tilePosition / cameraCanvasDimensions);
 
-    float waveValue = sin(tileCoords.y * VERTICAL_FREQ + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE;
+    float waveHeight = sin(tileCoords.y * VERTICAL_FREQ + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE;
 
-    if ((normalizedTextureCoords.y > 0.5 * normalizedTextureCoords.x + .65 + waveValue) ||
-            (normalizedTextureCoords.y > -0.5 * normalizedTextureCoords.x + 1.15 + waveValue)) {
+    float coordsPerYPixel = 1.0 / quadDimensions.y;
+    float leftLineVal = 0.5 * normalizedTextureCoords.x + .65 + waveHeight;
+    leftLineVal = floor(leftLineVal / coordsPerYPixel) * coordsPerYPixel + coordsPerYPixel / 2;
+    float rightLineVal = -0.5 * normalizedTextureCoords.x + 1.15 + waveHeight;
+    rightLineVal = floor(rightLineVal / coordsPerYPixel) * coordsPerYPixel + coordsPerYPixel / 2;
+    if (normalizedTextureCoords.y > leftLineVal || normalizedTextureCoords.y > rightLineVal) {
         discard;
+    } else if (normalizedTextureCoords.y == leftLineVal || normalizedTextureCoords.y == rightLineVal) {
+        return FOAM_COLOR;
     }
 
     if (isLanternActive && inRange) {
