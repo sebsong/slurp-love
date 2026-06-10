@@ -16,6 +16,7 @@ local waterEffect = require("game/water_effect")
 local tileEffect = require("game/tile_effect")
 local floatingTileEffect = require("game/floating_tile_effect")
 local lanternEffect = require("game/lantern_effect")
+local packageEffect = require("game/package_effect")
 
 local DAY_TO_LAYER_NAME = {
 	"objects_monday",
@@ -93,6 +94,8 @@ function game.load()
 	local lanternXDiameter, lanternYDiameter = lanternLightImage:getDimensions()
 	lanternXRadius, lanternYRadius           = lanternXDiameter / 2, lanternYDiameter / 2
 	lanternEffect.load()
+
+	packageEffect.load()
 
 	local spriteBatchSize = math.max(tilemapObj.width, tilemapObj.height)
 	tilemapWallsSpriteBatch = love.graphics.newSpriteBatch(tilesets[5].image, spriteBatchSize * 4, "static")
@@ -197,7 +200,11 @@ function game.load()
 	for _, object in ipairs(tilemapObj.layers[OBJECT_LAYER_NAME].objects) do
 		local tilesetName = object.tilesetName
 		if (tilesetName == PACKAGES_TILESET_NAME) then
-			table.insert(packages, package.toPackage(object))
+			local package = package.toPackage(object)
+			table.insert(packages, package)
+			object.drawComponent.setShader = function()
+				packageEffect.setShader(boatObj, packages, package)
+			end
 		elseif (tilesetName == MAILBOX_TILESET_NAME) then
 			table.insert(mailboxes, object)
 		end
@@ -328,6 +335,7 @@ function game.update(dt)
 	tileEffect.update(cameraObj, boatObj)
 	floatingTileEffect.update(cameraObj)
 	lanternEffect.update(cameraObj)
+	packageEffect.update()
 end
 
 function game.draw()
