@@ -220,22 +220,36 @@ local function pickupPackage(self, packages)
 	return false
 end
 
+local function getDeliveryMailbox(self, mailboxes)
+	local boatPosition = vec2.new(self.transform:transformPoint(0, 0))
+	local package = self.packages[#self.packages]
+
+	if not package then
+		return nil
+	end
+
+	for _, mailbox in ipairs(mailboxes) do
+		local mailboxPosition = vec2.new(mailbox.transform:transformPoint(0, 0))
+		if boatPosition:distanceTo(mailboxPosition) <= self.interactionRadius and mailbox.id == package.destinationId then
+			return mailbox
+		end
+	end
+
+	return nil
+end
+
 local function deliverPackage(self, mailboxes)
 	if #self.packages == 0 then
 		return false
 	end
 
-	local boatPosition = vec2.new(self.transform:transformPoint(0, 0))
 	local package = self.packages[#self.packages]
-
-	for _, mailbox in ipairs(mailboxes) do
-		local mailboxPosition = vec2.new(mailbox.transform:transformPoint(0, 0))
-		if boatPosition:distanceTo(mailboxPosition) <= self.interactionRadius and mailbox.id == package.destinationId then
-			table.remove(self.packages, #self.packages)
-			package:onDeliver(self)
-			package.isDelivered = true
-			return true
-		end
+	local deliveryMailbox = self:getDeliveryMailbox(mailboxes)
+	if deliveryMailbox then
+		table.remove(self.packages, #self.packages)
+		package:onDeliver(self)
+		package.isDelivered = true
+		return true
 	end
 
 	return false
@@ -328,6 +342,7 @@ function boat.new(tilemap)
 		indexOfPackage = indexOfPackage,
 		findPackageToPickup = findPackageToPickup,
 		pickupPackage = pickupPackage,
+		getDeliveryMailbox = getDeliveryMailbox,
 		deliverPackage = deliverPackage,
 		getWorldRowIdx = getWorldRowIdx
 	}

@@ -17,6 +17,7 @@ local tileEffect = require("game/tile_effect")
 local floatingTileEffect = require("game/floating_tile_effect")
 local lanternEffect = require("game/lantern_effect")
 local packageEffect = require("game/package_effect")
+local mailboxEffect = require("game/mailbox_effect")
 
 local DAY_TO_LAYER_NAME = {
 	"objects_monday",
@@ -96,6 +97,7 @@ function game.load()
 	lanternEffect.load()
 
 	packageEffect.load()
+	mailboxEffect.load()
 
 	local spriteBatchSize = math.max(tilemapObj.width, tilemapObj.height)
 	tilemapWallsSpriteBatch = love.graphics.newSpriteBatch(tilesets[5].image, spriteBatchSize * 4, "static")
@@ -207,6 +209,9 @@ function game.load()
 			end
 		elseif (tilesetName == MAILBOX_TILESET_NAME) then
 			table.insert(mailboxes, object)
+			object.drawComponent.setShader = function()
+				mailboxEffect.setShader(object)
+			end
 		end
 
 		table.insert(worldObjects, object)
@@ -336,6 +341,7 @@ function game.update(dt)
 	floatingTileEffect.update(cameraObj)
 	lanternEffect.update(cameraObj)
 	packageEffect.update(boatObj, packages)
+	mailboxEffect.update(boatObj, mailboxes)
 end
 
 function game.draw()

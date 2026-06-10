@@ -1,7 +1,7 @@
 local ui = {}
 
 local settings = require("engine/settings")
-local draw = require("engine/draw")
+local packageEffect = require("game/package_effect")
 
 local gasMeterWidth, gasMeterHeight = 16, 128
 
@@ -53,6 +53,7 @@ function ui.draw(self, packages)
 		packageUiLocation.x, packageUiLocation.y
 	)
 	local packageOffsetY = packageOffsetYInitial
+	packageEffect.setShader(nil)
 	for _, package in ipairs(packages) do
 		love.graphics.draw(
 			package.drawComponent.image,
@@ -62,6 +63,7 @@ function ui.draw(self, packages)
 		)
 		packageOffsetY = packageOffsetY + packageUiVerticalSpacing
 	end
+	love.graphics.setShader()
 end
 
 return ui
