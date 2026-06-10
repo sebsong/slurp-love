@@ -203,7 +203,7 @@ function game.load()
 			local package = package.toPackage(object)
 			table.insert(packages, package)
 			object.drawComponent.setShader = function()
-				packageEffect.setShader(boatObj, packages, package)
+				packageEffect.setShader(package)
 			end
 		elseif (tilesetName == MAILBOX_TILESET_NAME) then
 			table.insert(mailboxes, object)
@@ -335,7 +335,7 @@ function game.update(dt)
 	tileEffect.update(cameraObj, boatObj)
 	floatingTileEffect.update(cameraObj)
 	lanternEffect.update(cameraObj)
-	packageEffect.update()
+	packageEffect.update(boatObj, packages)
 end
 
 function game.draw()
