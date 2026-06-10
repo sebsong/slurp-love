@@ -241,7 +241,7 @@ end
 
 function game.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
-		if not boatObj:pickupPackages(packages) then
+		if not boatObj:pickupPackage(packages) then
 			local didDeliver = boatObj:deliverPackage(mailboxes)
 			if didDeliver then
 				evaluateWinCondition()

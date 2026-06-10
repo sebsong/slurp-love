@@ -188,24 +188,36 @@ local function indexOfPackage(self, package)
 	return nil
 end
 
-local function pickupPackages(self, packages)
-	local pickedUp = false
+local function findPackageToPickup(_boat, packages)
+	local closestPackage
+	local closestDistance
 	for _, package in ipairs(packages) do
-		if self:indexOfPackage(package) then
+		if _boat:indexOfPackage(package) then
 			goto continue
 		end
-		local boatPos = vec2.new(self.transform:transformPoint(0, 0))
+		local boatPos = vec2.new(_boat.transform:transformPoint(0, 0))
 		local packagePos = vec2.new(package.transform:transformPoint(0, 0))
-		if boatPos:distanceTo(packagePos) <= self.interactionRadius then
-			table.insert(self.packages, package)
-			pickedUp = true
-			package.drawComponent.shouldDraw = false
-			package:onPickup(self)
+		local packageDistance = boatPos:distanceTo(packagePos)
+		if packageDistance <= _boat.interactionRadius and (not closestDistance or packageDistance < closestDistance) then
+			closestPackage = package
+			closestDistance = packageDistance
 		end
 
 		::continue::
 	end
-	return pickedUp
+
+	return closestPackage
+end
+
+local function pickupPackage(self, packages)
+	local packageToPickup = findPackageToPickup(self, packages)
+	if packageToPickup then
+		table.insert(self.packages, packageToPickup)
+		packageToPickup.drawComponent.shouldDraw = false
+		packageToPickup:onPickup(self)
+		return true
+	end
+	return false
 end
 
 local function deliverPackage(self, mailboxes)
@@ -314,7 +326,7 @@ function boat.new(tilemap)
 
 		update = update,
 		indexOfPackage = indexOfPackage,
-		pickupPackages = pickupPackages,
+		pickupPackage = pickupPackage,
 		deliverPackage = deliverPackage,
 		getWorldRowIdx = getWorldRowIdx
 	}
