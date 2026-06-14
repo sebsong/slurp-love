@@ -38,15 +38,18 @@ function ui.load(self)
 	)
 end
 
-function ui.draw(self, packages)
+function ui.draw(self, gasRemaining, packages)
 	love.graphics.setShader()
 
 	local _, _, gasMeterWidth, gasMeterHeight = ui.gasMeterQuad:getViewport()
 	love.graphics.draw(ui.image, ui.gasMeterQuad, padding, settings.canvasPixelHeight - gasMeterHeight - padding)
 	love.graphics.setShader(ui.gasMeterShader)
-	love.graphics.draw(ui.image, ui.gasMeterProgressQuad, padding, settings.canvasPixelHeight - gasMeterHeight - padding)
+	local gasMeterY = settings.canvasPixelHeight - gasMeterHeight - padding
+	love.graphics.draw(ui.image, ui.gasMeterProgressQuad, padding, gasMeterY)
 	love.graphics.setShader()
+	love.graphics.print(math.floor(gasRemaining), padding, gasMeterY - padding * 2)
 
+	love.graphics.setShader()
 	love.graphics.draw(
 		ui.image,
 		ui.packageContainerQuad,

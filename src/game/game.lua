@@ -368,7 +368,7 @@ function game.draw()
 
 	love.graphics.pop()
 
-	ui:draw(boatObj.packages)
+	ui:draw(boatObj.gas, boatObj.packages)
 end
 
 function game.debugTeleportBoatToCanvasPoint(x, y)
