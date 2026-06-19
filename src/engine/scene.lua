@@ -63,13 +63,17 @@ local function unload(_scene)
 	_scene.shouldUnload = false
 end
 
-local function shouldSkip(_scene)
+local function shouldSkipUpdate(_scene)
 	return not _scene.isActive or _scene.isPaused
+end
+
+local function shouldSkipDraw(_scene)
+	return not _scene.isActive
 end
 
 function scene.keypressed(key, scancode, isRepeat)
 	for _, _scene in ipairs(scenesList) do
-		if shouldSkip(_scene) then
+		if shouldSkipUpdate(_scene) then
 			goto continue
 		end
 
@@ -83,7 +87,7 @@ end
 
 function scene.mousepressed(x, y, button, isTouch, presses)
 	for _, _scene in ipairs(scenesList) do
-		if shouldSkip(_scene) then
+		if shouldSkipUpdate(_scene) then
 			goto continue
 		end
 
@@ -97,7 +101,7 @@ end
 
 function scene.mousemoved(x, y, dx, dy, isTouch)
 	for _, _scene in ipairs(scenesList) do
-		if shouldSkip(_scene) then
+		if shouldSkipUpdate(_scene) then
 			goto continue
 		end
 
@@ -111,7 +115,7 @@ end
 
 function scene.wheelmoved(x, y)
 	for _, _scene in ipairs(scenesList) do
-		if shouldSkip(_scene) then
+		if shouldSkipUpdate(_scene) then
 			goto continue
 		end
 
@@ -132,7 +136,7 @@ function scene.update(dt)
 			load(_scene)
 		end
 
-		if shouldSkip(_scene) then
+		if shouldSkipUpdate(_scene) then
 			goto continue
 		end
 
@@ -144,7 +148,7 @@ end
 
 function scene.draw()
 	for _, _scene in ipairs(scenesList) do
-		if shouldSkip(_scene) then
+		if shouldSkipDraw(_scene) then
 			goto continue
 		end
 

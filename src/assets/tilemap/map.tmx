@@ -305,12 +305,12 @@
     <property name="destination" type="object" value="422"/>
    </properties>
   </object>
-  <object id="420" gid="11" x="816" y="712" width="16" height="16">
+  <object id="420" gid="11" x="624" y="624" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="421"/>
    </properties>
   </object>
-  <object id="421" gid="15" x="816" y="816" width="16" height="16"/>
+  <object id="421" gid="15" x="248" y="240" width="16" height="16"/>
   <object id="422" gid="15" x="680" y="304" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="14" name="objects_tuesday" visible="0">

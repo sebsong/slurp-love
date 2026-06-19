@@ -4,9 +4,11 @@ local scene = require("engine/scene")
 
 local font = require("game/font")
 
+local global = require("game/global")
 local mainMenu = require("game/main_menu")
 local dayTracker = require("game/day_tracker")
 local game = require("game/game")
+local pauseMenu = require("game/pause_menu")
 local debug = require("game/debug")
 
 function love.load()
@@ -15,11 +17,14 @@ function love.load()
 	draw.load()
 	font.load()
 
+	scene.register("global", global)
 	scene.register("mainMenu", mainMenu)
 	scene.register("dayTracker", dayTracker)
 	scene.register("game", game)
+	scene.register("pauseMenu", pauseMenu)
 	scene.register("debug", debug)
 
+	scene.start(scene.scenes.global)
 	scene.start(scene.scenes.debug)
 	-- scene.start(scene.scenes.mainMenu)
 	scene.start(scene.scenes.game)

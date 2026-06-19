@@ -22,10 +22,6 @@ function debug.unload()
 end
 
 function debug.keypressed(key, scancode, isRepeat)
-	if love.keyboard.isDown("escape") then
-		love.event.quit()
-	end
-
 	if key == "tab" and not isRepeat then
 		if scene.scenes.mainMenu.isActive then
 			scene.transition(scene.scenes.mainMenu, scene.scenes.dayTracker)
@@ -36,7 +32,7 @@ function debug.keypressed(key, scancode, isRepeat)
 end
 
 function debug.mousepressed(x, y, button, isTouch, presses)
-	if button == 1 and scene.scenes.game.isActive then
+	if button == 1 and scene.scenes.game.isActive and not scene.scenes.game.isPaused then
 		scene.scenes.game.debugTeleportBoatToCanvasPoint(x, y)
 	end
 end
