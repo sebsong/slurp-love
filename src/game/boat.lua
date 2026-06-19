@@ -30,7 +30,7 @@ local function updateNeighborTiles(self)
 			local tileRow = self.tilemap.layers["base"].tiles[neighborRowIdx]
 			local tile = tileRow and tileRow[neighborColIdx]
 			if tile and tile.tileId then
-				if self.isLanternActive and tile.tileId == 3 then
+				if self.isLanternActive and tile.tileId == 2 then
 					goto continue
 				end
 				table.insert(self.neighborTiles, tile)
