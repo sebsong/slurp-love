@@ -25,7 +25,6 @@ function meta:onPickup(boat)
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
 		boat.maxSpeed = boat.maxSpeed * 2
-		-- boat.rotationSpeed = boat.rotationSpeed * 2
 	elseif tileId == LANTERN then
 		boat.isLanternActive = true
 	elseif tileId == LEAD_FOOT then
@@ -36,6 +35,10 @@ function meta:onPickup(boat)
 		self.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
 	elseif tileId == GLASS then
 		self.cracksRemaining = 3
+	end
+
+	if boat:indexOfPackage(PORTAL) and tileId ~= PORTAL and not boat.portalDestination then
+		boat.portalDestination = vec2.new(boat.transform:transformPoint(0, 0))
 	end
 end
 
@@ -56,8 +59,6 @@ function meta:onDeliver(boat)
 			boat.transform:setTransformation(boat.portalDestination.x, boat.portalDestination.y, boat.rotation)
 		end
 	end
-
-	boat.portalDestination = vec2.new(boat.transform:transformPoint(0, 0))
 end
 
 function meta:onCollision(boat, _collidable)
@@ -96,8 +97,8 @@ function package.load()
 end
 
 function package.toPackage(tileObject)
-	tileObject.destinationId = tileObject.properties.destination.id
 	setmetatable(tileObject, meta)
+	tileObject.destinationId = tileObject.properties.destination.id
 	tileObject.isDelivered = false
 	return tileObject
 end

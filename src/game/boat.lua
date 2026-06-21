@@ -178,10 +178,10 @@ local function draw(animation, transform)
 	love.graphics.pop()
 end
 
-local function indexOfPackage(self, package)
+local function indexOfPackage(self, packageTileId)
 	-- TODO: see if there's a lua Set or a better way to check this
 	for i, boatPackage in ipairs(self.packages) do
-		if package == boatPackage then -- TODO: is this comparison expensive?
+		if boatPackage.tileId == packageTileId then -- TODO: is this comparison expensive?
 			return i
 		end
 	end
@@ -192,7 +192,7 @@ local function findPackageToPickup(self, packages)
 	local closestPackage
 	local closestDistance
 	for _, package in ipairs(packages) do
-		if self:indexOfPackage(package) then
+		if self:indexOfPackage(package.tileId) then
 			goto continue
 		end
 		local boatPos = vec2.new(self.transform:transformPoint(0, 0))
