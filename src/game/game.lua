@@ -215,6 +215,16 @@ function game.load()
 		table.insert(worldObjects, object)
 	end
 
+	for _, mailbox in ipairs(mailboxes) do
+		for _, package in ipairs(packages) do
+			if mailbox.id == package.destinationId then
+				mailbox.package = package
+				package.mailbox = mailbox
+				break
+			end
+		end
+	end
+
 	tilemapBuildingsSpriteBatch = love.graphics.newSpriteBatch(tilesets[3].image, 200, "static")
 	for _, object in ipairs(tilemapObj.layers[BUILDINGS_LAYER_NAME].objects) do
 		local x, y = object.transform:transformPoint(0, 0)
@@ -251,7 +261,7 @@ end
 
 function game.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
-		if not boatObj:pickupPackage(packages) then
+		if not boatObj:pickupPackage(packages, mailboxes) then
 			local didDeliver = boatObj:deliverPackage(mailboxes)
 			if didDeliver then
 				evaluateWinCondition()

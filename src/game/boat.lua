@@ -209,12 +209,12 @@ local function findPackageToPickup(self, packages)
 	return closestPackage
 end
 
-local function pickupPackage(self, packages)
+local function pickupPackage(self, packages, mailboxes)
 	local packageToPickup = self:findPackageToPickup(packages)
 	if packageToPickup then
 		table.insert(self.packages, packageToPickup)
 		packageToPickup.drawComponent.shouldDraw = false
-		packageToPickup:onPickup(self)
+		packageToPickup:onPickup(self, packages, mailboxes)
 		return true
 	end
 	return false

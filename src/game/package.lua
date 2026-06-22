@@ -20,7 +20,7 @@ local crack3Sound
 local crackSounds
 local shatterSound
 
-function meta:onPickup(boat)
+function meta:onPickup(boat, packages, mailboxes)
 	local tileId = self.tileId
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
@@ -35,6 +35,14 @@ function meta:onPickup(boat)
 		self.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
 	elseif tileId == GLASS then
 		self.cracksRemaining = 3
+	elseif tileId == PORTAL then
+		for _, package in ipairs(packages) do
+			package.transform:setTransformation(package.mailbox.transform:transformPoint(0, 0))
+		end
+
+		for _, mailbox in ipairs(mailboxes) do
+			mailbox.transform:setTransformation(mailbox.package.transform:transformPoint(0, 0))
+		end
 	end
 
 	if boat:indexOfPackage(PORTAL) and tileId ~= PORTAL and not boat.portalDestination then
