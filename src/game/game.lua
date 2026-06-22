@@ -131,6 +131,7 @@ function game.load()
 						xOffset = -width / 2,
 						yOffset = -height + tilemapObj.tileHeight / 2,
 						zIndex = tile.zIndex,
+						zIndexOffset = tile.zIndexOffset,
 						setShader = nil
 					},
 					isFloating = true
@@ -152,6 +153,7 @@ function game.load()
 			-- 				spriteBatch = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static"),
 			-- 				quad = tileQuad,
 			-- 				zIndex = tile.zIndex,
+			-- 				zIndexOffset = tile.zIndexOffset,
 			-- 				setShader = nil,
 			-- 			},
 			-- 			isFloating = true
@@ -179,6 +181,7 @@ function game.load()
 						spriteBatch = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static"),
 						quad = tileQuad,
 						zIndex = tile.zIndex,
+						zIndexOffset = tile.zIndexOffset,
 						setShader = nil,
 					},
 					isFloating = false
@@ -317,7 +320,7 @@ function game.update(dt)
 	endRowIdx = math.ceil(endRowIdx)
 
 	local startWorldRowIdx = tilemap.getWorldRowIdx(startColIdx, startRowIdx)
-	local endWorldRowIdx = tilemap.getWorldRowIdx(endColIdx, endRowIdx) + 2
+	local endWorldRowIdx = tilemap.getWorldRowIdx(endColIdx, endRowIdx) + 4
 
 	worldEntities = {}
 	for worldRowIdx = startWorldRowIdx, endWorldRowIdx do
@@ -331,7 +334,7 @@ function game.update(dt)
 		end
 	end
 	for _, worldObject in ipairs(worldObjects) do
-		local zIndex = worldObject.drawComponent.zIndex
+		local zIndex = worldObject.drawComponent.zIndex + worldObject.drawComponent.zIndexOffset
 		if slurp_math.inRange(zIndex, startWorldRowIdx, endWorldRowIdx) then
 			table.insert(worldEntities, worldObject)
 		end
@@ -340,7 +343,9 @@ function game.update(dt)
 	table.sort(
 		worldEntities,
 		function(entity, otherEntity)
-			return entity.drawComponent.zIndex < otherEntity.drawComponent.zIndex
+			local entityZIndex = entity.drawComponent.zIndex + entity.drawComponent.zIndexOffset
+			local otherEntityZIndex = otherEntity.drawComponent.zIndex + otherEntity.drawComponent.zIndexOffset
+			return entityZIndex < otherEntityZIndex
 		end
 	)
 

@@ -161,7 +161,8 @@ local function insertTile(tiles, gid, tilesetInfos, rowIdx, colIdx, zIndexOffset
 		-- TODO: initialize collision info somewhere else?
 		position = vec2.new(colIdx, rowIdx),
 		worldRowIdx = worldRowIdx,
-		zIndex = worldRowIdx + zIndexOffset,
+		zIndex = worldRowIdx,
+		zIndexOffset = zIndexOffset,
 		collider = { width = 1, height = 1 },
 		collidingWith = set.new()
 	}
@@ -241,7 +242,8 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 						quad = quad,
 						xOffset = -objWidth / 2,
 						yOffset = -objHeight + tileHeight / 2,
-						zIndex = worldRowIdx + zIndexOffset
+						zIndex = worldRowIdx,
+						zIndexOffset = zIndexOffset
 					},
 					transform = love.math.newTransform(worldX, worldY),
 
@@ -253,7 +255,7 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 			end
 
 			table.sort(objects, function(o1, o2)
-				return o1.drawComponent.zIndex < o2.drawComponent.zIndex
+				return o1.drawComponent.zIndex + o1.drawComponent.zIndexOffset < o2.drawComponent.zIndex + o2.drawComponent.zIndexOffset
 			end)
 
 			layers[layer.name] = {

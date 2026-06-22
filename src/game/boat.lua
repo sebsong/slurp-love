@@ -214,7 +214,7 @@ local function pickupPackage(self, packages, mailboxes)
 	if packageToPickup then
 		table.insert(self.packages, packageToPickup)
 		packageToPickup.drawComponent.shouldDraw = false
-		packageToPickup:onPickup(self, packages, mailboxes)
+		packageToPickup:onPickup(self, mailboxes)
 		return true
 	end
 	return false
@@ -247,7 +247,7 @@ local function deliverPackage(self, mailboxes)
 	local deliveryMailbox = self:getDeliveryMailbox(mailboxes)
 	if deliveryMailbox then
 		table.remove(self.packages, #self.packages)
-		package:onDeliver(self)
+		package:onDeliver(self, mailboxes)
 		package.isDelivered = true
 		return true
 	end
@@ -286,6 +286,7 @@ function boat.new(tilemap)
 	local animation = animation.new(boatImage, NUM_BOAT_ANGLES, -width / 2, -height + (8 / 2))
 	animation.draw = draw
 	animation.zIndex = 0
+	animation.zIndexOffset = 0
 
 	boatEffect.load()
 

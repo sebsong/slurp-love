@@ -4,6 +4,7 @@ meta.__index = meta
 
 local values = require("game/values")
 local vec2 = require("engine/vec2")
+local tilemap = require("engine/tilemap")
 
 -- package types
 local BASIC = 1
@@ -16,11 +17,24 @@ local PORTAL = 7
 
 local crack1Sound
 local crack2Sound
-local crack3Sound
 local crackSounds
 local shatterSound
 
-function meta:onPickup(boat, packages, mailboxes)
+local function swapMailboxesAndPackages(tilemapObj, mailboxes)
+	for _, mailbox in ipairs(mailboxes) do
+		local mailboxX, mailboxY = mailbox.transform:transformPoint(0, 0)
+
+		mailbox.transform:setTransformation(mailbox.package.transform:transformPoint(0, 0))
+		local mailboxColIdx, mailboxRowIdx = tilemapObj.worldToTilemapIndexTransform:transformPoint(mailbox.transform:transformPoint(0, 0))
+		mailbox.drawComponent.zIndex = tilemap.getWorldRowIdx(mailboxColIdx, mailboxRowIdx)
+
+		mailbox.package.transform:setTransformation(mailboxX, mailboxY)
+		local packageColIdx, packageRowIdx = tilemapObj.worldToTilemapIndexTransform:transformPoint(mailbox.package.transform:transformPoint(0, 0))
+		mailbox.package.drawComponent.zIndex = tilemap.getWorldRowIdx(packageColIdx, packageRowIdx)
+	end
+end
+
+function meta:onPickup(boat, mailboxes)
 	local tileId = self.tileId
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
@@ -36,21 +50,11 @@ function meta:onPickup(boat, packages, mailboxes)
 	elseif tileId == GLASS then
 		self.cracksRemaining = 3
 	elseif tileId == PORTAL then
-		for _, package in ipairs(packages) do
-			package.transform:setTransformation(package.mailbox.transform:transformPoint(0, 0))
-		end
-
-		for _, mailbox in ipairs(mailboxes) do
-			mailbox.transform:setTransformation(mailbox.package.transform:transformPoint(0, 0))
-		end
-	end
-
-	if boat:indexOfPackage(PORTAL) and tileId ~= PORTAL and not boat.portalDestination then
-		boat.portalDestination = vec2.new(boat.transform:transformPoint(0, 0))
+		swapMailboxesAndPackages(boat.tilemap, mailboxes)
 	end
 end
 
-function meta:onDeliver(boat)
+function meta:onDeliver(boat, mailboxes)
 	local tileId = self.tileId
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
@@ -63,9 +67,7 @@ function meta:onDeliver(boat)
 	elseif tileId == FUEL_CELL then
 		boat.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
 	elseif tileId == PORTAL then
-		if boat.portalDestination then
-			boat.transform:setTransformation(boat.portalDestination.x, boat.portalDestination.y, boat.rotation)
-		end
+		swapMailboxesAndPackages(boat.tilemap, mailboxes)
 	end
 end
 
