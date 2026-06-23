@@ -16,11 +16,11 @@
             "scaleInDock": 1
         },
         "map.tmx": {
-            "scale": 0.75,
+            "scale": 1,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1077.9999999999998,
-                "y": 357.99999999999994
+                "x": 942.5,
+                "y": 455.5
             }
         },
         "map_iso.tmx": {

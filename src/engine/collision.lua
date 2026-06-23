@@ -32,7 +32,12 @@ local set = require("engine/set")
 -- 	collidables = set.new()
 -- end
 
-function collision.hitTest(x, y, collider, transform)
+function collision.hitTest(x, y, collider, transform, centered)
+	if centered then
+		x = x + collider.width / 2
+		y = y + collider.height / 2
+	end
+
 	local colliderX, colliderY = transform:transformPoint(0, 0)
 	local xMin, xMax = colliderX, colliderX + collider.width
 	local yMin, yMax = colliderY, colliderY + collider.height

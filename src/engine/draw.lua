@@ -35,31 +35,39 @@ function draw.draw(drawComponent, transform)
 		love.graphics.setShader()
 	end
 
+	local xOffset = drawComponent.xOffset or 0
+	local yOffset = drawComponent.yOffset or 0
+	if drawComponent.centered and drawComponent.image then
+		local width, height = drawComponent.image:getDimensions()
+		xOffset = xOffset - width / 2
+		yOffset = yOffset - height / 2
+	end
+
 	if drawComponent.spriteBatch then
 		love.graphics.draw(
 			drawComponent.spriteBatch,
-			drawComponent.xOffset,
-			drawComponent.yOffset
+			xOffset,
+			yOffset
 		)
 	elseif drawComponent.quad then
 		love.graphics.draw(
 			drawComponent.image,
 			drawComponent.quad,
-			drawComponent.xOffset,
-			drawComponent.yOffset
+			xOffset,
+			yOffset
 		)
 	elseif drawComponent.quads then
 		love.graphics.draw(
 			drawComponent.image,
 			quad,
-			drawComponent.xOffset,
-			drawComponent.yOffset
+			xOffset,
+			yOffset
 		)
 	else
 		love.graphics.draw(
 			drawComponent.image,
-			drawComponent.xOffset,
-			drawComponent.yOffset
+			xOffset,
+			yOffset
 		)
 	end
 	love.graphics.pop()

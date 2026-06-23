@@ -9,11 +9,11 @@ function animation.new(image, numFrames, xOffset, yOffset)
 	end
 
 	return {
+		shouldDraw = true,
 		image = image,
 		quads = quads,
 		xOffset = xOffset,
 		yOffset = yOffset,
-		shouldDraw = true,
 		currentFrame = 1
 	}
 end
