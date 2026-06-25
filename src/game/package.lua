@@ -34,6 +34,13 @@ local function swapMailboxesAndPackages(tilemapObj, mailboxes)
 	end
 end
 
+local function reversePackageOrder(boat)
+	local numPackages = #boat.packages
+	for i = 1, math.floor(numPackages / 2) do
+		boat.packages[i], boat.packages[numPackages + 1 - i] = boat.packages[numPackages + 1 - i], boat.packages[i]
+	end
+end
+
 function meta:onPickup(boat, mailboxes)
 	local tileId = self.tileId
 	if tileId == BASIC then
@@ -50,7 +57,8 @@ function meta:onPickup(boat, mailboxes)
 	elseif tileId == GLASS then
 		self.cracksRemaining = 3
 	elseif tileId == PORTAL then
-		swapMailboxesAndPackages(boat.tilemap, mailboxes)
+		reversePackageOrder(boat)
+		-- swapMailboxesAndPackages(boat.tilemap, mailboxes)
 	end
 end
 
@@ -67,7 +75,8 @@ function meta:onDeliver(boat, mailboxes)
 	elseif tileId == FUEL_CELL then
 		boat.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
 	elseif tileId == PORTAL then
-		swapMailboxesAndPackages(boat.tilemap, mailboxes)
+		-- swapMailboxesAndPackages(boat.tilemap, mailboxes)
+		reversePackageOrder(boat)
 	end
 end
 

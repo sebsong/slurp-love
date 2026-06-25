@@ -270,7 +270,6 @@
   <object id="399" gid="13" x="432" y="664" width="64" height="64"/>
   <object id="403" gid="13" x="464" y="624" width="64" height="64"/>
   <object id="404" gid="13" x="488" y="624" width="64" height="64"/>
-  <object id="408" gid="13" x="144" y="528" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="2" name="objects_monday">
   <properties>
@@ -288,18 +287,18 @@
    </properties>
   </object>
   <object id="415" gid="15" x="136" y="880" width="16" height="16"/>
-  <object id="416" gid="8" x="80" y="80" width="16" height="16">
+  <object id="416" gid="8" x="392" y="392" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="418"/>
    </properties>
   </object>
   <object id="418" gid="15" x="680" y="304" width="16" height="16"/>
-  <object id="419" gid="7" x="336" y="176" width="16" height="16">
+  <object id="419" gid="7" x="136" y="520" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="422"/>
    </properties>
   </object>
-  <object id="420" gid="11" x="624" y="624" width="16" height="16">
+  <object id="420" gid="11" x="80" y="80" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="421"/>
    </properties>
