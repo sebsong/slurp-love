@@ -61,10 +61,14 @@ local lanternYRadius
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
 	package.load()
+	ui:load()
+	music:load()
 
 	cameraObj = camera.new()
 
-	OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[scene.scenes.dayTracker.currentDay] or OBJECT_LAYER_NAME
+	local currentDayValue = scene.scenes.dayTracker.currentDay
+
+	OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[currentDayValue] or OBJECT_LAYER_NAME
 
 	local tilesets = {
 		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
@@ -80,7 +84,7 @@ function game.load()
 	packages = {}
 	mailboxes = {}
 
-	boatObj = boat.new(tilemapObj)
+	boatObj = boat.new(tilemapObj, currentDayValue)
 	table.insert(worldObjects, boatObj)
 
 	waterImage = love.graphics.newImage("assets/art/water.png")
@@ -237,9 +241,6 @@ function game.load()
 			y + object.drawComponent.yOffset
 		)
 	end
-
-	ui:load()
-	music:load()
 end
 
 function game.unload()
@@ -380,7 +381,7 @@ function game.draw()
 
 	love.graphics.pop()
 
-	ui:draw(boatObj.gas, boatObj.packages)
+	ui:draw(boatObj.gasRemaining, boatObj.packages)
 end
 
 function game.debugTeleportBoatToCanvasPoint(x, y)

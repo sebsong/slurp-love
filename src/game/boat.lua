@@ -101,9 +101,9 @@ local function update(self, cameraObj, dt)
 		if didAccelerate and didMoveForward then
 			depletionAmount = depletionAmount * values.GAS_ACCELERATION_DEPLETION_MULTIPLIER
 		end
-		self.gas = self.gas - depletionAmount
-		ui.gasMeterShader:send("progress", self.gas / values.INITIAL_GAS)
-		if self.gas <= 0 then
+		self.gasRemaining = self.gasRemaining - depletionAmount
+		ui.gasMeterShader:send("progress", self.gasRemaining / values.FULL_GAS_AMOUNT)
+		if self.gasRemaining <= 0 then
 			print("OUT OF GAS")
 		end
 	else
@@ -269,7 +269,7 @@ local function onCollision(self, collidable)
 	end
 end
 
-function boat.new(tilemap)
+function boat.new(tilemap, dayValue)
 	local boatImage = love.graphics.newImage("assets/art/boat.png")
 	local boatQuads = {}
 	for i = 0, NUM_BOAT_ANGLES - 1 do
@@ -303,6 +303,9 @@ function boat.new(tilemap)
 		table.insert(trailPositions, position)
 	end
 
+	local initialGasAmount = values.DAY_TO_GAS_AMOUNT[dayValue] or values.FULL_GAS_AMOUNT
+	ui.gasMeterShader:send("progress", initialGasAmount / values.FULL_GAS_AMOUNT)
+
 	return {
 		-- TODO: build the boat from a tile object
 		drawComponent = animation,
@@ -332,7 +335,7 @@ function boat.new(tilemap)
 		rotationSpeed = values.BOAT_ROTATION_SPEED_DEFAULT,
 		interactionRadius = values.BOAT_INTERACTION_RADIUS,
 		packages = {},
-		gas = values.INITIAL_GAS,
+		gasRemaining = initialGasAmount,
 		gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT,
 
 		isLanternActive = false,
