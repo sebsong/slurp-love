@@ -147,55 +147,26 @@ function game.load()
 				goto continue
 			end
 
-			-- if tile.tilesetName == LAND_TILESET_NAME and tile.tileId == FLOATING_TILE_ID then
-			-- 	local tilemapWorldRow = tilemapFloatingWorldRows[tile.worldRowIdx]
-			-- 	if not tilemapWorldRow then
-			-- 		tilemapWorldRow = {
-			-- 			transform = love.math.newTransform(0, y),
-			-- 			drawComponent = {
-			-- 				shouldDraw = true,
-			-- 				spriteBatch = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static"),
-			-- 				quad = tileQuad,
-			-- 				zIndex = tile.zIndex,
-			-- 				zIndexOffset = tile.zIndexOffset,
-			-- 				setShader = nil,
-			-- 			},
-			-- 			isFloating = true
-			-- 		}
-			-- 		tilemapWorldRow.drawComponent.setShader = function()
-			-- 			tileEffect.setShader(tilemapWorldRow, boatObj, lanternXRadius, lanternYRadius)
-			-- 		end
-			-- 		tilemapFloatingWorldRows[tile.worldRowIdx] = tilemapWorldRow
-			-- 	end
-			-- 	table.insert(worldObjects, tileObj)
-			-- 	tilemapWorldRow.drawComponent.spriteBatch:add(
-			-- 		tileQuad,
-			-- 		x - width / 2,
-			-- 		-height + tilemapObj.tileHeight / 2
-			-- 	)
-			-- 	goto continue
-			-- end
-
 			local tilemapWorldRow = tilemapWorldRows[tile.worldRowIdx]
 			if not tilemapWorldRow then
 				tilemapWorldRow = {
 					transform = love.math.newTransform(0, y),
 					drawComponent = {
 						shouldDraw = true,
-						spriteBatch = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static"),
-						quad = tileQuad,
+						image = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static"),
 						zIndex = tile.zIndex,
 						zIndexOffset = tile.zIndexOffset,
 						setShader = nil,
 					},
-					isFloating = false
+					isFloating = false,
+					tileQuad = tileQuad,
 				}
 				tilemapWorldRow.drawComponent.setShader = function()
 					tileEffect.setShader(tilemapWorldRow, boatObj, lanternXRadius, lanternYRadius)
 				end
 				tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
 			end
-			tilemapWorldRow.drawComponent.spriteBatch:add(
+			tilemapWorldRow.drawComponent.image:add(
 				tileQuad,
 				x - width / 2,
 				-height + tilemapObj.tileHeight / 2

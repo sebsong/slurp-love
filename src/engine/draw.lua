@@ -1,12 +1,28 @@
 local draw = {}
 
 local canvas = require("engine/canvas")
-local shader = require("engine/shader")
 
 function draw.load()
 	love.graphics.setPointSize(8)
 	love.graphics.setLineWidth(.1)
 	love.graphics.setBackgroundColor(0, 0, 0)
+end
+
+function draw.new(image, quad, xOffset, yOffset, centered)
+	local isQuadArray = type(quad) == "table"
+	return {
+		shouldDraw = true,
+		image = image,
+		quad = not isQuadArray and quad or nil,
+		quads = isQuadArray and quad or nil,
+		currentFrame = 1,
+		xOffset = xOffset,
+		yOffset = yOffset,
+		centered = centered,
+
+		setShader = nil,
+		draw = nil,
+	}
 end
 
 function draw.draw(drawComponent, transform)
@@ -43,20 +59,7 @@ function draw.draw(drawComponent, transform)
 		yOffset = yOffset - height / 2
 	end
 
-	if drawComponent.spriteBatch then
-		love.graphics.draw(
-			drawComponent.spriteBatch,
-			xOffset,
-			yOffset
-		)
-	elseif drawComponent.quad then
-		love.graphics.draw(
-			drawComponent.image,
-			drawComponent.quad,
-			xOffset,
-			yOffset
-		)
-	elseif drawComponent.quads then
+	if quad then
 		love.graphics.draw(
 			drawComponent.image,
 			quad,
