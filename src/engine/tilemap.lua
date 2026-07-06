@@ -5,6 +5,7 @@ local tilemap = {}
 local file = require("engine/file")
 local vec2 = require("engine/vec2")
 local set = require("engine/set")
+local draw = require("engine/draw")
 
 function tilemap.getIntersectionTiles(tilemap, tiles, camera)
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
@@ -235,16 +236,11 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 				local worldRowIdx = tilemap.getWorldRowIdx(colIdx, rowIdx)
 				local quad = tileset.quads[tileId]
 				local _, _, objWidth, objHeight = quad:getViewport()
+
+				local xOffset = -objWidth / 2
+				local yOffset = -objHeight + tileHeight / 2
 				table.insert(objects, {
-					drawComponent = {
-						shouldDraw = true,
-						image = tileset.image,
-						quad = quad,
-						xOffset = -objWidth / 2,
-						yOffset = -objHeight + tileHeight / 2,
-						zIndex = worldRowIdx,
-						zIndexOffset = zIndexOffset
-					},
+					drawComponent = draw.new(tileset.image, quad, xOffset, yOffset, worldRowIdx, zIndexOffset),
 					transform = love.math.newTransform(worldX, worldY),
 
 					id = object.id,

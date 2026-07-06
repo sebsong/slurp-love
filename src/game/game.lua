@@ -126,19 +126,15 @@ function game.load()
 			end
 
 			if tile.tilesetName == LAND_TILESET_NAME and tile.tileId == FLOATING_TILE_ID then
+				local xOffset = -width / 2
+				local yOffset = -height + tilemapObj.tileHeight / 2
+				local zIndex = tile.zIndex
+				local zIndexOffset = tile.zIndexOffset
 				local tileObj = {
 					transform = love.math.newTransform(x, y),
-					drawComponent = {
-						shouldDraw = true,
-						image = tileImage,
-						quad = tileQuad,
-						xOffset = -width / 2,
-						yOffset = -height + tilemapObj.tileHeight / 2,
-						zIndex = tile.zIndex,
-						zIndexOffset = tile.zIndexOffset,
-						setShader = nil
-					},
-					isFloating = true
+					drawComponent = draw.new(tileImage, tileQuad, xOffset, yOffset, zIndex, zIndexOffset),
+					tileQuad = tileQuad,
+					isFloating = true,
 				}
 				tileObj.drawComponent.setShader = function()
 					tileEffect.setShader(tileObj, boatObj, lanternXRadius, lanternYRadius)
@@ -149,17 +145,12 @@ function game.load()
 
 			local tilemapWorldRow = tilemapWorldRows[tile.worldRowIdx]
 			if not tilemapWorldRow then
+				local spriteBatch = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static")
 				tilemapWorldRow = {
 					transform = love.math.newTransform(0, y),
-					drawComponent = {
-						shouldDraw = true,
-						image = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static"),
-						zIndex = tile.zIndex,
-						zIndexOffset = tile.zIndexOffset,
-						setShader = nil,
-					},
-					isFloating = false,
+					drawComponent = draw.newSpriteBatch(spriteBatch, tile.zIndex, tile.zIndexOffset),
 					tileQuad = tileQuad,
+					isFloating = false,
 				}
 				tilemapWorldRow.drawComponent.setShader = function()
 					tileEffect.setShader(tilemapWorldRow, boatObj, lanternXRadius, lanternYRadius)

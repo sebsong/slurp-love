@@ -1,6 +1,8 @@
 local animation = {}
 
-function animation.new(image, numFrames, xOffset, yOffset)
+local draw = require("engine/draw")
+
+function animation.new(image, numFrames, xOffset, yOffset, zIndex, zIndexOffset)
 	local quads = {}
 	local imageWidth, imageHeight = image:getDimensions()
 	local quadWidth, quadHeight = imageWidth / numFrames, imageHeight
@@ -8,14 +10,7 @@ function animation.new(image, numFrames, xOffset, yOffset)
 		table.insert(quads, love.graphics.newQuad(i * quadWidth, 0, quadWidth, quadHeight, image))
 	end
 
-	return {
-		shouldDraw = true,
-		image = image,
-		quads = quads,
-		xOffset = xOffset,
-		yOffset = yOffset,
-		currentFrame = 1
-	}
+	return draw.new(image, quads, xOffset, yOffset, zIndex, zIndexOffset)
 end
 
 return animation

@@ -8,7 +8,7 @@ function draw.load()
 	love.graphics.setBackgroundColor(0, 0, 0)
 end
 
-function draw.new(image, quad, xOffset, yOffset, centered)
+function draw.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset, centered)
 	local isQuadArray = type(quad) == "table"
 	return {
 		shouldDraw = true,
@@ -18,11 +18,17 @@ function draw.new(image, quad, xOffset, yOffset, centered)
 		currentFrame = 1,
 		xOffset = xOffset,
 		yOffset = yOffset,
+		zIndex = zIndex,
+		zIndexOffset = zIndexOffset,
 		centered = centered,
 
 		setShader = nil,
 		draw = nil,
 	}
+end
+
+function draw.newSpriteBatch(spriteBatch, zIndex, zIndexOffset)
+	return draw.new(spriteBatch, nil, nil, nil, zIndex, zIndexOffset, false)
 end
 
 function draw.draw(drawComponent, transform)

@@ -21,14 +21,9 @@ function pauseMenu.load()
 	uiTransform = love.math.newTransform(settings.canvasPixelWidth / 2, settings.canvasPixelHeight / 2)
 	local menuImage = love.graphics.newImage("assets/art/pause_menu.png")
 	local width, height = menuImage:getDimensions()
+	local xOffset, yOffset = -width / 2, -height / 2
 	menu = {
-		drawComponent = {
-			shouldDraw = true,
-			image = menuImage,
-			xOffset = -width / 2,
-			yOffset = -height / 2,
-			centered = false
-		},
+		drawComponent = draw.new(menuImage, nil, xOffset, yOffset),
 		transform = love.math.newTransform(settings.canvasPixelWidth / 2, settings.canvasPixelHeight / 2)
 	}
 
