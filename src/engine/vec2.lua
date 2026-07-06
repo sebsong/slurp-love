@@ -1,5 +1,4 @@
 local vec2 = {}
-
 local meta = {}
 
 function vec2.new(x, y)
@@ -7,23 +6,6 @@ function vec2.new(x, y)
 	setmetatable(newVec, meta)
 
 	return newVec
-end
-
-function meta:magnitude()
-	return math.sqrt(self.x ^ 2 + self.y ^ 2)
-end
-
-function meta:distanceTo(otherVec)
-	return (otherVec - self):magnitude()
-end
-
-function meta:normalized()
-	local magnitude = self:magnitude()
-	if magnitude == 0 then
-		return self
-	end
-
-	return self / self:magnitude()
 end
 
 function meta.__index(vec, key)
@@ -46,6 +28,23 @@ function meta.__newindex(vec, key, val)
 	end
 
 	rawset(vec, key, val)
+end
+
+function meta:magnitude()
+	return math.sqrt(self.x ^ 2 + self.y ^ 2)
+end
+
+function meta:distanceTo(otherVec)
+	return (otherVec - self):magnitude()
+end
+
+function meta:normalized()
+	local magnitude = self:magnitude()
+	if magnitude == 0 then
+		return self
+	end
+
+	return self / self:magnitude()
 end
 
 function meta.__eq(vec, otherVec)
