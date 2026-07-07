@@ -214,7 +214,7 @@ local function pickupPackage(self, packages, mailboxes)
 	if packageToPickup then
 		table.insert(self.packages, packageToPickup)
 		packageToPickup.drawComponent.shouldDraw = false
-		packageToPickup:onPickup(self, mailboxes)
+		packageToPickup:onPickup(self)
 		return true
 	end
 	return false
@@ -247,7 +247,7 @@ local function deliverPackage(self, mailboxes)
 	local deliveryMailbox = self:getDeliveryMailbox(mailboxes)
 	if deliveryMailbox then
 		table.remove(self.packages, #self.packages)
-		package:onDeliver(self, mailboxes)
+		package:onDeliver(self)
 		package.isDelivered = true
 		return true
 	end

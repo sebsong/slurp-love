@@ -13,28 +13,12 @@ local LANTERN = 3
 local LEAD_FOOT = 4
 local FUEL_CELL = 5
 local GLASS = 6
-local PORTAL = 7
+local MIRROR = 7
 
 local crack1Sound
 local crack2Sound
 local crackSounds
 local shatterSound
-
-local function swapMailboxesAndPackages(tilemapObj, mailboxes)
-	for _, mailbox in ipairs(mailboxes) do
-		local mailboxX, mailboxY = mailbox.transform:transformPoint(0, 0)
-
-		mailbox.transform:setTransformation(mailbox.package.transform:transformPoint(0, 0))
-		local mailboxColIdx, mailboxRowIdx = tilemapObj.worldToTilemapIndexTransform:transformPoint(mailbox.transform
-			:transformPoint(0, 0))
-		mailbox.drawComponent.zIndex = tilemap.getWorldRowIdx(mailboxColIdx, mailboxRowIdx)
-
-		mailbox.package.transform:setTransformation(mailboxX, mailboxY)
-		local packageColIdx, packageRowIdx = tilemapObj.worldToTilemapIndexTransform:transformPoint(mailbox.package
-			.transform:transformPoint(0, 0))
-		mailbox.package.drawComponent.zIndex = tilemap.getWorldRowIdx(packageColIdx, packageRowIdx)
-	end
-end
 
 local function reversePackageOrder(boat)
 	local numPackages = #boat.packages
@@ -43,7 +27,7 @@ local function reversePackageOrder(boat)
 	end
 end
 
-function meta:onPickup(boat, mailboxes)
+function meta:onPickup(boat)
 	local tileId = self.tileId
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
@@ -58,26 +42,23 @@ function meta:onPickup(boat, mailboxes)
 		self.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
 	elseif tileId == GLASS then
 		self.cracksRemaining = 3
-	elseif tileId == PORTAL then
+	elseif tileId == MIRROR then
 		reversePackageOrder(boat)
-		-- swapMailboxesAndPackages(boat.tilemap, mailboxes)
 	end
 end
 
-function meta:onDeliver(boat, mailboxes)
+function meta:onDeliver(boat)
 	local tileId = self.tileId
 	if tileId == BASIC then
 	elseif tileId == RADIOACTIVE_JUNK then
 		boat.maxSpeed = boat.maxSpeed / 2
-		-- boat.rotationSpeed = boat.rotationSpeed / 2
 	elseif tileId == LANTERN then
 		boat.isLanternActive = false
 	elseif tileId == LEAD_FOOT then
 		boat.autoAccelerate = false
 	elseif tileId == FUEL_CELL then
 		boat.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
-	elseif tileId == PORTAL then
-		-- swapMailboxesAndPackages(boat.tilemap, mailboxes)
+	elseif tileId == MIRROR then
 		reversePackageOrder(boat)
 	end
 end
