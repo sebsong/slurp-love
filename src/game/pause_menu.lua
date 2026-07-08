@@ -5,6 +5,7 @@ local scene = require("engine/scene")
 local draw = require("engine/draw")
 local collision = require("engine/collision")
 local animation = require("engine/animation")
+local ui = require("engine/ui")
 
 local DEFAULT_FRAME = 1
 local HOVER_FRAME = 2
@@ -35,7 +36,7 @@ function pauseMenu.load()
 
 	resumeButton = {
 		animation = animation.new(buttonImage, numButtonFrames),
-		transform = love.math.newTransform(settings.canvasPixelWidth / 2, 175),
+		transform = ui.newAlignedTransform(buttonImage, ui.align.horizontal.CENTER, ui.align.vertical.CENTER),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
 		isHovered = false
