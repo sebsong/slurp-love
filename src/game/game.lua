@@ -148,7 +148,7 @@ function game.load()
 				local spriteBatch = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static")
 				tilemapWorldRow = {
 					transform = love.math.newTransform(0, y),
-					drawComponent = draw.newSpriteBatch(spriteBatch, tile.zIndex, tile.zIndexOffset),
+					drawComponent = draw.newSpriteBatch(spriteBatch, tileQuad, tile.zIndex, tile.zIndexOffset),
 					tileQuad = tileQuad,
 					isFloating = false,
 				}

@@ -8,7 +8,7 @@ function draw.load()
 	love.graphics.setBackgroundColor(0, 0, 0)
 end
 
-function draw.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset)
+function draw.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset, isSpriteBatch)
 	local isQuadArray = type(quad) == "table"
 	local currentFrame = 1
 	local width, height
@@ -16,11 +16,7 @@ function draw.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset)
 		local referenceQuad = isQuadArray and quad[currentFrame] or quad
 		_, _, width, height = referenceQuad:getViewport()
 	else
-		if image.getDimensions then
-			width, height = image:getDimensions()
-		else
-			width, height = 0, 0 -- TODO: fix for sprite batches
-		end
+		width, height = image:getDimensions()
 	end
 	return {
 		shouldDraw = true,
@@ -34,14 +30,15 @@ function draw.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset)
 		yOffset = yOffset,
 		zIndex = zIndex,
 		zIndexOffset = zIndexOffset,
+		isSpriteBatch = isSpriteBatch,
 
 		setShader = nil,
 		draw = nil,
 	}
 end
 
-function draw.newSpriteBatch(spriteBatch, zIndex, zIndexOffset)
-	return draw.new(spriteBatch, nil, nil, nil, zIndex, zIndexOffset, false)
+function draw.newSpriteBatch(spriteBatch, quad, zIndex, zIndexOffset)
+	return draw.new(spriteBatch, quad, nil, nil, zIndex, zIndexOffset, true)
 end
 
 function draw.draw(drawComponent, transform)
@@ -70,7 +67,7 @@ function draw.draw(drawComponent, transform)
 		quad = drawComponent.quads[drawComponent.currentFrame]
 	end
 
-	if quad then
+	if quad and not drawComponent.isSpriteBatch then
 		love.graphics.draw(
 			drawComponent.image,
 			quad,
