@@ -10,8 +10,6 @@ local ui = require("engine/ui")
 local DEFAULT_FRAME = 1
 local HOVER_FRAME = 2
 
-local uiTransform
-
 local menu
 
 local resumeButton
@@ -19,13 +17,11 @@ local exitButton
 
 
 function pauseMenu.load()
-	uiTransform = love.math.newTransform(settings.canvasPixelWidth / 2, settings.canvasPixelHeight / 2)
 	local menuImage = love.graphics.newImage("assets/art/pause_menu.png")
-	local width, height = menuImage:getDimensions()
-	local xOffset, yOffset = -width / 2, -height / 2
+	local menuDrawComponent = draw.new(menuImage)
 	menu = {
-		drawComponent = draw.new(menuImage, nil, xOffset, yOffset),
-		transform = love.math.newTransform(settings.canvasPixelWidth / 2, settings.canvasPixelHeight / 2)
+		drawComponent = menuDrawComponent,
+		transform = ui.newAlignedTransform(menuDrawComponent, ui.align.CENTER, ui.align.CENTER)
 	}
 
 	local buttonImage = love.graphics.newImage("assets/art/button.png")
@@ -34,27 +30,23 @@ function pauseMenu.load()
 	local buttonImageWidth, buttonImageHeight = buttonImage:getDimensions()
 	local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
 
+	local resumeDrawComponent = animation.new(buttonImage, numButtonFrames)
 	resumeButton = {
-		animation = animation.new(buttonImage, numButtonFrames),
-		transform = ui.newAlignedTransform(buttonImage, ui.align.horizontal.CENTER, ui.align.vertical.CENTER),
+		drawComponent = resumeDrawComponent,
+		transform = ui.newAlignedTransform(resumeDrawComponent, ui.align.CENTER, ui.align.CENTER),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
 		isHovered = false
 	}
-	-- resumeButton.animation.xOffset = -buttonImageWidth / 2
-	-- resumeButton.animation.yOffset = -buttonImageHeight / 2
-	resumeButton.animation.centered = false
 
+	local exitDrawComponent = animation.new(buttonImage, numButtonFrames)
 	exitButton = {
-		animation = animation.new(buttonImage, numButtonFrames),
-		transform = love.math.newTransform(settings.canvasPixelWidth / 2, 250),
+		drawComponent = exitDrawComponent,
+		transform = ui.newAlignedTransform(exitDrawComponent, ui.align.CENTER, ui.align.CENTER, 0, exitDrawComponent.height * 1.1),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
 		isHovered = false
 	}
-	-- exitButton.animation.xOffset = -buttonImageWidth / 2
-	-- exitButton.animation.yOffset = -buttonImageHeight / 2
-	exitButton.animation.centered = false
 end
 
 function pauseMenu.unload()
@@ -87,15 +79,15 @@ end
 
 function pauseMenu.mousemoved(x, y, dx, dy, isTouch)
 	if collision.hitTest(x, y, resumeButton.collider, resumeButton.transform) then
-		resumeButton.animation.currentFrame = HOVER_FRAME
+		resumeButton.drawComponent.currentFrame = HOVER_FRAME
 	else
-		resumeButton.animation.currentFrame = DEFAULT_FRAME
+		resumeButton.drawComponent.currentFrame = DEFAULT_FRAME
 	end
 
 	if collision.hitTest(x, y, exitButton.collider, exitButton.transform) then
-		exitButton.animation.currentFrame = HOVER_FRAME
+		exitButton.drawComponent.currentFrame = HOVER_FRAME
 	else
-		exitButton.animation.currentFrame = DEFAULT_FRAME
+		exitButton.drawComponent.currentFrame = DEFAULT_FRAME
 	end
 end
 
@@ -107,14 +99,13 @@ end
 
 function pauseMenu.draw()
 	love.graphics.push()
-	-- love.graphics.applyTransform(uiTransform)
 
 	love.graphics.setShader()
 	draw.draw(menu.drawComponent, menu.transform)
 
-	draw.draw(resumeButton.animation, resumeButton.transform)
+	draw.draw(resumeButton.drawComponent, resumeButton.transform)
 	love.graphics.print("play", resumeButton.transform:transformPoint(10, 15))
-	draw.draw(exitButton.animation, exitButton.transform)
+	draw.draw(exitButton.drawComponent, exitButton.transform)
 	love.graphics.print("exit", exitButton.transform:transformPoint(10, 15))
 
 	love.graphics.pop()

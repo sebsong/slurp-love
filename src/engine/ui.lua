@@ -1,41 +1,36 @@
 local button = {}
 local ui = {
 	align = {
-		horizontal = {
-			LEFT = 1,
-			CENTER = 2,
-			RIGHT = 3,
-		},
-		vertical = {
-			TOP = 4,
-			CENTER = 5,
-			BOTTOM = 6,
-		}
+		CENTER = 1,
+		LEFT = 2,
+		RIGHT = 3,
+		TOP = 4,
+		BOTTOM = 5,
 	},
 	button,
 }
 
 local settings = require("engine/settings")
 
-function ui.newAlignedTransform(image, horizontalAlign, verticalAlign, xOffset, yOffset)
+function ui.newAlignedTransform(drawComponent, horizontalAlign, verticalAlign, xOffset, yOffset)
 	local x, y
-	local width, height = image:getDimensions()
+	local width, height = drawComponent.width, drawComponent.height
 
-	if horizontalAlign == ui.align.horizontal.LEFT then
+	if horizontalAlign == ui.align.LEFT then
 		x = 0
-	elseif horizontalAlign == ui.align.horizontal.CENTER then
+	elseif horizontalAlign == ui.align.CENTER then
 		x = settings.canvasPixelWidth / 2 - width / 2
-	elseif horizontalAlign == ui.align.horizontal.RIGHT then
+	elseif horizontalAlign == ui.align.RIGHT then
 		x = settings.canvasPixelWidth - width
 	else
 		error(("invalid align option: %d"):format(horizontalAlign))
 	end
 
-	if verticalAlign == ui.align.vertical.TOP then
+	if verticalAlign == ui.align.TOP then
 		y = 0
-	elseif verticalAlign == ui.align.vertical.CENTER then
+	elseif verticalAlign == ui.align.CENTER then
 		y = settings.canvasPixelHeight / 2 - height / 2
-	elseif verticalAlign == ui.align.vertical.BOTTOM then
+	elseif verticalAlign == ui.align.BOTTOM then
 		y = settings.canvasPixelHeight / 2 - height / 2
 	else
 		error(("invalid align option: %d"):format(verticalAlign))
