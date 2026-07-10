@@ -1,6 +1,5 @@
 local pauseMenu = {}
 
-local settings = require("engine/settings")
 local scene = require("engine/scene")
 local draw = require("engine/draw")
 local collision = require("engine/collision")
@@ -14,7 +13,6 @@ local menu
 
 local resumeButton
 local exitButton
-
 
 function pauseMenu.load()
 	local menuImage = love.graphics.newImage("assets/art/pause_menu.png")

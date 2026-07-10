@@ -1,4 +1,4 @@
-local game_ui = {}
+local gameUi = {}
 
 local packageEffect = require("game/package_effect")
 local draw = require("engine/draw")
@@ -19,7 +19,7 @@ local gasMeterProgress
 local packageContainer
 local gasRemainingTextTransform
 
-function game_ui.load()
+function gameUi.load()
 	local uiImage = love.graphics.newImage("assets/art/ui.png")
 	local gasMeterQuad = love.graphics.newQuad(
 		0, 0,
@@ -37,10 +37,10 @@ function game_ui.load()
 		gasMeterWidth, gasMeterHeight,
 		uiImage
 	)
-	game_ui.gasMeterShader = love.graphics.newShader("assets/shader/progress_bar.glsl")
-	game_ui.gasMeterShader:send("progress", 1.0)
+	gameUi.gasMeterShader = love.graphics.newShader("assets/shader/progress_bar.glsl")
+	gameUi.gasMeterShader:send("progress", 1.0)
 	local gasMeterProgressDrawComponent = draw.new(uiImage, gasMeterProgressQuad)
-	gasMeterProgressDrawComponent.setShader = function() love.graphics.setShader(ui.gasMeterShader) end
+	gasMeterProgressDrawComponent.setShader = function() love.graphics.setShader(gameUi.gasMeterShader) end
 	gasMeterProgress = {
 		drawComponent = gasMeterProgressDrawComponent,
 		transform = ui.newAlignedTransform(gasMeterProgressDrawComponent.width, gasMeterProgressDrawComponent.height, ui.align.LEFT, ui.align.BOTTOM, padding, -padding)
@@ -60,7 +60,7 @@ function game_ui.load()
 	gasRemainingTextTransform = ui.newAlignedTransform(GAS_TEXT_WIDTH, GAS_TEXT_HEIGHT, ui.align.LEFT, ui.align.BOTTOM, padding, -gasMeterHeight - padding * 2)
 end
 
-function game_ui.draw(gasRemaining, packages)
+function gameUi.draw(gasRemaining, packages)
 	love.graphics.setShader()
 
 	draw.draw(gasMeter.drawComponent, gasMeter.transform)
@@ -85,4 +85,4 @@ function game_ui.draw(gasRemaining, packages)
 	love.graphics.setShader()
 end
 
-return game_ui
+return gameUi

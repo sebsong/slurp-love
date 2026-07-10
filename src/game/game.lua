@@ -8,7 +8,7 @@ local scene = require("engine/scene")
 local slurp_math = require("engine/math")
 local vec2 = require("engine/vec2")
 
-local game_ui = require("game/ui")
+local gameUi = require("game/ui")
 local music = require("game/music")
 local boat = require("game/boat")
 local package = require("game/package")
@@ -61,7 +61,7 @@ local lanternYRadius
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
 	package.load()
-	game_ui.load()
+	gameUi.load()
 	music.load()
 
 	cameraObj = camera.new()
@@ -343,7 +343,11 @@ function game.draw()
 
 	love.graphics.pop()
 
-	game_ui.draw(boatObj.gasRemaining, boatObj.packages)
+	gameUi.draw(boatObj.gasRemaining, boatObj.packages)
+end
+
+function game.gameOver()
+
 end
 
 function game.debugTeleportBoatToCanvasPoint(x, y)
