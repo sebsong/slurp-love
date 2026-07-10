@@ -12,9 +12,10 @@ local ui = {
 
 local settings = require("engine/settings")
 
-function ui.newAlignedTransform(drawComponent, horizontalAlign, verticalAlign, xOffset, yOffset)
+function ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xOffset, yOffset)
 	local x, y
-	local width, height = drawComponent.width, drawComponent.height
+	width, height = width or 0, height or 0
+	xOffset, yOffset = xOffset or 0, yOffset or 0
 
 	if horizontalAlign == ui.align.LEFT then
 		x = 0
@@ -36,7 +37,7 @@ function ui.newAlignedTransform(drawComponent, horizontalAlign, verticalAlign, x
 		error(("invalid align option: %d"):format(verticalAlign))
 	end
 
-	return love.math.newTransform(x + (xOffset or 0), y + (yOffset or 0))
+	return love.math.newTransform(x + xOffset, y + yOffset)
 end
 
 local function enable(self)

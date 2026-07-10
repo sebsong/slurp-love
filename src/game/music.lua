@@ -2,7 +2,7 @@ local music = {}
 
 local values = require("game/values")
 
-local volume = 0.4
+local volume = 0.2
 local chords
 local drums_mellow
 local drums_hype

@@ -8,7 +8,7 @@ local set = require("engine/set")
 local tilemap = require("engine/tilemap")
 
 local values = require("game/values")
-local ui = require("game/ui")
+local game_ui = require("game/ui")
 local boatEffect = require("game/boat_effect")
 
 local NUM_BOAT_ANGLES = 16
@@ -102,7 +102,7 @@ local function update(self, cameraObj, dt)
 			depletionAmount = depletionAmount * values.GAS_ACCELERATION_DEPLETION_MULTIPLIER
 		end
 		self.gasRemaining = self.gasRemaining - depletionAmount
-		ui.gasMeterShader:send("progress", self.gasRemaining / values.FULL_GAS_AMOUNT)
+		game_ui.gasMeterShader:send("progress", self.gasRemaining / values.FULL_GAS_AMOUNT)
 		if self.gasRemaining <= 0 then
 			print("OUT OF GAS")
 		end
@@ -304,7 +304,7 @@ function boat.new(tilemap, dayValue)
 	end
 
 	local initialGasAmount = values.DAY_TO_GAS_AMOUNT[dayValue] or values.FULL_GAS_AMOUNT
-	ui.gasMeterShader:send("progress", initialGasAmount / values.FULL_GAS_AMOUNT)
+	game_ui.gasMeterShader:send("progress", initialGasAmount / values.FULL_GAS_AMOUNT)
 
 	return {
 		-- TODO: build the boat from a tile object

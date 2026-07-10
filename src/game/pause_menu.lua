@@ -21,7 +21,7 @@ function pauseMenu.load()
 	local menuDrawComponent = draw.new(menuImage)
 	menu = {
 		drawComponent = menuDrawComponent,
-		transform = ui.newAlignedTransform(menuDrawComponent, ui.align.CENTER, ui.align.CENTER)
+		transform = ui.newAlignedTransform(menuDrawComponent.width, menuDrawComponent.height, ui.align.CENTER, ui.align.CENTER)
 	}
 
 	local buttonImage = love.graphics.newImage("assets/art/button.png")
@@ -33,7 +33,7 @@ function pauseMenu.load()
 	local resumeDrawComponent = animation.new(buttonImage, numButtonFrames)
 	resumeButton = {
 		drawComponent = resumeDrawComponent,
-		transform = ui.newAlignedTransform(resumeDrawComponent, ui.align.CENTER, ui.align.CENTER),
+		transform = ui.newAlignedTransform(resumeDrawComponent.width, resumeDrawComponent.height, ui.align.CENTER, ui.align.CENTER),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
 		isHovered = false
@@ -42,7 +42,7 @@ function pauseMenu.load()
 	local exitDrawComponent = animation.new(buttonImage, numButtonFrames)
 	exitButton = {
 		drawComponent = exitDrawComponent,
-		transform = ui.newAlignedTransform(exitDrawComponent, ui.align.CENTER, ui.align.CENTER, 0, exitDrawComponent.height * 1.1),
+		transform = ui.newAlignedTransform(exitDrawComponent.width, exitDrawComponent.height, ui.align.CENTER, ui.align.CENTER, 0, exitDrawComponent.height * 1.1),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
 		isHovered = false
