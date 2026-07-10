@@ -31,7 +31,7 @@ function ui.newAlignedTransform(drawComponent, horizontalAlign, verticalAlign, x
 	elseif verticalAlign == ui.align.CENTER then
 		y = settings.canvasPixelHeight / 2 - height / 2
 	elseif verticalAlign == ui.align.BOTTOM then
-		y = settings.canvasPixelHeight / 2 - height / 2
+		y = settings.canvasPixelHeight - height
 	else
 		error(("invalid align option: %d"):format(verticalAlign))
 	end

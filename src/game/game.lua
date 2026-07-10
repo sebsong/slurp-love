@@ -61,8 +61,8 @@ local lanternYRadius
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
 	package.load()
-	ui:load()
-	music:load()
+	ui.load()
+	music.load()
 
 	cameraObj = camera.new()
 
@@ -269,7 +269,7 @@ function game.update(dt)
 		cameraObj.transform:setTransformation(boatX, boatY)
 	end
 
-	music:update(boatObj, dt)
+	music.update(boatObj, dt)
 
 	local cameraX, cameraY = cameraObj.transform:transformPoint(0, 0)
 	local cameraHalfHeight = cameraObj:getScreenHeight() / 2
@@ -343,7 +343,7 @@ function game.draw()
 
 	love.graphics.pop()
 
-	ui:draw(boatObj.gasRemaining, boatObj.packages)
+	ui.draw(boatObj.gasRemaining, boatObj.packages)
 end
 
 function game.debugTeleportBoatToCanvasPoint(x, y)

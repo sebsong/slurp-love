@@ -40,7 +40,7 @@ local function crossFadeUpdate(fadeInTargets, fadeOutTargets, dt)
 	end
 end
 
-function music:load()
+function music.load()
 	chords = love.audio.newSource("assets/sound/chords.ogg", "stream")
 	chords:setVolume(volume)
 	chords:setLooping(true)
@@ -57,34 +57,34 @@ function music:load()
 	drums_hype:play()
 end
 
-function music:unload()
+function music.unload()
 	chords:stop()
 	drums_mellow:stop()
 	drums_hype:stop()
 end
 
-function music:activateDrumsMellow()
+local function activateDrumsMellow()
 	fadeIn(drums_mellow)
 	fadeOut(drums_hype)
 end
 
-function music:activateDrumsHype()
+local function activateDrumsHype()
 	fadeIn(drums_hype)
 	fadeOut(drums_mellow)
 end
 
-function music:deactivateDrums()
+local function deactivateDrums()
 	fadeOut(drums_mellow)
 	fadeOut(drums_hype)
 end
 
-function music:update(boat, dt)
+function music.update(boat, dt)
 	-- if (boat.speed > values.BOAT_MAX_SPEED_DEFAULT) then
-	-- 	self:activateDrumsHype()
+	-- 	activateDrumsHype()
 	-- elseif (boat.speed > values.BOAT_MAX_SPEED_DEFAULT / 2) then
-	-- 	self:activateDrumsMellow()
+	-- 	activateDrumsMellow()
 	-- else
-	-- 	self:deactivateDrums()
+	-- 	deactivateDrums()
 	-- end
 
 	crossFadeUpdate(fadeInTargets, fadeOutTargets, dt)
