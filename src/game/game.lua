@@ -12,6 +12,7 @@ local gameUi = require("game/ui")
 local music = require("game/music")
 local boat = require("game/boat")
 local package = require("game/package")
+local dayTracker = require("game/day_tracker")
 local waterEffect = require("game/water_effect")
 local tileEffect = require("game/tile_effect")
 local lanternEffect = require("game/lantern_effect")
@@ -58,6 +59,7 @@ local lanternLightImage
 local lanternXRadius
 local lanternYRadius
 
+local didWin = false
 local didLose = false
 
 function game.load()
@@ -217,6 +219,13 @@ function game.endDay()
 	scene.transition(scene.scenes.game, scene.scenes.dayTracker)
 end
 
+local function victory()
+	if not scene.scenes.victoryMenu.isActive then
+		scene.start(scene.scenes.victoryMenu)
+	end
+	didWin = true
+end
+
 local function evaluateWinCondition()
 	if didLose then
 		return
@@ -228,13 +237,28 @@ local function evaluateWinCondition()
 		end
 	end
 
-	game.endDay()
+	if dayTracker.currentDay == dayTracker.FINAL_DAY then
+		victory()
+	else
+		game.endDay()
+	end
+end
+
+local function gameOver()
+	if not scene.scenes.gameOverMenu.isActive then
+		scene.start(scene.scenes.gameOverMenu)
+	end
+	didLose = true
 end
 
 local function evaluateLoseCondition()
+	if didWin then
+		return
+	end
+
 	for _, packageObj in ipairs(boatObj.packages) do
 		if not packageObj.canDeliver then
-			game.gameOver()
+			gameOver()
 			break
 		end
 	end
@@ -242,7 +266,7 @@ local function evaluateLoseCondition()
 	if boatObj.gasRemaining <= 0
 		and math.abs(boatObj.speed) == 0
 		and not boatObj:getDeliveryMailbox(mailboxes) then
-		game.gameOver()
+		gameOver()
 	end
 end
 
@@ -367,13 +391,6 @@ function game.draw()
 	love.graphics.pop()
 
 	gameUi.draw(boatObj.gasRemaining, boatObj.packages)
-end
-
-function game.gameOver()
-	if not scene.scenes.gameOverMenu.isActive then
-		scene.start(scene.scenes.gameOverMenu)
-	end
-	didLose = true
 end
 
 function game.debugTeleportBoatToCanvasPoint(x, y)

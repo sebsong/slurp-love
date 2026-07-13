@@ -1,12 +1,11 @@
 local dayTracker = {
-	currentDay = 1
+	currentDay = 1,
+	FINAL_DAY = 5,
 }
 
 local settings = require("engine/settings")
 local scene = require("engine/scene")
 local font = require("game/font")
-
-local FINAL_DAY = 5
 
 local DAY_TO_NAME = {
 	"monday",
@@ -23,7 +22,7 @@ local blinkTimer
 local BLINK_HOLD_TIME = 1
 
 function dayTracker.isEndScreen()
-	return dayTracker.currentDay > FINAL_DAY
+	return dayTracker.currentDay > dayTracker.FINAL_DAY
 end
 
 local function startDay()

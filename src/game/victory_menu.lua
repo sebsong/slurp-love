@@ -1,4 +1,4 @@
-local gameOverMenu = {}
+local victoryMenu = {}
 
 local scene = require("engine/scene")
 local draw = require("engine/draw")
@@ -11,11 +11,10 @@ local HOVER_FRAME = 2
 
 local menu
 
-local restartButton
 local mainMenuButton
 
-function gameOverMenu.load()
-	local menuImage = love.graphics.newImage("assets/art/game_over_menu.png")
+function victoryMenu.load()
+	local menuImage = love.graphics.newImage("assets/art/victory_menu.png")
 	local menuDrawComponent = draw.new(menuImage)
 	menu = {
 		drawComponent = menuDrawComponent,
@@ -28,15 +27,6 @@ function gameOverMenu.load()
 	local buttonImageWidth, buttonImageHeight = buttonImage:getDimensions()
 	local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
 
-	local restartDrawComponent = animation.new(buttonImage, numButtonFrames)
-	restartButton = {
-		drawComponent = restartDrawComponent,
-		transform = ui.newAlignedTransform(restartDrawComponent.width, restartDrawComponent.height, ui.align.CENTER, ui.align.CENTER),
-		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
-		isPressed = false,
-		isHovered = false
-	}
-
 	local mainMenuDrawComponent = animation.new(buttonImage, numButtonFrames)
 	mainMenuButton = {
 		drawComponent = mainMenuDrawComponent,
@@ -47,18 +37,13 @@ function gameOverMenu.load()
 	}
 end
 
-function gameOverMenu.unload()
+function victoryMenu.unload()
 end
 
-function gameOverMenu.keypressed(key, scancode, isRepeat)
+function victoryMenu.keypressed(key, scancode, isRepeat)
 end
 
-function gameOverMenu.mousepressed(x, y, button, isTouch, presses)
-	if collision.hitTest(x, y, restartButton.collider, restartButton.transform) then
-		scene.stop(scene.scenes.gameOverMenu)
-		scene.restart(scene.scenes.game)
-	end
-
+function victoryMenu.mousepressed(x, y, button, isTouch, presses)
 	if collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
 		scene.stop(scene.scenes.gameOverMenu)
 		scene.stop(scene.scenes.game)
@@ -66,13 +51,7 @@ function gameOverMenu.mousepressed(x, y, button, isTouch, presses)
 	end
 end
 
-function gameOverMenu.mousemoved(x, y, dx, dy, isTouch)
-	if collision.hitTest(x, y, restartButton.collider, restartButton.transform) then
-		restartButton.drawComponent.currentFrame = HOVER_FRAME
-	else
-		restartButton.drawComponent.currentFrame = DEFAULT_FRAME
-	end
-
+function victoryMenu.mousemoved(x, y, dx, dy, isTouch)
 	if collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
 		mainMenuButton.drawComponent.currentFrame = HOVER_FRAME
 	else
@@ -80,24 +59,22 @@ function gameOverMenu.mousemoved(x, y, dx, dy, isTouch)
 	end
 end
 
-function gameOverMenu.wheelmoved(x, y)
+function victoryMenu.wheelmoved(x, y)
 end
 
-function gameOverMenu.update(dt)
+function victoryMenu.update(dt)
 end
 
-function gameOverMenu.draw()
+function victoryMenu.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
 	draw.draw(menu.drawComponent, menu.transform)
 
-	draw.draw(restartButton.drawComponent, restartButton.transform)
-	love.graphics.print("restart day", restartButton.transform:transformPoint(10, 15))
 	draw.draw(mainMenuButton.drawComponent, mainMenuButton.transform)
 	love.graphics.print("main menu", mainMenuButton.transform:transformPoint(10, 15))
 
 	love.graphics.pop()
 end
 
-return gameOverMenu
+return victoryMenu
