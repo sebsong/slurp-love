@@ -12,7 +12,7 @@ local HOVER_FRAME = 2
 local menu
 
 local resumeButton
-local exitButton
+local mainMenuButton
 
 function pauseMenu.load()
 	local menuImage = love.graphics.newImage("assets/art/pause_menu.png")
@@ -37,10 +37,10 @@ function pauseMenu.load()
 		isHovered = false
 	}
 
-	local exitDrawComponent = animation.new(buttonImage, numButtonFrames)
-	exitButton = {
-		drawComponent = exitDrawComponent,
-		transform = ui.newAlignedTransform(exitDrawComponent.width, exitDrawComponent.height, ui.align.CENTER, ui.align.CENTER, 0, exitDrawComponent.height * 1.1),
+	local mainMenuDrawComponent = animation.new(buttonImage, numButtonFrames)
+	mainMenuButton = {
+		drawComponent = mainMenuDrawComponent,
+		transform = ui.newAlignedTransform(mainMenuDrawComponent.width, mainMenuDrawComponent.height, ui.align.CENTER, ui.align.CENTER, 0, mainMenuDrawComponent.height * 1.1),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
 		isHovered = false
@@ -70,8 +70,10 @@ function pauseMenu.mousepressed(x, y, button, isTouch, presses)
 		pauseMenu.toggle()
 	end
 
-	if collision.hitTest(x, y, exitButton.collider, exitButton.transform) then
-		love.event.quit()
+	if collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
+		scene.stop(scene.scenes.pauseMenu)
+		scene.stop(scene.scenes.game)
+		scene.start(scene.scenes.mainMenu)
 	end
 end
 
@@ -82,10 +84,10 @@ function pauseMenu.mousemoved(x, y, dx, dy, isTouch)
 		resumeButton.drawComponent.currentFrame = DEFAULT_FRAME
 	end
 
-	if collision.hitTest(x, y, exitButton.collider, exitButton.transform) then
-		exitButton.drawComponent.currentFrame = HOVER_FRAME
+	if collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
+		mainMenuButton.drawComponent.currentFrame = HOVER_FRAME
 	else
-		exitButton.drawComponent.currentFrame = DEFAULT_FRAME
+		mainMenuButton.drawComponent.currentFrame = DEFAULT_FRAME
 	end
 end
 
@@ -103,8 +105,8 @@ function pauseMenu.draw()
 
 	draw.draw(resumeButton.drawComponent, resumeButton.transform)
 	love.graphics.print("play", resumeButton.transform:transformPoint(10, 15))
-	draw.draw(exitButton.drawComponent, exitButton.transform)
-	love.graphics.print("exit", exitButton.transform:transformPoint(10, 15))
+	draw.draw(mainMenuButton.drawComponent, mainMenuButton.transform)
+	love.graphics.print("main menu", mainMenuButton.transform:transformPoint(10, 15))
 
 	love.graphics.pop()
 end

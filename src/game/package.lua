@@ -13,10 +13,6 @@ local meta = {}
 meta.__index = meta
 
 local values = require("game/values")
-local vec2 = require("engine/vec2")
-local tilemap = require("engine/tilemap")
-
--- package types
 
 local crack1Sound
 local crack2Sound
