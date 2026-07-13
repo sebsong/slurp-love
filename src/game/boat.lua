@@ -232,7 +232,7 @@ local function getDeliveryMailbox(self, mailboxes)
 
 	for _, mailbox in ipairs(mailboxes) do
 		local mailboxPosition = vec2.new(mailbox.transform:transformPoint(0, 0))
-		if boatPosition:distanceTo(mailboxPosition) <= self.interactionRadius and mailbox.id == package.destinationId then
+		if boatPosition:distanceTo(mailboxPosition) <= self.interactionRadius and mailbox.id == package.destinationId and package.canDeliver then
 			return mailbox
 		end
 	end

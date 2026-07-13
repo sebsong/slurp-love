@@ -58,6 +58,8 @@ local lanternLightImage
 local lanternXRadius
 local lanternYRadius
 
+local didLose = false
+
 function game.load()
 	color.loadPalette("assets/art/retrotronic-dx.hex")
 	package.load()
@@ -169,10 +171,10 @@ function game.load()
 	for _, object in ipairs(tilemapObj.layers[OBJECT_LAYER_NAME].objects) do
 		local tilesetName = object.tilesetName
 		if (tilesetName == PACKAGES_TILESET_NAME) then
-			local package = package.toPackage(object)
-			table.insert(packages, package)
+			local packageObj = package.toPackage(object)
+			table.insert(packages, packageObj)
 			object.drawComponent.setShader = function()
-				packageEffect.setShader(package)
+				packageEffect.setShader(packageObj)
 			end
 		elseif (tilesetName == MAILBOX_TILESET_NAME) then
 			table.insert(mailboxes, object)
@@ -185,10 +187,10 @@ function game.load()
 	end
 
 	for _, mailbox in ipairs(mailboxes) do
-		for _, package in ipairs(packages) do
-			if mailbox.id == package.destinationId then
-				mailbox.package = package
-				package.mailbox = mailbox
+		for _, packageObj in ipairs(packages) do
+			if mailbox.id == packageObj.destinationId then
+				mailbox.package = packageObj
+				packageObj.mailbox = mailbox
 				break
 			end
 		end
@@ -216,13 +218,32 @@ function game.endDay()
 end
 
 local function evaluateWinCondition()
-	for _, package in ipairs(packages) do
-		if not package.isDelivered then
+	if didLose then
+		return
+	end
+
+	for _, packageObj in ipairs(packages) do
+		if not packageObj.isDelivered then
 			return
 		end
 	end
 
 	game.endDay()
+end
+
+local function evaluateLoseCondition()
+	for _, packageObj in ipairs(boatObj.packages) do
+		if not packageObj.canDeliver then
+			game.gameOver()
+			break
+		end
+	end
+
+	if boatObj.gasRemaining <= 0
+		and math.abs(boatObj.speed) == 0
+		and not boatObj:getDeliveryMailbox(mailboxes) then
+		game.gameOver()
+	end
 end
 
 function game.keypressed(key, scancode, isRepeat)
@@ -260,8 +281,8 @@ end
 
 function game.update(dt)
 	boatObj:update(cameraObj, dt)
-	for _, package in ipairs(boatObj.packages) do
-		package:update(dt)
+	for _, packageObj in ipairs(boatObj.packages) do
+		packageObj:update(dt)
 	end
 
 	if not cameraObj.isPanning then
@@ -318,11 +339,7 @@ function game.update(dt)
 	packageEffect.update(boatObj, packages)
 	mailboxEffect.update(boatObj, mailboxes)
 
-	if boatObj.gasRemaining <= 0
-		and math.abs(boatObj.speed) == 0
-		and not boatObj:getDeliveryMailbox(mailboxes) then
-		game.gameOver()
-	end
+	evaluateLoseCondition()
 end
 
 function game.draw()
@@ -356,6 +373,7 @@ function game.gameOver()
 	if not scene.scenes.gameOverMenu.isActive then
 		scene.start(scene.scenes.gameOverMenu)
 	end
+	didLose = true
 end
 
 function game.debugTeleportBoatToCanvasPoint(x, y)

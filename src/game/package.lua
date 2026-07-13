@@ -1,4 +1,14 @@
-local package = {}
+local package = {
+	type = {
+		BASIC = 1,
+		RADIOACTIVE_JUNK = 2,
+		LANTERN = 3,
+		LEAD_FOOT = 4,
+		FUEL_CELL = 5,
+		GLASS = 6,
+		MIRROR = 7,
+	}
+}
 local meta = {}
 meta.__index = meta
 
@@ -7,13 +17,6 @@ local vec2 = require("engine/vec2")
 local tilemap = require("engine/tilemap")
 
 -- package types
-local BASIC = 1
-local RADIOACTIVE_JUNK = 2
-local LANTERN = 3
-local LEAD_FOOT = 4
-local FUEL_CELL = 5
-local GLASS = 6
-local MIRROR = 7
 
 local crack1Sound
 local crack2Sound
@@ -29,56 +32,60 @@ end
 
 function meta:onPickup(boat)
 	local tileId = self.tileId
-	if tileId == BASIC then
-	elseif tileId == RADIOACTIVE_JUNK then
+	if tileId == package.type.BASIC then
+	elseif tileId == package.type.RADIOACTIVE_JUNK then
 		boat.maxSpeed = boat.maxSpeed * 2
-	elseif tileId == LANTERN then
+	elseif tileId == package.type.LANTERN then
 		boat.isLanternActive = true
-	elseif tileId == LEAD_FOOT then
+	elseif tileId == package.type.LEAD_FOOT then
 		boat.autoAccelerate = true
-	elseif tileId == FUEL_CELL then
+	elseif tileId == package.type.FUEL_CELL then
 		boat.gasDepletionRate = 0
 		self.gasRemaining = values.FUEL_CELL_INITIAL_GAS
 		self.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
-	elseif tileId == GLASS then
+	elseif tileId == package.type.GLASS then
 		self.cracksRemaining = 3
-	elseif tileId == MIRROR then
+	elseif tileId == package.type.MIRROR then
 		reversePackageOrder(boat)
 	end
 end
 
 function meta:onDeliver(boat)
 	local tileId = self.tileId
-	if tileId == BASIC then
-	elseif tileId == RADIOACTIVE_JUNK then
+	if tileId == package.type.BASIC then
+	elseif tileId == package.type.RADIOACTIVE_JUNK then
 		boat.maxSpeed = boat.maxSpeed / 2
-	elseif tileId == LANTERN then
+	elseif tileId == package.type.LANTERN then
 		boat.isLanternActive = false
-	elseif tileId == LEAD_FOOT then
+	elseif tileId == package.type.LEAD_FOOT then
 		boat.autoAccelerate = false
-	elseif tileId == FUEL_CELL then
+	elseif tileId == package.type.FUEL_CELL then
 		boat.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
-	elseif tileId == MIRROR then
+	elseif tileId == package.type.MIRROR then
 		reversePackageOrder(boat)
 	end
 end
 
 function meta:onCollision(boat, _collidable)
-	if self.tileId == GLASS then
+	if self.tileId == package.type.GLASS then
+		if not self.canDeliver then
+			return
+		end
+
 		if boat.collidingWith:isEmpty() then
 			self.cracksRemaining = self.cracksRemaining - 1
 			if self.cracksRemaining > 0 then
 				crackSounds[self.cracksRemaining]:play()
 			else
 				shatterSound:play()
-				print("BROKEN")
+				self.canDeliver = false
 			end
 		end
 	end
 end
 
 function meta:update(dt)
-	if self.tileId == FUEL_CELL then
+	if self.tileId == package.type.FUEL_CELL then
 		if self.gasRemaining >= 0 then
 			self.gasRemaining = self.gasRemaining - self.gasDepletionRate * dt
 			if self.gasRemaining < 0 then
@@ -102,6 +109,7 @@ function package.toPackage(tileObject)
 	setmetatable(tileObject, meta)
 	tileObject.destinationId = tileObject.properties.destination.id
 	tileObject.isDelivered = false
+	tileObject.canDeliver = true
 	return tileObject
 end
 
