@@ -317,6 +317,12 @@ function game.update(dt)
 	lanternEffect.update(cameraObj)
 	packageEffect.update(boatObj, packages)
 	mailboxEffect.update(boatObj, mailboxes)
+
+	if boatObj.gasRemaining <= 0
+		and math.abs(boatObj.speed) == 0
+		and not boatObj:getDeliveryMailbox(mailboxes) then
+		game.gameOver()
+	end
 end
 
 function game.draw()
@@ -347,7 +353,9 @@ function game.draw()
 end
 
 function game.gameOver()
-
+	if not scene.scenes.gameOverMenu.isActive then
+		scene.start(scene.scenes.gameOverMenu)
+	end
 end
 
 function game.debugTeleportBoatToCanvasPoint(x, y)

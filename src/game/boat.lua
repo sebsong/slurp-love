@@ -69,25 +69,28 @@ end
 local function update(self, cameraObj, dt)
 	local didMove = false
 	local didMoveForward = false
-	if love.keyboard.isDown("up") or love.keyboard.isDown("w") or self.autoAccelerate then
-		self.speed = self.speed + self.acceleration * dt
-		didMove = true
-		didMoveForward = true
-	end
-	if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and not self.autoAccelerate then
-		local acceleration = self.deceleration
-		if self.speed > 0 then
-			acceleration = acceleration * 2
-		end
-		self.speed = self.speed - acceleration * dt
-		didMove = true
-	end
-
 	local didAccelerate = false
-	if self.speed < self.maxBackwardsSpeed or self.speed > self.maxSpeed then
-		self.speed = slurp_math.clamped(self.speed, -self.maxBackwardsSpeed, self.maxSpeed)
-	else
-		didAccelerate = true
+
+	if self.gasRemaining > 0 then
+		if love.keyboard.isDown("up") or love.keyboard.isDown("w") or self.autoAccelerate then
+			self.speed = self.speed + self.acceleration * dt
+			didMove = true
+			didMoveForward = true
+		end
+		if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and not self.autoAccelerate then
+			local acceleration = self.deceleration
+			if self.speed > 0 then
+				acceleration = acceleration * 2
+			end
+			self.speed = self.speed - acceleration * dt
+			didMove = true
+		end
+
+		if self.speed < self.maxBackwardsSpeed or self.speed > self.maxSpeed then
+			self.speed = slurp_math.clamped(self.speed, -self.maxBackwardsSpeed, self.maxSpeed)
+		else
+			didAccelerate = true
+		end
 	end
 
 	if didMove or self.deceleration == 0 then
@@ -116,7 +119,6 @@ local function update(self, cameraObj, dt)
 			self.speed = math.min(0, self.speed + self.deceleration * dt)
 		end
 	end
-
 
 	if love.keyboard.isDown("left") or love.keyboard.isDown("a") then
 		self.rotation = self.rotation - self.rotationSpeed * dt
