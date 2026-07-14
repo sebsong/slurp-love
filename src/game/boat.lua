@@ -12,7 +12,7 @@ local gameUi = require("game/ui")
 local boatEffect = require("game/boat_effect")
 
 local NUM_BOAT_ANGLES = 16
-local BOAT_WIDTH, BOATH_HEIGHT = 16, 16
+local BOAT_WIDTH, BOAT_HEIGHT = 16, 16
 local NEIGHBOR_TILE_DISTANCE = 2
 
 local NUM_TRAIL_POSITIONS = 16
@@ -129,6 +129,11 @@ local function update(self, cameraObj, dt)
 		self.transform:rotate(self.rotationSpeed * dt)
 	end
 
+	if didMoveForward then
+		self.drawComponent = self.animations[2]
+	else
+		self.drawComponent = self.animations[1]
+	end
 	local rotSegmentLength = 2 * math.pi / #self.drawComponent.quads
 	local frameIdx = math.floor(
 		(
@@ -272,23 +277,21 @@ local function onCollision(self, collidable)
 end
 
 function boat.new(tilemap, dayValue)
-	local boatImage = love.graphics.newImage("assets/art/boat.png")
-	local boatQuads = {}
-	for i = 0, NUM_BOAT_ANGLES - 1 do
-		local boatQuad = love.graphics.newQuad(
-			i * BOAT_WIDTH, 0,
-			BOAT_WIDTH, BOATH_HEIGHT,
-			boatImage
-		)
-		table.insert(boatQuads, boatQuad)
-	end
-	local quad = boatQuads[1]
-	local _, _, width, height = quad:getViewport()
+	local animations = {}
 
-	local animation = animation.new(boatImage, NUM_BOAT_ANGLES, -width / 2, -height + (8 / 2))
-	animation.draw = draw
-	animation.zIndex = 0
-	animation.zIndexOffset = 0
+	local boatImage = love.graphics.newImage("assets/art/boat1.png")
+	local animationStatic = animation.new(boatImage, NUM_BOAT_ANGLES, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
+	animationStatic.draw = draw
+	animationStatic.zIndex = 0
+	animationStatic.zIndexOffset = 0
+	table.insert(animations, animationStatic)
+
+	local boatAccelImage = love.graphics.newImage("assets/art/boat2.png")
+	local animationAccel = animation.new(boatAccelImage, NUM_BOAT_ANGLES, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
+	animationAccel.draw = draw
+	animationAccel.zIndex = 0
+	animationAccel.zIndexOffset = 0
+	table.insert(animations, animationAccel)
 
 	boatEffect.load()
 
@@ -310,7 +313,8 @@ function boat.new(tilemap, dayValue)
 
 	return {
 		-- TODO: build the boat from a tile object
-		drawComponent = animation,
+		animations = animations,
+		drawComponent = animationStatic,
 		transform = transform,
 
 		bumpSound = bumpSound,
