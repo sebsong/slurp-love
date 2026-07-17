@@ -1,8 +1,9 @@
 local font = {
-	default = nil
+	default = nil,
+	small = nil,
 }
 
-local CHAR_LAYOUT = " abcdefghijklmnopqrstuvwxyz0123456789"
+local CHAR_LAYOUT = " abcdefghijklmnopqrstuvwxyz0123456789'"
 
 function font.load()
 	font.default = love.graphics.newImageFont("assets/art/font.png", CHAR_LAYOUT)

@@ -5,12 +5,16 @@ local draw = require("engine/draw")
 local collision = require("engine/collision")
 local animation = require("engine/animation")
 local ui = require("engine/ui")
+local settings = require("engine/settings")
+
+local font = require("game/font")
 
 local DEFAULT_FRAME = 1
 local HOVER_FRAME = 2
 
 local menu
 
+local victoryTextTransform
 local mainMenuButton
 
 function victoryMenu.load()
@@ -20,6 +24,8 @@ function victoryMenu.load()
 		drawComponent = menuDrawComponent,
 		transform = ui.newAlignedTransform(menuDrawComponent.width, menuDrawComponent.height, ui.align.CENTER, ui.align.CENTER)
 	}
+
+	victoryTextTransform = love.math.newTransform(0, 50)
 
 	local buttonImage = love.graphics.newImage("assets/art/button.png")
 
@@ -45,7 +51,7 @@ end
 
 function victoryMenu.mousepressed(x, y, button, isTouch, presses)
 	if collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
-		scene.stop(scene.scenes.gameOverMenu)
+		scene.stop(scene.scenes.victoryMenu)
 		scene.stop(scene.scenes.game)
 		scene.start(scene.scenes.mainMenu)
 	end
@@ -69,8 +75,11 @@ function victoryMenu.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
-	draw.draw(menu.drawComponent, menu.transform)
+	-- draw.draw(menu.drawComponent, menu.transform)
+	love.graphics.setFont(font.default)
+	love.graphics.printf("you're hired", victoryTextTransform, settings.canvasPixelWidth, "center")
 
+	love.graphics.setFont(font.small)
 	draw.draw(mainMenuButton.drawComponent, mainMenuButton.transform)
 	love.graphics.print("main menu", mainMenuButton.transform:transformPoint(10, 15))
 

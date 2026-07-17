@@ -5,11 +5,16 @@ local draw = require("engine/draw")
 local collision = require("engine/collision")
 local animation = require("engine/animation")
 local ui = require("engine/ui")
+local settings = require("engine/settings")
+
+local font = require("game/font")
 
 local DEFAULT_FRAME = 1
 local HOVER_FRAME = 2
 
 local menu
+
+local gameOverTextTransform
 
 local restartButton
 local mainMenuButton
@@ -21,6 +26,8 @@ function gameOverMenu.load()
 		drawComponent = menuDrawComponent,
 		transform = ui.newAlignedTransform(menuDrawComponent.width, menuDrawComponent.height, ui.align.CENTER, ui.align.CENTER)
 	}
+
+	gameOverTextTransform = love.math.newTransform(0, 50)
 
 	local buttonImage = love.graphics.newImage("assets/art/button.png")
 
@@ -90,10 +97,13 @@ function gameOverMenu.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
-	draw.draw(menu.drawComponent, menu.transform)
+	-- draw.draw(menu.drawComponent, menu.transform)
+	love.graphics.setFont(font.default)
+	love.graphics.printf("you're fired", gameOverTextTransform, settings.canvasPixelWidth, "center")
 
+	love.graphics.setFont(font.small)
 	draw.draw(restartButton.drawComponent, restartButton.transform)
-	love.graphics.print("restart day", restartButton.transform:transformPoint(10, 15))
+	love.graphics.print("restart\n day", restartButton.transform:transformPoint(10, 15))
 	draw.draw(mainMenuButton.drawComponent, mainMenuButton.transform)
 	love.graphics.print("main menu", mainMenuButton.transform:transformPoint(10, 15))
 
