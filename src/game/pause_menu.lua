@@ -6,6 +6,8 @@ local collision = require("engine/collision")
 local animation = require("engine/animation")
 local ui = require("engine/ui")
 
+local font = require("game/font")
+
 local DEFAULT_FRAME = 1
 local HOVER_FRAME = 2
 
@@ -103,6 +105,7 @@ function pauseMenu.draw()
 	love.graphics.setShader()
 	draw.draw(menu.drawComponent, menu.transform)
 
+	love.graphics.setFont(font.small)
 	draw.draw(resumeButton.drawComponent, resumeButton.transform)
 	love.graphics.print("play", resumeButton.transform:transformPoint(10, 15))
 	draw.draw(mainMenuButton.drawComponent, mainMenuButton.transform)

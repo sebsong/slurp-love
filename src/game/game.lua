@@ -223,7 +223,6 @@ local function victory()
 	if not scene.scenes.victoryMenu.isActive then
 		scene.start(scene.scenes.victoryMenu)
 	end
-	didWin = true
 end
 
 local function evaluateWinCondition()
@@ -237,6 +236,7 @@ local function evaluateWinCondition()
 		end
 	end
 
+	didWin = true
 	if dayTracker.currentDay == dayTracker.FINAL_DAY then
 		victory()
 	else
@@ -273,10 +273,7 @@ end
 function game.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
 		if not boatObj:pickupPackage(packages, mailboxes) then
-			local didDeliver = boatObj:deliverPackage(mailboxes)
-			if didDeliver then
-				evaluateWinCondition()
-			end
+			boatObj:deliverPackage(mailboxes)
 		end
 	end
 
@@ -363,6 +360,7 @@ function game.update(dt)
 	packageEffect.update(boatObj, packages)
 	mailboxEffect.update(boatObj, mailboxes)
 
+	evaluateWinCondition()
 	evaluateLoseCondition()
 end
 
