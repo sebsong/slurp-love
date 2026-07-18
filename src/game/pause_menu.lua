@@ -107,7 +107,7 @@ function pauseMenu.draw()
 
 	love.graphics.setFont(font.small)
 	draw.draw(resumeButton.drawComponent, resumeButton.transform)
-	love.graphics.print("play", resumeButton.transform:transformPoint(10, 15))
+	love.graphics.print("resume", resumeButton.transform:transformPoint(10, 15))
 	draw.draw(mainMenuButton.drawComponent, mainMenuButton.transform)
 	love.graphics.print("main menu", mainMenuButton.transform:transformPoint(10, 15))
 

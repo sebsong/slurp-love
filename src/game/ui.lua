@@ -1,4 +1,6 @@
-local gameUi = {}
+local gameUi = {
+	PADDING = 10
+}
 
 local packageEffect = require("game/package_effect")
 local draw = require("engine/draw")
@@ -9,7 +11,6 @@ local GAS_TEXT_WIDTH = gasMeterWidth
 local GAS_TEXT_HEIGHT = 12
 
 local packageContainerWidth, packageContainerHeight = 20, 92
-local padding = 10
 local packageUiVerticalSpacing = -18
 local packageOffsetXInitial = 2
 local packageOffsetYInitial = packageContainerHeight + packageUiVerticalSpacing
@@ -29,7 +30,7 @@ function gameUi.load()
 	local gasMeterDrawComponent = draw.new(uiImage, gasMeterQuad)
 	gasMeter = {
 		drawComponent = gasMeterDrawComponent,
-		transform = ui.newAlignedTransform(gasMeterDrawComponent.width, gasMeterDrawComponent.height, ui.align.LEFT, ui.align.BOTTOM, padding, -padding)
+		transform = ui.newAlignedTransform(gasMeterDrawComponent.width, gasMeterDrawComponent.height, ui.align.LEFT, ui.align.BOTTOM, gameUi.PADDING, gameUi.PADDING)
 	}
 
 	local gasMeterProgressQuad = love.graphics.newQuad(
@@ -43,7 +44,7 @@ function gameUi.load()
 	gasMeterProgressDrawComponent.setShader = function() love.graphics.setShader(gameUi.gasMeterShader) end
 	gasMeterProgress = {
 		drawComponent = gasMeterProgressDrawComponent,
-		transform = ui.newAlignedTransform(gasMeterProgressDrawComponent.width, gasMeterProgressDrawComponent.height, ui.align.LEFT, ui.align.BOTTOM, padding, -padding)
+		transform = ui.newAlignedTransform(gasMeterProgressDrawComponent.width, gasMeterProgressDrawComponent.height, ui.align.LEFT, ui.align.BOTTOM, gameUi.PADDING, gameUi.PADDING)
 	}
 
 	local packageContainerQuad = love.graphics.newQuad(
@@ -54,10 +55,10 @@ function gameUi.load()
 	local packageContainerDrawComponent = draw.new(uiImage, packageContainerQuad)
 	packageContainer = {
 		drawComponent = packageContainerDrawComponent,
-		transform = ui.newAlignedTransform(packageContainerDrawComponent.width, packageContainerDrawComponent.height, ui.align.RIGHT, ui.align.BOTTOM, -padding, -padding)
+		transform = ui.newAlignedTransform(packageContainerDrawComponent.width, packageContainerDrawComponent.height, ui.align.RIGHT, ui.align.BOTTOM, gameUi.PADDING, gameUi.PADDING)
 	}
 
-	gasRemainingTextTransform = ui.newAlignedTransform(GAS_TEXT_WIDTH, GAS_TEXT_HEIGHT, ui.align.LEFT, ui.align.BOTTOM, padding, -gasMeterHeight - padding * 2)
+	gasRemainingTextTransform = ui.newAlignedTransform(GAS_TEXT_WIDTH, GAS_TEXT_HEIGHT, ui.align.LEFT, ui.align.BOTTOM, gameUi.PADDING, gasMeterHeight + gameUi.PADDING * 2)
 end
 
 function gameUi.draw(gasRemaining, packages)

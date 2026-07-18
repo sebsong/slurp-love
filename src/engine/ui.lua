@@ -12,10 +12,10 @@ local ui = {
 
 local settings = require("engine/settings")
 
-function ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xOffset, yOffset)
+function ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
 	local x, y
 	width, height = width or 0, height or 0
-	xOffset, yOffset = xOffset or 0, yOffset or 0
+	local xOffset, yOffset = xPadding or 0, yPadding or 0
 
 	if horizontalAlign == ui.align.LEFT then
 		x = 0
@@ -23,6 +23,7 @@ function ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, x
 		x = settings.canvasPixelWidth / 2 - width / 2
 	elseif horizontalAlign == ui.align.RIGHT then
 		x = settings.canvasPixelWidth - width
+		xOffset = -xOffset
 	else
 		error(("invalid align option: %d"):format(horizontalAlign))
 	end
@@ -33,6 +34,7 @@ function ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, x
 		y = settings.canvasPixelHeight / 2 - height / 2
 	elseif verticalAlign == ui.align.BOTTOM then
 		y = settings.canvasPixelHeight - height
+		yOffset = -yOffset
 	else
 		error(("invalid align option: %d"):format(verticalAlign))
 	end
