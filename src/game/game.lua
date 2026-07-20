@@ -13,6 +13,7 @@ local music = require("game/music")
 local boat = require("game/boat")
 local package = require("game/package")
 local dayTracker = require("game/day_tracker")
+local radioDialogue = require("game/radio_dialogue")
 local waterEffect = require("game/water_effect")
 local tileEffect = require("game/tile_effect")
 local lanternEffect = require("game/lantern_effect")
@@ -207,6 +208,8 @@ function game.load()
 			y + object.drawComponent.yOffset
 		)
 	end
+
+	radioDialogue.open("According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground.")
 end
 
 function game.unload()

@@ -2,6 +2,7 @@ local radioDialogue = {}
 
 local draw = require("engine/draw")
 local ui = require("engine/ui")
+local scene = require("engine/scene")
 
 local font = require("game/font")
 local gameUi = require("game/ui")
@@ -34,7 +35,17 @@ local function onTextFinish()
 	isFastForwarding = false
 end
 
-function radioDialogue.setText(text)
+function radioDialogue.open(text)
+	fullText = text
+	scene.start(scene.scenes.radioDialogue)
+end
+
+function radioDialogue.close()
+	fullText = ""
+	scene.stop(scene.scenes.radioDialogue)
+end
+
+local function setText(text)
 	-- pre-wrap text to avoid words wrapping as they're revealed
 	local _, lines = font.small:getWrap(text:lower(), textWidth)
 	fullText = table.concat(lines, '\n')
@@ -55,7 +66,7 @@ function radioDialogue.load()
 	local yPadding = gameUi.PADDING * 2.5
 	textTransform = ui.newAlignedTransform(textWidth, textHeight, ui.align.CENTER, ui.align.BOTTOM, xPadding, yPadding)
 
-	radioDialogue.setText("According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground.")
+	setText(fullText)
 end
 
 function radioDialogue.unload()
@@ -63,7 +74,11 @@ end
 
 function radioDialogue.keypressed(key, scancode, isRepeat)
 	if key == "space" then
-		isFastForwarding = true
+		if not isFinished then
+			isFastForwarding = true
+		else
+			radioDialogue.close()
+		end
 	end
 end
 
