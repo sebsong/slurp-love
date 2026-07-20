@@ -7,7 +7,7 @@ local font = require("game/font")
 local gameUi = require("game/ui")
 
 local DEFAULT_CHARACTERS_PER_SECOND = 20
-local SKIP_CHARACTERS_PER_SECOND = 100
+local FAST_FORWARD_MULTIPLIER = 10
 
 local dialogueBox
 local textWidth
@@ -18,20 +18,20 @@ local fullText
 local currentText
 local numCharactersToShow
 local charactersPerSecond
+local isFastForwarding
 local isFinished
 
 local function reset()
 	currentText = ""
 	numCharactersToShow = 0
 	charactersPerSecond = DEFAULT_CHARACTERS_PER_SECOND
+	isFastForwarding = false
 	isFinished = false
 end
 
-local function skip()
-	charactersPerSecond = SKIP_CHARACTERS_PER_SECOND
-end
-
 local function onTextFinish()
+	isFinished = true
+	isFastForwarding = false
 end
 
 function radioDialogue.setText(text)
@@ -63,7 +63,7 @@ end
 
 function radioDialogue.keypressed(key, scancode, isRepeat)
 	if key == "space" then
-		skip()
+		isFastForwarding = true
 	end
 end
 
@@ -81,11 +81,14 @@ function radioDialogue.update(dt)
 		return
 	end
 
-	numCharactersToShow = numCharactersToShow + charactersPerSecond * dt
+	local numAdditionalCharacters = charactersPerSecond * dt
+	if isFastForwarding then
+		numAdditionalCharacters = numAdditionalCharacters * FAST_FORWARD_MULTIPLIER
+	end
+	numCharactersToShow = numCharactersToShow + numAdditionalCharacters
 	currentText = string.sub(fullText, 1, numCharactersToShow)
 
 	if #currentText == #fullText then
-		isFinished = true
 		onTextFinish()
 	end
 end
