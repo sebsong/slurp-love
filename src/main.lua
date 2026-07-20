@@ -34,7 +34,6 @@ function love.load()
 	scene.start(scene.scenes.debug)
 	-- scene.start(scene.scenes.mainMenu)
 	scene.start(scene.scenes.game)
-	scene.start(scene.scenes.radioDialogue)
 end
 
 function love.keypressed(key, scancode, isRepeat)

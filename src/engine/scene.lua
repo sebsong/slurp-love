@@ -12,6 +12,7 @@ local function init(_scene)
 
 	_scene.isActive = false
 	_scene.isPaused = false
+	_scene.isInputPaused = false
 	_scene.shouldLoad = false
 	_scene.shouldUnload = false
 	return _scene
@@ -37,6 +38,14 @@ end
 
 function scene.resume(_scene)
 	_scene.isPaused = false
+end
+
+function scene.pauseInput(_scene)
+	_scene.isInputPaused = true
+end
+
+function scene.resumeInput(_scene)
+	_scene.isInputPaused = false
 end
 
 function scene.restart(_scene)
@@ -67,13 +76,18 @@ local function shouldSkipUpdate(_scene)
 	return not _scene.isActive or _scene.isPaused
 end
 
+local function shouldSkipInput(_scene)
+	return _scene.isInputPaused or shouldSkipUpdate(_scene)
+end
+
+
 local function shouldSkipDraw(_scene)
 	return not _scene.isActive
 end
 
 function scene.keypressed(key, scancode, isRepeat)
 	for _, _scene in ipairs(scenesList) do
-		if shouldSkipUpdate(_scene) then
+		if shouldSkipInput(_scene) then
 			goto continue
 		end
 
@@ -87,7 +101,7 @@ end
 
 function scene.mousepressed(x, y, button, isTouch, presses)
 	for _, _scene in ipairs(scenesList) do
-		if shouldSkipUpdate(_scene) then
+		if shouldSkipInput(_scene) then
 			goto continue
 		end
 
@@ -101,7 +115,7 @@ end
 
 function scene.mousemoved(x, y, dx, dy, isTouch)
 	for _, _scene in ipairs(scenesList) do
-		if shouldSkipUpdate(_scene) then
+		if shouldSkipInput(_scene) then
 			goto continue
 		end
 
@@ -115,7 +129,7 @@ end
 
 function scene.wheelmoved(x, y)
 	for _, _scene in ipairs(scenesList) do
-		if shouldSkipUpdate(_scene) then
+		if shouldSkipInput(_scene) then
 			goto continue
 		end
 

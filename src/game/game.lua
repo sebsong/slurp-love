@@ -209,7 +209,11 @@ function game.load()
 		)
 	end
 
-	radioDialogue.open("According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground.")
+	scene.pauseInput(scene.scenes.game)
+	radioDialogue.open(
+		"According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground.",
+		function() scene.resumeInput(scene.scenes.game) end
+	)
 end
 
 function game.unload()

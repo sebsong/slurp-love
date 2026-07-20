@@ -21,6 +21,7 @@ local numCharactersToShow
 local charactersPerSecond
 local isFastForwarding
 local isFinished
+local onDialogueClose
 
 local function reset()
 	currentText = ""
@@ -30,25 +31,33 @@ local function reset()
 	isFinished = false
 end
 
-local function onTextFinish()
+local function finish()
 	isFinished = true
 	isFastForwarding = false
 end
 
-function radioDialogue.open(text)
+function radioDialogue.open(text, onClose)
 	fullText = text
+	onDialogueClose = onClose
 	scene.start(scene.scenes.radioDialogue)
 end
 
 function radioDialogue.close()
-	fullText = ""
 	scene.stop(scene.scenes.radioDialogue)
+	if onDialogueClose then
+		onDialogueClose()
+	end
+
+	fullText = ""
+	onDialogueClose = nil
 end
 
 local function setText(text)
-	-- pre-wrap text to avoid words wrapping as they're revealed
-	local _, lines = font.small:getWrap(text:lower(), textWidth)
-	fullText = table.concat(lines, '\n')
+	if text then
+		-- pre-wrap text to avoid words wrapping as they're revealed
+		local _, lines = font.small:getWrap(text:lower(), textWidth)
+		fullText = table.concat(lines, '\n')
+	end
 	reset()
 end
 
@@ -104,7 +113,7 @@ function radioDialogue.update(dt)
 	currentText = string.sub(fullText, 1, numCharactersToShow)
 
 	if #currentText == #fullText then
-		onTextFinish()
+		finish()
 	end
 end
 
