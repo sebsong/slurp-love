@@ -14,6 +14,7 @@ local boat = require("game/boat")
 local package = require("game/package")
 local dayTracker = require("game/day_tracker")
 local radioDialogue = require("game/radio_dialogue")
+local radioScript = require("game/radio_script")
 local waterEffect = require("game/water_effect")
 local tileEffect = require("game/tile_effect")
 local lanternEffect = require("game/lantern_effect")
@@ -63,12 +64,6 @@ local lanternYRadius
 local didWin
 local didLose
 
-local RADIO_SCRIPT = {
-	"According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground.",
-	"The bee, of course, flies anyway because bees don't care what humans think is impossible",
-	"Yellow, black. Yellow, black. Yellow, black. Yellow, black. Ooh, black and yellow! Let's shake it up a little.",
-}
-
 function game.load()
 	didWin = false
 	didLose = false
@@ -80,9 +75,9 @@ function game.load()
 
 	cameraObj = camera.new()
 
-	local currentDayValue = scene.scenes.dayTracker.currentDay
+	local currentDay = scene.scenes.dayTracker.currentDay
 
-	OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[currentDayValue] or OBJECT_LAYER_NAME
+	OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[currentDay] or OBJECT_LAYER_NAME
 
 	local tilesets = {
 		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
@@ -98,7 +93,7 @@ function game.load()
 	packages = {}
 	mailboxes = {}
 
-	boatObj = boat.new(tilemapObj, currentDayValue)
+	boatObj = boat.new(tilemapObj, currentDay)
 	table.insert(worldObjects, boatObj)
 
 	waterImage = love.graphics.newImage("assets/art/water.png")
@@ -220,7 +215,7 @@ function game.load()
 
 	scene.pauseInput(scene.scenes.game)
 	radioDialogue.open(
-		RADIO_SCRIPT,
+		radioScript.dailyDialogue[currentDay],
 		function() scene.resumeInput(scene.scenes.game) end
 	)
 end
