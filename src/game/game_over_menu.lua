@@ -67,9 +67,7 @@ function gameOverMenu.mousepressed(x, y, button, isTouch, presses)
 	end
 
 	if collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
-		scene.stop(scene.scenes.gameOverMenu)
-		scene.stop(scene.scenes.game)
-		scene.start(scene.scenes.mainMenu)
+		scene.transition(scene.scenes.mainMenu)
 	end
 end
 

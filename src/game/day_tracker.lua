@@ -29,7 +29,7 @@ local function startDay()
 	if (dayTracker.isEndScreen()) then
 		print("YOU WIN")
 	else
-		scene.transition(scene.scenes.dayTracker, scene.scenes.game)
+		scene.transition(scene.scenes.game)
 	end
 end
 

@@ -24,7 +24,7 @@ end
 function debug.keypressed(key, scancode, isRepeat)
 	if key == "tab" and not isRepeat then
 		if scene.scenes.mainMenu.isActive then
-			scene.transition(scene.scenes.mainMenu, scene.scenes.dayTracker)
+			scene.transition(scene.scenes.dayTracker)
 		elseif scene.scenes.game.isActive then
 			scene.scenes.game.endDay()
 		end

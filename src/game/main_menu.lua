@@ -48,7 +48,7 @@ end
 
 function mainMenu.mousepressed(x, y, button, isTouch, presses)
 	if collision.hitTest(x, y, playButton.collider, playButton.transform) then
-		scene.transition(scene.scenes.mainMenu, scene.scenes.dayTracker)
+		scene.transition(scene.scenes.dayTracker)
 	end
 
 	if collision.hitTest(x, y, exitButton.collider, exitButton.transform) then

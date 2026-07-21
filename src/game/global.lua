@@ -12,7 +12,6 @@ function global.keypressed(key, scancode, isRepeat)
 	local gameScene = scene.scenes.game
 	if gameScene.isActive and love.keyboard.isDown("escape") and not isRepeat then
 		scene.scenes.pauseMenu.toggle()
-		-- 	love.event.quit()
 	end
 end
 

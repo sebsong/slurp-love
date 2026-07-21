@@ -227,7 +227,7 @@ end
 
 function game.endDay()
 	scene.scenes.dayTracker.nextDay()
-	scene.transition(scene.scenes.game, scene.scenes.dayTracker)
+	scene.transition(scene.scenes.dayTracker)
 end
 
 local function victory()

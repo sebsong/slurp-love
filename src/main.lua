@@ -20,7 +20,9 @@ function love.load()
 	draw.load()
 	font.load()
 
-	scene.register("global", global)
+	scene.register("global", global, true)
+	scene.register("debug", debug, true)
+
 	scene.register("mainMenu", mainMenu)
 	scene.register("dayTracker", dayTracker)
 	scene.register("game", game)
@@ -28,12 +30,11 @@ function love.load()
 	scene.register("pauseMenu", pauseMenu)
 	scene.register("gameOverMenu", gameOverMenu)
 	scene.register("victoryMenu", victoryMenu)
-	scene.register("debug", debug)
 
 	scene.start(scene.scenes.global)
 	scene.start(scene.scenes.debug)
-	-- scene.start(scene.scenes.mainMenu)
-	scene.start(scene.scenes.game)
+	scene.start(scene.scenes.mainMenu)
+	-- scene.start(scene.scenes.game)
 end
 
 function love.keypressed(key, scancode, isRepeat)

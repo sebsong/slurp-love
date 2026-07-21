@@ -4,12 +4,13 @@ local scene = {
 
 local scenesList = {}
 
-local function init(_scene)
+local function init(_scene, isGlobal)
 	assert(_scene.load, "Scene missing load method")
 	assert(_scene.unload, "Scene missing unload method")
 	assert(_scene.update, "Scene missing update method")
 	assert(_scene.draw, "Scene missing draw method")
 
+	_scene.isGlobal = isGlobal
 	_scene.isActive = false
 	_scene.isPaused = false
 	_scene.isInputPaused = false
@@ -18,9 +19,9 @@ local function init(_scene)
 	return _scene
 end
 
-function scene.register(sceneName, _scene)
+function scene.register(sceneName, _scene, isGlobal)
 	table.insert(scenesList, _scene)
-	scene.scenes[sceneName] = init(_scene)
+	scene.scenes[sceneName] = init(_scene, isGlobal or false)
 end
 
 function scene.start(_scene)
@@ -53,9 +54,13 @@ function scene.restart(_scene)
 	scene.start(_scene)
 end
 
-function scene.transition(fromScene, toScene)
-	scene.stop(fromScene)
-	scene.start(toScene)
+function scene.transition(_scene)
+	for _, s in ipairs(scenesList) do
+		if not s.isGlobal and s.isActive then
+			scene.stop(s)
+		end
+	end
+	scene.start(_scene)
 end
 
 local function load(_scene)

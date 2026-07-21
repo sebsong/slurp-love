@@ -51,9 +51,7 @@ end
 
 function victoryMenu.mousepressed(x, y, button, isTouch, presses)
 	if collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
-		scene.stop(scene.scenes.victoryMenu)
-		scene.stop(scene.scenes.game)
-		scene.start(scene.scenes.mainMenu)
+		scene.transition(scene.scenes.mainMenu)
 	end
 end
 

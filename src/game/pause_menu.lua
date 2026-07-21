@@ -73,9 +73,7 @@ function pauseMenu.mousepressed(x, y, button, isTouch, presses)
 	end
 
 	if collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
-		scene.stop(scene.scenes.pauseMenu)
-		scene.stop(scene.scenes.game)
-		scene.start(scene.scenes.mainMenu)
+		scene.transition(scene.scenes.mainMenu)
 	end
 end
 
