@@ -15,31 +15,53 @@ local textWidth
 local textHeight
 local textTransform
 
-local fullText
-local currentText
+local dialogueLines = {}
+local onDialogueClose
+
+local currentLineIndex
+local currentLine
 local numCharactersToShow
 local charactersPerSecond
 local isFastForwarding
-local isFinished
-local onDialogueClose
+local isLineFinished
+local isDialogueFinished
 
-local function reset()
-	currentText = ""
+local function resetLine()
+	currentLine = ""
 	numCharactersToShow = 0
+	isFastForwarding = false
+	isLineFinished = false
+end
+
+local function resetDialogue()
+	resetLine()
+	currentLineIndex = 1
 	charactersPerSecond = DEFAULT_CHARACTERS_PER_SECOND
-	isFastForwarding = false
-	isFinished = false
+	isDialogueFinished = false
 end
 
-local function finish()
-	isFinished = true
-	isFastForwarding = false
-end
 
-function radioDialogue.open(text, onClose)
-	fullText = text
+function radioDialogue.open(lines, onClose)
+	if type(lines) ~= "table" then
+		lines = { lines }
+	end
+	dialogueLines = lines
 	onDialogueClose = onClose
 	scene.start(scene.scenes.radioDialogue)
+end
+
+function radioDialogue.next()
+	if not isLineFinished then
+		isFastForwarding = true
+	else
+		if not isDialogueFinished then
+			currentLineIndex = currentLineIndex + 1
+			resetLine()
+		else
+			radioDialogue.close()
+			resetDialogue()
+		end
+	end
 end
 
 function radioDialogue.close()
@@ -48,17 +70,18 @@ function radioDialogue.close()
 		onDialogueClose()
 	end
 
-	fullText = ""
+	dialogueLines = {}
 	onDialogueClose = nil
 end
 
-local function setText(text)
-	if text then
+local function setLines(lines)
+	for i, line in ipairs(lines) do
 		-- pre-wrap text to avoid words wrapping as they're revealed
-		local _, lines = font.small:getWrap(text:lower(), textWidth)
-		fullText = table.concat(lines, '\n')
+		local _, textLines = font.small:getWrap(line:lower(), textWidth)
+		local wrappedLine = table.concat(textLines, '\n')
+		dialogueLines[i] = wrappedLine
 	end
-	reset()
+	resetDialogue()
 end
 
 function radioDialogue.load()
@@ -75,7 +98,7 @@ function radioDialogue.load()
 	local yPadding = gameUi.PADDING * 2.5
 	textTransform = ui.newAlignedTransform(textWidth, textHeight, ui.align.CENTER, ui.align.BOTTOM, xPadding, yPadding)
 
-	setText(fullText)
+	setLines(dialogueLines)
 end
 
 function radioDialogue.unload()
@@ -83,11 +106,7 @@ end
 
 function radioDialogue.keypressed(key, scancode, isRepeat)
 	if key == "space" then
-		if not isFinished then
-			isFastForwarding = true
-		else
-			radioDialogue.close()
-		end
+		radioDialogue.next()
 	end
 end
 
@@ -101,7 +120,12 @@ function radioDialogue.wheelmoved(x, y)
 end
 
 function radioDialogue.update(dt)
-	if isFinished then
+	if isDialogueFinished then
+		return
+	end
+
+	local fullLine = dialogueLines[currentLineIndex]
+	if not fullLine then
 		return
 	end
 
@@ -110,10 +134,13 @@ function radioDialogue.update(dt)
 		numAdditionalCharacters = numAdditionalCharacters * FAST_FORWARD_MULTIPLIER
 	end
 	numCharactersToShow = numCharactersToShow + numAdditionalCharacters
-	currentText = string.sub(fullText, 1, numCharactersToShow)
+	currentLine = string.sub(fullLine, 1, numCharactersToShow)
 
-	if #currentText == #fullText then
-		finish()
+	if not isLineFinished and #currentLine == #fullLine then
+		isLineFinished = true
+		if currentLineIndex >= #dialogueLines then
+			isDialogueFinished = true
+		end
 	end
 end
 
@@ -124,7 +151,7 @@ function radioDialogue.draw()
 	draw.draw(dialogueBox.drawComponent, dialogueBox.transform)
 
 	love.graphics.setFont(font.small)
-	love.graphics.printf(currentText, textTransform, textWidth, "left")
+	love.graphics.printf(currentLine, textTransform, textWidth, "left")
 
 	love.graphics.pop()
 end

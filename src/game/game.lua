@@ -60,10 +60,19 @@ local lanternLightImage
 local lanternXRadius
 local lanternYRadius
 
-local didWin = false
-local didLose = false
+local didWin
+local didLose
+
+local RADIO_SCRIPT = {
+	"According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground.",
+	"The bee, of course, flies anyway because bees don't care what humans think is impossible",
+	"Yellow, black. Yellow, black. Yellow, black. Yellow, black. Ooh, black and yellow! Let's shake it up a little.",
+}
 
 function game.load()
+	didWin = false
+	didLose = false
+
 	color.loadPalette("assets/art/retrotronic-dx.hex")
 	package.load()
 	gameUi.load()
@@ -192,7 +201,7 @@ function game.load()
 	for _, mailbox in ipairs(mailboxes) do
 		for _, packageObj in ipairs(packages) do
 			if mailbox.id == packageObj.destinationId then
-				mailbox.package = packageObj
+				mailbox.package = packageOb
 				packageObj.mailbox = mailbox
 				break
 			end
@@ -211,7 +220,7 @@ function game.load()
 
 	scene.pauseInput(scene.scenes.game)
 	radioDialogue.open(
-		"According to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground.",
+		RADIO_SCRIPT,
 		function() scene.resumeInput(scene.scenes.game) end
 	)
 end
