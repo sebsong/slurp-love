@@ -273,19 +273,19 @@
   <properties>
    <property name="zIndexOffset" type="int" value="3"/>
   </properties>
-  <object id="131" gid="10" x="968" y="968" width="16" height="16">
+  <object id="131" gid="5" x="968" y="968" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="132"/>
    </properties>
   </object>
   <object id="132" gid="15" x="784" y="304" width="16" height="16"/>
-  <object id="413" gid="6" x="109.142" y="297.628" width="16" height="16">
+  <object id="413" gid="8" x="109.142" y="297.628" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="415"/>
    </properties>
   </object>
   <object id="415" gid="15" x="712" y="712" width="16" height="16"/>
-  <object id="416" gid="8" x="430.613" y="883.767" width="16" height="16">
+  <object id="416" gid="6" x="430.613" y="883.767" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="418"/>
    </properties>
@@ -296,7 +296,7 @@
     <property name="destination" type="object" value="422"/>
    </properties>
   </object>
-  <object id="420" gid="11" x="80" y="80" width="16" height="16">
+  <object id="420" gid="9" x="80" y="80" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="421"/>
    </properties>
@@ -308,19 +308,19 @@
   <properties>
    <property name="zIndexOffset" type="int" value="3"/>
   </properties>
-  <object id="433" gid="10" x="968" y="968" width="16" height="16">
+  <object id="433" gid="5" x="968" y="968" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="434"/>
    </properties>
   </object>
   <object id="434" gid="15" x="784" y="304" width="16" height="16"/>
-  <object id="435" gid="6" x="109.142" y="297.628" width="16" height="16">
+  <object id="435" gid="8" x="109.142" y="297.628" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="436"/>
    </properties>
   </object>
   <object id="436" gid="15" x="712" y="712" width="16" height="16"/>
-  <object id="437" gid="8" x="430.613" y="883.767" width="16" height="16">
+  <object id="437" gid="6" x="430.613" y="883.767" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="438"/>
    </properties>
@@ -337,13 +337,13 @@
   <properties>
    <property name="zIndexOffset" type="int" value="3"/>
   </properties>
-  <object id="443" gid="10" x="968" y="968" width="16" height="16">
+  <object id="443" gid="5" x="968" y="968" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="444"/>
    </properties>
   </object>
   <object id="444" gid="15" x="784" y="304" width="16" height="16"/>
-  <object id="447" gid="8" x="430.613" y="883.767" width="16" height="16">
+  <object id="447" gid="6" x="430.613" y="883.767" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="448"/>
    </properties>
@@ -360,13 +360,13 @@
   <properties>
    <property name="zIndexOffset" type="int" value="3"/>
   </properties>
-  <object id="451" gid="10" x="968" y="968" width="16" height="16">
+  <object id="451" gid="5" x="968" y="968" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="452"/>
    </properties>
   </object>
   <object id="452" gid="15" x="784" y="304" width="16" height="16"/>
-  <object id="453" gid="8" x="430.613" y="883.767" width="16" height="16">
+  <object id="453" gid="6" x="430.613" y="883.767" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="454"/>
    </properties>
@@ -377,7 +377,7 @@
   <properties>
    <property name="zIndexOffset" type="int" value="3"/>
   </properties>
-  <object id="457" gid="10" x="968" y="968" width="16" height="16">
+  <object id="457" gid="5" x="968" y="968" width="16" height="16">
    <properties>
     <property name="destination" type="object" value="458"/>
    </properties>

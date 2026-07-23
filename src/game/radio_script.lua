@@ -10,9 +10,9 @@ local radioScript = {
 			"welcome to day 2",
 			"get rdy to rumble",
 		},
-		{},
-		{},
-		{},
+		{ "" },
+		{ "" },
+		{ "" },
 	}
 }
 return radioScript

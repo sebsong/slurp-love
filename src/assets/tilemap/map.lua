@@ -1929,7 +1929,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 10,
+          gid = 5,
           visible = true,
           properties = {
             ["destination"] = { id = 132 }
@@ -1959,7 +1959,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 6,
+          gid = 8,
           visible = true,
           properties = {
             ["destination"] = { id = 415 }
@@ -1989,7 +1989,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 8,
+          gid = 6,
           visible = true,
           properties = {
             ["destination"] = { id = 418 }
@@ -2035,7 +2035,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 11,
+          gid = 9,
           visible = true,
           properties = {
             ["destination"] = { id = 421 }
@@ -2097,7 +2097,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 10,
+          gid = 5,
           visible = true,
           properties = {
             ["destination"] = { id = 434 }
@@ -2127,7 +2127,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 6,
+          gid = 8,
           visible = true,
           properties = {
             ["destination"] = { id = 436 }
@@ -2157,7 +2157,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 8,
+          gid = 6,
           visible = true,
           properties = {
             ["destination"] = { id = 438 }
@@ -2235,7 +2235,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 10,
+          gid = 5,
           visible = true,
           properties = {
             ["destination"] = { id = 444 }
@@ -2265,7 +2265,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 8,
+          gid = 6,
           visible = true,
           properties = {
             ["destination"] = { id = 448 }
@@ -2343,7 +2343,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 10,
+          gid = 5,
           visible = true,
           properties = {
             ["destination"] = { id = 452 }
@@ -2373,7 +2373,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 8,
+          gid = 6,
           visible = true,
           properties = {
             ["destination"] = { id = 454 }
@@ -2421,7 +2421,7 @@ return {
           width = 16,
           height = 16,
           rotation = 0,
-          gid = 10,
+          gid = 5,
           visible = true,
           properties = {
             ["destination"] = { id = 458 }

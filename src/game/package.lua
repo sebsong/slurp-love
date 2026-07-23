@@ -1,12 +1,10 @@
 local package = {
 	type = {
-		BASIC = 1,
-		RADIOACTIVE_JUNK = 2,
+		GLASS = 1,
+		LEAD_FOOT = 2,
 		LANTERN = 3,
-		LEAD_FOOT = 4,
-		FUEL_CELL = 5,
-		GLASS = 6,
-		MIRROR = 7,
+		RADIOACTIVE_JUNK = 4,
+		MIRROR = 5,
 	}
 }
 local meta = {}
@@ -35,19 +33,14 @@ function meta:onPickup(boat)
 	scene.pause(scene.scenes.game)
 	packageDetail.open(tileId, function() scene.resume(scene.scenes.game) end)
 
-	if tileId == package.type.BASIC then
-	elseif tileId == package.type.RADIOACTIVE_JUNK then
-		boat.maxSpeed = boat.maxSpeed * 2
-	elseif tileId == package.type.LANTERN then
-		boat.isLanternActive = true
+	if tileId == package.type.GLASS then
+		self.cracksRemaining = 3
 	elseif tileId == package.type.LEAD_FOOT then
 		boat.autoAccelerate = true
-	elseif tileId == package.type.FUEL_CELL then
-		boat.gasDepletionRate = 0
-		self.gasRemaining = values.FUEL_CELL_INITIAL_GAS
-		self.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
-	elseif tileId == package.type.GLASS then
-		self.cracksRemaining = 3
+	elseif tileId == package.type.LANTERN then
+		boat.isLanternActive = true
+	elseif tileId == package.type.RADIOACTIVE_JUNK then
+		boat.maxSpeed = boat.maxSpeed * 2
 	elseif tileId == package.type.MIRROR then
 		reversePackageOrder(boat)
 	end
@@ -55,15 +48,14 @@ end
 
 function meta:onDeliver(boat)
 	local tileId = self.tileId
-	if tileId == package.type.BASIC then
-	elseif tileId == package.type.RADIOACTIVE_JUNK then
-		boat.maxSpeed = boat.maxSpeed / 2
-	elseif tileId == package.type.LANTERN then
-		boat.isLanternActive = false
+
+	if tileId == package.type.GLASS then
 	elseif tileId == package.type.LEAD_FOOT then
 		boat.autoAccelerate = false
-	elseif tileId == package.type.FUEL_CELL then
-		boat.gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT
+	elseif tileId == package.type.LANTERN then
+		boat.isLanternActive = false
+	elseif tileId == package.type.RADIOACTIVE_JUNK then
+		boat.maxSpeed = boat.maxSpeed / 2
 	elseif tileId == package.type.MIRROR then
 		reversePackageOrder(boat)
 	end
@@ -88,14 +80,6 @@ function meta:onCollision(boat, _collidable)
 end
 
 function meta:update(dt)
-	if self.tileId == package.type.FUEL_CELL then
-		if self.gasRemaining >= 0 then
-			self.gasRemaining = self.gasRemaining - self.gasDepletionRate * dt
-			if self.gasRemaining < 0 then
-				print("explode")
-			end
-		end
-	end
 end
 
 function package.load()
