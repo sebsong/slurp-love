@@ -1,22 +1,33 @@
 local packageDetail = {}
 
 local draw = require("engine/draw")
+local animation = require("engine/animation")
 local ui = require("engine/ui")
 local scene = require("engine/scene")
 
 local font = require("game/font")
 local gameUi = require("game/ui")
 
-local detailBox
+local FLAVOR_TEXTS = {
+	"fragile, handle with care",
+	"pedal to the metal",
+	"see that which is unseen",
+	"caution, radioactive materials",
+	"uno reverse",
+}
 
-local flavorText
+local detailBox
+local packageDetailPortrait
+
 local textTransform
 local textWidth
 local textHeight
 
+local packageIndex
 local onClose
 
-function packageDetail.open(pacakgeTileId, _onClose)
+function packageDetail.open(_packageIndex, _onClose)
+	packageIndex = _packageIndex
 	onClose = _onClose
 	scene.start(scene.scenes.packageDetail)
 end
@@ -36,7 +47,14 @@ function packageDetail.load()
 		transform = ui.newAlignedTransform(detailBoxDrawComponent.width, detailBoxDrawComponent.height, ui.align.CENTER, ui.align.CENTER)
 	}
 
-	flavorText = "see that which is unseen"
+	local packageDetailsImage = love.graphics.newImage("assets/art/package_details.png")
+	local packageDetailAnimation = animation.new(packageDetailsImage, 5)
+	packageDetailAnimation.currentFrame = packageIndex or 1
+	packageDetailPortrait = {
+		drawComponent = packageDetailAnimation,
+		transform = ui.newAlignedTransform(packageDetailAnimation.width, packageDetailAnimation.height, ui.align.CENTER, ui.align.CENTER, 0, -50)
+	}
+
 	textWidth = 420
 	textHeight = 105
 	textTransform = ui.newAlignedTransform(textWidth, textHeight, ui.align.CENTER, ui.align.BOTTOM)
@@ -68,9 +86,10 @@ function packageDetail.draw()
 
 	love.graphics.setShader()
 	draw.draw(detailBox.drawComponent, detailBox.transform)
+	draw.draw(packageDetailPortrait.drawComponent, packageDetailPortrait.transform)
 
 	love.graphics.setFont(font.small)
-	love.graphics.printf(flavorText, textTransform, textWidth, "center")
+	love.graphics.printf(FLAVOR_TEXTS[packageIndex], textTransform, textWidth, "center")
 
 	love.graphics.pop()
 end
