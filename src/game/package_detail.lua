@@ -14,11 +14,17 @@ local textTransform
 local textWidth
 local textHeight
 
-function packageDetail.open()
+local onClose
+
+function packageDetail.open(pacakgeTileId, _onClose)
+	onClose = _onClose
 	scene.start(scene.scenes.packageDetail)
 end
 
 function packageDetail.close()
+	if onClose then
+		onClose()
+	end
 	scene.stop(scene.scenes.packageDetail)
 end
 

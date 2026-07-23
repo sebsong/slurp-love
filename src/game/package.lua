@@ -12,7 +12,10 @@ local package = {
 local meta = {}
 meta.__index = meta
 
+local scene = require("engine/scene")
+
 local values = require("game/values")
+local packageDetail = require("game/package_detail")
 
 local crack1Sound
 local crack2Sound
@@ -28,6 +31,10 @@ end
 
 function meta:onPickup(boat)
 	local tileId = self.tileId
+
+	scene.pause(scene.scenes.game)
+	packageDetail.open(tileId, function() scene.resume(scene.scenes.game) end)
+
 	if tileId == package.type.BASIC then
 	elseif tileId == package.type.RADIOACTIVE_JUNK then
 		boat.maxSpeed = boat.maxSpeed * 2
