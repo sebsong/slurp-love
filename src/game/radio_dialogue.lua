@@ -52,7 +52,11 @@ end
 
 function radioDialogue.next()
 	if not isLineFinished then
-		isFastForwarding = true
+		if not isFastForwarding then
+			isFastForwarding = true
+		else
+			numCharactersToShow = #dialogueLines[currentLineIndex]
+		end
 	else
 		if not isDialogueFinished then
 			currentLineIndex = currentLineIndex + 1
