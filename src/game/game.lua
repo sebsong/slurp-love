@@ -15,6 +15,7 @@ local package = require("game/package")
 local dayTracker = require("game/day_tracker")
 local radioDialogue = require("game/radio_dialogue")
 local radioScript = require("game/radio_script")
+local map = require("game/map")
 local waterEffect = require("game/water_effect")
 local tileEffect = require("game/tile_effect")
 local lanternEffect = require("game/lantern_effect")
@@ -294,6 +295,14 @@ function game.keypressed(key, scancode, isRepeat)
 
 	if key == "r" and not isRepeat then
 		scene.restart(game)
+	end
+
+	if key == "tab" then
+		if not scene.scenes.map.isActive then
+			map.open()
+		else
+			map.close()
+		end
 	end
 
 	cameraObj:keypressed(key, scancode, isRepeat)
