@@ -68,13 +68,13 @@ function dayTracker.update(dt)
 end
 
 function dayTracker.draw()
-	love.graphics.setFont(font.default)
+	love.graphics.setFont(font.large)
 	love.graphics.draw(dayTransitionBackgroundImage)
 	if dayTracker.isEndScreen() then
 		love.graphics.printf(
 			string.format("you win", dayTracker.currentDay),
 			0,
-			2 * font.default:getHeight(),
+			2 * font.large:getHeight(),
 			settings.canvasPixelWidth,
 			"center"
 		)
@@ -82,18 +82,18 @@ function dayTracker.draw()
 		love.graphics.printf(
 			DAY_TO_NAME[dayTracker.currentDay],
 			0,
-			2 * font.default:getHeight(),
+			2 * font.large:getHeight(),
 			settings.canvasPixelWidth,
 			"center"
 		)
 	end
 
 	if showContinueText then
-		love.graphics.setFont(font.small)
+		love.graphics.setFont(font.medium)
 		love.graphics.printf(
 			string.format("press any button to continue", dayTracker.currentDay),
 			0,
-			settings.canvasPixelHeight - (4 * font.small:getHeight()),
+			settings.canvasPixelHeight - (4 * font.medium:getHeight()),
 			settings.canvasPixelWidth,
 			"center"
 		)

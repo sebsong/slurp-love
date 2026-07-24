@@ -55,6 +55,7 @@ end
 function pauseMenu.toggle()
 	local gameScene = scene.scenes.game
 	local pauseScene = scene.scenes.pauseMenu
+	-- TODO: can't rely on game scene being paused as the check since other scenes pause the game as well
 	if not gameScene.isPaused then
 		scene.start(pauseScene)
 		scene.pause(gameScene)
@@ -103,7 +104,7 @@ function pauseMenu.draw()
 	love.graphics.setShader()
 	draw.draw(menu.drawComponent, menu.transform)
 
-	love.graphics.setFont(font.small)
+	love.graphics.setFont(font.medium)
 	draw.draw(resumeButton.drawComponent, resumeButton.transform)
 	love.graphics.print("resume", resumeButton.transform:transformPoint(10, 15))
 	draw.draw(mainMenuButton.drawComponent, mainMenuButton.transform)

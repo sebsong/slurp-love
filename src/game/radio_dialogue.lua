@@ -81,7 +81,7 @@ end
 local function setLines(lines)
 	for i, line in ipairs(lines) do
 		-- pre-wrap text to avoid words wrapping as they're revealed
-		local _, textLines = font.small:getWrap(line:lower(), textWidth)
+		local _, textLines = font.medium:getWrap(line:lower(), textWidth)
 		local wrappedLine = table.concat(textLines, '\n')
 		dialogueLines[i] = wrappedLine
 	end
@@ -96,9 +96,9 @@ function radioDialogue.load()
 		transform = ui.newAlignedTransform(dialogueBoxDrawComponent.width, dialogueBoxDrawComponent.height, ui.align.CENTER, ui.align.BOTTOM, 0, 10)
 	}
 
-	textWidth = 325
+	textWidth = 500
 	textHeight = dialogueBox.drawComponent.height - gameUi.PADDING * 2
-	local xPadding = 45
+	local xPadding = 130
 	local yPadding = gameUi.PADDING * 2.5
 	textTransform = ui.newAlignedTransform(textWidth, textHeight, ui.align.CENTER, ui.align.BOTTOM, xPadding, yPadding)
 

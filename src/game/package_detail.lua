@@ -88,7 +88,7 @@ function packageDetail.draw()
 	draw.draw(detailBox.drawComponent, detailBox.transform)
 	draw.draw(packageDetailPortrait.drawComponent, packageDetailPortrait.transform)
 
-	love.graphics.setFont(font.small)
+	love.graphics.setFont(font.medium)
 	love.graphics.printf(FLAVOR_TEXTS[packageIndex], textTransform, textWidth, "center")
 
 	love.graphics.pop()

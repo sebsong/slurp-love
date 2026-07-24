@@ -74,10 +74,10 @@ function victoryMenu.draw()
 
 	love.graphics.setShader()
 	-- draw.draw(menu.drawComponent, menu.transform)
-	love.graphics.setFont(font.default)
+	love.graphics.setFont(font.large)
 	love.graphics.printf("you're hired", victoryTextTransform, settings.canvasPixelWidth, "center")
 
-	love.graphics.setFont(font.small)
+	love.graphics.setFont(font.medium)
 	draw.draw(mainMenuButton.drawComponent, mainMenuButton.transform)
 	love.graphics.print("main menu", mainMenuButton.transform:transformPoint(10, 15))
 

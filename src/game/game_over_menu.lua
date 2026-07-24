@@ -96,10 +96,10 @@ function gameOverMenu.draw()
 
 	love.graphics.setShader()
 	-- draw.draw(menu.drawComponent, menu.transform)
-	love.graphics.setFont(font.default)
+	love.graphics.setFont(font.large)
 	love.graphics.printf("you're fired", gameOverTextTransform, settings.canvasPixelWidth, "center")
 
-	love.graphics.setFont(font.small)
+	love.graphics.setFont(font.medium)
 	draw.draw(restartButton.drawComponent, restartButton.transform)
 	love.graphics.print("restart\n day", restartButton.transform:transformPoint(10, 15))
 	draw.draw(mainMenuButton.drawComponent, mainMenuButton.transform)

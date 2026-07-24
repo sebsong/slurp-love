@@ -77,7 +77,7 @@ function mainMenu.update(dt)
 end
 
 function mainMenu.draw()
-	love.graphics.setFont(font.default)
+	love.graphics.setFont(font.large)
 
 	love.graphics.draw(backgroundImage)
 	draw.draw(playButton.animation, playButton.transform)
