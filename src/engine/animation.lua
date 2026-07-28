@@ -20,6 +20,7 @@ function animation.new(image, numFrames, duration, isLooping, xOffset, yOffset, 
 	drawComponent.currentFrame = 1
 	drawComponent.frameDurationSeconds = (duration or 0) / numFrames
 	drawComponent.currentFrameSeconds = 0
+	drawComponent.onFinish = nil
 
 	return drawComponent
 end
@@ -33,9 +34,10 @@ local function reset(_animation)
 	_animation.currentFrameSeconds = 0
 end
 
-function animation.play(_animation, isReversed)
+function animation.play(_animation, isReversed, onFinish)
 	_animation.isReversed = isReversed
 	reset(_animation)
+	_animation.onFinish = onFinish
 	_animation.isPlaying = true
 end
 
@@ -60,6 +62,9 @@ local function nextFrame(_animation)
 	if not isFinalFrame(_animation) then
 		incrementFrame(_animation)
 	else
+		if _animation.onFinish then
+			_animation.onFinish()
+		end
 		if _animation.isLooping then
 			reset(_animation)
 		else

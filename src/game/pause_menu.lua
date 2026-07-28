@@ -11,6 +11,9 @@ local font = require("game/font")
 local DEFAULT_FRAME = 1
 local HOVER_FRAME = 2
 
+local isOpen
+local shouldStop
+
 local menu
 
 local resumeButton
@@ -20,11 +23,34 @@ local titleTextTransform
 local resumeTextTransform
 local mainMenuTextTransform
 
+function pauseMenu.open()
+	scene.start(scene.scenes.pauseMenu)
+end
+
+function pauseMenu.close()
+	isOpen = false
+	animation.play(menu.drawComponent, true, function() shouldStop = true end)
+end
+
+function pauseMenu.toggle()
+	local gameScene = scene.scenes.game
+	local pauseScene = scene.scenes.pauseMenu
+	if not pauseScene.isActive then
+		pauseMenu.open()
+		scene.pause(gameScene)
+	else
+		pauseMenu.close()
+		scene.resume(gameScene) -- TODO: need to have some ref counter for how many things pausing the game
+	end
+end
+
 function pauseMenu.load()
+	isOpen = false
+	shouldStop = false
 	local menuImage = love.graphics.newImage("assets/art/pause_menu.png")
 	-- local menuDrawComponent = draw.new(menuImage)
-	local menuDrawComponent = animation.new(menuImage, 6, 0.1)
-	animation.play(menuDrawComponent)
+	local menuDrawComponent = animation.new(menuImage, 6, 0.15)
+	animation.play(menuDrawComponent, false, function() isOpen = true end)
 	menu = {
 		drawComponent = menuDrawComponent,
 		transform = ui.newAlignedTransform(menuDrawComponent.width, menuDrawComponent.height, ui.align.CENTER, ui.align.CENTER)
@@ -63,19 +89,6 @@ end
 function pauseMenu.unload()
 end
 
-function pauseMenu.toggle()
-	local gameScene = scene.scenes.game
-	local pauseScene = scene.scenes.pauseMenu
-	-- TODO: can't rely on game scene being paused as the check since other scenes pause the game as well
-	if not gameScene.isPaused then
-		scene.start(pauseScene)
-		scene.pause(gameScene)
-	else
-		scene.stop(pauseScene)
-		scene.resume(gameScene)
-	end
-end
-
 function pauseMenu.keypressed(key, scancode, isRepeat)
 end
 
@@ -108,6 +121,10 @@ end
 
 function pauseMenu.update(dt)
 	animation.update(menu.drawComponent, dt)
+
+	if shouldStop then
+		scene.stop(scene.scenes.pauseMenu)
+	end
 end
 
 function pauseMenu.draw()
@@ -115,6 +132,11 @@ function pauseMenu.draw()
 
 	love.graphics.setShader()
 	draw.draw(menu.drawComponent, menu.transform)
+
+	if not isOpen then
+		love.graphics.pop()
+		return
+	end
 
 	love.graphics.setFont(font.large)
 	love.graphics.printf("paused", titleTextTransform, menu.drawComponent.width, "center")
