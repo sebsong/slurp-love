@@ -5,8 +5,10 @@ local scene = {
 local scenesList = {}
 
 local function init(_scene, isGlobal)
-	assert(_scene.load, "Scene missing load method")
+	assert(_scene.load, "Scene %s missing load method")
 	assert(_scene.unload, "Scene missing unload method")
+	assert(_scene.onPause, "Scene missing onPause method")
+	assert(_scene.onResume, "Scene missing onResume method")
 	assert(_scene.update, "Scene missing update method")
 	assert(_scene.draw, "Scene missing draw method")
 
@@ -34,10 +36,12 @@ function scene.stop(_scene)
 end
 
 function scene.pause(_scene)
+	_scene.onPause()
 	_scene.isPaused = true
 end
 
 function scene.resume(_scene)
+	_scene.onResume()
 	_scene.isPaused = false
 end
 
@@ -84,7 +88,6 @@ end
 local function shouldSkipInput(_scene)
 	return _scene.isInputPaused or shouldSkipUpdate(_scene)
 end
-
 
 local function shouldSkipDraw(_scene)
 	return not _scene.isActive

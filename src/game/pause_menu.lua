@@ -89,6 +89,12 @@ end
 function pauseMenu.unload()
 end
 
+function pauseMenu.onPause()
+end
+
+function pauseMenu.onResume()
+end
+
 function pauseMenu.keypressed(key, scancode, isRepeat)
 end
 

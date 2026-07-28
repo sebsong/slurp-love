@@ -108,6 +108,12 @@ end
 function mailDialogue.unload()
 end
 
+function mailDialogue.onPause()
+end
+
+function mailDialogue.onResume()
+end
+
 function mailDialogue.keypressed(key, scancode, isRepeat)
 	if key == "space" then
 		mailDialogue.next()

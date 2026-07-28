@@ -57,6 +57,12 @@ end
 function gameOverMenu.unload()
 end
 
+function gameOverMenu.onPause()
+end
+
+function gameOverMenu.onResume()
+end
+
 function gameOverMenu.keypressed(key, scancode, isRepeat)
 end
 

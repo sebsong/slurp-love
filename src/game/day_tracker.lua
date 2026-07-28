@@ -46,6 +46,12 @@ end
 function dayTracker.unload()
 end
 
+function dayTracker.onPause()
+end
+
+function dayTracker.onResume()
+end
+
 function dayTracker.keypressed(key, scancode, isRepeat)
 	startDay()
 end

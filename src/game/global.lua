@@ -8,6 +8,12 @@ end
 function global.unload()
 end
 
+function global.onPause()
+end
+
+function global.onResume()
+end
+
 function global.keypressed(key, scancode, isRepeat)
 	local gameScene = scene.scenes.game
 	if gameScene.isActive and love.keyboard.isDown("escape") and not isRepeat then

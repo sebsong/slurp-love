@@ -46,6 +46,12 @@ end
 function victoryMenu.unload()
 end
 
+function victoryMenu.onPause()
+end
+
+function victoryMenu.onResume()
+end
+
 function victoryMenu.keypressed(key, scancode, isRepeat)
 end
 

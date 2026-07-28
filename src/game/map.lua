@@ -30,6 +30,12 @@ end
 function map.unload()
 end
 
+function map.onPause()
+end
+
+function map.onResume()
+end
+
 function map.keypressed(key, scancode, isRepeat)
 end
 

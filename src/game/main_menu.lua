@@ -43,6 +43,12 @@ end
 function mainMenu.unload()
 end
 
+function mainMenu.onPause()
+end
+
+function mainMenu.onResume()
+end
+
 function mainMenu.keypressed(key, scancode, isRepeat)
 end
 

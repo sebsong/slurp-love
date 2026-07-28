@@ -226,6 +226,14 @@ function game.unload()
 	love.audio.stop()
 end
 
+function game.onPause()
+	boatObj.engineLoopSound:pause()
+end
+
+function game.onResume()
+	boatObj.engineLoopSound:play()
+end
+
 function game.endDay()
 	scene.scenes.dayTracker.nextDay()
 	scene.transition(scene.scenes.dayTracker)

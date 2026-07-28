@@ -21,6 +21,12 @@ end
 function debug.unload()
 end
 
+function debug.onPause()
+end
+
+function debug.onResume()
+end
+
 function debug.keypressed(key, scancode, isRepeat)
 	if key == "return" and not isRepeat then
 		if scene.scenes.mainMenu.isActive then

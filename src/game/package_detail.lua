@@ -62,6 +62,12 @@ end
 function packageDetail.unload()
 end
 
+function packageDetail.onPause()
+end
+
+function packageDetail.onResume()
+end
+
 function packageDetail.keypressed(key, scancode, isRepeat)
 	if key == "space" then
 		packageDetail.close()
