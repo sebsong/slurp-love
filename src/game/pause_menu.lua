@@ -16,6 +16,10 @@ local menu
 local resumeButton
 local mainMenuButton
 
+local titleTextTransform
+local resumeTextTransform
+local mainMenuTextTransform
+
 function pauseMenu.load()
 	local menuImage = love.graphics.newImage("assets/art/pause_menu.png")
 	local menuDrawComponent = draw.new(menuImage)
@@ -23,6 +27,8 @@ function pauseMenu.load()
 		drawComponent = menuDrawComponent,
 		transform = ui.newAlignedTransform(menuDrawComponent.width, menuDrawComponent.height, ui.align.CENTER, ui.align.CENTER)
 	}
+
+	titleTextTransform = ui.newAlignedTransform(menuDrawComponent.width, font.large:getHeight(), ui.align.CENTER, ui.align.CENTER, 0, -75)
 
 	local buttonImage = love.graphics.newImage("assets/art/button.png")
 
@@ -38,15 +44,18 @@ function pauseMenu.load()
 		isPressed = false,
 		isHovered = false
 	}
+	resumeTextTransform = ui.newAlignedTransform(resumeDrawComponent.width, font.medium:getHeight(), ui.align.CENTER, ui.align.CENTER)
 
 	local mainMenuDrawComponent = animation.new(buttonImage, numButtonFrames)
+	local yOffset = mainMenuDrawComponent.height * 1.1
 	mainMenuButton = {
 		drawComponent = mainMenuDrawComponent,
-		transform = ui.newAlignedTransform(mainMenuDrawComponent.width, mainMenuDrawComponent.height, ui.align.CENTER, ui.align.CENTER, 0, mainMenuDrawComponent.height * 1.1),
+		transform = ui.newAlignedTransform(mainMenuDrawComponent.width, mainMenuDrawComponent.height, ui.align.CENTER, ui.align.CENTER, 0, yOffset),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
 		isHovered = false
 	}
+	mainMenuTextTransform = ui.newAlignedTransform(mainMenuDrawComponent.width, font.medium:getHeight(), ui.align.CENTER, ui.align.CENTER, 0, yOffset)
 end
 
 function pauseMenu.unload()
@@ -104,11 +113,14 @@ function pauseMenu.draw()
 	love.graphics.setShader()
 	draw.draw(menu.drawComponent, menu.transform)
 
+	love.graphics.setFont(font.large)
+	love.graphics.printf("paused", titleTextTransform, menu.drawComponent.width, "center")
+
 	love.graphics.setFont(font.medium)
 	draw.draw(resumeButton.drawComponent, resumeButton.transform)
-	love.graphics.print("resume", resumeButton.transform:transformPoint(10, 15))
+	love.graphics.printf("resume", resumeTextTransform, resumeButton.drawComponent.width, "center")
 	draw.draw(mainMenuButton.drawComponent, mainMenuButton.transform)
-	love.graphics.print("main menu", mainMenuButton.transform:transformPoint(10, 15))
+	love.graphics.printf("main menu", mainMenuTextTransform, mainMenuButton.drawComponent.width, "center")
 
 	love.graphics.pop()
 end
