@@ -1,14 +1,17 @@
 local mailDialogue = {}
 
 local draw = require("engine/draw")
+local animation = require("engine/animation")
 local ui = require("engine/ui")
 local scene = require("engine/scene")
 
 local font = require("game/font")
-local gameUi = require("game/ui")
 
 local DEFAULT_CHARACTERS_PER_SECOND = 20
 local FAST_FORWARD_MULTIPLIER = 10
+
+local isOpen
+local shouldStop
 
 local dialogueBox
 local textWidth
@@ -69,13 +72,8 @@ function mailDialogue.next()
 end
 
 function mailDialogue.close()
-	scene.stop(scene.scenes.mailDialogue)
-	if onDialogueClose then
-		onDialogueClose()
-	end
-
-	dialogueLines = {}
-	onDialogueClose = nil
+	isOpen = false
+	animation.play(dialogueBox.drawComponent, true, function() shouldStop = true end)
 end
 
 local function setLines(lines)
@@ -90,7 +88,9 @@ end
 
 function mailDialogue.load()
 	local dialogueBoxImage = love.graphics.newImage("assets/art/dialogue_box.png")
-	local dialogueBoxDrawComponent = draw.new(dialogueBoxImage)
+	-- local dialogueBoxDrawComponent = draw.new(dialogueBoxImage)
+	local dialogueBoxDrawComponent = animation.new(dialogueBoxImage, 12, 1.5)
+	animation.play(dialogueBoxDrawComponent, false, function() isOpen = true end)
 	dialogueBox = {
 		drawComponent = dialogueBoxDrawComponent,
 		transform = ui.newAlignedTransform(dialogueBoxDrawComponent.width, dialogueBoxDrawComponent.height, ui.align.CENTER, ui.align.BOTTOM, 0, 0)
@@ -130,6 +130,19 @@ function mailDialogue.wheelmoved(x, y)
 end
 
 function mailDialogue.update(dt)
+	if shouldStop then
+		if onDialogueClose then
+			onDialogueClose()
+		end
+
+		dialogueLines = {}
+		onDialogueClose = nil
+
+		scene.stop(scene.scenes.mailDialogue)
+	end
+
+	animation.update(dialogueBox.drawComponent, dt)
+
 	if isDialogueFinished then
 		return
 	end
@@ -159,6 +172,11 @@ function mailDialogue.draw()
 
 	love.graphics.setShader()
 	draw.draw(dialogueBox.drawComponent, dialogueBox.transform)
+
+	if not isOpen then
+		love.graphics.pop()
+		return
+	end
 
 	love.graphics.setFont(font.small)
 	love.graphics.printf(currentLine, textTransform, textWidth, "left")

@@ -15,6 +15,9 @@ local FLAVOR_TEXTS = {
 	"uno reverse",
 }
 
+local isOpen
+local shouldClose
+
 local detailBox
 local packageDetailPortrait
 
@@ -32,15 +35,18 @@ function packageDetail.open(_packageIndex, _onClose)
 end
 
 function packageDetail.close()
-	if onClose then
-		onClose()
-	end
-	scene.stop(scene.scenes.packageDetail)
+	isOpen = false
+	animation.play(detailBox.drawComponent, true, function() shouldClose = true end)
 end
 
 function packageDetail.load()
+	isOpen = false
+	shouldClose = false
+
 	local detailBoxImage = love.graphics.newImage("assets/art/package_detail_box.png")
-	local detailBoxDrawComponent = draw.new(detailBoxImage)
+	-- local detailBoxDrawComponent = draw.new(detailBoxImage)
+	local detailBoxDrawComponent = animation.new(detailBoxImage, 6, 0.15)
+	animation.play(detailBoxDrawComponent, false, function() isOpen = true end)
 	detailBox = {
 		drawComponent = detailBoxDrawComponent,
 		transform = ui.newAlignedTransform(detailBoxDrawComponent.width, detailBoxDrawComponent.height, ui.align.CENTER, ui.align.CENTER)
@@ -84,6 +90,14 @@ function packageDetail.wheelmoved(x, y)
 end
 
 function packageDetail.update(dt)
+	if shouldClose then
+		if onClose then
+			onClose()
+		end
+		scene.stop(scene.scenes.packageDetail)
+	end
+
+	animation.update(detailBox.drawComponent, dt)
 end
 
 function packageDetail.draw()
@@ -91,6 +105,12 @@ function packageDetail.draw()
 
 	love.graphics.setShader()
 	draw.draw(detailBox.drawComponent, detailBox.transform)
+
+	if not isOpen then
+		love.graphics.pop()
+		return
+	end
+
 	draw.draw(packageDetailPortrait.drawComponent, packageDetailPortrait.transform)
 
 	love.graphics.setFont(font.medium)
