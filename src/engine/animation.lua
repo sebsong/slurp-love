@@ -25,68 +25,68 @@ function animation.new(image, numFrames, duration, isLooping, xOffset, yOffset, 
 	return drawComponent
 end
 
-local function reset(_animation)
-	if not _animation.isReversed then
-		_animation.currentFrame = 1
+local function reset(anim)
+	if not anim.isReversed then
+		anim.currentFrame = 1
 	else
-		_animation.currentFrame = _animation.numFrames
+		anim.currentFrame = anim.numFrames
 	end
-	_animation.currentFrameSeconds = 0
+	anim.currentFrameSeconds = 0
 end
 
-function animation.play(_animation, isReversed, onFinish)
-	_animation.isReversed = isReversed
-	reset(_animation)
-	_animation.onFinish = onFinish
-	_animation.isPlaying = true
+function animation.play(anim, isReversed, onFinish)
+	anim.isReversed = isReversed
+	reset(anim)
+	anim.onFinish = onFinish
+	anim.isPlaying = true
 end
 
-local function isFinalFrame(_animation)
-	if not _animation.isReversed then
-		return _animation.currentFrame == _animation.numFrames
+local function isFinalFrame(anim)
+	if not anim.isReversed then
+		return anim.currentFrame == anim.numFrames
 	else
-		return _animation.currentFrame == 1
+		return anim.currentFrame == 1
 	end
 end
 
-local function incrementFrame(_animation)
-	if not _animation.isReversed then
-		_animation.currentFrame = _animation.currentFrame + 1
+local function incrementFrame(anim)
+	if not anim.isReversed then
+		anim.currentFrame = anim.currentFrame + 1
 	else
-		_animation.currentFrame = _animation.currentFrame - 1
+		anim.currentFrame = anim.currentFrame - 1
 	end
-	_animation.currentFrameSeconds = 0
+	anim.currentFrameSeconds = 0
 end
 
-local function nextFrame(_animation)
-	if not isFinalFrame(_animation) then
-		incrementFrame(_animation)
+local function nextFrame(anim)
+	if not isFinalFrame(anim) then
+		incrementFrame(anim)
 	else
-		if _animation.onFinish then
-			_animation.onFinish()
+		if anim.onFinish then
+			anim.onFinish()
 		end
-		if _animation.isLooping then
-			reset(_animation)
+		if anim.isLooping then
+			reset(anim)
 		else
-			animation.stop(_animation)
+			animation.stop(anim)
 		end
 	end
 end
 
-function animation.update(_animation, dt)
-	if not _animation.isPlaying then
+function animation.update(anim, dt)
+	if not anim.isPlaying then
 		return
 	end
 
-	if _animation.currentFrameSeconds >= _animation.frameDurationSeconds then
-		nextFrame(_animation)
+	if anim.currentFrameSeconds >= anim.frameDurationSeconds then
+		nextFrame(anim)
 	end
 
-	_animation.currentFrameSeconds = _animation.currentFrameSeconds + dt
+	anim.currentFrameSeconds = anim.currentFrameSeconds + dt
 end
 
-function animation.stop(_animation)
-	_animation.isPlaying = false
+function animation.stop(anim)
+	anim.isPlaying = false
 end
 
 return animation
