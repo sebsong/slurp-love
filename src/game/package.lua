@@ -12,7 +12,6 @@ meta.__index = meta
 
 local scene = require("engine/scene")
 
-local values = require("game/values")
 local packageDetail = require("game/package_detail")
 
 local crack1Sound

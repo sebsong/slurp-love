@@ -12,7 +12,7 @@ values.LANTERN_RADIUS = 125
 values.FULL_GAS_AMOUNT = 100
 values.DAY_TO_GAS_AMOUNT = {
 	30,
-	50,
+	60,
 	75,
 	80,
 	100,

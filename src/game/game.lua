@@ -13,8 +13,8 @@ local music = require("game/music")
 local boat = require("game/boat")
 local package = require("game/package")
 local dayTracker = require("game/day_tracker")
-local radioDialogue = require("game/radio_dialogue")
-local radioScript = require("game/radio_script")
+local mailDialogue = require("game/mail_dialogue")
+local mailScript = require("game/mail_script")
 local map = require("game/map")
 local waterEffect = require("game/water_effect")
 local tileEffect = require("game/tile_effect")
@@ -215,8 +215,8 @@ function game.load()
 	end
 
 	scene.pauseInput(scene.scenes.game)
-	radioDialogue.open(
-		radioScript.dailyDialogue[currentDay],
+	mailDialogue.open(
+		mailScript.dailyDialogue[currentDay],
 		function() scene.resumeInput(scene.scenes.game) end
 	)
 end

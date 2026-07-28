@@ -12,7 +12,7 @@ local FLAVOR_TEXTS = {
 	"fragile, handle with care",
 	"pedal to the metal",
 	"see that which is unseen",
-	"caution, radioactive materials",
+	"caution, mailactive materials",
 	"uno reverse",
 }
 

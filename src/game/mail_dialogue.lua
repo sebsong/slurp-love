@@ -1,4 +1,4 @@
-local radioDialogue = {}
+local mailDialogue = {}
 
 local draw = require("engine/draw")
 local ui = require("engine/ui")
@@ -41,16 +41,16 @@ local function resetDialogue()
 end
 
 
-function radioDialogue.open(lines, onClose)
+function mailDialogue.open(lines, onClose)
 	if type(lines) ~= "table" then
 		lines = { lines }
 	end
 	dialogueLines = lines
 	onDialogueClose = onClose
-	scene.start(scene.scenes.radioDialogue)
+	scene.start(scene.scenes.mailDialogue)
 end
 
-function radioDialogue.next()
+function mailDialogue.next()
 	if not isLineFinished then
 		if not isFastForwarding then
 			isFastForwarding = true
@@ -62,14 +62,14 @@ function radioDialogue.next()
 			currentLineIndex = currentLineIndex + 1
 			resetLine()
 		else
-			radioDialogue.close()
+			mailDialogue.close()
 			resetDialogue()
 		end
 	end
 end
 
-function radioDialogue.close()
-	scene.stop(scene.scenes.radioDialogue)
+function mailDialogue.close()
+	scene.stop(scene.scenes.mailDialogue)
 	if onDialogueClose then
 		onDialogueClose()
 	end
@@ -88,7 +88,7 @@ local function setLines(lines)
 	resetDialogue()
 end
 
-function radioDialogue.load()
+function mailDialogue.load()
 	local dialogueBoxImage = love.graphics.newImage("assets/art/dialogue_box.png")
 	local dialogueBoxDrawComponent = draw.new(dialogueBoxImage)
 	dialogueBox = {
@@ -105,25 +105,25 @@ function radioDialogue.load()
 	setLines(dialogueLines)
 end
 
-function radioDialogue.unload()
+function mailDialogue.unload()
 end
 
-function radioDialogue.keypressed(key, scancode, isRepeat)
+function mailDialogue.keypressed(key, scancode, isRepeat)
 	if key == "space" then
-		radioDialogue.next()
+		mailDialogue.next()
 	end
 end
 
-function radioDialogue.mousepressed(x, y, button, isTouch, presses)
+function mailDialogue.mousepressed(x, y, button, isTouch, presses)
 end
 
-function radioDialogue.mousemoved(x, y, dx, dy, isTouch)
+function mailDialogue.mousemoved(x, y, dx, dy, isTouch)
 end
 
-function radioDialogue.wheelmoved(x, y)
+function mailDialogue.wheelmoved(x, y)
 end
 
-function radioDialogue.update(dt)
+function mailDialogue.update(dt)
 	if isDialogueFinished then
 		return
 	end
@@ -148,7 +148,7 @@ function radioDialogue.update(dt)
 	end
 end
 
-function radioDialogue.draw()
+function mailDialogue.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
@@ -160,4 +160,4 @@ function radioDialogue.draw()
 	love.graphics.pop()
 end
 
-return radioDialogue
+return mailDialogue
