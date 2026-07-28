@@ -22,7 +22,9 @@ local mainMenuTextTransform
 
 function pauseMenu.load()
 	local menuImage = love.graphics.newImage("assets/art/pause_menu.png")
-	local menuDrawComponent = draw.new(menuImage)
+	-- local menuDrawComponent = draw.new(menuImage)
+	local menuDrawComponent = animation.new(menuImage, 6, 0.1)
+	animation.play(menuDrawComponent)
 	menu = {
 		drawComponent = menuDrawComponent,
 		transform = ui.newAlignedTransform(menuDrawComponent.width, menuDrawComponent.height, ui.align.CENTER, ui.align.CENTER)
@@ -105,6 +107,7 @@ function pauseMenu.wheelmoved(x, y)
 end
 
 function pauseMenu.update(dt)
+	animation.update(menu.drawComponent, dt)
 end
 
 function pauseMenu.draw()

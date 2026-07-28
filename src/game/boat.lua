@@ -280,14 +280,14 @@ function boat.new(tilemap, dayValue)
 	local animations = {}
 
 	local boatImage = love.graphics.newImage("assets/art/boat1.png")
-	local animationStatic = animation.new(boatImage, NUM_BOAT_ANGLES, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
+	local animationStatic = animation.new(boatImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
 	animationStatic.draw = draw
 	animationStatic.zIndex = 0
 	animationStatic.zIndexOffset = 0
 	table.insert(animations, animationStatic)
 
 	local boatAccelImage = love.graphics.newImage("assets/art/boat2.png")
-	local animationAccel = animation.new(boatAccelImage, NUM_BOAT_ANGLES, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
+	local animationAccel = animation.new(boatAccelImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
 	animationAccel.draw = draw
 	animationAccel.zIndex = 0
 	animationAccel.zIndexOffset = 0

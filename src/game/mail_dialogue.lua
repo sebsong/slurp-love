@@ -93,13 +93,13 @@ function mailDialogue.load()
 	local dialogueBoxDrawComponent = draw.new(dialogueBoxImage)
 	dialogueBox = {
 		drawComponent = dialogueBoxDrawComponent,
-		transform = ui.newAlignedTransform(dialogueBoxDrawComponent.width, dialogueBoxDrawComponent.height, ui.align.CENTER, ui.align.BOTTOM, 0, 10)
+		transform = ui.newAlignedTransform(dialogueBoxDrawComponent.width, dialogueBoxDrawComponent.height, ui.align.CENTER, ui.align.BOTTOM, 0, 0)
 	}
 
-	textWidth = 500
-	textHeight = dialogueBox.drawComponent.height - gameUi.PADDING * 2
-	local xPadding = 130
-	local yPadding = gameUi.PADDING * 2.5
+	textWidth = 475
+	textHeight = 100
+	local xPadding = 90
+	local yPadding = 25
 	textTransform = ui.newAlignedTransform(textWidth, textHeight, ui.align.CENTER, ui.align.BOTTOM, xPadding, yPadding)
 
 	setLines(dialogueLines)

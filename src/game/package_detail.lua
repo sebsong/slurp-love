@@ -6,13 +6,12 @@ local ui = require("engine/ui")
 local scene = require("engine/scene")
 
 local font = require("game/font")
-local gameUi = require("game/ui")
 
 local FLAVOR_TEXTS = {
 	"fragile, handle with care",
 	"pedal to the metal",
 	"see that which is unseen",
-	"caution, mailactive materials",
+	"caution, radioctive materials",
 	"uno reverse",
 }
 
