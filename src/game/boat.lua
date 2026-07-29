@@ -130,18 +130,18 @@ local function update(self, cameraObj, dt)
 	end
 
 	if didMoveForward then
-		self.drawComponent = self.animations[2]
+		self.sprite = self.animations[2]
 	else
-		self.drawComponent = self.animations[1]
+		self.sprite = self.animations[1]
 	end
-	local rotSegmentLength = 2 * math.pi / #self.drawComponent.quads
+	local rotSegmentLength = 2 * math.pi / #self.sprite.quads
 	local frameIdx = math.floor(
 		(
 			((self.rotation + (rotSegmentLength / 2)) % (2 * math.pi)) /
 			(rotSegmentLength)
 		)
 	) + 1
-	self.drawComponent.currentFrame = frameIdx
+	self.sprite.currentFrame = frameIdx
 
 	self:updateNeighborTiles()
 	self:updateTrailPositions(dt)
@@ -167,7 +167,7 @@ local function update(self, cameraObj, dt)
 	local boatUpdate = boatTo - boatFrom
 	self.transform:translate(boatUpdate.x, boatUpdate.y)
 
-	self.drawComponent.zIndex = self:getWorldRowIdx()
+	self.sprite.zIndex = self:getWorldRowIdx()
 
 	BoatEffect.update(cameraObj)
 end
@@ -220,7 +220,7 @@ local function pickupPackage(self, packages, mailboxes)
 	local packageToPickup = self:findPackageToPickup(packages)
 	if packageToPickup then
 		table.insert(self.packages, packageToPickup)
-		packageToPickup.drawComponent.shouldDraw = false
+		packageToPickup.sprite.shouldDraw = false
 		packageToPickup:onPickup(self)
 		return true
 	end
@@ -314,7 +314,7 @@ function Boat.new(tilemap, dayValue)
 	return {
 		-- TODO: build the boat from a tile object
 		animations = animations,
-		drawComponent = animationStatic,
+		sprite = animationStatic,
 		transform = transform,
 
 		bumpSound = bumpSound,

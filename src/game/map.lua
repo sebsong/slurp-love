@@ -16,10 +16,10 @@ end
 
 function Map.load()
 	local mapImage = love.graphics.newImage("assets/art/map.png")
-	local mapDrawComponent = Sprite.new(mapImage)
+	local mapSprite = Sprite.new(mapImage)
 	mapOverlay = {
-		drawComponent = mapDrawComponent,
-		transform = Ui.newAlignedTransform(mapDrawComponent.width, mapDrawComponent.height, Ui.align.CENTER, Ui.align.CENTER)
+		sprite = mapSprite,
+		transform = Ui.newAlignedTransform(mapSprite.width, mapSprite.height, Ui.align.CENTER, Ui.align.CENTER)
 	}
 end
 
@@ -51,7 +51,7 @@ function Map.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
-	Sprite.draw(mapOverlay.drawComponent, mapOverlay.transform)
+	Sprite.draw(mapOverlay.sprite, mapOverlay.transform)
 
 	love.graphics.pop()
 end

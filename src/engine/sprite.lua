@@ -39,44 +39,44 @@ function Sprite.newSpriteBatch(spriteBatch, quad, zIndex, zIndexOffset)
 	return Sprite.new(spriteBatch, quad, nil, nil, zIndex, zIndexOffset, true)
 end
 
-function Sprite.draw(drawComponent, transform)
-	if not drawComponent.shouldDraw then
+function Sprite.draw(sprite, transform)
+	if not sprite.shouldDraw then
 		return
 	end
 
-	if drawComponent.draw then
-		drawComponent.draw(drawComponent, transform)
+	if sprite.draw then
+		sprite.draw(sprite, transform)
 		return
 	end
 
 	love.graphics.push()
 	love.graphics.applyTransform(transform)
 
-	if drawComponent.setShader then
-		drawComponent.setShader()
+	if sprite.setShader then
+		sprite.setShader()
 	else
 		love.graphics.setShader()
 	end
 
 	local quad
-	if drawComponent.quad then
-		quad = drawComponent.quad
-	elseif drawComponent.quads then
-		quad = drawComponent.quads[drawComponent.currentFrame]
+	if sprite.quad then
+		quad = sprite.quad
+	elseif sprite.quads then
+		quad = sprite.quads[sprite.currentFrame]
 	end
 
-	if quad and not drawComponent.isSpriteBatch then
+	if quad and not sprite.isSpriteBatch then
 		love.graphics.draw(
-			drawComponent.image,
+			sprite.image,
 			quad,
-			drawComponent.xOffset,
-			drawComponent.yOffset
+			sprite.xOffset,
+			sprite.yOffset
 		)
 	else
 		love.graphics.draw(
-			drawComponent.image,
-			drawComponent.xOffset,
-			drawComponent.yOffset
+			sprite.image,
+			sprite.xOffset,
+			sprite.yOffset
 		)
 	end
 	love.graphics.pop()

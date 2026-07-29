@@ -142,11 +142,11 @@ function game.load()
 				local zIndexOffset = tile.zIndexOffset
 				local tileObj = {
 					transform = love.math.newTransform(x, y),
-					drawComponent = Sprite.new(tileImage, tileQuad, xOffset, yOffset, zIndex, zIndexOffset),
+					sprite = Sprite.new(tileImage, tileQuad, xOffset, yOffset, zIndex, zIndexOffset),
 					tileQuad = tileQuad,
 					isFloating = true,
 				}
-				tileObj.drawComponent.setShader = function()
+				tileObj.sprite.setShader = function()
 					TileEffect.setShader(tileObj, boatObj, lanternXRadius, lanternYRadius)
 				end
 				table.insert(worldObjects, tileObj)
@@ -158,16 +158,16 @@ function game.load()
 				local spriteBatch = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static")
 				tilemapWorldRow = {
 					transform = love.math.newTransform(0, y),
-					drawComponent = Sprite.newSpriteBatch(spriteBatch, tileQuad, tile.zIndex, tile.zIndexOffset),
+					sprite = Sprite.newSpriteBatch(spriteBatch, tileQuad, tile.zIndex, tile.zIndexOffset),
 					tileQuad = tileQuad,
 					isFloating = false,
 				}
-				tilemapWorldRow.drawComponent.setShader = function()
+				tilemapWorldRow.sprite.setShader = function()
 					TileEffect.setShader(tilemapWorldRow, boatObj, lanternXRadius, lanternYRadius)
 				end
 				tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
 			end
-			tilemapWorldRow.drawComponent.image:add(
+			tilemapWorldRow.sprite.image:add(
 				tileQuad,
 				x - width / 2,
 				-height + tilemapObj.tileHeight / 2
@@ -181,12 +181,12 @@ function game.load()
 		if (tilesetName == PACKAGES_TILESET_NAME) then
 			local packageObj = Package.toPackage(object)
 			table.insert(packages, packageObj)
-			object.drawComponent.setShader = function()
+			object.sprite.setShader = function()
 				PackageEffect.setShader(packageObj)
 			end
 		elseif (tilesetName == MAILBOX_TILESET_NAME) then
 			table.insert(mailboxes, object)
-			object.drawComponent.setShader = function()
+			object.sprite.setShader = function()
 				MailboxEffect.setShader(object)
 			end
 		end
@@ -208,9 +208,9 @@ function game.load()
 	for _, object in ipairs(tilemapObj.layers[BUILDINGS_LAYER_NAME].objects) do
 		local x, y = object.transform:transformPoint(0, 0)
 		tilemapBuildingsSpriteBatch:add(
-			object.drawComponent.quad,
-			x + object.drawComponent.xOffset,
-			y + object.drawComponent.yOffset
+			object.sprite.quad,
+			x + object.sprite.xOffset,
+			y + object.sprite.yOffset
 		)
 	end
 
@@ -367,7 +367,7 @@ function game.update(dt)
 		end
 	end
 	for _, worldObject in ipairs(worldObjects) do
-		local zIndex = worldObject.drawComponent.zIndex + worldObject.drawComponent.zIndexOffset
+		local zIndex = worldObject.sprite.zIndex + worldObject.sprite.zIndexOffset
 		if Math.inRange(zIndex, startWorldRowIdx, endWorldRowIdx) then
 			table.insert(worldEntities, worldObject)
 		end
@@ -376,8 +376,8 @@ function game.update(dt)
 	table.sort(
 		worldEntities,
 		function(entity, otherEntity)
-			local entityZIndex = entity.drawComponent.zIndex + entity.drawComponent.zIndexOffset
-			local otherEntityZIndex = otherEntity.drawComponent.zIndex + otherEntity.drawComponent.zIndexOffset
+			local entityZIndex = entity.sprite.zIndex + entity.sprite.zIndexOffset
+			local otherEntityZIndex = otherEntity.sprite.zIndex + otherEntity.sprite.zIndexOffset
 			return entityZIndex < otherEntityZIndex
 		end
 	)
@@ -403,7 +403,7 @@ function game.draw()
 
 	love.graphics.draw(tilemapWallsSpriteBatch)
 	for _, worldObject in ipairs(worldEntities) do
-		Sprite.draw(worldObject.drawComponent, worldObject.transform)
+		Sprite.draw(worldObject.sprite, worldObject.transform)
 	end
 	love.graphics.setShader()
 	love.graphics.draw(tilemapBuildingsSpriteBatch)

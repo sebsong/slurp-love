@@ -240,7 +240,7 @@ function Tilemap.newTilemapLua(luaFilepath, tilesets)
 				local xOffset = -objWidth / 2
 				local yOffset = -objHeight + tileHeight / 2
 				table.insert(objects, {
-					drawComponent = Sprite.new(tileset.image, quad, xOffset, yOffset, worldRowIdx, zIndexOffset),
+					sprite = Sprite.new(tileset.image, quad, xOffset, yOffset, worldRowIdx, zIndexOffset),
 					transform = love.math.newTransform(worldX, worldY),
 
 					id = object.id,
@@ -251,7 +251,7 @@ function Tilemap.newTilemapLua(luaFilepath, tilesets)
 			end
 
 			table.sort(objects, function(o1, o2)
-				return o1.drawComponent.zIndex + o1.drawComponent.zIndexOffset < o2.drawComponent.zIndex + o2.drawComponent.zIndexOffset
+				return o1.sprite.zIndex + o1.sprite.zIndexOffset < o2.sprite.zIndex + o2.sprite.zIndexOffset
 			end)
 
 			layers[layer.name] = {

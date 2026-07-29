@@ -21,10 +21,10 @@ local mainMenuButton
 
 function gameOverMenu.load()
 	local menuImage = love.graphics.newImage("assets/art/game_over_menu.png")
-	local menuDrawComponent = Sprite.new(menuImage)
+	local menuSprite = Sprite.new(menuImage)
 	menu = {
-		drawComponent = menuDrawComponent,
-		transform = Ui.newAlignedTransform(menuDrawComponent.width, menuDrawComponent.height, Ui.align.CENTER, Ui.align.CENTER)
+		sprite = menuSprite,
+		transform = Ui.newAlignedTransform(menuSprite.width, menuSprite.height, Ui.align.CENTER, Ui.align.CENTER)
 	}
 
 	gameOverTextTransform = love.math.newTransform(0, 50)
@@ -35,19 +35,19 @@ function gameOverMenu.load()
 	local buttonImageWidth, buttonImageHeight = buttonImage:getDimensions()
 	local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
 
-	local restartDrawComponent = Animation.new(buttonImage, numButtonFrames)
+	local restartSprite = Animation.new(buttonImage, numButtonFrames)
 	restartButton = {
-		drawComponent = restartDrawComponent,
-		transform = Ui.newAlignedTransform(restartDrawComponent.width, restartDrawComponent.height, Ui.align.CENTER, Ui.align.CENTER),
+		sprite = restartSprite,
+		transform = Ui.newAlignedTransform(restartSprite.width, restartSprite.height, Ui.align.CENTER, Ui.align.CENTER),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
 		isHovered = false
 	}
 
-	local mainMenuDrawComponent = Animation.new(buttonImage, numButtonFrames)
+	local mainMenuSprite = Animation.new(buttonImage, numButtonFrames)
 	mainMenuButton = {
-		drawComponent = mainMenuDrawComponent,
-		transform = Ui.newAlignedTransform(mainMenuDrawComponent.width, mainMenuDrawComponent.height, Ui.align.CENTER, Ui.align.CENTER, 0, mainMenuDrawComponent.height * 1.1),
+		sprite = mainMenuSprite,
+		transform = Ui.newAlignedTransform(mainMenuSprite.width, mainMenuSprite.height, Ui.align.CENTER, Ui.align.CENTER, 0, mainMenuSprite.height * 1.1),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
 		isHovered = false
@@ -79,15 +79,15 @@ end
 
 function gameOverMenu.mousemoved(x, y, dx, dy, isTouch)
 	if Collision.hitTest(x, y, restartButton.collider, restartButton.transform) then
-		restartButton.drawComponent.currentFrame = HOVER_FRAME
+		restartButton.sprite.currentFrame = HOVER_FRAME
 	else
-		restartButton.drawComponent.currentFrame = DEFAULT_FRAME
+		restartButton.sprite.currentFrame = DEFAULT_FRAME
 	end
 
 	if Collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
-		mainMenuButton.drawComponent.currentFrame = HOVER_FRAME
+		mainMenuButton.sprite.currentFrame = HOVER_FRAME
 	else
-		mainMenuButton.drawComponent.currentFrame = DEFAULT_FRAME
+		mainMenuButton.sprite.currentFrame = DEFAULT_FRAME
 	end
 end
 
@@ -101,14 +101,14 @@ function gameOverMenu.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
-	-- Sprite.draw(menu.drawComponent, menu.transform)
+	-- Sprite.draw(menu.sprite, menu.transform)
 	love.graphics.setFont(Font.large)
 	love.graphics.printf("you're fired", gameOverTextTransform, Settings.canvasPixelWidth, "center")
 
 	love.graphics.setFont(Font.medium)
-	Sprite.draw(restartButton.drawComponent, restartButton.transform)
+	Sprite.draw(restartButton.sprite, restartButton.transform)
 	love.graphics.print("restart\n day", restartButton.transform:transformPoint(10, 15))
-	Sprite.draw(mainMenuButton.drawComponent, mainMenuButton.transform)
+	Sprite.draw(mainMenuButton.sprite, mainMenuButton.transform)
 	love.graphics.print("main menu", mainMenuButton.transform:transformPoint(10, 15))
 
 	love.graphics.pop()

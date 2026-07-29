@@ -36,7 +36,7 @@ end
 
 function PackageDetail.close()
 	isOpen = false
-	Animation.play(detailBox.drawComponent, true, function() shouldClose = true end)
+	Animation.play(detailBox.sprite, true, function() shouldClose = true end)
 end
 
 function PackageDetail.load()
@@ -44,19 +44,19 @@ function PackageDetail.load()
 	shouldClose = false
 
 	local detailBoxImage = love.graphics.newImage("assets/art/package_detail_box.png")
-	-- local detailBoxDrawComponent = Sprite.new(detailBoxImage)
-	local detailBoxDrawComponent = Animation.new(detailBoxImage, 6, 0.15)
-	Animation.play(detailBoxDrawComponent, false, function() isOpen = true end)
+	-- local detailBoxSprite = Sprite.new(detailBoxImage)
+	local detailBoxSprite = Animation.new(detailBoxImage, 6, 0.15)
+	Animation.play(detailBoxSprite, false, function() isOpen = true end)
 	detailBox = {
-		drawComponent = detailBoxDrawComponent,
-		transform = Ui.newAlignedTransform(detailBoxDrawComponent.width, detailBoxDrawComponent.height, Ui.align.CENTER, Ui.align.CENTER)
+		sprite = detailBoxSprite,
+		transform = Ui.newAlignedTransform(detailBoxSprite.width, detailBoxSprite.height, Ui.align.CENTER, Ui.align.CENTER)
 	}
 
 	local packageDetailsImage = love.graphics.newImage("assets/art/package_details.png")
 	local packageDetailAnimation = Animation.new(packageDetailsImage, 5)
 	packageDetailAnimation.currentFrame = packageIndex or 1
 	packageDetailPortrait = {
-		drawComponent = packageDetailAnimation,
+		sprite = packageDetailAnimation,
 		transform = Ui.newAlignedTransform(packageDetailAnimation.width, packageDetailAnimation.height, Ui.align.CENTER, Ui.align.CENTER, 0, -50)
 	}
 
@@ -97,21 +97,21 @@ function PackageDetail.update(dt)
 		Scene.stop(Scene.scenes.packageDetail)
 	end
 
-	Animation.update(detailBox.drawComponent, dt)
+	Animation.update(detailBox.sprite, dt)
 end
 
 function PackageDetail.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
-	Sprite.draw(detailBox.drawComponent, detailBox.transform)
+	Sprite.draw(detailBox.sprite, detailBox.transform)
 
 	if not isOpen then
 		love.graphics.pop()
 		return
 	end
 
-	Sprite.draw(packageDetailPortrait.drawComponent, packageDetailPortrait.transform)
+	Sprite.draw(packageDetailPortrait.sprite, packageDetailPortrait.transform)
 
 	love.graphics.setFont(Font.medium)
 	love.graphics.printf(FLAVOR_TEXTS[packageIndex], textTransform, textWidth, "center")

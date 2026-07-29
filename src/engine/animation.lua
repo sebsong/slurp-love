@@ -10,19 +10,19 @@ function Animation.new(image, numFrames, duration, isLooping, xOffset, yOffset, 
 		table.insert(quads, love.graphics.newQuad(i * quadWidth, 0, quadWidth, quadHeight, image))
 	end
 
-	local drawComponent = Sprite.new(image, quads, xOffset, yOffset, zIndex, zIndexOffset)
+	local sprite = Sprite.new(image, quads, xOffset, yOffset, zIndex, zIndexOffset)
 
 	-- TODO: organize these in a separate section
-	drawComponent.isPlaying = false
-	drawComponent.isReversed = false
-	drawComponent.isLooping = isLooping
-	drawComponent.numFrames = numFrames
-	drawComponent.currentFrame = 1
-	drawComponent.frameDurationSeconds = (duration or 0) / numFrames
-	drawComponent.currentFrameSeconds = 0
-	drawComponent.onFinish = nil
+	sprite.isPlaying = false
+	sprite.isReversed = false
+	sprite.isLooping = isLooping
+	sprite.numFrames = numFrames
+	sprite.currentFrame = 1
+	sprite.frameDurationSeconds = (duration or 0) / numFrames
+	sprite.currentFrameSeconds = 0
+	sprite.onFinish = nil
 
-	return drawComponent
+	return sprite
 end
 
 local function reset(anim)

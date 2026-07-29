@@ -19,10 +19,10 @@ local mainMenuButton
 
 function VictoryMenu.load()
 	local menuImage = love.graphics.newImage("assets/art/victory_menu.png")
-	local menuDrawComponent = Sprite.new(menuImage)
+	local menuSprite = Sprite.new(menuImage)
 	menu = {
-		drawComponent = menuDrawComponent,
-		transform = Ui.newAlignedTransform(menuDrawComponent.width, menuDrawComponent.height, Ui.align.CENTER, Ui.align.CENTER)
+		sprite = menuSprite,
+		transform = Ui.newAlignedTransform(menuSprite.width, menuSprite.height, Ui.align.CENTER, Ui.align.CENTER)
 	}
 
 	victoryTextTransform = love.math.newTransform(0, 50)
@@ -33,10 +33,10 @@ function VictoryMenu.load()
 	local buttonImageWidth, buttonImageHeight = buttonImage:getDimensions()
 	local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
 
-	local mainMenuDrawComponent = Animation.new(buttonImage, numButtonFrames)
+	local mainMenuSprite = Animation.new(buttonImage, numButtonFrames)
 	mainMenuButton = {
-		drawComponent = mainMenuDrawComponent,
-		transform = Ui.newAlignedTransform(mainMenuDrawComponent.width, mainMenuDrawComponent.height, Ui.align.CENTER, Ui.align.CENTER, 0, mainMenuDrawComponent.height * 1.1),
+		sprite = mainMenuSprite,
+		transform = Ui.newAlignedTransform(mainMenuSprite.width, mainMenuSprite.height, Ui.align.CENTER, Ui.align.CENTER, 0, mainMenuSprite.height * 1.1),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
 		isHovered = false
@@ -63,9 +63,9 @@ end
 
 function VictoryMenu.mousemoved(x, y, dx, dy, isTouch)
 	if Collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
-		mainMenuButton.drawComponent.currentFrame = HOVER_FRAME
+		mainMenuButton.sprite.currentFrame = HOVER_FRAME
 	else
-		mainMenuButton.drawComponent.currentFrame = DEFAULT_FRAME
+		mainMenuButton.sprite.currentFrame = DEFAULT_FRAME
 	end
 end
 
@@ -79,12 +79,12 @@ function VictoryMenu.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
-	-- Sprite.draw(menu.drawComponent, menu.transform)
+	-- Sprite.draw(menu.sprite, menu.transform)
 	love.graphics.setFont(Font.large)
 	love.graphics.printf("you're hired", victoryTextTransform, Settings.canvasPixelWidth, "center")
 
 	love.graphics.setFont(Font.medium)
-	Sprite.draw(mainMenuButton.drawComponent, mainMenuButton.transform)
+	Sprite.draw(mainMenuButton.sprite, mainMenuButton.transform)
 	love.graphics.print("main menu", mainMenuButton.transform:transformPoint(10, 15))
 
 	love.graphics.pop()

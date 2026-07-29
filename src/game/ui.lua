@@ -27,10 +27,10 @@ function GameUi.load()
 		gasMeterWidth, gasMeterHeight,
 		uiImage
 	)
-	local gasMeterDrawComponent = Sprite.new(uiImage, gasMeterQuad)
+	local gasMeterSprite = Sprite.new(uiImage, gasMeterQuad)
 	gasMeter = {
-		drawComponent = gasMeterDrawComponent,
-		transform = Ui.newAlignedTransform(gasMeterDrawComponent.width, gasMeterDrawComponent.height, Ui.align.LEFT, Ui.align.BOTTOM, GameUi.PADDING, GameUi.PADDING)
+		sprite = gasMeterSprite,
+		transform = Ui.newAlignedTransform(gasMeterSprite.width, gasMeterSprite.height, Ui.align.LEFT, Ui.align.BOTTOM, GameUi.PADDING, GameUi.PADDING)
 	}
 
 	local gasMeterProgressQuad = love.graphics.newQuad(
@@ -40,11 +40,11 @@ function GameUi.load()
 	)
 	GameUi.gasMeterShader = love.graphics.newShader("assets/shader/progress_bar.glsl")
 	GameUi.gasMeterShader:send("progress", 1.0)
-	local gasMeterProgressDrawComponent = Sprite.new(uiImage, gasMeterProgressQuad)
-	gasMeterProgressDrawComponent.setShader = function() love.graphics.setShader(GameUi.gasMeterShader) end
+	local gasMeterProgressSprite = Sprite.new(uiImage, gasMeterProgressQuad)
+	gasMeterProgressSprite.setShader = function() love.graphics.setShader(GameUi.gasMeterShader) end
 	gasMeterProgress = {
-		drawComponent = gasMeterProgressDrawComponent,
-		transform = Ui.newAlignedTransform(gasMeterProgressDrawComponent.width, gasMeterProgressDrawComponent.height, Ui.align.LEFT, Ui.align.BOTTOM, GameUi.PADDING, GameUi.PADDING)
+		sprite = gasMeterProgressSprite,
+		transform = Ui.newAlignedTransform(gasMeterProgressSprite.width, gasMeterProgressSprite.height, Ui.align.LEFT, Ui.align.BOTTOM, GameUi.PADDING, GameUi.PADDING)
 	}
 
 	local packageContainerQuad = love.graphics.newQuad(
@@ -52,10 +52,10 @@ function GameUi.load()
 		packageContainerWidth, packageContainerHeight,
 		uiImage
 	)
-	local packageContainerDrawComponent = Sprite.new(uiImage, packageContainerQuad)
+	local packageContainerSprite = Sprite.new(uiImage, packageContainerQuad)
 	packageContainer = {
-		drawComponent = packageContainerDrawComponent,
-		transform = Ui.newAlignedTransform(packageContainerDrawComponent.width, packageContainerDrawComponent.height, Ui.align.RIGHT, Ui.align.BOTTOM, GameUi.PADDING, GameUi.PADDING)
+		sprite = packageContainerSprite,
+		transform = Ui.newAlignedTransform(packageContainerSprite.width, packageContainerSprite.height, Ui.align.RIGHT, Ui.align.BOTTOM, GameUi.PADDING, GameUi.PADDING)
 	}
 
 	gasRemainingTextTransform = Ui.newAlignedTransform(GAS_TEXT_WIDTH, GAS_TEXT_HEIGHT, Ui.align.LEFT, Ui.align.BOTTOM, GameUi.PADDING, gasMeterHeight + GameUi.PADDING * 2)
@@ -64,20 +64,20 @@ end
 function GameUi.draw(gasRemaining, packages)
 	love.graphics.setShader()
 
-	Sprite.draw(gasMeter.drawComponent, gasMeter.transform)
-	Sprite.draw(gasMeterProgress.drawComponent, gasMeterProgress.transform)
+	Sprite.draw(gasMeter.sprite, gasMeter.transform)
+	Sprite.draw(gasMeterProgress.sprite, gasMeterProgress.transform)
 
 	love.graphics.setShader()
 	love.graphics.printf(math.floor(gasRemaining), gasRemainingTextTransform, GAS_TEXT_WIDTH, "center")
 
-	Sprite.draw(packageContainer.drawComponent, packageContainer.transform)
+	Sprite.draw(packageContainer.sprite, packageContainer.transform)
 	local packageOffsetY = packageOffsetYInitial
 	PackageEffect.setShader(nil)
 	local x, y = packageContainer.transform:transformPoint(0, 0)
 	for _, package in ipairs(packages) do
 		love.graphics.draw(
-			package.drawComponent.image,
-			package.drawComponent.quad,
+			package.sprite.image,
+			package.sprite.quad,
 			x + packageOffsetXInitial,
 			y + packageOffsetY
 		)
