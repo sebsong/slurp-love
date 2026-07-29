@@ -1,39 +1,39 @@
-local global = {}
+local Global = {}
 
-local scene = require("engine/scene")
+local Scene = require("engine/scene")
 
-function global.load()
+function Global.load()
 end
 
-function global.unload()
+function Global.unload()
 end
 
-function global.onPause()
+function Global.onPause()
 end
 
-function global.onResume()
+function Global.onResume()
 end
 
-function global.keypressed(key, scancode, isRepeat)
-	local gameScene = scene.scenes.game
+function Global.keypressed(key, scancode, isRepeat)
+	local gameScene = Scene.scenes.game
 	if gameScene.isActive and love.keyboard.isDown("escape") and not isRepeat then
-		scene.scenes.pauseMenu.toggle()
+		Scene.scenes.pauseMenu.toggle()
 	end
 end
 
-function global.mousepressed(x, y, button, isTouch, presses)
+function Global.mousepressed(x, y, button, isTouch, presses)
 end
 
-function global.mousemoved(x, y, dx, dy, isTouch)
+function Global.mousemoved(x, y, dx, dy, isTouch)
 end
 
-function global.wheelmoved(x, y)
+function Global.wheelmoved(x, y)
 end
 
-function global.update(dt)
+function Global.update(dt)
 end
 
-function global.draw()
+function Global.draw()
 end
 
-return global
+return Global

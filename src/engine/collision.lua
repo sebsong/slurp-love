@@ -1,7 +1,6 @@
-local collision = {}
+local Collision = {}
 
-local slurp_math = require("engine/math")
-local set = require("engine/set")
+local Math = require("engine/math")
 
 -- collidable:
 -- {
@@ -13,26 +12,26 @@ local set = require("engine/set")
 -- 		height: y
 -- 	}
 -- }
--- local collidables = set.new()
+-- local collidables = Set.new()
 
--- function collision.register(collidable)
+-- function Collision.register(collidable)
 -- 	assert(collidable.collider ~= nil, "collidables must have a collider")
 -- 	assert(collidable.position ~= nil or collidable.getPosition ~= nil, "collidables must have a position")
 -- 	if not collidables:contains(collidable) then
--- 		collidable.collidingWith = set.new()
+-- 		collidable.collidingWith = Set.new()
 -- 		collidables:insert(collidable)
 -- 	end
 -- end
 
--- function collision.remove(collidable)
+-- function Collision.remove(collidable)
 -- 	collidables:remove(collidable)
 -- end
 
--- function collision.clearAll()
--- 	collidables = set.new()
+-- function Collision.clearAll()
+-- 	collidables = Set.new()
 -- end
 
-function collision.hitTest(x, y, collider, transform, centered)
+function Collision.hitTest(x, y, collider, transform, centered)
 	if centered then
 		x = x + collider.width / 2
 		y = y + collider.height / 2
@@ -59,7 +58,7 @@ local function getRectExtents(x, y, halfWidth, halfHeight)
 	return (x - halfWidth), (x + halfWidth), (y - halfHeight), (y + halfHeight)
 end
 
-function collision.getPositionUpdate(collidable, collidables, targetPositionUpdate)
+function Collision.getPositionUpdate(collidable, collidables, targetPositionUpdate)
 	local positionUpdate = targetPositionUpdate
 	local position = getCollidablePosition(collidable)
 	local collider = collidable.collider
@@ -101,8 +100,8 @@ function collision.getPositionUpdate(collidable, collidables, targetPositionUpda
 		end
 
 		if xIntersects and yIntersects then
-			local xCorrection = slurp_math.absMin(otherLeftX - targetRightX, otherRightX - targetLeftX)
-			local yCorrection = slurp_math.absMin(otherTopY - targetBottomY, otherBottomY - targetTopY)
+			local xCorrection = Math.absMin(otherLeftX - targetRightX, otherRightX - targetLeftX)
+			local yCorrection = Math.absMin(otherTopY - targetBottomY, otherBottomY - targetTopY)
 
 			if math.abs(xCorrection) <= math.abs(yCorrection) then
 				positionUpdate.x = positionUpdate.x + xCorrection
@@ -131,13 +130,13 @@ function collision.getPositionUpdate(collidable, collidables, targetPositionUpda
 	return positionUpdate
 end
 
-function collision.drawTileColliders(tilemap, layerIndex)
+function Collision.drawTileColliders(tilemap, layerIndex)
 	love.graphics.push()
 	love.graphics.applyTransform(tilemap.tilemapIndexToWorldTransform)
 	for rowIdx, row in ipairs(tilemap.layers[layerIndex].tiles) do
 		for colIdx, tile in ipairs(row) do
 			if tile.tileId then
-				collision.drawCollider(
+				Collision.drawCollider(
 					{ width = 1, height = 1 },
 					{ colIdx, rowIdx }
 				)
@@ -147,7 +146,7 @@ function collision.drawTileColliders(tilemap, layerIndex)
 	love.graphics.pop()
 end
 
-function collision.drawCollider(collider, position)
+function Collision.drawCollider(collider, position)
 	local x, y = unpack(position)
 	local width, height = collider.width, collider.height
 	local colliderVertices = {
@@ -160,4 +159,4 @@ function collision.drawCollider(collider, position)
 	love.graphics.polygon("line", unpack(colliderVertices))
 end
 
-return collision
+return Collision

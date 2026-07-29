@@ -1,4 +1,3 @@
-local dialogue = {}
+local Dialogue = {}
 
-
-return dialogue
+return Dialogue

@@ -1,17 +1,17 @@
-local set = {}
+local Set = {}
 
 local meta = {}
 meta.__index = meta
 
-function set.new(...)
-	local newSet = {
+function Set.new(...)
+	local set = {
 		_length = 0
 	}
-	setmetatable(newSet, meta)
+	setmetatable(set, meta)
 
-	newSet:insert(...)
+	set:insert(...)
 
-	return newSet
+	return set
 end
 
 local function insert(_set, val)
@@ -77,13 +77,13 @@ function meta:toArray()
 end
 
 function meta:__add(_otherSet)
-	local union = set.new(self)
+	local union = Set.new(self)
 	union:insert(_otherSet)
 	return union
 end
 
 function meta:__sub(_otherSet)
-	local intersection = set.new(self)
+	local intersection = Set.new(self)
 	intersection:remove(_otherSet)
 	return intersection
 end
@@ -96,4 +96,4 @@ function meta:__tostring()
 	return string.format("{%s}", table.concat(items, ", "))
 end
 
-return set
+return Set

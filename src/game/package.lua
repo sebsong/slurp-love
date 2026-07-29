@@ -1,4 +1,4 @@
-local package = {
+local Package = {
 	type = {
 		GLASS = 1,
 		LEAD_FOOT = 2,
@@ -10,9 +10,9 @@ local package = {
 local meta = {}
 meta.__index = meta
 
-local scene = require("engine/scene")
+local Scene = require("engine/scene")
 
-local packageDetail = require("game/package_detail")
+local PackageDetail = require("game/package_detail")
 
 local crack1Sound
 local crack2Sound
@@ -29,18 +29,18 @@ end
 function meta:onPickup(boat)
 	local tileId = self.tileId
 
-	scene.pause(scene.scenes.game)
-	packageDetail.open(tileId, function() scene.resume(scene.scenes.game) end)
+	Scene.pause(Scene.scenes.game)
+	PackageDetail.open(tileId, function() Scene.resume(Scene.scenes.game) end)
 
-	if tileId == package.type.GLASS then
+	if tileId == Package.type.GLASS then
 		self.cracksRemaining = 3
-	elseif tileId == package.type.LEAD_FOOT then
+	elseif tileId == Package.type.LEAD_FOOT then
 		boat.autoAccelerate = true
-	elseif tileId == package.type.LANTERN then
+	elseif tileId == Package.type.LANTERN then
 		boat.isLanternActive = true
-	elseif tileId == package.type.RADIOACTIVE_JUNK then
+	elseif tileId == Package.type.RADIOACTIVE_JUNK then
 		boat.maxSpeed = boat.maxSpeed * 2
-	elseif tileId == package.type.MIRROR then
+	elseif tileId == Package.type.MIRROR then
 		reversePackageOrder(boat)
 	end
 end
@@ -48,20 +48,20 @@ end
 function meta:onDeliver(boat)
 	local tileId = self.tileId
 
-	if tileId == package.type.GLASS then
-	elseif tileId == package.type.LEAD_FOOT then
+	if tileId == Package.type.GLASS then
+	elseif tileId == Package.type.LEAD_FOOT then
 		boat.autoAccelerate = false
-	elseif tileId == package.type.LANTERN then
+	elseif tileId == Package.type.LANTERN then
 		boat.isLanternActive = false
-	elseif tileId == package.type.RADIOACTIVE_JUNK then
+	elseif tileId == Package.type.RADIOACTIVE_JUNK then
 		boat.maxSpeed = boat.maxSpeed / 2
-	elseif tileId == package.type.MIRROR then
+	elseif tileId == Package.type.MIRROR then
 		reversePackageOrder(boat)
 	end
 end
 
 function meta:onCollision(boat, _collidable)
-	if self.tileId == package.type.GLASS then
+	if self.tileId == Package.type.GLASS then
 		if not self.canDeliver then
 			return
 		end
@@ -81,7 +81,7 @@ end
 function meta:update(dt)
 end
 
-function package.load()
+function Package.load()
 	crack1Sound = love.audio.newSource("assets/sound/crack_1.ogg", "static")
 	crack1Sound:setVolume(0.5)
 	crack2Sound = love.audio.newSource("assets/sound/crack_2.ogg", "static")
@@ -91,7 +91,7 @@ function package.load()
 	shatterSound:setVolume(0.5)
 end
 
-function package.toPackage(tileObject)
+function Package.toPackage(tileObject)
 	setmetatable(tileObject, meta)
 	tileObject.destinationId = tileObject.properties.destination.id
 	tileObject.isDelivered = false
@@ -99,4 +99,4 @@ function package.toPackage(tileObject)
 	return tileObject
 end
 
-return package
+return Package

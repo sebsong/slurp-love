@@ -1,6 +1,6 @@
-local slurp_math = {}
+local Math = {}
 
-function slurp_math.absMin(v1, ...)
+function Math.absMin(v1, ...)
 	local minAbs = math.abs(v1)
 	local min = v1
 
@@ -15,17 +15,17 @@ function slurp_math.absMin(v1, ...)
 	return min
 end
 
-function slurp_math.clamped(val, min, max)
+function Math.clamped(val, min, max)
 	return math.min(math.max(val, min), max)
 end
 
-function slurp_math.inRange(val, min, max)
+function Math.inRange(val, min, max)
 	return val >= min and val <= max
 end
 
-function slurp_math.inEllipse(xRadius, yRadius, ellipsePosition, testPosition)
+function Math.inEllipse(xRadius, yRadius, ellipsePosition, testPosition)
 	local positionDiff = testPosition - ellipsePosition
 	return ((positionDiff.x / xRadius) ^ 2 + (positionDiff.y / yRadius) ^ 2) <= 1
 end
 
-return slurp_math
+return Math

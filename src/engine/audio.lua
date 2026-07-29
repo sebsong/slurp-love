@@ -1,3 +1,3 @@
-local audio = {}
+local Audio = {}
 -- TODO: audio fading utilities
-return audio
+return Audio

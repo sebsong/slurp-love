@@ -1,6 +1,6 @@
-local file = {}
+local File = {}
 
-function file.assertFileExtension(filePath, expectedFileExt)
+function File.assertFileExtension(filePath, expectedFileExt)
 	local fileExt = string.sub(filePath, string.find(filePath, "%.%a+") or #filePath - 3, #filePath)
 	assert(
 		fileExt == expectedFileExt,
@@ -8,7 +8,7 @@ function file.assertFileExtension(filePath, expectedFileExt)
 	)
 end
 
-function file.stripFileExtension(filePath)
+function File.stripFileExtension(filePath)
 	local first, _ = string.find(filePath, "%.%a+")
 	if first then
 		return string.sub(filePath, 1, first - 1)
@@ -16,4 +16,4 @@ function file.stripFileExtension(filePath)
 	return string.sub(filePath, 1, #filePath - 4)
 end
 
-return file
+return File

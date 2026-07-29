@@ -1,6 +1,6 @@
-local color = {}
+local Color = {}
 
-color.palette = nil;
+Color.palette = nil;
 
 local function hexToColorPercent(hexSubString)
 	return tonumber(hexSubString, 16) / 255
@@ -13,19 +13,19 @@ local function hexToRGBA(hexString)
 	return { red, green, blue, 1 }
 end
 
-function color.loadPalette(hexFilePath)
-	color.palette = {}
+function Color.loadPalette(hexFilePath)
+	Color.palette = {}
 	local isBlankColor = true
 	for hexColor in love.filesystem.lines(hexFilePath) do
 		if isBlankColor then
 			isBlankColor = false
 			goto continue
 		end
-		table.insert(color.palette, hexToRGBA(hexColor))
+		table.insert(Color.palette, hexToRGBA(hexColor))
 		::continue::
 	end
 
-	return color.palette
+	return Color.palette
 end
 
-return color
+return Color

@@ -1,5 +1,5 @@
-local button = {}
-local ui = {
+local Button = {}
+local Ui = {
 	align = {
 		CENTER = 1,
 		LEFT = 2,
@@ -10,30 +10,30 @@ local ui = {
 	button,
 }
 
-local settings = require("engine/settings")
+local Settings = require("engine/settings")
 
-function ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
+function Ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
 	local x, y
 	width, height = width or 0, height or 0
 	local xOffset, yOffset = xPadding or 0, yPadding or 0
 
-	if horizontalAlign == ui.align.LEFT then
+	if horizontalAlign == Ui.align.LEFT then
 		x = 0
-	elseif horizontalAlign == ui.align.CENTER then
-		x = settings.canvasPixelWidth / 2 - width / 2
-	elseif horizontalAlign == ui.align.RIGHT then
-		x = settings.canvasPixelWidth - width
+	elseif horizontalAlign == Ui.align.CENTER then
+		x = Settings.canvasPixelWidth / 2 - width / 2
+	elseif horizontalAlign == Ui.align.RIGHT then
+		x = Settings.canvasPixelWidth - width
 		xOffset = -xOffset
 	else
 		error(("invalid align option: %d"):format(horizontalAlign))
 	end
 
-	if verticalAlign == ui.align.TOP then
+	if verticalAlign == Ui.align.TOP then
 		y = 0
-	elseif verticalAlign == ui.align.CENTER then
-		y = settings.canvasPixelHeight / 2 - height / 2
-	elseif verticalAlign == ui.align.BOTTOM then
-		y = settings.canvasPixelHeight - height
+	elseif verticalAlign == Ui.align.CENTER then
+		y = Settings.canvasPixelHeight / 2 - height / 2
+	elseif verticalAlign == Ui.align.BOTTOM then
+		y = Settings.canvasPixelHeight - height
 		yOffset = -yOffset
 	else
 		error(("invalid align option: %d"):format(verticalAlign))
@@ -50,7 +50,7 @@ local function disable(self)
 	self.enabled = false
 end
 
-function button.new(
+function Button.new(
 	onPress
 )
 	return {
@@ -66,4 +66,4 @@ function button.new(
 	}
 end
 
-return ui
+return Ui

@@ -1,11 +1,11 @@
-local packageDetail = {}
+local PackageDetail = {}
 
-local draw = require("engine/draw")
-local animation = require("engine/animation")
-local ui = require("engine/ui")
-local scene = require("engine/scene")
+local Sprite = require("engine/sprite")
+local Animation = require("engine/animation")
+local Ui = require("engine/ui")
+local Scene = require("engine/scene")
 
-local font = require("game/font")
+local Font = require("game/font")
 
 local FLAVOR_TEXTS = {
 	"fragile, handle with care",
@@ -28,95 +28,95 @@ local textHeight
 local packageIndex
 local onClose
 
-function packageDetail.open(_packageIndex, _onClose)
+function PackageDetail.open(_packageIndex, _onClose)
 	packageIndex = _packageIndex
 	onClose = _onClose
-	scene.start(scene.scenes.packageDetail)
+	Scene.start(Scene.scenes.packageDetail)
 end
 
-function packageDetail.close()
+function PackageDetail.close()
 	isOpen = false
-	animation.play(detailBox.drawComponent, true, function() shouldClose = true end)
+	Animation.play(detailBox.drawComponent, true, function() shouldClose = true end)
 end
 
-function packageDetail.load()
+function PackageDetail.load()
 	isOpen = false
 	shouldClose = false
 
 	local detailBoxImage = love.graphics.newImage("assets/art/package_detail_box.png")
-	-- local detailBoxDrawComponent = draw.new(detailBoxImage)
-	local detailBoxDrawComponent = animation.new(detailBoxImage, 6, 0.15)
-	animation.play(detailBoxDrawComponent, false, function() isOpen = true end)
+	-- local detailBoxDrawComponent = Sprite.new(detailBoxImage)
+	local detailBoxDrawComponent = Animation.new(detailBoxImage, 6, 0.15)
+	Animation.play(detailBoxDrawComponent, false, function() isOpen = true end)
 	detailBox = {
 		drawComponent = detailBoxDrawComponent,
-		transform = ui.newAlignedTransform(detailBoxDrawComponent.width, detailBoxDrawComponent.height, ui.align.CENTER, ui.align.CENTER)
+		transform = Ui.newAlignedTransform(detailBoxDrawComponent.width, detailBoxDrawComponent.height, Ui.align.CENTER, Ui.align.CENTER)
 	}
 
 	local packageDetailsImage = love.graphics.newImage("assets/art/package_details.png")
-	local packageDetailAnimation = animation.new(packageDetailsImage, 5)
+	local packageDetailAnimation = Animation.new(packageDetailsImage, 5)
 	packageDetailAnimation.currentFrame = packageIndex or 1
 	packageDetailPortrait = {
 		drawComponent = packageDetailAnimation,
-		transform = ui.newAlignedTransform(packageDetailAnimation.width, packageDetailAnimation.height, ui.align.CENTER, ui.align.CENTER, 0, -50)
+		transform = Ui.newAlignedTransform(packageDetailAnimation.width, packageDetailAnimation.height, Ui.align.CENTER, Ui.align.CENTER, 0, -50)
 	}
 
 	textWidth = 420
 	textHeight = 105
-	textTransform = ui.newAlignedTransform(textWidth, textHeight, ui.align.CENTER, ui.align.BOTTOM)
+	textTransform = Ui.newAlignedTransform(textWidth, textHeight, Ui.align.CENTER, Ui.align.BOTTOM)
 end
 
-function packageDetail.unload()
+function PackageDetail.unload()
 end
 
-function packageDetail.onPause()
+function PackageDetail.onPause()
 end
 
-function packageDetail.onResume()
+function PackageDetail.onResume()
 end
 
-function packageDetail.keypressed(key, scancode, isRepeat)
+function PackageDetail.keypressed(key, scancode, isRepeat)
 	if key == "space" then
-		packageDetail.close()
+		PackageDetail.close()
 	end
 end
 
-function packageDetail.mousepressed(x, y, button, isTouch, presses)
+function PackageDetail.mousepressed(x, y, button, isTouch, presses)
 end
 
-function packageDetail.mousemoved(x, y, dx, dy, isTouch)
+function PackageDetail.mousemoved(x, y, dx, dy, isTouch)
 end
 
-function packageDetail.wheelmoved(x, y)
+function PackageDetail.wheelmoved(x, y)
 end
 
-function packageDetail.update(dt)
+function PackageDetail.update(dt)
 	if shouldClose then
 		if onClose then
 			onClose()
 		end
-		scene.stop(scene.scenes.packageDetail)
+		Scene.stop(Scene.scenes.packageDetail)
 	end
 
-	animation.update(detailBox.drawComponent, dt)
+	Animation.update(detailBox.drawComponent, dt)
 end
 
-function packageDetail.draw()
+function PackageDetail.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
-	draw.draw(detailBox.drawComponent, detailBox.transform)
+	Sprite.draw(detailBox.drawComponent, detailBox.transform)
 
 	if not isOpen then
 		love.graphics.pop()
 		return
 	end
 
-	draw.draw(packageDetailPortrait.drawComponent, packageDetailPortrait.transform)
+	Sprite.draw(packageDetailPortrait.drawComponent, packageDetailPortrait.transform)
 
-	love.graphics.setFont(font.medium)
+	love.graphics.setFont(Font.medium)
 	love.graphics.printf(FLAVOR_TEXTS[packageIndex], textTransform, textWidth, "center")
 
 	love.graphics.pop()
 end
 
-return packageDetail
+return PackageDetail

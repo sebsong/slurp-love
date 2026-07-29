@@ -1,4 +1,4 @@
-local mailScript = {
+local MailScript = {
 	dailyDialogue = {
 		{
 			-- "the quick brown fox jumps over the lazy dog",
@@ -17,4 +17,4 @@ local mailScript = {
 		{ "" },
 	}
 }
-return mailScript
+return MailScript

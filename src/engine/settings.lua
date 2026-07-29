@@ -1,6 +1,6 @@
-local settings = {}
+local Settings = {}
 
-settings.canvasPixelWidth = 640
-settings.canvasPixelHeight = 360
+Settings.canvasPixelWidth = 640
+Settings.canvasPixelHeight = 360
 
-return settings
+return Settings

@@ -1,12 +1,12 @@
-local draw = {}
+local Sprite = {}
 
-function draw.load()
+function Sprite.load()
 	love.graphics.setPointSize(8)
 	love.graphics.setLineWidth(.1)
 	love.graphics.setBackgroundColor(0, 0, 0)
 end
 
-function draw.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset, isSpriteBatch)
+function Sprite.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset, isSpriteBatch)
 	local isQuadArray = type(quad) == "table"
 	local currentFrame = 1
 	local width, height
@@ -35,11 +35,11 @@ function draw.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset, isSpriteB
 	}
 end
 
-function draw.newSpriteBatch(spriteBatch, quad, zIndex, zIndexOffset)
-	return draw.new(spriteBatch, quad, nil, nil, zIndex, zIndexOffset, true)
+function Sprite.newSpriteBatch(spriteBatch, quad, zIndex, zIndexOffset)
+	return Sprite.new(spriteBatch, quad, nil, nil, zIndex, zIndexOffset, true)
 end
 
-function draw.draw(drawComponent, transform)
+function Sprite.draw(drawComponent, transform)
 	if not drawComponent.shouldDraw then
 		return
 	end
@@ -82,4 +82,4 @@ function draw.draw(drawComponent, transform)
 	love.graphics.pop()
 end
 
-return draw
+return Sprite

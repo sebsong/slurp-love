@@ -1,8 +1,8 @@
-local animation = {}
+local Animation = {}
 
-local draw = require("engine/draw")
+local Sprite = require("engine/sprite")
 
-function animation.new(image, numFrames, duration, isLooping, xOffset, yOffset, zIndex, zIndexOffset)
+function Animation.new(image, numFrames, duration, isLooping, xOffset, yOffset, zIndex, zIndexOffset)
 	local quads = {}
 	local imageWidth, imageHeight = image:getDimensions()
 	local quadWidth, quadHeight = imageWidth / numFrames, imageHeight
@@ -10,7 +10,7 @@ function animation.new(image, numFrames, duration, isLooping, xOffset, yOffset, 
 		table.insert(quads, love.graphics.newQuad(i * quadWidth, 0, quadWidth, quadHeight, image))
 	end
 
-	local drawComponent = draw.new(image, quads, xOffset, yOffset, zIndex, zIndexOffset)
+	local drawComponent = Sprite.new(image, quads, xOffset, yOffset, zIndex, zIndexOffset)
 
 	-- TODO: organize these in a separate section
 	drawComponent.isPlaying = false
@@ -34,7 +34,7 @@ local function reset(anim)
 	anim.currentFrameSeconds = 0
 end
 
-function animation.play(anim, isReversed, onFinish)
+function Animation.play(anim, isReversed, onFinish)
 	anim.isReversed = isReversed
 	reset(anim)
 	anim.onFinish = onFinish
@@ -68,12 +68,12 @@ local function nextFrame(anim)
 		if anim.isLooping then
 			reset(anim)
 		else
-			animation.stop(anim)
+			Animation.stop(anim)
 		end
 	end
 end
 
-function animation.update(anim, dt)
+function Animation.update(anim, dt)
 	if not anim.isPlaying then
 		return
 	end
@@ -85,8 +85,8 @@ function animation.update(anim, dt)
 	anim.currentFrameSeconds = anim.currentFrameSeconds + dt
 end
 
-function animation.stop(anim)
+function Animation.stop(anim)
 	anim.isPlaying = false
 end
 
-return animation
+return Animation

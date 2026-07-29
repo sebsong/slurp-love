@@ -1,15 +1,15 @@
-local boat = {}
+local Boat = {}
 
-local slurp_math = require("engine/math")
-local collision = require("engine/collision")
-local animation = require("engine/animation")
-local vec2 = require("engine/vec2")
-local set = require("engine/set")
-local tilemap = require("engine/tilemap")
+local Math = require("engine/math")
+local Collision = require("engine/collision")
+local Animation = require("engine/animation")
+local Vec2 = require("engine/vec2")
+local Set = require("engine/set")
+local Tilemap = require("engine/tilemap")
 
-local values = require("game/values")
-local gameUi = require("game/ui")
-local boatEffect = require("game/boat_effect")
+local Values = require("game/values")
+local GameUi = require("game/ui")
+local BoatEffect = require("game/boat_effect")
 
 local NUM_BOAT_ANGLES = 16
 local BOAT_WIDTH, BOAT_HEIGHT = 16, 16
@@ -46,7 +46,7 @@ local function updateTrailPositions(self, dt)
 		local position = self.trailPositions[i]
 		local target
 		if i == 1 then
-			target = vec2.new(self.transform:transformPoint(0, 0))
+			target = Vec2.new(self.transform:transformPoint(0, 0))
 		else
 			target = self.trailPositions[i - 1]
 		end
@@ -63,7 +63,7 @@ end
 
 local function getWorldRowIdx(self)
 	local colIdx, rowIdx = self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0))
-	return tilemap.getWorldRowIdx(colIdx, rowIdx)
+	return Tilemap.getWorldRowIdx(colIdx, rowIdx)
 end
 
 local function update(self, cameraObj, dt)
@@ -87,7 +87,7 @@ local function update(self, cameraObj, dt)
 		end
 
 		if self.speed < self.maxBackwardsSpeed or self.speed > self.maxSpeed then
-			self.speed = slurp_math.clamped(self.speed, -self.maxBackwardsSpeed, self.maxSpeed)
+			self.speed = Math.clamped(self.speed, -self.maxBackwardsSpeed, self.maxSpeed)
 		else
 			didAccelerate = true
 		end
@@ -102,10 +102,10 @@ local function update(self, cameraObj, dt)
 
 		local depletionAmount = self.gasDepletionRate * dt
 		if didAccelerate and didMoveForward then
-			depletionAmount = depletionAmount * values.GAS_ACCELERATION_DEPLETION_MULTIPLIER
+			depletionAmount = depletionAmount * Values.GAS_ACCELERATION_DEPLETION_MULTIPLIER
 		end
 		self.gasRemaining = self.gasRemaining - depletionAmount
-		gameUi.gasMeterShader:send("progress", self.gasRemaining / values.FULL_GAS_AMOUNT)
+		GameUi.gasMeterShader:send("progress", self.gasRemaining / Values.FULL_GAS_AMOUNT)
 		if self.gasRemaining <= 0 then
 			print("OUT OF GAS")
 		end
@@ -146,36 +146,36 @@ local function update(self, cameraObj, dt)
 	self:updateNeighborTiles()
 	self:updateTrailPositions(dt)
 
-	local tilemapPosition = vec2.new(
+	local tilemapPosition = Vec2.new(
 		self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0))
 	)
-	local newTilemapPosition = vec2.new(
+	local newTilemapPosition = Vec2.new(
 		self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, -self.speed * dt))
 	)
 	local tilemapPositionUpdate = newTilemapPosition - tilemapPosition
-	local tileFrom = vec2.new()
-	local tileTo = collision.getPositionUpdate(
+	local tileFrom = Vec2.new()
+	local tileTo = Collision.getPositionUpdate(
 		self,
 		self.neighborTiles,
 		tilemapPositionUpdate
 	)
-	local worldFrom = vec2.new(self.tilemap.tilemapIndexToWorldTransform:transformPoint(tileFrom.x, tileFrom.y))
-	local worldTo = vec2.new(self.tilemap.tilemapIndexToWorldTransform:transformPoint(tileTo.x, tileTo.y))
+	local worldFrom = Vec2.new(self.tilemap.tilemapIndexToWorldTransform:transformPoint(tileFrom.x, tileFrom.y))
+	local worldTo = Vec2.new(self.tilemap.tilemapIndexToWorldTransform:transformPoint(tileTo.x, tileTo.y))
 
-	local boatFrom = vec2.new(self.transform:inverse():transformPoint(worldFrom.x, worldFrom.y))
-	local boatTo = vec2.new(self.transform:inverse():transformPoint(worldTo.x, worldTo.y))
+	local boatFrom = Vec2.new(self.transform:inverse():transformPoint(worldFrom.x, worldFrom.y))
+	local boatTo = Vec2.new(self.transform:inverse():transformPoint(worldTo.x, worldTo.y))
 	local boatUpdate = boatTo - boatFrom
 	self.transform:translate(boatUpdate.x, boatUpdate.y)
 
 	self.drawComponent.zIndex = self:getWorldRowIdx()
 
-	boatEffect.update(cameraObj)
+	BoatEffect.update(cameraObj)
 end
 
 local function draw(animation, transform)
 	love.graphics.push()
 	local boatX, boatY = transform:transformPoint(0, 0)
-	boatEffect.setShader()
+	BoatEffect.setShader()
 	love.graphics.draw(
 		animation.image,
 		animation.quads[animation.currentFrame],
@@ -202,8 +202,8 @@ local function findPackageToPickup(self, packages)
 		if self:indexOfPackage(package.tileId) then
 			goto continue
 		end
-		local boatPos = vec2.new(self.transform:transformPoint(0, 0))
-		local packagePos = vec2.new(package.transform:transformPoint(0, 0))
+		local boatPos = Vec2.new(self.transform:transformPoint(0, 0))
+		local packagePos = Vec2.new(package.transform:transformPoint(0, 0))
 		local packageDistance = boatPos:distanceTo(packagePos)
 		if packageDistance <= self.interactionRadius and (not closestDistance or packageDistance < closestDistance) then
 			closestPackage = package
@@ -228,7 +228,7 @@ local function pickupPackage(self, packages, mailboxes)
 end
 
 local function getDeliveryMailbox(self, mailboxes)
-	local boatPosition = vec2.new(self.transform:transformPoint(0, 0))
+	local boatPosition = Vec2.new(self.transform:transformPoint(0, 0))
 	local package = self.packages[#self.packages]
 
 	if not package then
@@ -236,7 +236,7 @@ local function getDeliveryMailbox(self, mailboxes)
 	end
 
 	for _, mailbox in ipairs(mailboxes) do
-		local mailboxPosition = vec2.new(mailbox.transform:transformPoint(0, 0))
+		local mailboxPosition = Vec2.new(mailbox.transform:transformPoint(0, 0))
 		if boatPosition:distanceTo(mailboxPosition) <= self.interactionRadius and mailbox.id == package.destinationId and package.canDeliver then
 			return mailbox
 		end
@@ -263,7 +263,7 @@ local function deliverPackage(self, mailboxes)
 end
 
 local function getPosition(self)
-	return vec2.new(self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)))
+	return Vec2.new(self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)))
 end
 
 local function onCollision(self, collidable)
@@ -276,24 +276,24 @@ local function onCollision(self, collidable)
 	end
 end
 
-function boat.new(tilemap, dayValue)
+function Boat.new(tilemap, dayValue)
 	local animations = {}
 
 	local boatImage = love.graphics.newImage("assets/art/boat1.png")
-	local animationStatic = animation.new(boatImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
+	local animationStatic = Animation.new(boatImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
 	animationStatic.draw = draw
 	animationStatic.zIndex = 0
 	animationStatic.zIndexOffset = 0
 	table.insert(animations, animationStatic)
 
 	local boatAccelImage = love.graphics.newImage("assets/art/boat2.png")
-	local animationAccel = animation.new(boatAccelImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
+	local animationAccel = Animation.new(boatAccelImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
 	animationAccel.draw = draw
 	animationAccel.zIndex = 0
 	animationAccel.zIndexOffset = 0
 	table.insert(animations, animationAccel)
 
-	boatEffect.load()
+	BoatEffect.load()
 
 	local bumpSound = love.audio.newSource("assets/sound/bump.ogg", "static")
 	local engineStartSound = love.audio.newSource("assets/sound/engine_start.ogg", "static")
@@ -302,14 +302,14 @@ function boat.new(tilemap, dayValue)
 	engineLoopSound:setVolume(0.25)
 
 	local transform = love.math.newTransform(0, 300)
-	local position = vec2.new(transform:transformPoint(0, 0))
+	local position = Vec2.new(transform:transformPoint(0, 0))
 	local trailPositions = {}
 	for _ = 1, NUM_TRAIL_POSITIONS do
 		table.insert(trailPositions, position)
 	end
 
-	local initialGasAmount = values.DAY_TO_GAS_AMOUNT[dayValue] or values.FULL_GAS_AMOUNT
-	gameUi.gasMeterShader:send("progress", initialGasAmount / values.FULL_GAS_AMOUNT)
+	local initialGasAmount = Values.DAY_TO_GAS_AMOUNT[dayValue] or Values.FULL_GAS_AMOUNT
+	GameUi.gasMeterShader:send("progress", initialGasAmount / Values.FULL_GAS_AMOUNT)
 
 	return {
 		-- TODO: build the boat from a tile object
@@ -324,7 +324,7 @@ function boat.new(tilemap, dayValue)
 		getPosition = getPosition,
 		onCollision = onCollision,
 		collider = { width = 1, height = 1 },
-		collidingWith = set.new(),
+		collidingWith = Set.new(),
 
 		neighborTiles = {},
 		updateNeighborTiles = updateNeighborTiles,
@@ -333,16 +333,16 @@ function boat.new(tilemap, dayValue)
 		updateTrailPositions = updateTrailPositions,
 
 		speed = 0,
-		maxSpeed = values.BOAT_MAX_SPEED_DEFAULT,
-		maxBackwardsSpeed = values.BOAT_MAX_BACKWARD_SPEED_DEFAULT,
-		acceleration = values.BOAT_ACCELERATION_DEFAULT,
-		deceleration = values.BOAT_DECELERATION_DEFAULT,
+		maxSpeed = Values.BOAT_MAX_SPEED_DEFAULT,
+		maxBackwardsSpeed = Values.BOAT_MAX_BACKWARD_SPEED_DEFAULT,
+		acceleration = Values.BOAT_ACCELERATION_DEFAULT,
+		deceleration = Values.BOAT_DECELERATION_DEFAULT,
 		rotation = 0,
-		rotationSpeed = values.BOAT_ROTATION_SPEED_DEFAULT,
-		interactionRadius = values.BOAT_INTERACTION_RADIUS,
+		rotationSpeed = Values.BOAT_ROTATION_SPEED_DEFAULT,
+		interactionRadius = Values.BOAT_INTERACTION_RADIUS,
 		packages = {},
 		gasRemaining = initialGasAmount,
-		gasDepletionRate = values.GAS_DEPLETION_RATE_DEFAULT,
+		gasDepletionRate = Values.GAS_DEPLETION_RATE_DEFAULT,
 
 		isLanternActive = false,
 		autoAccelerate = false,
@@ -358,4 +358,4 @@ function boat.new(tilemap, dayValue)
 	}
 end
 
-return boat
+return Boat

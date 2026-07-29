@@ -1,63 +1,59 @@
-local map = {}
+local Map = {}
 
-local draw = require("engine/draw")
-local animation = require("engine/animation")
-local ui = require("engine/ui")
-local scene = require("engine/scene")
-
-local font = require("game/font")
-local gameUi = require("game/ui")
+local Sprite = require("engine/sprite")
+local Ui = require("engine/ui")
+local Scene = require("engine/scene")
 
 local mapOverlay
 
-function map.open()
-	scene.start(scene.scenes.map)
+function Map.open()
+	Scene.start(Scene.scenes.map)
 end
 
-function map.close()
-	scene.stop(scene.scenes.map)
+function Map.close()
+	Scene.stop(Scene.scenes.map)
 end
 
-function map.load()
+function Map.load()
 	local mapImage = love.graphics.newImage("assets/art/map.png")
-	local mapDrawComponent = draw.new(mapImage)
+	local mapDrawComponent = Sprite.new(mapImage)
 	mapOverlay = {
 		drawComponent = mapDrawComponent,
-		transform = ui.newAlignedTransform(mapDrawComponent.width, mapDrawComponent.height, ui.align.CENTER, ui.align.CENTER)
+		transform = Ui.newAlignedTransform(mapDrawComponent.width, mapDrawComponent.height, Ui.align.CENTER, Ui.align.CENTER)
 	}
 end
 
-function map.unload()
+function Map.unload()
 end
 
-function map.onPause()
+function Map.onPause()
 end
 
-function map.onResume()
+function Map.onResume()
 end
 
-function map.keypressed(key, scancode, isRepeat)
+function Map.keypressed(key, scancode, isRepeat)
 end
 
-function map.mousepressed(x, y, button, isTouch, presses)
+function Map.mousepressed(x, y, button, isTouch, presses)
 end
 
-function map.mousemoved(x, y, dx, dy, isTouch)
+function Map.mousemoved(x, y, dx, dy, isTouch)
 end
 
-function map.wheelmoved(x, y)
+function Map.wheelmoved(x, y)
 end
 
-function map.update(dt)
+function Map.update(dt)
 end
 
-function map.draw()
+function Map.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
-	draw.draw(mapOverlay.drawComponent, mapOverlay.transform)
+	Sprite.draw(mapOverlay.drawComponent, mapOverlay.transform)
 
 	love.graphics.pop()
 end
 
-return map
+return Map

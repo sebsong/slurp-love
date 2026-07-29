@@ -1,8 +1,8 @@
 local debug = {}
 
-local scene = require("engine/scene")
+local Scene = require("engine/scene")
 
-local profile = require("external/profile")
+local Profile = require("external/profile")
 
 local ENABLE_PROFILER = false
 
@@ -14,7 +14,7 @@ function debug.load()
 	defaultFont = love.graphics.getFont()
 	frame = 0
 	if ENABLE_PROFILER then
-		profile.start()
+		Profile.start()
 	end
 end
 
@@ -29,17 +29,17 @@ end
 
 function debug.keypressed(key, scancode, isRepeat)
 	if key == "return" and not isRepeat then
-		if scene.scenes.mainMenu.isActive then
-			scene.transition(scene.scenes.dayTracker)
-		elseif scene.scenes.game.isActive then
-			scene.scenes.game.endDay()
+		if Scene.scenes.mainMenu.isActive then
+			Scene.transition(Scene.scenes.dayTracker)
+		elseif Scene.scenes.game.isActive then
+			Scene.scenes.game.endDay()
 		end
 	end
 end
 
 function debug.mousepressed(x, y, button, isTouch, presses)
-	if button == 1 and scene.scenes.game.isActive and not scene.scenes.game.isPaused then
-		scene.scenes.game.debugTeleportBoatToCanvasPoint(x, y)
+	if button == 1 and Scene.scenes.game.isActive and not Scene.scenes.game.isPaused then
+		Scene.scenes.game.debugTeleportBoatToCanvasPoint(x, y)
 	end
 end
 
@@ -53,8 +53,8 @@ function debug.update(dt)
 	if ENABLE_PROFILER then
 		frame = frame + 1
 		if frame % 1000 == 0 then
-			report = profile.report(20)
-			profile.reset()
+			report = Profile.report(20)
+			Profile.reset()
 			print(report)
 		end
 	end

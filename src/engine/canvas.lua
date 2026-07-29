@@ -1,4 +1,4 @@
-local canvas = {
+local Canvas = {
 	scale = nil,
 	scaledCanvasToScreenTransform = nil,
 	canvasToScreenTransform = nil,
@@ -6,52 +6,52 @@ local canvas = {
 	canvas = nil,
 }
 
-local settings = require("engine/settings")
+local Settings = require("engine/settings")
 
-function canvas.load()
+function Canvas.load()
 	local screenWidth, screenHeight = love.graphics.getDimensions()
-	canvas.scale = math.min(screenWidth / settings.canvasPixelWidth, screenHeight / settings.canvasPixelHeight)
-	-- if canvas.scale > 1 then
+	Canvas.scale = math.min(screenWidth / Settings.canvasPixelWidth, screenHeight / Settings.canvasPixelHeight)
+	-- if Canvas.scale > 1 then
 	-- if display is smaller than the canvas, we can't enforce integer scaling
-	-- canvas.scale = math.floor(canvas.scale)
+	-- Canvas.scale = math.floor(Canvas.scale)
 	-- end
 
-	local canvasWidth = settings.canvasPixelWidth * canvas.scale
-	local canvasHeight = settings.canvasPixelHeight * canvas.scale
+	local canvasWidth = Settings.canvasPixelWidth * Canvas.scale
+	local canvasHeight = Settings.canvasPixelHeight * Canvas.scale
 	local xAdjust = (screenWidth - canvasWidth) / 2
 	local yAdjust = (screenHeight - canvasHeight) / 2
 
-	canvas.scaledCanvasToScreenTransform = love.math.newTransform(
+	Canvas.scaledCanvasToScreenTransform = love.math.newTransform(
 		xAdjust,
 		yAdjust
 	)
 
-	canvas.canvasToScreenTransform = love.math.newTransform(
+	Canvas.canvasToScreenTransform = love.math.newTransform(
 		xAdjust,
 		yAdjust,
 		0,
-		canvas.scale,
-		canvas.scale
+		Canvas.scale,
+		Canvas.scale
 	)
-	canvas.screenToCanvasTransform = canvas.canvasToScreenTransform:inverse()
+	Canvas.screenToCanvasTransform = Canvas.canvasToScreenTransform:inverse()
 
-	canvas.canvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
+	Canvas.canvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
 end
 
-function canvas.draw(drawFunction)
-	canvas.canvas:renderTo(
+function Canvas.draw(drawFunction)
+	Canvas.canvas:renderTo(
 		function()
 			love.graphics.clear()
 
 			love.graphics.push()
-			love.graphics.scale(canvas.scale, canvas.scale)
+			love.graphics.scale(Canvas.scale, Canvas.scale)
 
 			drawFunction()
 
 			love.graphics.pop()
 		end
 	)
-	love.graphics.draw(canvas.canvas, canvas.scaledCanvasToScreenTransform)
+	love.graphics.draw(Canvas.canvas, Canvas.scaledCanvasToScreenTransform)
 end
 
-return canvas
+return Canvas

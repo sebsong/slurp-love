@@ -1,11 +1,11 @@
 local mailDialogue = {}
 
-local draw = require("engine/draw")
-local animation = require("engine/animation")
-local ui = require("engine/ui")
-local scene = require("engine/scene")
+local Sprite = require("engine/sprite")
+local Animation = require("engine/animation")
+local Ui = require("engine/ui")
+local Scene = require("engine/scene")
 
-local font = require("game/font")
+local Font = require("game/font")
 
 local DEFAULT_CHARACTERS_PER_SECOND = 20
 local FAST_FORWARD_MULTIPLIER = 10
@@ -50,7 +50,7 @@ function mailDialogue.open(lines, onClose)
 	end
 	dialogueLines = lines
 	onDialogueClose = onClose
-	scene.start(scene.scenes.mailDialogue)
+	Scene.start(Scene.scenes.mailDialogue)
 end
 
 function mailDialogue.next()
@@ -73,13 +73,13 @@ end
 
 function mailDialogue.close()
 	isOpen = false
-	animation.play(dialogueBox.drawComponent, true, function() shouldStop = true end)
+	Animation.play(dialogueBox.drawComponent, true, function() shouldStop = true end)
 end
 
 local function setLines(lines)
 	for i, line in ipairs(lines) do
 		-- pre-wrap text to avoid words wrapping as they're revealed
-		local _, textLines = font.medium:getWrap(line:lower(), textWidth)
+		local _, textLines = Font.medium:getWrap(line:lower(), textWidth)
 		local wrappedLine = table.concat(textLines, '\n')
 		dialogueLines[i] = wrappedLine
 	end
@@ -88,19 +88,19 @@ end
 
 function mailDialogue.load()
 	local dialogueBoxImage = love.graphics.newImage("assets/art/dialogue_box.png")
-	-- local dialogueBoxDrawComponent = draw.new(dialogueBoxImage)
-	local dialogueBoxDrawComponent = animation.new(dialogueBoxImage, 12, 1.5)
-	animation.play(dialogueBoxDrawComponent, false, function() isOpen = true end)
+	-- local dialogueBoxDrawComponent = Sprite.new(dialogueBoxImage)
+	local dialogueBoxDrawComponent = Animation.new(dialogueBoxImage, 12, 1.5)
+	Animation.play(dialogueBoxDrawComponent, false, function() isOpen = true end)
 	dialogueBox = {
 		drawComponent = dialogueBoxDrawComponent,
-		transform = ui.newAlignedTransform(dialogueBoxDrawComponent.width, dialogueBoxDrawComponent.height, ui.align.CENTER, ui.align.BOTTOM, 0, 0)
+		transform = Ui.newAlignedTransform(dialogueBoxDrawComponent.width, dialogueBoxDrawComponent.height, Ui.align.CENTER, Ui.align.BOTTOM, 0, 0)
 	}
 
 	textWidth = 475
 	textHeight = 100
 	local xPadding = 90
 	local yPadding = 25
-	textTransform = ui.newAlignedTransform(textWidth, textHeight, ui.align.CENTER, ui.align.BOTTOM, xPadding, yPadding)
+	textTransform = Ui.newAlignedTransform(textWidth, textHeight, Ui.align.CENTER, Ui.align.BOTTOM, xPadding, yPadding)
 
 	setLines(dialogueLines)
 end
@@ -138,10 +138,10 @@ function mailDialogue.update(dt)
 		dialogueLines = {}
 		onDialogueClose = nil
 
-		scene.stop(scene.scenes.mailDialogue)
+		Scene.stop(Scene.scenes.mailDialogue)
 	end
 
-	animation.update(dialogueBox.drawComponent, dt)
+	Animation.update(dialogueBox.drawComponent, dt)
 
 	if isDialogueFinished then
 		return
@@ -171,14 +171,14 @@ function mailDialogue.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
-	draw.draw(dialogueBox.drawComponent, dialogueBox.transform)
+	Sprite.draw(dialogueBox.drawComponent, dialogueBox.transform)
 
 	if not isOpen then
 		love.graphics.pop()
 		return
 	end
 
-	love.graphics.setFont(font.small)
+	love.graphics.setFont(Font.small)
 	love.graphics.printf(currentLine, textTransform, textWidth, "left")
 
 	love.graphics.pop()

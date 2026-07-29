@@ -1,7 +1,7 @@
-local vec2 = {}
+local Vec2 = {}
 local meta = {}
 
-function vec2.new(x, y)
+function Vec2.new(x, y)
 	local newVec = { x or 0, y or 0 }
 	setmetatable(newVec, meta)
 
@@ -52,29 +52,29 @@ function meta.__eq(vec, otherVec)
 end
 
 function meta.__add(vec, otherVec)
-	return vec2.new(vec.x + otherVec.x, vec.y + otherVec.y)
+	return Vec2.new(vec.x + otherVec.x, vec.y + otherVec.y)
 end
 
 function meta.__sub(vec, otherVec)
-	return vec2.new(vec.x - otherVec.x, vec.y - otherVec.y)
+	return Vec2.new(vec.x - otherVec.x, vec.y - otherVec.y)
 end
 
 function meta.__mul(vec, scalar)
 	assert(type(scalar) == "number")
-	return vec2.new(vec.x * scalar, vec.y * scalar)
+	return Vec2.new(vec.x * scalar, vec.y * scalar)
 end
 
 function meta.__div(vec, scalar)
 	assert(type(scalar) == "number")
-	return vec2.new(vec.x / scalar, vec.y / scalar)
+	return Vec2.new(vec.x / scalar, vec.y / scalar)
 end
 
 function meta.__unm(vec)
-	return vec2.new(-vec.x, -vec.y)
+	return Vec2.new(-vec.x, -vec.y)
 end
 
 function meta.__tostring(vec)
 	return string.format("(%s, %s)", vec.x, vec.y)
 end
 
-return vec2
+return Vec2

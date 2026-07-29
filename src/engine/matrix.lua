@@ -1,6 +1,6 @@
-local matrix = {}
+local Matrix = {}
 
-function matrix.getTransposed(matrix)
+function Matrix.getTransposed(matrix)
 	local transposed = {}
 	for i, row in ipairs(matrix) do
 		for j, val in ipairs(row) do
@@ -14,4 +14,4 @@ function matrix.getTransposed(matrix)
 	return transposed
 end
 
-return matrix
+return Matrix

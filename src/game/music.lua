@@ -1,6 +1,4 @@
-local music = {}
-
-local values = require("game/values")
+local Music = {}
 
 local volume = 0.2
 local chords
@@ -40,7 +38,7 @@ local function crossFadeUpdate(fadeInTargets, fadeOutTargets, dt)
 	end
 end
 
-function music.load()
+function Music.load()
 	chords = love.audio.newSource("assets/sound/chords.ogg", "stream")
 	chords:setVolume(volume)
 	chords:setLooping(true)
@@ -57,7 +55,7 @@ function music.load()
 	drums_hype:play()
 end
 
-function music.unload()
+function Music.unload()
 	chords:stop()
 	drums_mellow:stop()
 	drums_hype:stop()
@@ -78,10 +76,10 @@ local function deactivateDrums()
 	fadeOut(drums_hype)
 end
 
-function music.update(boat, dt)
-	-- if (boat.speed > values.BOAT_MAX_SPEED_DEFAULT) then
+function Music.update(boat, dt)
+	-- if (Boat.speed > Values.BOAT_MAX_SPEED_DEFAULT) then
 	-- 	activateDrumsHype()
-	-- elseif (boat.speed > values.BOAT_MAX_SPEED_DEFAULT / 2) then
+	-- elseif (Boat.speed > Values.BOAT_MAX_SPEED_DEFAULT / 2) then
 	-- 	activateDrumsMellow()
 	-- else
 	-- 	deactivateDrums()
@@ -90,4 +88,4 @@ function music.update(boat, dt)
 	crossFadeUpdate(fadeInTargets, fadeOutTargets, dt)
 end
 
-return music
+return Music

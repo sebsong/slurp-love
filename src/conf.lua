@@ -1,4 +1,4 @@
-local settings = require("engine/settings")
+local Settings = require("engine/settings")
 
 local IS_DEBUG = os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" and arg[2] == "debug"
 if IS_DEBUG then
@@ -24,8 +24,8 @@ function love.conf(t)
 
 	t.window.title          = "slurp's up!"
 	t.window.icon           = nil
-	t.window.width          = settings.canvasPixelWidth
-	t.window.height         = settings.canvasPixelHeight
+	t.window.width          = Settings.canvasPixelWidth
+	t.window.height         = Settings.canvasPixelHeight
 	t.window.borderless     = false
 	t.window.resizable      = false
 	t.window.minwidth       = 1

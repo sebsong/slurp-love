@@ -3,9 +3,9 @@ local dayTracker = {
 	FINAL_DAY = 5,
 }
 
-local settings = require("engine/settings")
-local scene = require("engine/scene")
-local font = require("game/font")
+local Settings = require("engine/settings")
+local Scene = require("engine/scene")
+local Font = require("game/font")
 
 local DAY_TO_NAME = {
 	"monday",
@@ -29,7 +29,7 @@ local function startDay()
 	if (dayTracker.isEndScreen()) then
 		print("YOU WIN")
 	else
-		scene.transition(scene.scenes.game)
+		Scene.transition(Scene.scenes.game)
 	end
 end
 
@@ -74,33 +74,33 @@ function dayTracker.update(dt)
 end
 
 function dayTracker.draw()
-	love.graphics.setFont(font.large)
+	love.graphics.setFont(Font.large)
 	love.graphics.draw(dayTransitionBackgroundImage)
 	if dayTracker.isEndScreen() then
 		love.graphics.printf(
 			string.format("you win", dayTracker.currentDay),
 			0,
-			2 * font.large:getHeight(),
-			settings.canvasPixelWidth,
+			2 * Font.large:getHeight(),
+			Settings.canvasPixelWidth,
 			"center"
 		)
 	else
 		love.graphics.printf(
 			DAY_TO_NAME[dayTracker.currentDay],
 			0,
-			2 * font.large:getHeight(),
-			settings.canvasPixelWidth,
+			2 * Font.large:getHeight(),
+			Settings.canvasPixelWidth,
 			"center"
 		)
 	end
 
 	if showContinueText then
-		love.graphics.setFont(font.medium)
+		love.graphics.setFont(Font.medium)
 		love.graphics.printf(
 			string.format("press any button to continue", dayTracker.currentDay),
 			0,
-			settings.canvasPixelHeight - (4 * font.medium:getHeight()),
-			settings.canvasPixelWidth,
+			Settings.canvasPixelHeight - (4 * Font.medium:getHeight()),
+			Settings.canvasPixelWidth,
 			"center"
 		)
 	end

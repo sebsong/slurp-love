@@ -1,8 +1,8 @@
-local debug = {}
+local Debug = {}
 
 local stopwatchTime
 
-function debug.printArray(array)
+function Debug.printArray(array)
 	local str = ""
 
 	for _, val in ipairs(array) do
@@ -10,13 +10,13 @@ function debug.printArray(array)
 	end
 end
 
-function debug.printMatrix(matrix)
+function Debug.printMatrix(matrix)
 	for _, row in ipairs(matrix) do
-		debug.printArray(row)
+		Debug.printArray(row)
 	end
 end
 
-function debug.stopwatch(label)
+function Debug.stopwatch(label)
 	local endTime = love.timer.getTime()
 	local elapsedMs = stopwatchTime and (endTime - stopwatchTime) * 1000 or nil
 	stopwatchTime = endTime
@@ -26,4 +26,4 @@ function debug.stopwatch(label)
 	return elapsedMs
 end
 
-return debug
+return Debug

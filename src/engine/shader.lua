@@ -1,5 +1,5 @@
-local shader = {}
+local Shader = {}
 
-shader.QUAD_VIEWPORT_UNIFORM = "quadViewport"
+Shader.QUAD_VIEWPORT_UNIFORM = "quadViewport"
 
-return shader
+return Shader

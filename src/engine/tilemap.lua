@@ -1,33 +1,33 @@
-local tilemap = {}
+local Tilemap = {}
 
 -- Based on Tiled (https://www.mapeditor.org/)
 
-local file = require("engine/file")
-local vec2 = require("engine/vec2")
-local set = require("engine/set")
-local draw = require("engine/draw")
+local File = require("engine/file")
+local Vec2 = require("engine/vec2")
+local Set = require("engine/set")
+local Sprite = require("engine/sprite")
 
-function tilemap.getIntersectionTiles(tilemap, tiles, camera)
+function Tilemap.getIntersectionTiles(tilemap, tiles, camera)
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)
 	local startX, startY = cameraX - (camera:getScreenWidth() / 2), cameraY - (camera:getScreenHeight() / 2)
 	local endX, endY = startX + camera:getScreenWidth(), startY + camera:getScreenHeight()
 
 	local startColIdx, startRowIdx
 	local endColIdx, endRowIdx
-	if tilemap.isIsometric then
-		startColIdx, _ = tilemap.worldToTilemapIndexTransform:transformPoint(startX, startY)
-		endColIdx, _ = tilemap.worldToTilemapIndexTransform:transformPoint(endX, endY)
-		_, startRowIdx = tilemap.worldToTilemapIndexTransform:transformPoint(endX, startY)
-		_, endRowIdx = tilemap.worldToTilemapIndexTransform:transformPoint(startX, endY)
+	if Tilemap.isIsometric then
+		startColIdx, _ = Tilemap.worldToTilemapIndexTransform:transformPoint(startX, startY)
+		endColIdx, _ = Tilemap.worldToTilemapIndexTransform:transformPoint(endX, endY)
+		_, startRowIdx = Tilemap.worldToTilemapIndexTransform:transformPoint(endX, startY)
+		_, endRowIdx = Tilemap.worldToTilemapIndexTransform:transformPoint(startX, endY)
 	else
-		startColIdx, startRowIdx = tilemap.worldToTilemapIndexTransform:transformPoint(startX, startY)
-		endColIdx, endRowIdx = tilemap.worldToTilemapIndexTransform:transformPoint(endX, endY)
+		startColIdx, startRowIdx = Tilemap.worldToTilemapIndexTransform:transformPoint(startX, startY)
+		endColIdx, endRowIdx = Tilemap.worldToTilemapIndexTransform:transformPoint(endX, endY)
 	end
 
 	startColIdx = math.floor(math.max(startColIdx, 1))
-	startRowIdx = math.floor(math.min(startRowIdx, tilemap.width))
+	startRowIdx = math.floor(math.min(startRowIdx, Tilemap.width))
 	endColIdx = math.ceil(math.max(endColIdx, 1))
-	endRowIdx = math.ceil(math.min(endRowIdx, tilemap.height))
+	endRowIdx = math.ceil(math.min(endRowIdx, Tilemap.height))
 
 	local intersectionTiles = {}
 
@@ -51,28 +51,28 @@ function tilemap.getIntersectionTiles(tilemap, tiles, camera)
 	return intersectionTiles
 end
 
-function tilemap.drawTiles(tilemap, tiles)
+function Tilemap.drawTiles(tilemap, tiles)
 	for _, tile in ipairs(tiles) do
 		local tilesetIndex = tile.tilesetIndex
 		local tileId = tile.tileId
 		if not tilesetIndex or not tileId then
 			goto continue
 		end
-		local tileset = tilemap.tilesets[tilesetIndex]
+		local tileset = Tilemap.tilesets[tilesetIndex]
 		local tileQuad = tileset.quads[tileId]
 		if not tileQuad then
 			goto continue
 		end
 
-		local x, y = tilemap.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
+		local x, y = Tilemap.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
 		local _, _, width, height = tileQuad:getViewport()
-		love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height + tilemap.tileHeight / 2)
+		love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height + Tilemap.tileHeight / 2)
 
 		::continue::
 	end
 end
 
-function tilemap.newTileset(imageFilePath, tileWidth, tileHeight)
+function Tilemap.newTileset(imageFilePath, tileWidth, tileHeight)
 	local image = love.graphics.newImage(imageFilePath)
 	local tileQuads = {}
 	local numCols = image:getPixelWidth() / tileWidth
@@ -135,7 +135,7 @@ end
 --     *		1
 --   *   *		2 (1, 2) => 2, (2, 1) => 2
 -- *   *   * 	3
-function tilemap.getWorldRowIdx(colIdx, rowIdx)
+function Tilemap.getWorldRowIdx(colIdx, rowIdx)
 	return (colIdx + rowIdx) - 1
 end
 
@@ -153,29 +153,29 @@ local function insertTile(tiles, gid, tilesetInfos, rowIdx, colIdx, zIndexOffset
 	end
 	local tilesetIndex, tilesetInfo = getTilesetInfo(gid, tilesetInfos)
 	local tileId = getTileId(gid, tilesetInfos[tilesetIndex])
-	local worldRowIdx = tilemap.getWorldRowIdx(colIdx, rowIdx)
+	local worldRowIdx = Tilemap.getWorldRowIdx(colIdx, rowIdx)
 	tiles[rowIdx][colIdx] = {
 		tilesetIndex = tilesetIndex,
 		tilesetName = tilesetInfo.name,
 		tileId = tileId,
 
 		-- TODO: initialize collision info somewhere else?
-		position = vec2.new(colIdx, rowIdx),
+		position = Vec2.new(colIdx, rowIdx),
 		worldRowIdx = worldRowIdx,
 		zIndex = worldRowIdx,
 		zIndexOffset = zIndexOffset,
 		collider = { width = 1, height = 1 },
-		collidingWith = set.new()
+		collidingWith = Set.new()
 	}
 	::continue::
 end
 
 -- NOTE: tilesets must match order of tilesets in tilemap
 -- NOTE: tilesets and layers are 1:1
-function tilemap.newTilemapLua(luaFilepath, tilesets)
-	file.assertFileExtension(luaFilepath, ".lua")
+function Tilemap.newTilemapLua(luaFilepath, tilesets)
+	File.assertFileExtension(luaFilepath, ".lua")
 
-	local tilemapInfo = require(file.stripFileExtension(luaFilepath))
+	local tilemapInfo = require(File.stripFileExtension(luaFilepath))
 
 	-- TODO: can we process tilesets here?
 	local tilesetInfos = tilemapInfo.tilesets
@@ -233,14 +233,14 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 				local tileset = tilesets[tilesetIndex]
 				local tileId = getTileId(object.gid, tilesetInfos[tilesetIndex])
 				local worldX, worldY = tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
-				local worldRowIdx = tilemap.getWorldRowIdx(colIdx, rowIdx)
+				local worldRowIdx = Tilemap.getWorldRowIdx(colIdx, rowIdx)
 				local quad = tileset.quads[tileId]
 				local _, _, objWidth, objHeight = quad:getViewport()
 
 				local xOffset = -objWidth / 2
 				local yOffset = -objHeight + tileHeight / 2
 				table.insert(objects, {
-					drawComponent = draw.new(tileset.image, quad, xOffset, yOffset, worldRowIdx, zIndexOffset),
+					drawComponent = Sprite.new(tileset.image, quad, xOffset, yOffset, worldRowIdx, zIndexOffset),
 					transform = love.math.newTransform(worldX, worldY),
 
 					id = object.id,
@@ -277,4 +277,4 @@ function tilemap.newTilemapLua(luaFilepath, tilesets)
 	}
 end
 
-return tilemap
+return Tilemap

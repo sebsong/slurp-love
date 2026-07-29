@@ -1,26 +1,26 @@
 local game = {}
 
-local color = require("engine/color")
-local tilemap = require("engine/tilemap")
-local camera = require("engine/camera")
-local draw = require("engine/draw")
-local scene = require("engine/scene")
-local slurp_math = require("engine/math")
-local vec2 = require("engine/vec2")
+local Color = require("engine/color")
+local Tilemap = require("engine/tilemap")
+local Camera = require("engine/camera")
+local Sprite = require("engine/sprite")
+local Scene = require("engine/scene")
+local Math = require("engine/math")
+local Vec2 = require("engine/vec2")
 
-local gameUi = require("game/ui")
-local music = require("game/music")
-local boat = require("game/boat")
-local package = require("game/package")
-local dayTracker = require("game/day_tracker")
-local mailDialogue = require("game/mail_dialogue")
-local mailScript = require("game/mail_script")
-local map = require("game/map")
-local waterEffect = require("game/water_effect")
-local tileEffect = require("game/tile_effect")
-local lanternEffect = require("game/lantern_effect")
-local packageEffect = require("game/package_effect")
-local mailboxEffect = require("game/mailbox_effect")
+local GameUi = require("game/ui")
+local Music = require("game/music")
+local Boat = require("game/boat")
+local Package = require("game/package")
+local DayTracker = require("game/day_tracker")
+local MailDialogue = require("game/mail_dialogue")
+local MailScript = require("game/mail_script")
+local Map = require("game/map")
+local WaterEffect = require("game/water_effect")
+local TileEffect = require("game/tile_effect")
+local LanternEffect = require("game/lantern_effect")
+local PackageEffect = require("game/package_effect")
+local MailboxEffect = require("game/mailbox_effect")
 
 local DAY_TO_LAYER_NAME = {
 	"objects_monday",
@@ -69,46 +69,46 @@ function game.load()
 	didWin = false
 	didLose = false
 
-	color.loadPalette("assets/art/retrotronic-dx.hex")
-	package.load()
-	gameUi.load()
-	music.load()
+	Color.loadPalette("assets/art/retrotronic-dx.hex")
+	Package.load()
+	GameUi.load()
+	Music.load()
 
-	cameraObj = camera.new()
+	cameraObj = Camera.new()
 
-	local currentDay = scene.scenes.dayTracker.currentDay
+	local currentDay = Scene.scenes.dayTracker.currentDay
 
 	OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[currentDay] or OBJECT_LAYER_NAME
 
 	local tilesets = {
 		-- TODO: maybe switch to reading lua exported tiled files to get the grid size info
-		tilemap.newTileset("assets/art/tileset.png", 16, 16),
-		tilemap.newTileset("assets/art/packages.png", 16, 16),
-		tilemap.newTileset("assets/art/buildings.png", 64, 64),
-		tilemap.newTileset("assets/art/mailboxes.png", 16, 16),
-		tilemap.newTileset("assets/art/walls.png", 16, 256),
+		Tilemap.newTileset("assets/art/tileset.png", 16, 16),
+		Tilemap.newTileset("assets/art/packages.png", 16, 16),
+		Tilemap.newTileset("assets/art/buildings.png", 64, 64),
+		Tilemap.newTileset("assets/art/mailboxes.png", 16, 16),
+		Tilemap.newTileset("assets/art/walls.png", 16, 256),
 	}
-	tilemapObj = tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
+	tilemapObj = Tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
 
 	worldObjects = {}
 	packages = {}
 	mailboxes = {}
 
-	boatObj = boat.new(tilemapObj, currentDay)
+	boatObj = Boat.new(tilemapObj, currentDay)
 	table.insert(worldObjects, boatObj)
 
 	waterImage = love.graphics.newImage("assets/art/water.png")
-	waterEffect.load(cameraObj, boatObj, love.timer.getTime())
+	WaterEffect.load(cameraObj, boatObj, love.timer.getTime())
 
-	tileEffect.load(cameraObj, boatObj)
+	TileEffect.load(cameraObj, boatObj)
 
 	lanternLightImage                        = love.graphics.newImage("assets/art/lantern_light.png")
 	local lanternXDiameter, lanternYDiameter = lanternLightImage:getDimensions()
 	lanternXRadius, lanternYRadius           = lanternXDiameter / 2, lanternYDiameter / 2
-	lanternEffect.load()
+	LanternEffect.load()
 
-	packageEffect.load()
-	mailboxEffect.load()
+	PackageEffect.load()
+	MailboxEffect.load()
 
 	local spriteBatchSize = math.max(tilemapObj.width, tilemapObj.height)
 	tilemapWallsSpriteBatch = love.graphics.newSpriteBatch(tilesets[5].image, spriteBatchSize * 4, "static")
@@ -142,12 +142,12 @@ function game.load()
 				local zIndexOffset = tile.zIndexOffset
 				local tileObj = {
 					transform = love.math.newTransform(x, y),
-					drawComponent = draw.new(tileImage, tileQuad, xOffset, yOffset, zIndex, zIndexOffset),
+					drawComponent = Sprite.new(tileImage, tileQuad, xOffset, yOffset, zIndex, zIndexOffset),
 					tileQuad = tileQuad,
 					isFloating = true,
 				}
 				tileObj.drawComponent.setShader = function()
-					tileEffect.setShader(tileObj, boatObj, lanternXRadius, lanternYRadius)
+					TileEffect.setShader(tileObj, boatObj, lanternXRadius, lanternYRadius)
 				end
 				table.insert(worldObjects, tileObj)
 				goto continue
@@ -158,12 +158,12 @@ function game.load()
 				local spriteBatch = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static")
 				tilemapWorldRow = {
 					transform = love.math.newTransform(0, y),
-					drawComponent = draw.newSpriteBatch(spriteBatch, tileQuad, tile.zIndex, tile.zIndexOffset),
+					drawComponent = Sprite.newSpriteBatch(spriteBatch, tileQuad, tile.zIndex, tile.zIndexOffset),
 					tileQuad = tileQuad,
 					isFloating = false,
 				}
 				tilemapWorldRow.drawComponent.setShader = function()
-					tileEffect.setShader(tilemapWorldRow, boatObj, lanternXRadius, lanternYRadius)
+					TileEffect.setShader(tilemapWorldRow, boatObj, lanternXRadius, lanternYRadius)
 				end
 				tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
 			end
@@ -179,15 +179,15 @@ function game.load()
 	for _, object in ipairs(tilemapObj.layers[OBJECT_LAYER_NAME].objects) do
 		local tilesetName = object.tilesetName
 		if (tilesetName == PACKAGES_TILESET_NAME) then
-			local packageObj = package.toPackage(object)
+			local packageObj = Package.toPackage(object)
 			table.insert(packages, packageObj)
 			object.drawComponent.setShader = function()
-				packageEffect.setShader(packageObj)
+				PackageEffect.setShader(packageObj)
 			end
 		elseif (tilesetName == MAILBOX_TILESET_NAME) then
 			table.insert(mailboxes, object)
 			object.drawComponent.setShader = function()
-				mailboxEffect.setShader(object)
+				MailboxEffect.setShader(object)
 			end
 		end
 
@@ -214,15 +214,15 @@ function game.load()
 		)
 	end
 
-	scene.pauseInput(scene.scenes.game)
-	mailDialogue.open(
-		mailScript.dailyDialogue[currentDay],
-		function() scene.resumeInput(scene.scenes.game) end
+	Scene.pauseInput(Scene.scenes.game)
+	MailDialogue.open(
+		MailScript.dailyDialogue[currentDay],
+		function() Scene.resumeInput(Scene.scenes.game) end
 	)
 end
 
 function game.unload()
-	music:unload()
+	Music:unload()
 	love.audio.stop()
 end
 
@@ -235,13 +235,13 @@ function game.onResume()
 end
 
 function game.endDay()
-	scene.scenes.dayTracker.nextDay()
-	scene.transition(scene.scenes.dayTracker)
+	Scene.scenes.dayTracker.nextDay()
+	Scene.transition(Scene.scenes.dayTracker)
 end
 
 local function victory()
-	if not scene.scenes.victoryMenu.isActive then
-		scene.start(scene.scenes.victoryMenu)
+	if not Scene.scenes.victoryMenu.isActive then
+		Scene.start(Scene.scenes.victoryMenu)
 	end
 end
 
@@ -257,7 +257,7 @@ local function evaluateWinCondition()
 	end
 
 	didWin = true
-	if dayTracker.currentDay == dayTracker.FINAL_DAY then
+	if DayTracker.currentDay == DayTracker.FINAL_DAY then
 		victory()
 	else
 		game.endDay()
@@ -265,8 +265,8 @@ local function evaluateWinCondition()
 end
 
 local function gameOver()
-	if not scene.scenes.gameOverMenu.isActive then
-		scene.start(scene.scenes.gameOverMenu)
+	if not Scene.scenes.gameOverMenu.isActive then
+		Scene.start(Scene.scenes.gameOverMenu)
 	end
 	didLose = true
 end
@@ -298,18 +298,18 @@ function game.keypressed(key, scancode, isRepeat)
 	end
 
 	if key == "t" and not isRepeat then
-		waterEffect.load(cameraObj, boatObj, love.timer.getTime())
+		WaterEffect.load(cameraObj, boatObj, love.timer.getTime())
 	end
 
 	if key == "r" and not isRepeat then
-		scene.restart(game)
+		Scene.restart(game)
 	end
 
 	if key == "tab" then
-		if not scene.scenes.map.isActive then
-			map.open()
+		if not Scene.scenes.map.isActive then
+			Map.open()
 		else
-			map.close()
+			Map.close()
 		end
 	end
 
@@ -339,7 +339,7 @@ function game.update(dt)
 		cameraObj.transform:setTransformation(boatX, boatY)
 	end
 
-	music.update(boatObj, dt)
+	Music.update(boatObj, dt)
 
 	local cameraX, cameraY = cameraObj.transform:transformPoint(0, 0)
 	local cameraHalfHeight = cameraObj:getScreenHeight() / 2
@@ -352,8 +352,8 @@ function game.update(dt)
 	endColIdx = math.ceil(endColIdx)
 	endRowIdx = math.ceil(endRowIdx)
 
-	local startWorldRowIdx = tilemap.getWorldRowIdx(startColIdx, startRowIdx)
-	local endWorldRowIdx = tilemap.getWorldRowIdx(endColIdx, endRowIdx) + 4
+	local startWorldRowIdx = Tilemap.getWorldRowIdx(startColIdx, startRowIdx)
+	local endWorldRowIdx = Tilemap.getWorldRowIdx(endColIdx, endRowIdx) + 4
 
 	worldEntities = {}
 	for worldRowIdx = startWorldRowIdx, endWorldRowIdx do
@@ -368,7 +368,7 @@ function game.update(dt)
 	end
 	for _, worldObject in ipairs(worldObjects) do
 		local zIndex = worldObject.drawComponent.zIndex + worldObject.drawComponent.zIndexOffset
-		if slurp_math.inRange(zIndex, startWorldRowIdx, endWorldRowIdx) then
+		if Math.inRange(zIndex, startWorldRowIdx, endWorldRowIdx) then
 			table.insert(worldEntities, worldObject)
 		end
 	end
@@ -382,46 +382,46 @@ function game.update(dt)
 		end
 	)
 
-	waterEffect.update(cameraObj, boatObj)
-	tileEffect.update(cameraObj, boatObj)
-	lanternEffect.update(cameraObj)
-	packageEffect.update(boatObj, packages)
-	mailboxEffect.update(boatObj, mailboxes)
+	WaterEffect.update(cameraObj, boatObj)
+	TileEffect.update(cameraObj, boatObj)
+	LanternEffect.update(cameraObj)
+	PackageEffect.update(boatObj, packages)
+	MailboxEffect.update(boatObj, mailboxes)
 
 	evaluateWinCondition()
 	evaluateLoseCondition()
 end
 
 function game.draw()
-	waterEffect.setShader()
+	WaterEffect.setShader()
 	love.graphics.draw(waterImage)
 	love.graphics.setShader()
 
 	love.graphics.push()
 	love.graphics.scale(cameraObj.zoom, cameraObj.zoom)
-	love.graphics.applyTransform(camera.getWorldToCanvasTransform(cameraObj))
+	love.graphics.applyTransform(Camera.getWorldToCanvasTransform(cameraObj))
 
 	love.graphics.draw(tilemapWallsSpriteBatch)
 	for _, worldObject in ipairs(worldEntities) do
-		draw.draw(worldObject.drawComponent, worldObject.transform)
+		Sprite.draw(worldObject.drawComponent, worldObject.transform)
 	end
 	love.graphics.setShader()
 	love.graphics.draw(tilemapBuildingsSpriteBatch)
 
 	if boatObj.isLanternActive then
 		local boatX, boatY = boatObj.transform:transformPoint(0, 0)
-		lanternEffect.setShader()
+		LanternEffect.setShader()
 		love.graphics.draw(lanternLightImage, boatX - lanternXRadius, boatY - lanternYRadius)
 	end
 
 	love.graphics.pop()
 
-	gameUi.draw(boatObj.gasRemaining, boatObj.packages)
+	GameUi.draw(boatObj.gasRemaining, boatObj.packages)
 end
 
 function game.debugTeleportBoatToCanvasPoint(x, y)
-	local canvasToWorldTransform = camera.getCanvasToWorldTransform(cameraObj)
-	local targetWorldPoint = vec2.new(canvasToWorldTransform:transformPoint(x, y))
+	local canvasToWorldTransform = Camera.getCanvasToWorldTransform(cameraObj)
+	local targetWorldPoint = Vec2.new(canvasToWorldTransform:transformPoint(x, y))
 	boatObj.transform:setTransformation(targetWorldPoint.x, targetWorldPoint.y, boatObj.rotation)
 end
 

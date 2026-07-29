@@ -1,183 +1,183 @@
-local scene = {
+local Scene = {
 	scenes = {}
 }
 
 local scenesList = {}
 
-local function init(_scene, isGlobal)
-	assert(_scene.load, "Scene %s missing load method")
-	assert(_scene.unload, "Scene missing unload method")
-	assert(_scene.onPause, "Scene missing onPause method")
-	assert(_scene.onResume, "Scene missing onResume method")
-	assert(_scene.update, "Scene missing update method")
-	assert(_scene.draw, "Scene missing draw method")
+local function init(scene, isGlobal)
+	assert(scene.load, "Scene %s missing load method")
+	assert(scene.unload, "Scene missing unload method")
+	assert(scene.onPause, "Scene missing onPause method")
+	assert(scene.onResume, "Scene missing onResume method")
+	assert(scene.update, "Scene missing update method")
+	assert(scene.draw, "Scene missing draw method")
 
-	_scene.isGlobal = isGlobal
-	_scene.isActive = false
-	_scene.isPaused = false
-	_scene.isInputPaused = false
-	_scene.shouldLoad = false
-	_scene.shouldUnload = false
-	return _scene
+	scene.isGlobal = isGlobal
+	scene.isActive = false
+	scene.isPaused = false
+	scene.isInputPaused = false
+	scene.shouldLoad = false
+	scene.shouldUnload = false
+	return scene
 end
 
-function scene.register(sceneName, _scene, isGlobal)
-	table.insert(scenesList, _scene)
-	scene.scenes[sceneName] = init(_scene, isGlobal or false)
+function Scene.register(sceneName, scene, isGlobal)
+	table.insert(scenesList, scene)
+	Scene.scenes[sceneName] = init(scene, isGlobal or false)
 end
 
-function scene.start(_scene)
-	_scene.isPaused = false
-	_scene.shouldLoad = true
+function Scene.start(scene)
+	scene.isPaused = false
+	scene.shouldLoad = true
 end
 
-function scene.stop(_scene)
-	_scene.shouldUnload = true
+function Scene.stop(scene)
+	scene.shouldUnload = true
 end
 
-function scene.pause(_scene)
-	_scene.onPause()
-	_scene.isPaused = true
+function Scene.pause(scene)
+	scene.onPause()
+	scene.isPaused = true
 end
 
-function scene.resume(_scene)
-	_scene.onResume()
-	_scene.isPaused = false
+function Scene.resume(scene)
+	scene.onResume()
+	scene.isPaused = false
 end
 
-function scene.pauseInput(_scene)
-	_scene.isInputPaused = true
+function Scene.pauseInput(scene)
+	scene.isInputPaused = true
 end
 
-function scene.resumeInput(_scene)
-	_scene.isInputPaused = false
+function Scene.resumeInput(scene)
+	scene.isInputPaused = false
 end
 
-function scene.restart(_scene)
-	scene.stop(_scene)
-	scene.start(_scene)
+function Scene.restart(scene)
+	Scene.stop(scene)
+	Scene.start(scene)
 end
 
-function scene.transition(_scene)
+function Scene.transition(scene)
 	for _, s in ipairs(scenesList) do
 		if not s.isGlobal and s.isActive then
-			scene.stop(s)
+			Scene.stop(s)
 		end
 	end
-	scene.start(_scene)
+	Scene.start(scene)
 end
 
-local function load(_scene)
-	assert(not _scene.isActive, "can't load an active scene")
-	_scene.load()
-	_scene.isActive = true
-	_scene.shouldLoad = false
+local function load(scene)
+	assert(not scene.isActive, "can't load an active scene")
+	scene.load()
+	scene.isActive = true
+	scene.shouldLoad = false
 end
 
-local function unload(_scene)
-	assert(_scene.isActive, "can't unload an inactive scene")
-	_scene.unload()
-	_scene.isActive = false
-	_scene.shouldUnload = false
+local function unload(scene)
+	assert(scene.isActive, "can't unload an inactive scene")
+	scene.unload()
+	scene.isActive = false
+	scene.shouldUnload = false
 end
 
-local function shouldSkipUpdate(_scene)
-	return not _scene.isActive or _scene.isPaused
+local function shouldSkipUpdate(scene)
+	return not scene.isActive or scene.isPaused
 end
 
-local function shouldSkipInput(_scene)
-	return _scene.isInputPaused or shouldSkipUpdate(_scene)
+local function shouldSkipInput(scene)
+	return scene.isInputPaused or shouldSkipUpdate(scene)
 end
 
-local function shouldSkipDraw(_scene)
-	return not _scene.isActive
+local function shouldSkipDraw(scene)
+	return not scene.isActive
 end
 
-function scene.keypressed(key, scancode, isRepeat)
-	for _, _scene in ipairs(scenesList) do
-		if shouldSkipInput(_scene) then
+function Scene.keypressed(key, scancode, isRepeat)
+	for _, scene in ipairs(scenesList) do
+		if shouldSkipInput(scene) then
 			goto continue
 		end
 
-		if scene.keypressed then
-			_scene.keypressed(key, scancode, isRepeat)
+		if Scene.keypressed then
+			scene.keypressed(key, scancode, isRepeat)
 		end
 
 		::continue::
 	end
 end
 
-function scene.mousepressed(x, y, button, isTouch, presses)
-	for _, _scene in ipairs(scenesList) do
-		if shouldSkipInput(_scene) then
+function Scene.mousepressed(x, y, button, isTouch, presses)
+	for _, scene in ipairs(scenesList) do
+		if shouldSkipInput(scene) then
 			goto continue
 		end
 
-		if scene.mousepressed then
-			_scene.mousepressed(x, y, button, isTouch, presses)
+		if Scene.mousepressed then
+			scene.mousepressed(x, y, button, isTouch, presses)
 		end
 
 		::continue::
 	end
 end
 
-function scene.mousemoved(x, y, dx, dy, isTouch)
-	for _, _scene in ipairs(scenesList) do
-		if shouldSkipInput(_scene) then
+function Scene.mousemoved(x, y, dx, dy, isTouch)
+	for _, scene in ipairs(scenesList) do
+		if shouldSkipInput(scene) then
 			goto continue
 		end
 
-		if scene.mousemoved then
-			_scene.mousemoved(x, y, dx, dy, isTouch)
+		if Scene.mousemoved then
+			scene.mousemoved(x, y, dx, dy, isTouch)
 		end
 
 		::continue::
 	end
 end
 
-function scene.wheelmoved(x, y)
-	for _, _scene in ipairs(scenesList) do
-		if shouldSkipInput(_scene) then
+function Scene.wheelmoved(x, y)
+	for _, scene in ipairs(scenesList) do
+		if shouldSkipInput(scene) then
 			goto continue
 		end
 
-		if scene.wheelmoved then
-			_scene.wheelmoved(x, y)
+		if Scene.wheelmoved then
+			scene.wheelmoved(x, y)
 		end
 
 		::continue::
 	end
 end
 
-function scene.update(dt)
-	for _, _scene in ipairs(scenesList) do
-		if _scene.shouldUnload then
-			unload(_scene);
+function Scene.update(dt)
+	for _, scene in ipairs(scenesList) do
+		if scene.shouldUnload then
+			unload(scene);
 		end
-		if _scene.shouldLoad then
-			load(_scene)
+		if scene.shouldLoad then
+			load(scene)
 		end
 
-		if shouldSkipUpdate(_scene) then
+		if shouldSkipUpdate(scene) then
 			goto continue
 		end
 
-		_scene.update(dt)
+		scene.update(dt)
 
 		::continue::
 	end
 end
 
-function scene.draw()
-	for _, _scene in ipairs(scenesList) do
-		if shouldSkipDraw(_scene) then
+function Scene.draw()
+	for _, scene in ipairs(scenesList) do
+		if shouldSkipDraw(scene) then
 			goto continue
 		end
 
-		_scene.draw()
+		scene.draw()
 
 		::continue::
 	end
 end
 
-return scene
+return Scene

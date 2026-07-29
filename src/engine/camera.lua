@@ -1,16 +1,16 @@
-local camera = {}
+local Camera = {}
 local meta = {}
 meta.__index = meta
 
-local settings = require("engine/settings")
+local Settings = require("engine/settings")
 
-function camera.new()
+function Camera.new()
 	local zoomToggles = { 1, 0.5 }
 	local newCamera = {
 		transform = love.math.newTransform(),
 
-		screenWidth = settings.canvasPixelWidth,
-		screenHeight = settings.canvasPixelHeight,
+		screenWidth = Settings.canvasPixelWidth,
+		screenHeight = Settings.canvasPixelHeight,
 		isPanning = false,
 		panSpeed = 0.5,
 		zoom = zoomToggles[1],
@@ -84,16 +84,16 @@ end
 function meta.update(self, dt)
 end
 
-function camera.getWorldToCanvasTransform(_camera)
-	local camX, camY = _camera.transform:transformPoint(0, 0)
+function Camera.getWorldToCanvasTransform(camera)
+	local camX, camY = camera.transform:transformPoint(0, 0)
 	return love.math.newTransform(
-		-camX + (_camera:getScreenWidth() / 2),
-		-camY + (_camera:getScreenHeight() / 2)
+		-camX + (camera:getScreenWidth() / 2),
+		-camY + (camera:getScreenHeight() / 2)
 	)
 end
 
-function camera.getCanvasToWorldTransform(_camera)
-	return camera.getWorldToCanvasTransform(_camera):inverse()
+function Camera.getCanvasToWorldTransform(camera)
+	return Camera.getWorldToCanvasTransform(camera):inverse()
 end
 
-return camera
+return Camera
