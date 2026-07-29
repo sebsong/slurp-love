@@ -5,7 +5,7 @@ meta.__index = meta
 
 function Set.new(...)
 	local set = {
-		_length = 0
+		length = 0
 	}
 	setmetatable(set, meta)
 
@@ -14,10 +14,10 @@ function Set.new(...)
 	return set
 end
 
-local function insert(_set, val)
-	if not _set[val] then
-		_set[val] = true
-		_set._length = _set._length + 1
+local function insert(set, val)
+	if not set[val] then
+		set[val] = true
+		set.length = set.length + 1
 	end
 end
 
@@ -35,10 +35,10 @@ function meta:insert(val, ...)
 	end
 end
 
-local function remove(_set, val)
-	if _set[val] then
-		_set[val] = nil
-		_set._length = _set._length - 1
+local function remove(set, val)
+	if set[val] then
+		set[val] = nil
+		set.length = set.length - 1
 	end
 end
 
@@ -61,7 +61,7 @@ function meta:contains(item)
 end
 
 function meta:len()
-	return self._length
+	return self.length
 end
 
 function meta:isEmpty()
