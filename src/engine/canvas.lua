@@ -38,4 +38,20 @@ function canvas.load()
 	canvas.canvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
 end
 
+function canvas.draw(drawFunction)
+	canvas.canvas:renderTo(
+		function()
+			love.graphics.clear()
+
+			love.graphics.push()
+			love.graphics.scale(canvas.scale, canvas.scale)
+
+			drawFunction()
+
+			love.graphics.pop()
+		end
+	)
+	love.graphics.draw(canvas.canvas, canvas.scaledCanvasToScreenTransform)
+end
+
 return canvas

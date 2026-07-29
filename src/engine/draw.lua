@@ -1,7 +1,5 @@
 local draw = {}
 
-local canvas = require("engine/canvas")
-
 function draw.load()
 	love.graphics.setPointSize(8)
 	love.graphics.setLineWidth(.1)
@@ -82,22 +80,6 @@ function draw.draw(drawComponent, transform)
 		)
 	end
 	love.graphics.pop()
-end
-
-function draw.drawToCanvas(drawFunction)
-	canvas.canvas:renderTo(
-		function()
-			love.graphics.clear()
-
-			love.graphics.push()
-			love.graphics.scale(canvas.scale, canvas.scale)
-
-			drawFunction()
-
-			love.graphics.pop()
-		end
-	)
-	love.graphics.draw(canvas.canvas, canvas.scaledCanvasToScreenTransform)
 end
 
 return draw
