@@ -87,6 +87,9 @@ local function setLines(lines)
 end
 
 function mailDialogue.load()
+	isOpen = false
+	shouldStop = false
+
 	local dialogueBoxImage = love.graphics.newImage("assets/art/dialogue_box.png")
 	-- local dialogueBoxDrawComponent = Sprite.new(dialogueBoxImage)
 	local dialogueBoxDrawComponent = Animation.new(dialogueBoxImage, 12, 1.5)
@@ -115,7 +118,7 @@ function mailDialogue.onResume()
 end
 
 function mailDialogue.keypressed(key, scancode, isRepeat)
-	if key == "space" then
+	if isOpen and key == "space" then
 		mailDialogue.next()
 	end
 end
@@ -143,7 +146,7 @@ function mailDialogue.update(dt)
 
 	Animation.update(dialogueBox.drawComponent, dt)
 
-	if isDialogueFinished then
+	if not isOpen or isDialogueFinished then
 		return
 	end
 
