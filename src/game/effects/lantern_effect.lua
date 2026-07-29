@@ -2,8 +2,8 @@ local LanternEffect = {}
 
 local Canvas = require("engine/canvas")
 local Color = require("engine/color")
-local WaterEffect = require("game/water_effect")
-local BoatEffect = require("game/boat_effect")
+local WaterEffect = require("game/effects/water_effect")
+local BoatEffect = require("game/effects/boat_effect")
 
 local SHADER_FILE_PATH = "assets/shader/lantern.glsl"
 

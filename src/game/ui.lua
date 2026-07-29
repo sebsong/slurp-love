@@ -2,7 +2,7 @@ local GameUi = {
 	PADDING = 10
 }
 
-local PackageEffect = require("game/package_effect")
+local PackageEffect = require("game/effects/package_effect")
 local Sprite = require("engine/sprite")
 local Ui = require("engine/ui")
 

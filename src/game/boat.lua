@@ -9,7 +9,7 @@ local Tilemap = require("engine/tilemap")
 
 local Values = require("game/values")
 local GameUi = require("game/ui")
-local BoatEffect = require("game/boat_effect")
+local BoatEffect = require("game/effects/boat_effect")
 
 local NUM_BOAT_ANGLES = 16
 local BOAT_WIDTH, BOAT_HEIGHT = 16, 16

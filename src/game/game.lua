@@ -16,11 +16,11 @@ local DayTracker = require("game/day_tracker")
 local MailDialogue = require("game/mail_dialogue")
 local MailScript = require("game/mail_script")
 local Map = require("game/map")
-local WaterEffect = require("game/water_effect")
-local TileEffect = require("game/tile_effect")
-local LanternEffect = require("game/lantern_effect")
-local PackageEffect = require("game/package_effect")
-local MailboxEffect = require("game/mailbox_effect")
+local WaterEffect = require("game/effects/water_effect")
+local TileEffect = require("game/effects/tile_effect")
+local LanternEffect = require("game/effects/lantern_effect")
+local PackageEffect = require("game/effects/package_effect")
+local MailboxEffect = require("game/effects/mailbox_effect")
 
 local DAY_TO_LAYER_NAME = {
 	"objects_monday",
