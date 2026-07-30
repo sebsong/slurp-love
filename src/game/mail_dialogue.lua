@@ -73,7 +73,7 @@ end
 
 function mailDialogue.close()
 	isOpen = false
-	Animation.play(dialogueBox.sprite, true, function() shouldStop = true end)
+	Animation.play(dialogueBox.sprite.animation, true, function() shouldStop = true end)
 end
 
 local function setLines(lines)
@@ -92,8 +92,8 @@ function mailDialogue.load()
 
 	local dialogueBoxImage = love.graphics.newImage("assets/art/dialogue_box.png")
 	-- local dialogueBoxSprite = Sprite.new(dialogueBoxImage)
-	local dialogueBoxSprite = Animation.new(dialogueBoxImage, 12, 1.5)
-	Animation.play(dialogueBoxSprite, false, function() isOpen = true end)
+	local dialogueBoxSprite = Sprite.newAnimated(dialogueBoxImage, 12, 1.5)
+	Animation.play(dialogueBoxSprite.animation, false, function() isOpen = true end)
 	dialogueBox = {
 		sprite = dialogueBoxSprite,
 		transform = Ui.newAlignedTransform(dialogueBoxSprite.width, dialogueBoxSprite.height, Ui.align.CENTER, Ui.align.BOTTOM, 0, 0)
@@ -144,7 +144,7 @@ function mailDialogue.update(dt)
 		Scene.stop(Scene.scenes.mailDialogue)
 	end
 
-	Animation.update(dialogueBox.sprite, dt)
+	Animation.update(dialogueBox.sprite.animation, dt)
 
 	if not isOpen or isDialogueFinished then
 		return

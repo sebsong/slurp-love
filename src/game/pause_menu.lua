@@ -29,7 +29,7 @@ end
 
 function PauseMenu.close()
 	isOpen = false
-	Animation.play(menu.sprite, true, function() shouldStop = true end)
+	Animation.play(menu.sprite.animation, true, function() shouldStop = true end)
 end
 
 function PauseMenu.toggle()
@@ -49,8 +49,8 @@ function PauseMenu.load()
 	shouldStop = false
 	local menuImage = love.graphics.newImage("assets/art/pause_menu.png")
 	-- local menuSprite = Sprite.new(menuImage)
-	local menuSprite = Animation.new(menuImage, 6, 0.15)
-	Animation.play(menuSprite, false, function() isOpen = true end)
+	local menuSprite = Sprite.newAnimated(menuImage, 6, 0.15)
+	Animation.play(menuSprite.animation, false, function() isOpen = true end)
 	menu = {
 		sprite = menuSprite,
 		transform = Ui.newAlignedTransform(menuSprite.width, menuSprite.height, Ui.align.CENTER, Ui.align.CENTER)
@@ -64,7 +64,7 @@ function PauseMenu.load()
 	local buttonImageWidth, buttonImageHeight = buttonImage:getDimensions()
 	local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
 
-	local resumeSprite = Animation.new(buttonImage, numButtonFrames)
+	local resumeSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
 	resumeButton = {
 		sprite = resumeSprite,
 		transform = Ui.newAlignedTransform(resumeSprite.width, resumeSprite.height, Ui.align.CENTER, Ui.align.CENTER),
@@ -74,7 +74,7 @@ function PauseMenu.load()
 	}
 	resumeTextTransform = Ui.newAlignedTransform(resumeSprite.width, Font.medium:getHeight(), Ui.align.CENTER, Ui.align.CENTER)
 
-	local mainMenuSprite = Animation.new(buttonImage, numButtonFrames)
+	local mainMenuSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
 	local yOffset = mainMenuSprite.height * 1.1
 	mainMenuButton = {
 		sprite = mainMenuSprite,
@@ -110,15 +110,15 @@ end
 
 function PauseMenu.mousemoved(x, y, dx, dy, isTouch)
 	if Collision.hitTest(x, y, resumeButton.collider, resumeButton.transform) then
-		resumeButton.sprite.currentFrame = HOVER_FRAME
+		resumeButton.sprite.animation.currentFrame = HOVER_FRAME
 	else
-		resumeButton.sprite.currentFrame = DEFAULT_FRAME
+		resumeButton.sprite.animation.currentFrame = DEFAULT_FRAME
 	end
 
 	if Collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
-		mainMenuButton.sprite.currentFrame = HOVER_FRAME
+		mainMenuButton.sprite.animation.currentFrame = HOVER_FRAME
 	else
-		mainMenuButton.sprite.currentFrame = DEFAULT_FRAME
+		mainMenuButton.sprite.animation.currentFrame = DEFAULT_FRAME
 	end
 end
 
@@ -126,7 +126,7 @@ function PauseMenu.wheelmoved(x, y)
 end
 
 function PauseMenu.update(dt)
-	Animation.update(menu.sprite, dt)
+	Animation.update(menu.sprite.animation, dt)
 
 	if shouldStop then
 		Scene.stop(Scene.scenes.pauseMenu)

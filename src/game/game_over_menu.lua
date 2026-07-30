@@ -35,7 +35,7 @@ function gameOverMenu.load()
 	local buttonImageWidth, buttonImageHeight = buttonImage:getDimensions()
 	local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
 
-	local restartSprite = Animation.new(buttonImage, numButtonFrames)
+	local restartSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
 	restartButton = {
 		sprite = restartSprite,
 		transform = Ui.newAlignedTransform(restartSprite.width, restartSprite.height, Ui.align.CENTER, Ui.align.CENTER),
@@ -44,7 +44,7 @@ function gameOverMenu.load()
 		isHovered = false
 	}
 
-	local mainMenuSprite = Animation.new(buttonImage, numButtonFrames)
+	local mainMenuSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
 	mainMenuButton = {
 		sprite = mainMenuSprite,
 		transform = Ui.newAlignedTransform(mainMenuSprite.width, mainMenuSprite.height, Ui.align.CENTER, Ui.align.CENTER, 0, mainMenuSprite.height * 1.1),
@@ -79,15 +79,15 @@ end
 
 function gameOverMenu.mousemoved(x, y, dx, dy, isTouch)
 	if Collision.hitTest(x, y, restartButton.collider, restartButton.transform) then
-		restartButton.sprite.currentFrame = HOVER_FRAME
+		restartButton.sprite.animation.currentFrame = HOVER_FRAME
 	else
-		restartButton.sprite.currentFrame = DEFAULT_FRAME
+		restartButton.sprite.animation.currentFrame = DEFAULT_FRAME
 	end
 
 	if Collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
-		mainMenuButton.sprite.currentFrame = HOVER_FRAME
+		mainMenuButton.sprite.animation.currentFrame = HOVER_FRAME
 	else
-		mainMenuButton.sprite.currentFrame = DEFAULT_FRAME
+		mainMenuButton.sprite.animation.currentFrame = DEFAULT_FRAME
 	end
 end
 

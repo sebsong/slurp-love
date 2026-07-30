@@ -2,6 +2,7 @@ local Boat = {}
 
 local Math = require("engine/math")
 local Collision = require("engine/collision")
+local Sprite = require("engine/sprite")
 local Animation = require("engine/animation")
 local Vec2 = require("engine/vec2")
 local Set = require("engine/set")
@@ -130,18 +131,18 @@ local function update(self, cameraObj, dt)
 	end
 
 	if didMoveForward then
-		self.sprite = self.animations[2]
+		self.sprite = self.sprites[2]
 	else
-		self.sprite = self.animations[1]
+		self.sprite = self.sprites[1]
 	end
-	local rotSegmentLength = 2 * math.pi / #self.sprite.quads
+	local rotSegmentLength = 2 * math.pi / self.sprite.animation.numFrames
 	local frameIdx = math.floor(
 		(
 			((self.rotation + (rotSegmentLength / 2)) % (2 * math.pi)) /
 			(rotSegmentLength)
 		)
 	) + 1
-	self.sprite.currentFrame = frameIdx
+	self.sprite.animation.currentFrame = frameIdx
 
 	self:updateNeighborTiles()
 	self:updateTrailPositions(dt)
@@ -172,15 +173,15 @@ local function update(self, cameraObj, dt)
 	BoatEffect.update(cameraObj)
 end
 
-local function draw(animation, transform)
+local function draw(sprite, transform)
 	love.graphics.push()
 	local boatX, boatY = transform:transformPoint(0, 0)
 	BoatEffect.setShader()
 	love.graphics.draw(
-		animation.image,
-		animation.quads[animation.currentFrame],
-		boatX + animation.xOffset,
-		boatY + animation.yOffset
+		sprite.image,
+		Animation.getCurrentQuad(sprite.animation),
+		boatX + sprite.xOffset,
+		boatY + sprite.yOffset
 	)
 	love.graphics.pop()
 end
@@ -277,21 +278,17 @@ local function onCollision(self, collidable)
 end
 
 function Boat.new(tilemap, dayValue)
-	local animations = {}
+	local sprites = {}
 
 	local boatImage = love.graphics.newImage("assets/art/boat1.png")
-	local animationStatic = Animation.new(boatImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
-	animationStatic.draw = draw
-	animationStatic.zIndex = 0
-	animationStatic.zIndexOffset = 0
-	table.insert(animations, animationStatic)
+	local spriteStatic = Sprite.newAnimated(boatImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2), 0, 0)
+	spriteStatic.draw = draw
+	table.insert(sprites, spriteStatic)
 
 	local boatAccelImage = love.graphics.newImage("assets/art/boat2.png")
-	local animationAccel = Animation.new(boatAccelImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2))
-	animationAccel.draw = draw
-	animationAccel.zIndex = 0
-	animationAccel.zIndexOffset = 0
-	table.insert(animations, animationAccel)
+	local spriteAccel = Sprite.newAnimated(boatAccelImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2), 0, 0)
+	spriteAccel.draw = draw
+	table.insert(sprites, spriteAccel)
 
 	BoatEffect.load()
 
@@ -313,8 +310,8 @@ function Boat.new(tilemap, dayValue)
 
 	return {
 		-- TODO: build the boat from a tile object
-		animations = animations,
-		sprite = animationStatic,
+		sprites = sprites,
+		sprite = spriteStatic,
 		transform = transform,
 
 		bumpSound = bumpSound,

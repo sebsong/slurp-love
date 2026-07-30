@@ -3,7 +3,6 @@ local VictoryMenu = {}
 local Scene = require("engine/scene")
 local Sprite = require("engine/sprite")
 local Collision = require("engine/collision")
-local Animation = require("engine/animation")
 local Ui = require("engine/ui")
 local Settings = require("engine/settings")
 
@@ -33,7 +32,7 @@ function VictoryMenu.load()
 	local buttonImageWidth, buttonImageHeight = buttonImage:getDimensions()
 	local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
 
-	local mainMenuSprite = Animation.new(buttonImage, numButtonFrames)
+	local mainMenuSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
 	mainMenuButton = {
 		sprite = mainMenuSprite,
 		transform = Ui.newAlignedTransform(mainMenuSprite.width, mainMenuSprite.height, Ui.align.CENTER, Ui.align.CENTER, 0, mainMenuSprite.height * 1.1),
@@ -63,9 +62,9 @@ end
 
 function VictoryMenu.mousemoved(x, y, dx, dy, isTouch)
 	if Collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
-		mainMenuButton.sprite.currentFrame = HOVER_FRAME
+		mainMenuButton.sprite.animation.currentFrame = HOVER_FRAME
 	else
-		mainMenuButton.sprite.currentFrame = DEFAULT_FRAME
+		mainMenuButton.sprite.animation.currentFrame = DEFAULT_FRAME
 	end
 end
 

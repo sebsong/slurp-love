@@ -24,7 +24,7 @@ function MainMenu.load()
 	local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
 
 	playButton = {
-		animation = Animation.new(buttonImage, numButtonFrames),
+		sprite = Sprite.newAnimated(buttonImage, numButtonFrames),
 		transform = love.math.newTransform(75, 175),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
@@ -32,7 +32,7 @@ function MainMenu.load()
 	}
 
 	exitButton = {
-		animation = Animation.new(buttonImage, numButtonFrames),
+		sprite = Sprite.newAnimated(buttonImage, numButtonFrames),
 		transform = love.math.newTransform(75, 250),
 		collider = { width = buttonColliderWidth, height = buttonColliderHeight },
 		isPressed = false,
@@ -64,15 +64,15 @@ end
 
 function MainMenu.mousemoved(x, y, dx, dy, isTouch)
 	if Collision.hitTest(x, y, playButton.collider, playButton.transform) then
-		playButton.animation.currentFrame = HOVER_FRAME
+		playButton.sprite.animation.currentFrame = HOVER_FRAME
 	else
-		playButton.animation.currentFrame = DEFAULT_FRAME
+		playButton.sprite.animation.currentFrame = DEFAULT_FRAME
 	end
 
 	if Collision.hitTest(x, y, exitButton.collider, exitButton.transform) then
-		exitButton.animation.currentFrame = HOVER_FRAME
+		exitButton.sprite.animation.currentFrame = HOVER_FRAME
 	else
-		exitButton.animation.currentFrame = DEFAULT_FRAME
+		exitButton.sprite.animation.currentFrame = DEFAULT_FRAME
 	end
 end
 
@@ -86,9 +86,9 @@ function MainMenu.draw()
 	love.graphics.setFont(Font.large)
 
 	love.graphics.draw(backgroundImage)
-	Sprite.draw(playButton.animation, playButton.transform)
+	Sprite.draw(playButton.sprite, playButton.transform)
 	love.graphics.print("play", playButton.transform:transformPoint(10, 15))
-	Sprite.draw(exitButton.animation, exitButton.transform)
+	Sprite.draw(exitButton.sprite, exitButton.transform)
 	love.graphics.print("exit", exitButton.transform:transformPoint(10, 15))
 	love.graphics.print("abcdefghijklm\nnopqrstuvwxyz", 220, 360 - 64 - 16)
 end

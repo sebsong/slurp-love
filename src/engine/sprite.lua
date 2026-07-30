@@ -1,27 +1,25 @@
 local Sprite = {}
 
+local Animation = require("engine/animation")
+
 function Sprite.load()
 	love.graphics.setPointSize(8)
 	love.graphics.setLineWidth(.1)
 	love.graphics.setBackgroundColor(0, 0, 0)
 end
 
-function Sprite.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset, isSpriteBatch)
-	local isQuadArray = type(quad) == "table"
-	local currentFrame = 1
+local function new(image, quad, animation, xOffset, yOffset, zIndex, zIndexOffset, isSpriteBatch)
 	local width, height
 	if quad then
-		local referenceQuad = isQuadArray and quad[currentFrame] or quad
-		_, _, width, height = referenceQuad:getViewport()
+		_, _, width, height = quad:getViewport()
 	else
 		width, height = image:getDimensions()
 	end
 	return {
 		shouldDraw = true,
 		image = image,
-		quad = not isQuadArray and quad or nil,
-		quads = isQuadArray and quad or nil,
-		currentFrame = currentFrame,
+		quad = quad,
+		animation = animation,
 		width = width,
 		height = height,
 		xOffset = xOffset,
@@ -35,8 +33,26 @@ function Sprite.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset, isSprit
 	}
 end
 
+function Sprite.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset)
+	return new(image, quad, nil, xOffset, yOffset, zIndex, zIndexOffset, false)
+end
+
 function Sprite.newSpriteBatch(spriteBatch, quad, zIndex, zIndexOffset)
-	return Sprite.new(spriteBatch, quad, nil, nil, zIndex, zIndexOffset, true)
+	return new(spriteBatch, quad, nil, nil, nil, zIndex, zIndexOffset, true)
+end
+
+function Sprite.newAnimated(image, numFrames, duration, isLooping, xOffset, yOffset, zIndex, zIndexOffset)
+	local quads = {}
+	local imageWidth, imageHeight = image:getDimensions()
+	local quadWidth, quadHeight = imageWidth / numFrames, imageHeight
+	for i = 0, numFrames - 1 do
+		table.insert(quads, love.graphics.newQuad(i * quadWidth, 0, quadWidth, quadHeight, image))
+	end
+
+	local animation = Animation.new(quads, numFrames, duration, isLooping)
+	local quad = Animation.getCurrentQuad(animation)
+
+	return new(image, quad, animation, xOffset, yOffset, zIndex, zIndexOffset, false)
 end
 
 function Sprite.draw(sprite, transform)
@@ -59,10 +75,10 @@ function Sprite.draw(sprite, transform)
 	end
 
 	local quad
-	if sprite.quad then
+	if sprite.animation then
+		quad = Animation.getCurrentQuad(sprite.animation)
+	else
 		quad = sprite.quad
-	elseif sprite.quads then
-		quad = sprite.quads[sprite.currentFrame]
 	end
 
 	if quad and not sprite.isSpriteBatch then
