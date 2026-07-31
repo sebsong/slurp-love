@@ -1,4 +1,4 @@
-local game = {}
+local Game = {}
 
 local Color = require("engine/color")
 local Tilemap = require("engine/tilemap")
@@ -65,7 +65,7 @@ local lanternYRadius
 local didWin
 local didLose
 
-function game.load()
+function Game.load()
 	didWin = false
 	didLose = false
 
@@ -221,20 +221,20 @@ function game.load()
 	)
 end
 
-function game.unload()
+function Game.unload()
 	Music:unload()
 	love.audio.stop()
 end
 
-function game.onPause()
+function Game.onPause()
 	boatObj.engineLoopSound:pause()
 end
 
-function game.onResume()
+function Game.onResume()
 	boatObj.engineLoopSound:play()
 end
 
-function game.endDay()
+function Game.endDay()
 	Scene.scenes.dayTracker.nextDay()
 	Scene.transition(Scene.scenes.dayTracker)
 end
@@ -260,7 +260,7 @@ local function evaluateWinCondition()
 	if DayTracker.currentDay == DayTracker.FINAL_DAY then
 		victory()
 	else
-		game.endDay()
+		Game.endDay()
 	end
 end
 
@@ -290,7 +290,7 @@ local function evaluateLoseCondition()
 	end
 end
 
-function game.keypressed(key, scancode, isRepeat)
+function Game.keypressed(key, scancode, isRepeat)
 	if key == "space" and not isRepeat then
 		if not boatObj:pickupPackage(packages, mailboxes) then
 			boatObj:deliverPackage(mailboxes)
@@ -302,7 +302,7 @@ function game.keypressed(key, scancode, isRepeat)
 	end
 
 	if key == "r" and not isRepeat then
-		Scene.restart(game)
+		Scene.restart(Game)
 	end
 
 	if key == "tab" then
@@ -316,19 +316,19 @@ function game.keypressed(key, scancode, isRepeat)
 	cameraObj:keypressed(key, scancode, isRepeat)
 end
 
-function game.mousepressed(x, y, button, isTouch, presses)
+function Game.mousepressed(x, y, button, isTouch, presses)
 	cameraObj:mousepressed(x, y, button, isTouch, presses)
 end
 
-function game.mousemoved(x, y, dx, dy, isTouch)
+function Game.mousemoved(x, y, dx, dy, isTouch)
 	cameraObj:mousemoved(x, y, dx, dy, isTouch)
 end
 
-function game.wheelmoved(x, y)
+function Game.wheelmoved(x, y)
 	cameraObj:wheelmoved(x, y)
 end
 
-function game.update(dt)
+function Game.update(dt)
 	boatObj:update(cameraObj, dt)
 	for _, packageObj in ipairs(boatObj.packages) do
 		packageObj:update(dt)
@@ -392,7 +392,7 @@ function game.update(dt)
 	evaluateLoseCondition()
 end
 
-function game.draw()
+function Game.draw()
 	WaterEffect.setShader()
 	love.graphics.draw(waterImage)
 	love.graphics.setShader()
@@ -419,10 +419,10 @@ function game.draw()
 	GameUi.draw(boatObj.gasRemaining, boatObj.packages)
 end
 
-function game.debugTeleportBoatToCanvasPoint(x, y)
+function Game.debugTeleportBoatToCanvasPoint(x, y)
 	local canvasToWorldTransform = Camera.getCanvasToWorldTransform(cameraObj)
 	local targetWorldPoint = Vec2.new(canvasToWorldTransform:transformPoint(x, y))
 	boatObj.transform:setTransformation(targetWorldPoint.x, targetWorldPoint.y, boatObj.rotation)
 end
 
-return game
+return Game

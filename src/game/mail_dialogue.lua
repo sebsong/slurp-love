@@ -1,4 +1,4 @@
-local mailDialogue = {}
+local MailDialogue = {}
 
 local Sprite = require("engine/sprite")
 local Animation = require("engine/animation")
@@ -44,7 +44,7 @@ local function resetDialogue()
 end
 
 
-function mailDialogue.open(lines, onClose)
+function MailDialogue.open(lines, onClose)
 	if type(lines) ~= "table" then
 		lines = { lines }
 	end
@@ -53,7 +53,7 @@ function mailDialogue.open(lines, onClose)
 	Scene.start(Scene.scenes.mailDialogue)
 end
 
-function mailDialogue.next()
+function MailDialogue.next()
 	if not isLineFinished then
 		if not isFastForwarding then
 			isFastForwarding = true
@@ -65,13 +65,13 @@ function mailDialogue.next()
 			currentLineIndex = currentLineIndex + 1
 			resetLine()
 		else
-			mailDialogue.close()
+			MailDialogue.close()
 			resetDialogue()
 		end
 	end
 end
 
-function mailDialogue.close()
+function MailDialogue.close()
 	isOpen = false
 	Animation.play(dialogueBox.sprite.animation, true, function() shouldStop = true end)
 end
@@ -86,7 +86,7 @@ local function setLines(lines)
 	resetDialogue()
 end
 
-function mailDialogue.load()
+function MailDialogue.load()
 	isOpen = false
 	shouldStop = false
 
@@ -108,31 +108,31 @@ function mailDialogue.load()
 	setLines(dialogueLines)
 end
 
-function mailDialogue.unload()
+function MailDialogue.unload()
 end
 
-function mailDialogue.onPause()
+function MailDialogue.onPause()
 end
 
-function mailDialogue.onResume()
+function MailDialogue.onResume()
 end
 
-function mailDialogue.keypressed(key, scancode, isRepeat)
+function MailDialogue.keypressed(key, scancode, isRepeat)
 	if isOpen and key == "space" then
-		mailDialogue.next()
+		MailDialogue.next()
 	end
 end
 
-function mailDialogue.mousepressed(x, y, button, isTouch, presses)
+function MailDialogue.mousepressed(x, y, button, isTouch, presses)
 end
 
-function mailDialogue.mousemoved(x, y, dx, dy, isTouch)
+function MailDialogue.mousemoved(x, y, dx, dy, isTouch)
 end
 
-function mailDialogue.wheelmoved(x, y)
+function MailDialogue.wheelmoved(x, y)
 end
 
-function mailDialogue.update(dt)
+function MailDialogue.update(dt)
 	if shouldStop then
 		if onDialogueClose then
 			onDialogueClose()
@@ -170,7 +170,7 @@ function mailDialogue.update(dt)
 	end
 end
 
-function mailDialogue.draw()
+function MailDialogue.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
@@ -187,4 +187,4 @@ function mailDialogue.draw()
 	love.graphics.pop()
 end
 
-return mailDialogue
+return MailDialogue

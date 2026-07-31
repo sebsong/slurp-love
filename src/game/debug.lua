@@ -1,4 +1,4 @@
-local debug = {}
+local Debug = {}
 
 local Scene = require("engine/scene")
 
@@ -10,7 +10,7 @@ local defaultFont
 local frame
 local report
 
-function debug.load()
+function Debug.load()
 	defaultFont = love.graphics.getFont()
 	frame = 0
 	if ENABLE_PROFILER then
@@ -18,16 +18,16 @@ function debug.load()
 	end
 end
 
-function debug.unload()
+function Debug.unload()
 end
 
-function debug.onPause()
+function Debug.onPause()
 end
 
-function debug.onResume()
+function Debug.onResume()
 end
 
-function debug.keypressed(key, scancode, isRepeat)
+function Debug.keypressed(key, scancode, isRepeat)
 	if key == "return" and not isRepeat then
 		if Scene.scenes.mainMenu.isActive then
 			Scene.transition(Scene.scenes.dayTracker)
@@ -37,19 +37,19 @@ function debug.keypressed(key, scancode, isRepeat)
 	end
 end
 
-function debug.mousepressed(x, y, button, isTouch, presses)
+function Debug.mousepressed(x, y, button, isTouch, presses)
 	if button == 1 and Scene.scenes.game.isActive and not Scene.scenes.game.isPaused then
 		Scene.scenes.game.debugTeleportBoatToCanvasPoint(x, y)
 	end
 end
 
-function debug.mousemoved(x, y, dx, dy, isTouch)
+function Debug.mousemoved(x, y, dx, dy, isTouch)
 end
 
-function debug.wheelmoved(x, y)
+function Debug.wheelmoved(x, y)
 end
 
-function debug.update(dt)
+function Debug.update(dt)
 	if ENABLE_PROFILER then
 		frame = frame + 1
 		if frame % 1000 == 0 then
@@ -60,7 +60,7 @@ function debug.update(dt)
 	end
 end
 
-function debug.draw()
+function Debug.draw()
 	love.graphics.setFont(defaultFont)
 
 	love.graphics.setColor(0, 1, 0)
@@ -68,4 +68,4 @@ function debug.draw()
 	love.graphics.setColor(1, 1, 1)
 end
 
-return debug
+return Debug

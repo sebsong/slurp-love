@@ -1,4 +1,4 @@
-local gameOverMenu = {}
+local GameOverMenu = {}
 
 local Scene = require("engine/scene")
 local Sprite = require("engine/sprite")
@@ -19,7 +19,7 @@ local gameOverTextTransform
 local restartButton
 local mainMenuButton
 
-function gameOverMenu.load()
+function GameOverMenu.load()
 	local menuImage = love.graphics.newImage("assets/art/game_over_menu.png")
 	local menuSprite = Sprite.new(menuImage)
 	menu = {
@@ -54,19 +54,19 @@ function gameOverMenu.load()
 	}
 end
 
-function gameOverMenu.unload()
+function GameOverMenu.unload()
 end
 
-function gameOverMenu.onPause()
+function GameOverMenu.onPause()
 end
 
-function gameOverMenu.onResume()
+function GameOverMenu.onResume()
 end
 
-function gameOverMenu.keypressed(key, scancode, isRepeat)
+function GameOverMenu.keypressed(key, scancode, isRepeat)
 end
 
-function gameOverMenu.mousepressed(x, y, button, isTouch, presses)
+function GameOverMenu.mousepressed(x, y, button, isTouch, presses)
 	if Collision.hitTest(x, y, restartButton.collider, restartButton.transform) then
 		Scene.stop(Scene.scenes.gameOverMenu)
 		Scene.restart(Scene.scenes.game)
@@ -77,7 +77,7 @@ function gameOverMenu.mousepressed(x, y, button, isTouch, presses)
 	end
 end
 
-function gameOverMenu.mousemoved(x, y, dx, dy, isTouch)
+function GameOverMenu.mousemoved(x, y, dx, dy, isTouch)
 	if Collision.hitTest(x, y, restartButton.collider, restartButton.transform) then
 		restartButton.sprite.animation.currentFrame = HOVER_FRAME
 	else
@@ -91,13 +91,13 @@ function gameOverMenu.mousemoved(x, y, dx, dy, isTouch)
 	end
 end
 
-function gameOverMenu.wheelmoved(x, y)
+function GameOverMenu.wheelmoved(x, y)
 end
 
-function gameOverMenu.update(dt)
+function GameOverMenu.update(dt)
 end
 
-function gameOverMenu.draw()
+function GameOverMenu.draw()
 	love.graphics.push()
 
 	love.graphics.setShader()
@@ -114,4 +114,4 @@ function gameOverMenu.draw()
 	love.graphics.pop()
 end
 
-return gameOverMenu
+return GameOverMenu

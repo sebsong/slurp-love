@@ -1,4 +1,4 @@
-local dayTracker = {
+local DayTracker = {
 	currentDay = 1,
 	FINAL_DAY = 5,
 }
@@ -21,51 +21,51 @@ local showContinueText
 local blinkTimer
 local BLINK_HOLD_TIME = 1
 
-function dayTracker.isEndScreen()
-	return dayTracker.currentDay > dayTracker.FINAL_DAY
+function DayTracker.isEndScreen()
+	return DayTracker.currentDay > DayTracker.FINAL_DAY
 end
 
 local function startDay()
-	if (dayTracker.isEndScreen()) then
+	if (DayTracker.isEndScreen()) then
 		print("YOU WIN")
 	else
 		Scene.transition(Scene.scenes.game)
 	end
 end
 
-function dayTracker.nextDay()
-	dayTracker.currentDay = dayTracker.currentDay + 1
+function DayTracker.nextDay()
+	DayTracker.currentDay = DayTracker.currentDay + 1
 end
 
-function dayTracker.load()
+function DayTracker.load()
 	dayTransitionBackgroundImage = love.graphics.newImage("assets/art/day_transition_background.png")
 	blinkTimer = 0
 	showContinueText = true
 end
 
-function dayTracker.unload()
+function DayTracker.unload()
 end
 
-function dayTracker.onPause()
+function DayTracker.onPause()
 end
 
-function dayTracker.onResume()
+function DayTracker.onResume()
 end
 
-function dayTracker.keypressed(key, scancode, isRepeat)
+function DayTracker.keypressed(key, scancode, isRepeat)
 	startDay()
 end
 
-function dayTracker.mousepressed(x, y, button, isTouch, presses)
+function DayTracker.mousepressed(x, y, button, isTouch, presses)
 end
 
-function dayTracker.mousemoved(x, y, dx, dy, isTouch)
+function DayTracker.mousemoved(x, y, dx, dy, isTouch)
 end
 
-function dayTracker.wheelmoved(x, y)
+function DayTracker.wheelmoved(x, y)
 end
 
-function dayTracker.update(dt)
+function DayTracker.update(dt)
 	blinkTimer = blinkTimer + dt
 	if blinkTimer > BLINK_HOLD_TIME then
 		blinkTimer = 0
@@ -73,12 +73,12 @@ function dayTracker.update(dt)
 	end
 end
 
-function dayTracker.draw()
+function DayTracker.draw()
 	love.graphics.setFont(Font.large)
 	love.graphics.draw(dayTransitionBackgroundImage)
-	if dayTracker.isEndScreen() then
+	if DayTracker.isEndScreen() then
 		love.graphics.printf(
-			string.format("you win", dayTracker.currentDay),
+			string.format("you win", DayTracker.currentDay),
 			0,
 			2 * Font.large:getHeight(),
 			Settings.canvasPixelWidth,
@@ -86,7 +86,7 @@ function dayTracker.draw()
 		)
 	else
 		love.graphics.printf(
-			DAY_TO_NAME[dayTracker.currentDay],
+			DAY_TO_NAME[DayTracker.currentDay],
 			0,
 			2 * Font.large:getHeight(),
 			Settings.canvasPixelWidth,
@@ -97,7 +97,7 @@ function dayTracker.draw()
 	if showContinueText then
 		love.graphics.setFont(Font.medium)
 		love.graphics.printf(
-			string.format("press any button to continue", dayTracker.currentDay),
+			string.format("press any button to continue", DayTracker.currentDay),
 			0,
 			Settings.canvasPixelHeight - (4 * Font.medium:getHeight()),
 			Settings.canvasPixelWidth,
@@ -106,4 +106,4 @@ function dayTracker.draw()
 	end
 end
 
-return dayTracker
+return DayTracker
