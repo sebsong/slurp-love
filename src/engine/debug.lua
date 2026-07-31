@@ -1,20 +1,20 @@
 local Debug = {}
 
+local Serialization = require("engine/serialization")
+
+-- redefine global print to pretty print tables
+local _print = print
+print = function(...)
+	local args = { ... }
+	for i, arg in ipairs(args) do
+		if type(arg == "table") then
+			args[i] = Serialization.tableToString(arg)
+		end
+	end
+	_print(unpack(args))
+end
+
 local stopwatchTime
-
-function Debug.printArray(array)
-	local str = ""
-
-	for _, val in ipairs(array) do
-		str = string.format("%s %s", str, val)
-	end
-end
-
-function Debug.printMatrix(matrix)
-	for _, row in ipairs(matrix) do
-		Debug.printArray(row)
-	end
-end
 
 function Debug.stopwatch(label)
 	local endTime = love.timer.getTime()

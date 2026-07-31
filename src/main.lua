@@ -1,9 +1,11 @@
+-- make sure to load debug utils before anything else
+require("engine/debug")
+
 local Canvas = require("engine/canvas")
 local Sprite = require("engine/sprite")
 local Scene = require("engine/scene")
 
 local Font = require("game/font")
-
 local Global = require("game/global")
 local MainMenu = require("game/main_menu")
 local DayTracker = require("game/day_tracker")
