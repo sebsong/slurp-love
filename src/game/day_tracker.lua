@@ -5,6 +5,8 @@ local DayTracker = {
 
 local Settings = require("engine/settings")
 local Scene = require("engine/scene")
+local Save = require("engine/save")
+
 local Font = require("game/font")
 
 local DAY_TO_NAME = {
@@ -35,12 +37,18 @@ end
 
 function DayTracker.nextDay()
 	DayTracker.currentDay = DayTracker.currentDay + 1
+	Save.save({ currentDay = DayTracker.currentDay })
 end
 
 function DayTracker.load()
 	dayTransitionBackgroundImage = love.graphics.newImage("assets/art/day_transition_background.png")
 	blinkTimer = 0
 	showContinueText = true
+
+	local saveData = Save.load()
+	if saveData.currentDay then
+		DayTracker.currentDay = saveData.currentDay
+	end
 end
 
 function DayTracker.unload()

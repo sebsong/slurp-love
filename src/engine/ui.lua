@@ -7,7 +7,7 @@ local Ui = {
 		TOP = 4,
 		BOTTOM = 5,
 	},
-	button,
+	Button,
 }
 
 local Settings = require("engine/settings")
