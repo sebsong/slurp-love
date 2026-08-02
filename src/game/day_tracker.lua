@@ -37,7 +37,7 @@ end
 
 function DayTracker.nextDay()
 	DayTracker.currentDay = DayTracker.currentDay + 1
-	Save.save({
+	Save.update({
 		currentDay = DayTracker.currentDay,
 	})
 end
