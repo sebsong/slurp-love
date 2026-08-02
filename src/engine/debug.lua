@@ -7,7 +7,7 @@ local _print = print
 print = function(...)
 	local args = { ... }
 	for i, arg in ipairs(args) do
-		if type(arg == "table") then
+		if type(arg) == "table" then
 			args[i] = Serialization.tableToString(arg)
 		end
 	end

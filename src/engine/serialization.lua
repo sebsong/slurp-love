@@ -32,8 +32,8 @@ function Serialization.tableToString(tbl, indentLevel)
 			valString = Serialization.primitiveToString(val)
 		end
 
-		local keyAssignString = type(key) ~= "number" and ("%s = "):format(key) or ""
-		str = str .. ("%s%s%s,\n"):format(("\t"):rep(indentLevel + 1), keyAssignString, valString)
+		local keyString = type(key) == "number" and ("[%s]"):format(key) or key
+		str = str .. ("%s%s = %s,\n"):format(("\t"):rep(indentLevel + 1), keyString, valString)
 	end
 	str = str .. ("%s}"):format(("\t"):rep(indentLevel))
 
