@@ -17,13 +17,15 @@ function Serialization.primitiveToString(primitive)
 	return ("%s"):format(primitive)
 end
 
+local function indentedString(str, indentLevel)
+	indentLevel = indentLevel or 0
+	return ("\t"):rep(indentLevel) .. str
+end
+
 function Serialization.tableToString(tbl, indentLevel)
 	assert(type(tbl) == "table", "must be a table")
 
 	indentLevel = indentLevel or 0
-
-	local str = ""
-	str = str .. "{\n"
 
 	local sortedKeys = {}
 	for key, _ in pairs(tbl) do
@@ -31,8 +33,11 @@ function Serialization.tableToString(tbl, indentLevel)
 	end
 	table.sort(sortedKeys)
 
+	local str = "{\n"
 	for _, key in ipairs(sortedKeys) do
 		local val = tbl[key]
+
+		local keyString = type(key) == "number" and ("[%s]"):format(key) or key
 		local valString
 		if type(val) == "table" then
 			valString = Serialization.tableToString(val, indentLevel + 1)
@@ -40,10 +45,11 @@ function Serialization.tableToString(tbl, indentLevel)
 			valString = Serialization.primitiveToString(val)
 		end
 
-		local keyString = type(key) == "number" and ("[%s]"):format(key) or key
-		str = str .. ("%s%s = %s,\n"):format(("\t"):rep(indentLevel + 1), keyString, valString)
+		local keyValString = ("%s = %s,\n"):format(keyString, valString)
+
+		str = str .. indentedString(keyValString, indentLevel + 1)
 	end
-	str = str .. ("%s}"):format(("\t"):rep(indentLevel))
+	str = str .. indentedString("}", indentLevel)
 
 	return str
 end
