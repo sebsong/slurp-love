@@ -1,14 +1,5 @@
-local DayTracker = {
-	currentDay = 1,
-	FINAL_DAY = 5,
-}
-
-local Settings = require("engine/settings")
-local Scene = require("engine/scene")
-local Save = require("engine/save")
-
-local Font = require("game/font")
-
+local FIRST_DAY = 1
+local FINAL_DAY = 5
 local DAY_TO_NAME = {
 	"monday",
 	"tuesday",
@@ -17,29 +8,78 @@ local DAY_TO_NAME = {
 	"friday",
 }
 
+local DayTracker = {
+	currentDay = FIRST_DAY
+}
+
+local Settings = require("engine/settings")
+local Scene = require("engine/scene")
+local Save = require("engine/save")
+
+local Font = require("game/font")
+
 local dayTransitionBackgroundImage
 
 local showContinueText
 local blinkTimer
 local BLINK_HOLD_TIME = 1
 
-function DayTracker.isEndScreen()
-	return DayTracker.currentDay > DayTracker.FINAL_DAY
-end
-
 local function startDay()
-	if (DayTracker.isEndScreen()) then
-		print("YOU WIN")
-	else
-		Scene.transition(Scene.scenes.game)
-	end
+	Scene.transition(Scene.scenes.game)
 end
 
-function DayTracker.nextDay()
+function DayTracker.nextDay(gasRemaining)
+	if DayTracker.currentDay == FINAL_DAY then
+		if not Scene.scenes.victoryMenu.isActive then
+			Scene.start(Scene.scenes.victoryMenu)
+		end
+		return
+	end
+
 	DayTracker.currentDay = DayTracker.currentDay + 1
-	Save.update({
-		currentDay = DayTracker.currentDay,
-	})
+
+	Save.update(function(saveData)
+		local currentDay = DayTracker.currentDay
+		saveData.currentDay = currentDay
+
+		if currentDay > saveData.maxDay then
+			saveData.maxDay = currentDay
+		end
+
+		-- TODO: track time taken
+		local currentDayStats = saveData.dayStats[currentDay]
+		if gasRemaining > currentDayStats.gasRemaining then
+			currentDayStats.gasRemaining = gasRemaining
+		end
+	end)
+
+	Scene.transition(Scene.scenes.dayTracker)
+end
+
+local function initializeSaveData()
+	Save.update(function(saveData)
+		if not saveData.currentDay then
+			saveData.currentDay = FIRST_DAY
+		end
+
+		if not saveData.maxDay then
+			saveData.maxDay = FIRST_DAY
+		end
+
+		if not saveData.dayStats then
+			saveData.dayStats = {}
+		end
+
+		for i = FIRST_DAY, FINAL_DAY do
+			if not saveData.dayStats[i] then
+				saveData.dayStats[i] = {}
+			end
+
+			if not saveData.dayStats[i].gasRemaining then
+				saveData.dayStats[i].gasRemaining = -1
+			end
+		end
+	end)
 end
 
 function DayTracker.load()
@@ -47,10 +87,9 @@ function DayTracker.load()
 	blinkTimer = 0
 	showContinueText = true
 
+	initializeSaveData()
 	local saveData = Save.load()
-	if saveData.currentDay then
-		DayTracker.currentDay = saveData.currentDay
-	end
+	DayTracker.currentDay = saveData.currentDay
 end
 
 function DayTracker.unload()
@@ -86,23 +125,13 @@ end
 function DayTracker.draw()
 	love.graphics.setFont(Font.large)
 	love.graphics.draw(dayTransitionBackgroundImage)
-	if DayTracker.isEndScreen() then
-		love.graphics.printf(
-			string.format("you win", DayTracker.currentDay),
-			0,
-			2 * Font.large:getHeight(),
-			Settings.canvasPixelWidth,
-			"center"
-		)
-	else
-		love.graphics.printf(
-			DAY_TO_NAME[DayTracker.currentDay],
-			0,
-			2 * Font.large:getHeight(),
-			Settings.canvasPixelWidth,
-			"center"
-		)
-	end
+	love.graphics.printf(
+		DAY_TO_NAME[DayTracker.currentDay],
+		0,
+		2 * Font.large:getHeight(),
+		Settings.canvasPixelWidth,
+		"center"
+	)
 
 	if showContinueText then
 		love.graphics.setFont(Font.medium)

@@ -2,6 +2,10 @@ local Debug = {}
 
 local Scene = require("engine/scene")
 
+local Game = require("game/game")
+local MainMenu = require("game/main_menu")
+local DayTracker = require("game/day_tracker")
+
 local Profile = require("external/profile")
 
 local ENABLE_PROFILER = false
@@ -29,17 +33,17 @@ end
 
 function Debug.keypressed(key, scancode, isRepeat)
 	if key == "return" and not isRepeat then
-		if Scene.scenes.mainMenu.isActive then
-			Scene.transition(Scene.scenes.dayTracker)
-		elseif Scene.scenes.game.isActive then
-			Scene.scenes.game.endDay()
+		if MainMenu.isActive then
+			Scene.transition(DayTracker)
+		elseif not DayTracker.isActive then
+			DayTracker.nextDay(0)
 		end
 	end
 end
 
 function Debug.mousepressed(x, y, button, isTouch, presses)
-	if button == 1 and Scene.scenes.game.isActive and not Scene.scenes.game.isPaused then
-		Scene.scenes.game.debugTeleportBoatToCanvasPoint(x, y)
+	if button == 1 and Game.isActive and not Game.isPaused then
+		Game.debugTeleportBoatToCanvasPoint(x, y)
 	end
 end
 

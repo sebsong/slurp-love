@@ -19,9 +19,9 @@ local function updateTable(tbl, update)
 	end
 end
 
-function Save.update(update)
+function Save.update(updateFn)
 	local saveData = Save.load()
-	updateTable(saveData, update)
+	updateFn(saveData)
 	Save.save(saveData)
 end
 

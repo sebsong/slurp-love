@@ -234,17 +234,6 @@ function Game.onResume()
 	boatObj.engineLoopSound:play()
 end
 
-function Game.endDay()
-	Scene.scenes.dayTracker.nextDay()
-	Scene.transition(Scene.scenes.dayTracker)
-end
-
-local function victory()
-	if not Scene.scenes.victoryMenu.isActive then
-		Scene.start(Scene.scenes.victoryMenu)
-	end
-end
-
 local function evaluateWinCondition()
 	if didLose then
 		return
@@ -257,11 +246,7 @@ local function evaluateWinCondition()
 	end
 
 	didWin = true
-	if DayTracker.currentDay == DayTracker.FINAL_DAY then
-		victory()
-	else
-		Game.endDay()
-	end
+	DayTracker.nextDay(boatObj.gasRemaining)
 end
 
 local function gameOver()
