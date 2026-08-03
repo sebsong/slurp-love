@@ -24,7 +24,15 @@ function Serialization.tableToString(tbl, indentLevel)
 
 	local str = ""
 	str = str .. "{\n"
-	for key, val in pairs(tbl) do
+
+	local sortedKeys = {}
+	for key, _ in pairs(tbl) do
+		table.insert(sortedKeys, key)
+	end
+	table.sort(sortedKeys)
+
+	for _, key in ipairs(sortedKeys) do
+		local val = tbl[key]
 		local valString
 		if type(val) == "table" then
 			valString = Serialization.tableToString(val, indentLevel + 1)
@@ -41,8 +49,9 @@ function Serialization.tableToString(tbl, indentLevel)
 end
 
 function Serialization.tableToFile(tbl, fileName)
+	local fileString = ("return %s\n"):format(Serialization.tableToString(tbl))
 	local file = love.filesystem.newFile(fileName, "w")
-	file:write(("return %s\n"):format(Serialization.tableToString(tbl)))
+	file:write(fileString)
 end
 
 function Serialization.fileToTable(fileName)
@@ -53,7 +62,7 @@ function Serialization.fileToTable(fileName)
 
 	local saveDataString, _ = file:read()
 	local saveData = loadstring(saveDataString)()
-	return saveData
+	return saveData or {}
 end
 
 return Serialization
