@@ -11,81 +11,81 @@ local fadeInTargets = {}
 local fadeOutTargets = {}
 
 local function fadeIn(audioSource)
-	table.insert(fadeInTargets, audioSource)
+    table.insert(fadeInTargets, audioSource)
 end
 
 local function fadeOut(audioSource)
-	table.insert(fadeOutTargets, audioSource)
+    table.insert(fadeOutTargets, audioSource)
 end
 
 local function crossFadeUpdate(fadeInTargets, fadeOutTargets, dt)
-	local volumeChange = fadeSpeed * dt
+    local volumeChange = fadeSpeed * dt
 
-	for i, audioSource in ipairs(fadeInTargets) do
-		local newVolume = math.min(audioSource:getVolume() + volumeChange, volume)
-		audioSource:setVolume(newVolume)
-		if newVolume == volume then
-			table.remove(fadeInTargets, i)
-		end
-	end
+    for i, audioSource in ipairs(fadeInTargets) do
+        local newVolume = math.min(audioSource:getVolume() + volumeChange, volume)
+        audioSource:setVolume(newVolume)
+        if newVolume == volume then
+            table.remove(fadeInTargets, i)
+        end
+    end
 
-	for i, audioSource in ipairs(fadeOutTargets) do
-		local newVolume = math.max(audioSource:getVolume() - volumeChange / 5, 0)
-		audioSource:setVolume(newVolume)
-		if newVolume == 0 then
-			table.remove(fadeOutTargets, i)
-		end
-	end
+    for i, audioSource in ipairs(fadeOutTargets) do
+        local newVolume = math.max(audioSource:getVolume() - volumeChange / 5, 0)
+        audioSource:setVolume(newVolume)
+        if newVolume == 0 then
+            table.remove(fadeOutTargets, i)
+        end
+    end
 end
 
 function Music.load()
-	chords = love.audio.newSource("assets/sound/chords.ogg", "stream")
-	chords:setVolume(volume)
-	chords:setLooping(true)
-	chords:play()
+    chords = love.audio.newSource("assets/sound/chords.ogg", "stream")
+    chords:setVolume(volume)
+    chords:setLooping(true)
+    chords:play()
 
-	drums_mellow = love.audio.newSource("assets/sound/drums_mellow.ogg", "stream")
-	drums_mellow:setVolume(0)
-	drums_mellow:setLooping(true)
-	drums_mellow:play()
+    drums_mellow = love.audio.newSource("assets/sound/drums_mellow.ogg", "stream")
+    drums_mellow:setVolume(0)
+    drums_mellow:setLooping(true)
+    drums_mellow:play()
 
-	drums_hype = love.audio.newSource("assets/sound/drums_hype.ogg", "stream")
-	drums_hype:setVolume(0)
-	drums_hype:setLooping(true)
-	drums_hype:play()
+    drums_hype = love.audio.newSource("assets/sound/drums_hype.ogg", "stream")
+    drums_hype:setVolume(0)
+    drums_hype:setLooping(true)
+    drums_hype:play()
 end
 
 function Music.unload()
-	chords:stop()
-	drums_mellow:stop()
-	drums_hype:stop()
+    chords:stop()
+    drums_mellow:stop()
+    drums_hype:stop()
 end
 
 local function activateDrumsMellow()
-	fadeIn(drums_mellow)
-	fadeOut(drums_hype)
+    fadeIn(drums_mellow)
+    fadeOut(drums_hype)
 end
 
 local function activateDrumsHype()
-	fadeIn(drums_hype)
-	fadeOut(drums_mellow)
+    fadeIn(drums_hype)
+    fadeOut(drums_mellow)
 end
 
 local function deactivateDrums()
-	fadeOut(drums_mellow)
-	fadeOut(drums_hype)
+    fadeOut(drums_mellow)
+    fadeOut(drums_hype)
 end
 
 function Music.update(boat, dt)
-	-- if (Boat.speed > Values.BOAT_MAX_SPEED_DEFAULT) then
-	-- 	activateDrumsHype()
-	-- elseif (Boat.speed > Values.BOAT_MAX_SPEED_DEFAULT / 2) then
-	-- 	activateDrumsMellow()
-	-- else
-	-- 	deactivateDrums()
-	-- end
+    -- if (Boat.speed > Values.BOAT_MAX_SPEED_DEFAULT) then
+    -- 	activateDrumsHype()
+    -- elseif (Boat.speed > Values.BOAT_MAX_SPEED_DEFAULT / 2) then
+    -- 	activateDrumsMellow()
+    -- else
+    -- 	deactivateDrums()
+    -- end
 
-	crossFadeUpdate(fadeInTargets, fadeOutTargets, dt)
+    crossFadeUpdate(fadeInTargets, fadeOutTargets, dt)
 end
 
 return Music

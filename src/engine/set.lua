@@ -4,96 +4,96 @@ local meta = {}
 meta.__index = meta
 
 function Set.new(...)
-	local set = {
-		length = 0
-	}
-	setmetatable(set, meta)
+    local set = {
+        length = 0,
+    }
+    setmetatable(set, meta)
 
-	set:insert(...)
+    set:insert(...)
 
-	return set
+    return set
 end
 
 local function insert(set, val)
-	if not set[val] then
-		set[val] = true
-		set.length = set.length + 1
-	end
+    if not set[val] then
+        set[val] = true
+        set.length = set.length + 1
+    end
 end
 
 function meta:insert(val, ...)
-	if getmetatable(val) == meta then
-		assert(... == nil, "shouldn't pass in more args if val is a set")
-		for item, _ in pairs(val) do
-			insert(self, item)
-		end
-	else
-		local items = { val, ... }
-		for _, item in ipairs(items) do
-			insert(self, item)
-		end
-	end
+    if getmetatable(val) == meta then
+        assert(... == nil, "shouldn't pass in more args if val is a set")
+        for item, _ in pairs(val) do
+            insert(self, item)
+        end
+    else
+        local items = { val, ... }
+        for _, item in ipairs(items) do
+            insert(self, item)
+        end
+    end
 end
 
 local function remove(set, val)
-	if set[val] then
-		set[val] = nil
-		set.length = set.length - 1
-	end
+    if set[val] then
+        set[val] = nil
+        set.length = set.length - 1
+    end
 end
 
 function meta:remove(val, ...)
-	if getmetatable(val) == meta then
-		assert(... == nil, "shouldn't pass in more args if val is a set")
-		for item, _ in pairs(val) do
-			remove(self, item)
-		end
-	else
-		local items = { val, ... }
-		for _, item in ipairs(items) do
-			remove(self, item)
-		end
-	end
+    if getmetatable(val) == meta then
+        assert(... == nil, "shouldn't pass in more args if val is a set")
+        for item, _ in pairs(val) do
+            remove(self, item)
+        end
+    else
+        local items = { val, ... }
+        for _, item in ipairs(items) do
+            remove(self, item)
+        end
+    end
 end
 
 function meta:contains(item)
-	return self[item] ~= nil
+    return self[item] ~= nil
 end
 
 function meta:len()
-	return self.length
+    return self.length
 end
 
 function meta:isEmpty()
-	return self:len() == 0
+    return self:len() == 0
 end
 
 function meta:toArray()
-	local array = {}
-	for item, _ in pairs(self) do
-		table.insert(array, item)
-	end
-	return array
+    local array = {}
+    for item, _ in pairs(self) do
+        table.insert(array, item)
+    end
+    return array
 end
 
 function meta:__add(_otherSet)
-	local union = Set.new(self)
-	union:insert(_otherSet)
-	return union
+    local union = Set.new(self)
+    union:insert(_otherSet)
+    return union
 end
 
 function meta:__sub(_otherSet)
-	local intersection = Set.new(self)
-	intersection:remove(_otherSet)
-	return intersection
+    local intersection = Set.new(self)
+    intersection:remove(_otherSet)
+    return intersection
 end
 
 function meta:__tostring()
-	local items = {}
-	for key, _ in pairs(self) do
-		table.insert(items, key)
-	end
-	return string.format("{%s}", table.concat(items, ", "))
+    local items = {}
+    for key, _ in pairs(self) do
+        table.insert(items, key)
+    end
+    return string.format("{%s}", table.concat(items, ", "))
 end
 
 return Set

@@ -11,11 +11,11 @@ Values.LANTERN_RADIUS = 125
 
 Values.FULL_GAS_AMOUNT = 100
 Values.DAY_TO_GAS_AMOUNT = {
-	30,
-	60,
-	75,
-	80,
-	100,
+    30,
+    60,
+    75,
+    80,
+    100,
 }
 Values.GAS_DEPLETION_RATE_DEFAULT = 1.
 Values.GAS_ACCELERATION_DEPLETION_MULTIPLIER = 4.
