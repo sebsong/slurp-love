@@ -1,4 +1,3 @@
-local Button = {}
 local Ui = {
     align = {
         CENTER = 1,
@@ -7,7 +6,6 @@ local Ui = {
         TOP = 4,
         BOTTOM = 5,
     },
-    Button,
 }
 
 local Settings = require("engine/settings")
@@ -40,28 +38,6 @@ function Ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, x
     end
 
     return love.math.newTransform(x + xOffset, y + yOffset)
-end
-
-local function enable(self)
-    self.enabled = true
-end
-
-local function disable(self)
-    self.enabled = false
-end
-
-function Button.new(onPress)
-    return {
-        isPressed = false,
-        wasPressedByMouse = false,
-        isHovered = false,
-        enabled = true,
-
-        onPress,
-
-        enable,
-        disable,
-    }
 end
 
 return Ui

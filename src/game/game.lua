@@ -1,6 +1,6 @@
 local Game = {}
 
-local Camera = require("engine/camera")
+local Camera = require("engine.camera")
 local Color = require("engine/color")
 local Math = require("engine/math")
 local Scene = require("engine/scene")

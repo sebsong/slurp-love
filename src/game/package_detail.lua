@@ -3,7 +3,7 @@ local PackageDetail = {}
 local Animation = require("engine/animation")
 local Scene = require("engine/scene")
 local Sprite = require("engine/sprite")
-local Ui = require("engine/ui")
+local Ui = require("engine/ui/ui")
 
 local Font = require("game/font")
 

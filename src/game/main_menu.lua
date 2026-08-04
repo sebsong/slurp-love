@@ -1,13 +1,15 @@
 local MainMenu = {}
 
-local Animation = require("engine/animation")
+local Button = require("engine.ui.button")
 local Collision = require("engine/collision")
 local Scene = require("engine/scene")
 local Sprite = require("engine/sprite")
+local Ui = require("engine.ui.ui")
 
 local Font = require("game/font")
 
 local backgroundImage
+local testButton
 local playButton
 local exitButton
 
@@ -23,20 +25,33 @@ function MainMenu.load()
     local buttonImageWidth, buttonImageHeight = buttonImage:getDimensions()
     local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
 
+    testButton = Button.new(
+        buttonImage,
+        numButtonFrames,
+        Font.large,
+        "test",
+        Ui.align.RIGHT,
+        Ui.align.CENTER,
+        50,
+        30,
+        function(button)
+            button.sprite.animation.currentFrame = HOVER_FRAME
+        end,
+        function(button)
+            Scene.transition(Scene.scenes.dayTracker)
+        end
+    )
+
     playButton = {
         sprite = Sprite.newAnimated(buttonImage, numButtonFrames),
         transform = love.math.newTransform(75, 175),
         collider = { width = buttonColliderWidth, height = buttonColliderHeight },
-        isPressed = false,
-        isHovered = false,
     }
 
     exitButton = {
         sprite = Sprite.newAnimated(buttonImage, numButtonFrames),
         transform = love.math.newTransform(75, 250),
         collider = { width = buttonColliderWidth, height = buttonColliderHeight },
-        isPressed = false,
-        isHovered = false,
     }
 end
 
@@ -56,6 +71,8 @@ function MainMenu.mousepressed(x, y, button, isTouch, presses)
     if Collision.hitTest(x, y, exitButton.collider, exitButton.transform) then
         love.event.quit()
     end
+
+    testButton:mousepressed(x, y, button, isTouch, presses)
 end
 
 function MainMenu.mousemoved(x, y, dx, dy, isTouch)
@@ -70,6 +87,8 @@ function MainMenu.mousemoved(x, y, dx, dy, isTouch)
     else
         exitButton.sprite.animation.currentFrame = DEFAULT_FRAME
     end
+
+    testButton:mousemoved(x, y, dx, dy, isTouch)
 end
 
 function MainMenu.wheelmoved(x, y) end
@@ -80,6 +99,9 @@ function MainMenu.draw()
     love.graphics.setFont(Font.large)
 
     love.graphics.draw(backgroundImage)
+
+    testButton:draw()
+
     Sprite.draw(playButton.sprite, playButton.transform)
     love.graphics.print("play", playButton.transform:transformPoint(10, 15))
     Sprite.draw(exitButton.sprite, exitButton.transform)
