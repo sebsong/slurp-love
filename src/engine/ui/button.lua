@@ -12,19 +12,14 @@ function Button.new(image, numFrames, font, text, horizontalAlign, verticalAlign
     local colliderWidth, colliderHeight = imageWidth / numFrames, imageHeight
     local sprite = Sprite.newAnimated(image, numFrames)
     local width, height = sprite.width, sprite.height
+    local transform = Ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
 
     local button = {
         enabled = true,
 
         sprite = sprite,
-        textBox = TextBox.new(
-            width,
-            Ui.newAlignedTransform(width, height, Ui.align.CENTER, Ui.align.CENTER),
-            font,
-            text,
-            "center"
-        ),
-        transform = Ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding),
+        textBox = TextBox.new(width, transform, font, text, "center"),
+        transform = transform,
         collider = { width = colliderWidth, height = colliderHeight },
 
         onHover = onHover,
