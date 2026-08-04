@@ -1,12 +1,12 @@
 local MainMenu = {}
 
 local Button = require("engine.ui.button")
-local Collision = require("engine/collision")
-local Scene = require("engine/scene")
-local Sprite = require("engine/sprite")
+local Collision = require("engine.collision")
+local Scene = require("engine.scene")
+local Sprite = require("engine.sprite")
 local Ui = require("engine.ui.ui")
 
-local Font = require("game/font")
+local Font = require("game.font")
 
 local backgroundImage
 local testButton

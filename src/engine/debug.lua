@@ -1,6 +1,6 @@
 local Debug = {}
 
-local Serialization = require("engine/serialization")
+local Serialization = require("engine.serialization")
 
 -- redefine global print to pretty print tables
 local _print = print

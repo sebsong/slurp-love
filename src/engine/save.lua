@@ -1,6 +1,6 @@
 local Save = {}
 
-local Serialization = require("engine/serialization")
+local Serialization = require("engine.serialization")
 
 local SAVE_FILE_NAME = "save_data.slurp"
 

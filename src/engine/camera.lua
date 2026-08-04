@@ -2,7 +2,7 @@ local Camera = {}
 local meta = {}
 meta.__index = meta
 
-local Settings = require("engine/settings")
+local Settings = require("engine.settings")
 
 function Camera.new()
     local zoomToggles = { 1, 0.5 }

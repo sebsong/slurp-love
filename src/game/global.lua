@@ -1,6 +1,6 @@
 local Global = {}
 
-local Scene = require("engine/scene")
+local Scene = require("engine.scene")
 
 function Global.load() end
 

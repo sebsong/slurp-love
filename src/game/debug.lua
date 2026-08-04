@@ -1,12 +1,12 @@
 local Debug = {}
 
-local Scene = require("engine/scene")
+local Scene = require("engine.scene")
 
-local DayTracker = require("game/day_tracker")
-local Game = require("game/game")
-local MainMenu = require("game/main_menu")
+local DayTracker = require("game.day_tracker")
+local Game = require("game.game")
+local MainMenu = require("game.main_menu")
 
-local Profile = require("external/profile")
+local Profile = require("external.profile")
 
 local ENABLE_PROFILER = false
 

@@ -8,7 +8,7 @@ local Ui = {
     },
 }
 
-local Settings = require("engine/settings")
+local Settings = require("engine.settings")
 
 function Ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
     local x, y

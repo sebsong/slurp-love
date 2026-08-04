@@ -1,16 +1,16 @@
 local Boat = {}
 
-local Animation = require("engine/animation")
-local Collision = require("engine/collision")
-local Math = require("engine/math")
-local Set = require("engine/set")
-local Sprite = require("engine/sprite")
-local Tilemap = require("engine/tilemap")
-local Vec2 = require("engine/vec2")
+local Animation = require("engine.animation")
+local Collision = require("engine.collision")
+local Math = require("engine.math")
+local Set = require("engine.set")
+local Sprite = require("engine.sprite")
+local Tilemap = require("engine.tilemap")
+local Vec2 = require("engine.vec2")
 
-local BoatEffect = require("game/effects/boat_effect")
-local GameUi = require("game/ui")
-local Values = require("game/values")
+local BoatEffect = require("game/effects.boat_effect")
+local GameUi = require("game.ui")
+local Values = require("game.values")
 
 local NUM_BOAT_ANGLES = 16
 local BOAT_WIDTH, BOAT_HEIGHT = 16, 16

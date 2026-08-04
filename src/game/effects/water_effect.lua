@@ -1,6 +1,6 @@
 local WaterEffect = {}
 
-local Color = require("engine/color")
+local Color = require("engine.color")
 
 local SHADER_FILE_PATH = "assets/shader/water.glsl"
 

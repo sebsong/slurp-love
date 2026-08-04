@@ -12,12 +12,12 @@ local DayTracker = {
     currentDay = FIRST_DAY,
 }
 
-local Input = require("engine/input")
-local Save = require("engine/save")
-local Scene = require("engine/scene")
-local Settings = require("engine/settings")
+local Input = require("engine.input")
+local Save = require("engine.save")
+local Scene = require("engine.scene")
+local Settings = require("engine.settings")
 
-local Font = require("game/font")
+local Font = require("game.font")
 
 local dayTransitionBackgroundImage
 

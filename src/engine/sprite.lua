@@ -1,6 +1,6 @@
 local Sprite = {}
 
-local Animation = require("engine/animation")
+local Animation = require("engine.animation")
 
 function Sprite.load()
     love.graphics.setPointSize(8)

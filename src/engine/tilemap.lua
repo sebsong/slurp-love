@@ -2,10 +2,10 @@ local Tilemap = {}
 
 -- Based on Tiled (https://www.mapeditor.org/)
 
-local File = require("engine/file")
-local Vec2 = require("engine/vec2")
-local Set = require("engine/set")
-local Sprite = require("engine/sprite")
+local File = require("engine.file")
+local Vec2 = require("engine.vec2")
+local Set = require("engine.set")
+local Sprite = require("engine.sprite")
 
 function Tilemap.getIntersectionTiles(tilemap, tiles, camera)
 	local cameraX, cameraY = camera.transform:transformPoint(0, 0)

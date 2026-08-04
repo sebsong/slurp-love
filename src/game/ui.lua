@@ -2,9 +2,9 @@ local GameUi = {
     PADDING = 10,
 }
 
-local PackageEffect = require("game/effects/package_effect")
-local Sprite = require("engine/sprite")
-local Ui = require("engine/ui/ui")
+local PackageEffect = require("game/effects.package_effect")
+local Sprite = require("engine.sprite")
+local Ui = require("engine/ui.ui")
 
 local gasMeterWidth, gasMeterHeight = 16, 128
 local GAS_TEXT_WIDTH = gasMeterWidth

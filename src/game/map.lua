@@ -1,8 +1,8 @@
 local Map = {}
 
-local Scene = require("engine/scene")
-local Sprite = require("engine/sprite")
-local Ui = require("engine/ui/ui")
+local Scene = require("engine.scene")
+local Sprite = require("engine.sprite")
+local Ui = require("engine/ui.ui")
 
 local mapOverlay
 

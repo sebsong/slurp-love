@@ -1,12 +1,12 @@
 local PauseMenu = {}
 
-local Animation = require("engine/animation")
-local Collision = require("engine/collision")
-local Scene = require("engine/scene")
-local Sprite = require("engine/sprite")
-local Ui = require("engine/ui/ui")
+local Animation = require("engine.animation")
+local Collision = require("engine.collision")
+local Scene = require("engine.scene")
+local Sprite = require("engine.sprite")
+local Ui = require("engine/ui.ui")
 
-local Font = require("game/font")
+local Font = require("game.font")
 
 local DEFAULT_FRAME = 1
 local HOVER_FRAME = 2

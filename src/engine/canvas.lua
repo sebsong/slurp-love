@@ -6,7 +6,7 @@ local Canvas = {
     canvas = nil,
 }
 
-local Settings = require("engine/settings")
+local Settings = require("engine.settings")
 
 function Canvas.load()
     local screenWidth, screenHeight = love.graphics.getDimensions()

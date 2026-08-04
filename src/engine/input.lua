@@ -1,4 +1,4 @@
-local Set = require("engine/set")
+local Set = require("engine.set")
 
 local Input = {
     MODIFIER_KEYS = Set.new(

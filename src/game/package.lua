@@ -10,9 +10,9 @@ local Package = {
 local meta = {}
 meta.__index = meta
 
-local Scene = require("engine/scene")
+local Scene = require("engine.scene")
 
-local PackageDetail = require("game/package_detail")
+local PackageDetail = require("game.package_detail")
 
 local crack1Sound
 local crack2Sound
