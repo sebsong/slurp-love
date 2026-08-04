@@ -1,6 +1,6 @@
 local BoatEffect = {}
 
-local WaterEffect = require("game/effects.water_effect")
+local WaterEffect = require("game.effects.water_effect")
 
 local SHADER_FILE_PATH = "assets/shader/boat.glsl"
 

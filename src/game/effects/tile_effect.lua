@@ -1,10 +1,10 @@
 local TileEffect = {}
 
-local BoatEffect = require("game/effects.boat_effect")
+local BoatEffect = require("game.effects.boat_effect")
 local Color = require("engine.color")
 local Math = require("engine.math")
 local Vec2 = require("engine.vec2")
-local WaterEffect = require("game/effects.water_effect")
+local WaterEffect = require("game.effects.water_effect")
 
 local SHADER_FILE_PATH = "assets/shader/tile.glsl"
 

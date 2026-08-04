@@ -8,7 +8,7 @@ local Sprite = require("engine.sprite")
 local Tilemap = require("engine.tilemap")
 local Vec2 = require("engine.vec2")
 
-local BoatEffect = require("game/effects.boat_effect")
+local BoatEffect = require("game.effects.boat_effect")
 local GameUi = require("game.ui")
 local Values = require("game.values")
 
