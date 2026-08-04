@@ -15,6 +15,7 @@ local DayTracker = {
 local Settings = require("engine/settings")
 local Scene = require("engine/scene")
 local Save = require("engine/save")
+local Input = require("engine/input")
 
 local Font = require("game/font")
 
@@ -102,6 +103,10 @@ function DayTracker.onResume()
 end
 
 function DayTracker.keypressed(key, scancode, isRepeat)
+	if Input.MODIFIER_KEYS:contains(key) then
+		return
+	end
+
 	startDay()
 end
 
