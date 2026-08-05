@@ -1,16 +1,13 @@
 local GameOverMenu = {}
 
 local Align = require("engine.ui.align")
-local Animation = require("engine.animation")
+local Button = require("engine.ui.button")
 local Collision = require("engine.collision")
 local Scene = require("engine.scene")
 local Settings = require("engine.settings")
 local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
-
-local DEFAULT_FRAME = 1
-local HOVER_FRAME = 2
 
 local menu
 
@@ -30,35 +27,28 @@ function GameOverMenu.load()
     gameOverTextTransform = love.math.newTransform(0, 50)
 
     local buttonImage = love.graphics.newImage("assets/art/button.png")
-
     local numButtonFrames = 2
-    local buttonImageWidth, buttonImageHeight = buttonImage:getDimensions()
-    local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
 
     local restartSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
-    restartButton = {
-        sprite = restartSprite,
-        transform = Align.screenAlignedTransform(restartSprite.width, restartSprite.height, Align.CENTER, Align.CENTER),
-        collider = { width = buttonColliderWidth, height = buttonColliderHeight },
-        isPressed = false,
-        isHovered = false,
-    }
+    local restartTransform =
+        Align.screenAlignedTransform(restartSprite.width, restartSprite.height, Align.CENTER, Align.CENTER)
+    restartButton = Button.new(restartSprite, restartTransform, Font.medium, "restart", nil, function(_button)
+        Scene.stop(Scene.scenes.gameOverMenu)
+        Scene.restart(Scene.scenes.game)
+    end)
 
     local mainMenuSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
-    mainMenuButton = {
-        sprite = mainMenuSprite,
-        transform = Align.screenAlignedTransform(
-            mainMenuSprite.width,
-            mainMenuSprite.height,
-            Align.CENTER,
-            Align.CENTER,
-            0,
-            mainMenuSprite.height * 1.1
-        ),
-        collider = { width = buttonColliderWidth, height = buttonColliderHeight },
-        isPressed = false,
-        isHovered = false,
-    }
+    local mainMenuTransform = Align.screenAlignedTransform(
+        mainMenuSprite.width,
+        mainMenuSprite.height,
+        Align.CENTER,
+        Align.CENTER,
+        0,
+        mainMenuSprite.height * 1.1
+    )
+    mainMenuButton = Button.new(mainMenuSprite, mainMenuTransform, Font.medium, "main menu", nil, function(_button)
+        Scene.transition(Scene.scenes.mainMenu)
+    end)
 end
 
 function GameOverMenu.unload() end
@@ -70,28 +60,13 @@ function GameOverMenu.onResume() end
 function GameOverMenu.keypressed(key, scancode, isRepeat) end
 
 function GameOverMenu.mousepressed(x, y, button, isTouch, presses)
-    if Collision.hitTest(x, y, restartButton.collider, restartButton.transform) then
-        Scene.stop(Scene.scenes.gameOverMenu)
-        Scene.restart(Scene.scenes.game)
-    end
-
-    if Collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
-        Scene.transition(Scene.scenes.mainMenu)
-    end
+    restartButton:mousepressed(x, y, button, isTouch, presses)
+    mainMenuButton:mousepressed(x, y, button, isTouch, presses)
 end
 
 function GameOverMenu.mousemoved(x, y, dx, dy, isTouch)
-    if Collision.hitTest(x, y, restartButton.collider, restartButton.transform) then
-        restartButton.sprite.animation.currentFrame = HOVER_FRAME
-    else
-        restartButton.sprite.animation.currentFrame = DEFAULT_FRAME
-    end
-
-    if Collision.hitTest(x, y, mainMenuButton.collider, mainMenuButton.transform) then
-        mainMenuButton.sprite.animation.currentFrame = HOVER_FRAME
-    else
-        mainMenuButton.sprite.animation.currentFrame = DEFAULT_FRAME
-    end
+    restartButton:mousemoved(x, y, dx, dy, isTouch)
+    mainMenuButton:mousemoved(x, y, dx, dy, isTouch)
 end
 
 function GameOverMenu.wheelmoved(x, y) end
@@ -106,11 +81,8 @@ function GameOverMenu.draw()
     love.graphics.setFont(Font.large)
     love.graphics.printf("you're fired", gameOverTextTransform, Settings.canvasPixelWidth, "center")
 
-    love.graphics.setFont(Font.medium)
-    Sprite.draw(restartButton.sprite, restartButton.transform)
-    love.graphics.print("restart\n day", restartButton.transform:transformPoint(10, 15))
-    Sprite.draw(mainMenuButton.sprite, mainMenuButton.transform)
-    love.graphics.print("main menu", mainMenuButton.transform:transformPoint(10, 15))
+    restartButton:draw()
+    mainMenuButton:draw()
 
     love.graphics.pop()
 end

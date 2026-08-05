@@ -8,7 +8,7 @@ function Sprite.load()
     love.graphics.setBackgroundColor(0, 0, 0)
 end
 
-local function new(image, quad, animation, xOffset, yOffset, zIndex, zIndexOffset, isSpriteBatch)
+local function new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffset, isSpriteBatch)
     local width, height
     if quad then
         _, _, width, height = quad:getViewport()
@@ -19,7 +19,8 @@ local function new(image, quad, animation, xOffset, yOffset, zIndex, zIndexOffse
         shouldDraw = true,
         image = image,
         quad = quad,
-        animation = animation,
+        animations = animations,
+        currentAnimationState = 1,
         width = width,
         height = height,
         xOffset = xOffset,
@@ -45,7 +46,27 @@ function Sprite.newAnimated(image, numFrames, duration, isLooping, xOffset, yOff
     local animation = Animation.new(image, numFrames, duration, isLooping)
     local quad = Animation.getCurrentQuad(animation)
 
-    return new(image, quad, animation, xOffset, yOffset, zIndex, zIndexOffset, false)
+    return new(image, quad, { animation }, xOffset, yOffset, zIndex, zIndexOffset, false)
+end
+
+function Sprite.addAnimationState(sprite, image, numFrames, duration, isLooping)
+    local animation = Animation.new(image, numFrames, duration, isLooping)
+    table.insert(sprite.animations, animation)
+    return #sprite.animations
+end
+
+function Sprite.transitionAnimationState(sprite, state)
+    assert(state >= 1 and state <= #sprite.animations, "invalid animation state")
+    sprite.currentAnimationState = state
+    -- TODO: play new animation
+end
+
+function Sprite.getCurrentAnimation(sprite)
+    return sprite.animations[sprite.currentAnimationState]
+end
+
+function Sprite.update(sprite, dt)
+    Animation.update(Sprite.getCurrentAnimation(sprite), dt)
 end
 
 function Sprite.draw(sprite, transform)
@@ -68,8 +89,8 @@ function Sprite.draw(sprite, transform)
     end
 
     local quad
-    if sprite.animation then
-        quad = Animation.getCurrentQuad(sprite.animation)
+    if sprite.animations then
+        quad = Animation.getCurrentQuad(Sprite.getCurrentAnimation(sprite))
     else
         quad = sprite.quad
     end

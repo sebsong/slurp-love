@@ -39,12 +39,12 @@ end
 
 function meta:mousemoved(x, y, dx, dy, isTouch)
     if Collision.hitTest(x, y, self.collider, self.transform) then
-        self.sprite.animation.currentFrame = HOVERED_BUTTON_STATE
+        self.sprite.animations[self.sprite.currentAnimationState].currentFrame = HOVERED_BUTTON_STATE
         if self.onHover then
             self:onHover()
         end
     else
-        self.sprite.animation.currentFrame = DEFAULT_BUTTON_STATE
+        self.sprite.animations[self.sprite.currentAnimationState].currentFrame = DEFAULT_BUTTON_STATE
     end
 end
 

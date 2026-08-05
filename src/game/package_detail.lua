@@ -36,7 +36,7 @@ end
 
 function PackageDetail.close()
     isOpen = false
-    Animation.play(detailBox.sprite.animation, true, function()
+    Animation.play(Sprite.getCurrentAnimation(detailBox.sprite), true, function()
         shouldClose = true
     end)
 end
@@ -48,7 +48,7 @@ function PackageDetail.load()
     local detailBoxImage = love.graphics.newImage("assets/art/package_detail_box.png")
     -- local detailBoxSprite = Sprite.new(detailBoxImage)
     local detailBoxSprite = Sprite.newAnimated(detailBoxImage, 6, 0.15)
-    Animation.play(detailBoxSprite.animation, false, function()
+    Animation.play(Sprite.getCurrentAnimation(detailBoxSprite), false, function()
         isOpen = true
     end)
     detailBox = {
@@ -62,13 +62,13 @@ function PackageDetail.load()
     }
 
     local packageDetailsImage = love.graphics.newImage("assets/art/package_details.png")
-    local packageDetailAnimation = Sprite.newAnimated(packageDetailsImage, 5)
-    packageDetailAnimation.animation.currentFrame = packageIndex or 1
+    local packageDetailSprite = Sprite.newAnimated(packageDetailsImage, 5)
+    Sprite.getCurrentAnimation(packageDetailSprite).currentFrame = packageIndex or 1
     packageDetailPortrait = {
-        sprite = packageDetailAnimation,
+        sprite = packageDetailSprite,
         transform = Align.screenAlignedTransform(
-            packageDetailAnimation.width,
-            packageDetailAnimation.height,
+            packageDetailSprite.width,
+            packageDetailSprite.height,
             Align.CENTER,
             Align.CENTER,
             0,
@@ -107,7 +107,7 @@ function PackageDetail.update(dt)
         Scene.stop(Scene.scenes.packageDetail)
     end
 
-    Animation.update(detailBox.sprite.animation, dt)
+    Sprite.update(detailBox.sprite, dt)
 end
 
 function PackageDetail.draw()

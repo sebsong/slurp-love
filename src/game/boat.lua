@@ -135,9 +135,9 @@ local function update(self, cameraObj, dt)
     else
         self.sprite = self.sprites[1]
     end
-    local rotSegmentLength = 2 * math.pi / self.sprite.animation.numFrames
+    local rotSegmentLength = 2 * math.pi / self.sprite.animations[self.sprite.currentAnimationState].numFrames
     local frameIdx = math.floor((((self.rotation + (rotSegmentLength / 2)) % (2 * math.pi)) / rotSegmentLength)) + 1
-    self.sprite.animation.currentFrame = frameIdx
+    self.sprite.animations[self.sprite.currentAnimationState].currentFrame = frameIdx
 
     self:updateNeighborTiles()
     self:updateTrailPositions(dt)
@@ -169,7 +169,7 @@ local function draw(sprite, transform)
     BoatEffect.setShader()
     love.graphics.draw(
         sprite.image,
-        Animation.getCurrentQuad(sprite.animation),
+        Animation.getCurrentQuad(Sprite.getCurrentAnimation(sprite)),
         boatX + sprite.xOffset,
         boatY + sprite.yOffset
     )
