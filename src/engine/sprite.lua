@@ -42,14 +42,7 @@ function Sprite.newSpriteBatch(spriteBatch, quad, zIndex, zIndexOffset)
 end
 
 function Sprite.newAnimated(image, numFrames, duration, isLooping, xOffset, yOffset, zIndex, zIndexOffset)
-    local quads = {}
-    local imageWidth, imageHeight = image:getDimensions()
-    local quadWidth, quadHeight = imageWidth / numFrames, imageHeight
-    for i = 0, numFrames - 1 do
-        table.insert(quads, love.graphics.newQuad(i * quadWidth, 0, quadWidth, quadHeight, image))
-    end
-
-    local animation = Animation.new(quads, numFrames, duration, isLooping)
+    local animation = Animation.new(image, numFrames, duration, isLooping)
     local quad = Animation.getCurrentQuad(animation)
 
     return new(image, quad, animation, xOffset, yOffset, zIndex, zIndexOffset, false)
