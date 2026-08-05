@@ -25,22 +25,12 @@ function MainMenu.load()
     local buttonImageWidth, buttonImageHeight = buttonImage:getDimensions()
     local buttonColliderWidth, buttonColliderHeight = buttonImageWidth / numButtonFrames, buttonImageHeight
 
-    testButton = Button.new(
-        buttonImage,
-        numButtonFrames,
-        Font.large,
-        "test",
-        Align.RIGHT,
-        Align.CENTER,
-        50,
-        30,
-        function(button)
-            button.sprite.animation.currentFrame = HOVER_FRAME
-        end,
-        function(button)
-            Scene.transition(Scene.scenes.dayTracker)
-        end
-    )
+    local buttonSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
+    local testButtonTransform =
+        Align.screenAlignedTransform(buttonSprite.width, buttonSprite.height, Align.RIGHT, Align.TOP, 50, 50)
+    testButton = Button.new(buttonSprite, testButtonTransform, Font.large, "test", nil, function(button)
+        Scene.transition(Scene.scenes.dayTracker)
+    end)
 
     playButton = {
         sprite = Sprite.newAnimated(buttonImage, numButtonFrames),

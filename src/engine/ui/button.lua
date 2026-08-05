@@ -7,12 +7,11 @@ local Button = {}
 local meta = {}
 meta.__index = meta
 
-function Button.new(image, numFrames, font, text, horizontalAlign, verticalAlign, xPadding, yPadding, onHover, onPress)
-    local imageWidth, imageHeight = image:getDimensions()
-    local colliderWidth, colliderHeight = imageWidth / numFrames, imageHeight
-    local sprite = Sprite.newAnimated(image, numFrames)
+local DEFAULT_BUTTON_STATE = 1
+local HOVERED_BUTTON_STATE = 2
+
+function Button.new(sprite, transform, font, text, onHover, onPress)
     local width, height = sprite.width, sprite.height
-    local transform = Align.screenAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
 
     local button = {
         enabled = true,
@@ -20,7 +19,7 @@ function Button.new(image, numFrames, font, text, horizontalAlign, verticalAlign
         sprite = sprite,
         textBox = TextBox.new(transform, width, height, font, text, Align.CENTER, Align.CENTER, "center"),
         transform = transform,
-        collider = { width = colliderWidth, height = colliderHeight },
+        collider = { width = width, height = height },
 
         onHover = onHover,
         onPress = onPress,
@@ -40,9 +39,12 @@ end
 
 function meta:mousemoved(x, y, dx, dy, isTouch)
     if Collision.hitTest(x, y, self.collider, self.transform) then
+        self.sprite.animation.currentFrame = HOVERED_BUTTON_STATE
         if self.onHover then
             self:onHover()
         end
+    else
+        self.sprite.animation.currentFrame = DEFAULT_BUTTON_STATE
     end
 end
 
