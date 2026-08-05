@@ -4,13 +4,20 @@ local TextBox = {}
 local meta = {}
 meta.__index = meta
 
-function TextBox.new(width, transform, font, text, alignMode)
+function TextBox.new(transform, width, height, font, text, horizontalAlign, verticalAlign, textAlignMode)
+    horizontalAlign = horizontalAlign or Ui.align.CENTER
+    verticalAlign = verticalAlign or Ui.align.CENTER
+    textAlignMode = textAlignMode or "center"
+
+    local textTransform =
+        Ui._newAlignedTransform(transform, width, height, width, font:getHeight(), horizontalAlign, verticalAlign)
+
     local textBox = {
         width = width,
-        transform = transform,
+        transform = textTransform,
         font = font,
         text = text,
-        alignMode = alignMode,
+        alignMode = textAlignMode,
     }
     setmetatable(textBox, meta)
 

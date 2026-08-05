@@ -11,27 +11,49 @@ local Ui = {
 local Settings = require("engine.settings")
 
 function Ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
-    local x, y
+    return Ui._newAlignedTransform(
+        love.math.newTransform(0, 0),
+        Settings.canvasPixelWidth,
+        Settings.canvasPixelHeight,
+        width,
+        height,
+        horizontalAlign,
+        verticalAlign,
+        xPadding,
+        yPadding
+    )
+end
+
+function Ui._newAlignedTransform(
+    originTransform,
+    originWidth,
+    originHeight,
+    width,
+    height,
+    horizontalAlign,
+    verticalAlign,
+    xPadding,
+    yPadding
+)
+    local x, y = originTransform:transformPoint(0, 0)
     width, height = width or 0, height or 0
     local xOffset, yOffset = xPadding or 0, yPadding or 0
 
     if horizontalAlign == Ui.align.LEFT then
-        x = 0
     elseif horizontalAlign == Ui.align.CENTER then
-        x = Settings.canvasPixelWidth / 2 - width / 2
+        x = x + (originWidth / 2) - (width / 2)
     elseif horizontalAlign == Ui.align.RIGHT then
-        x = Settings.canvasPixelWidth - width
+        x = x + originWidth - width
         xOffset = -xOffset
     else
         error(("invalid align option: %d"):format(horizontalAlign))
     end
 
     if verticalAlign == Ui.align.TOP then
-        y = 0
     elseif verticalAlign == Ui.align.CENTER then
-        y = Settings.canvasPixelHeight / 2 - height / 2
+        y = y + (originHeight / 2) - (height / 2)
     elseif verticalAlign == Ui.align.BOTTOM then
-        y = Settings.canvasPixelHeight - height
+        y = y + originHeight - height
         yOffset = -yOffset
     else
         error(("invalid align option: %d"):format(verticalAlign))

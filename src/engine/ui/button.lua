@@ -18,7 +18,7 @@ function Button.new(image, numFrames, font, text, horizontalAlign, verticalAlign
         enabled = true,
 
         sprite = sprite,
-        textBox = TextBox.new(width, transform, font, text, "center"),
+        textBox = TextBox.new(transform, width, height, font, text, Ui.align.CENTER, Ui.align.CENTER, "center"),
         transform = transform,
         collider = { width = colliderWidth, height = colliderHeight },
 
