@@ -1,9 +1,9 @@
 local PackageDetail = {}
 
+local Align = require("engine.ui.align")
 local Animation = require("engine.animation")
 local Scene = require("engine.scene")
 local Sprite = require("engine.sprite")
-local Ui = require("engine.ui.ui")
 
 local Font = require("game.font")
 
@@ -53,11 +53,11 @@ function PackageDetail.load()
     end)
     detailBox = {
         sprite = detailBoxSprite,
-        transform = Ui.newAlignedTransform(
+        transform = Align.newAlignedTransform(
             detailBoxSprite.width,
             detailBoxSprite.height,
-            Ui.align.CENTER,
-            Ui.align.CENTER
+            Align.CENTER,
+            Align.CENTER
         ),
     }
 
@@ -66,11 +66,11 @@ function PackageDetail.load()
     packageDetailAnimation.animation.currentFrame = packageIndex or 1
     packageDetailPortrait = {
         sprite = packageDetailAnimation,
-        transform = Ui.newAlignedTransform(
+        transform = Align.newAlignedTransform(
             packageDetailAnimation.width,
             packageDetailAnimation.height,
-            Ui.align.CENTER,
-            Ui.align.CENTER,
+            Align.CENTER,
+            Align.CENTER,
             0,
             -50
         ),
@@ -78,7 +78,7 @@ function PackageDetail.load()
 
     textWidth = 420
     textHeight = 105
-    textTransform = Ui.newAlignedTransform(textWidth, textHeight, Ui.align.CENTER, Ui.align.BOTTOM)
+    textTransform = Align.newAlignedTransform(textWidth, textHeight, Align.CENTER, Align.BOTTOM)
 end
 
 function PackageDetail.unload() end

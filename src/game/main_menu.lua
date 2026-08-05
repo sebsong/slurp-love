@@ -1,10 +1,10 @@
 local MainMenu = {}
 
+local Align = require("engine.ui.align")
 local Button = require("engine.ui.button")
 local Collision = require("engine.collision")
 local Scene = require("engine.scene")
 local Sprite = require("engine.sprite")
-local Ui = require("engine.ui.ui")
 
 local Font = require("game.font")
 
@@ -30,8 +30,8 @@ function MainMenu.load()
         numButtonFrames,
         Font.large,
         "test",
-        Ui.align.RIGHT,
-        Ui.align.CENTER,
+        Align.RIGHT,
+        Align.CENTER,
         50,
         30,
         function(button)

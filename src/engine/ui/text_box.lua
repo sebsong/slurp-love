@@ -1,16 +1,16 @@
-local Ui = require("engine.ui.ui")
+local Align = require("engine.ui.align")
 
 local TextBox = {}
 local meta = {}
 meta.__index = meta
 
 function TextBox.new(transform, width, height, font, text, horizontalAlign, verticalAlign, textAlignMode)
-    horizontalAlign = horizontalAlign or Ui.align.CENTER
-    verticalAlign = verticalAlign or Ui.align.CENTER
+    horizontalAlign = horizontalAlign or Align.CENTER
+    verticalAlign = verticalAlign or Align.CENTER
     textAlignMode = textAlignMode or "center"
 
     local textTransform =
-        Ui._newAlignedTransform(transform, width, height, width, font:getHeight(), horizontalAlign, verticalAlign)
+        Align._newAlignedTransform(transform, width, height, width, font:getHeight(), horizontalAlign, verticalAlign)
 
     local textBox = {
         width = width,

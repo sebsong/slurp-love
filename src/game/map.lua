@@ -1,8 +1,8 @@
 local Map = {}
 
+local Align = require("engine.ui.align")
 local Scene = require("engine.scene")
 local Sprite = require("engine.sprite")
-local Ui = require("engine.ui.ui")
 
 local mapOverlay
 
@@ -19,7 +19,7 @@ function Map.load()
     local mapSprite = Sprite.new(mapImage)
     mapOverlay = {
         sprite = mapSprite,
-        transform = Ui.newAlignedTransform(mapSprite.width, mapSprite.height, Ui.align.CENTER, Ui.align.CENTER),
+        transform = Align.newAlignedTransform(mapSprite.width, mapSprite.height, Align.CENTER, Align.CENTER),
     }
 end
 

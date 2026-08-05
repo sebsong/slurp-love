@@ -1,11 +1,11 @@
 local GameOverMenu = {}
 
+local Align = require("engine.ui.align")
 local Animation = require("engine.animation")
 local Collision = require("engine.collision")
 local Scene = require("engine.scene")
 local Settings = require("engine.settings")
 local Sprite = require("engine.sprite")
-local Ui = require("engine.ui.ui")
 
 local Font = require("game.font")
 
@@ -24,7 +24,7 @@ function GameOverMenu.load()
     local menuSprite = Sprite.new(menuImage)
     menu = {
         sprite = menuSprite,
-        transform = Ui.newAlignedTransform(menuSprite.width, menuSprite.height, Ui.align.CENTER, Ui.align.CENTER),
+        transform = Align.newAlignedTransform(menuSprite.width, menuSprite.height, Align.CENTER, Align.CENTER),
     }
 
     gameOverTextTransform = love.math.newTransform(0, 50)
@@ -38,7 +38,7 @@ function GameOverMenu.load()
     local restartSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     restartButton = {
         sprite = restartSprite,
-        transform = Ui.newAlignedTransform(restartSprite.width, restartSprite.height, Ui.align.CENTER, Ui.align.CENTER),
+        transform = Align.newAlignedTransform(restartSprite.width, restartSprite.height, Align.CENTER, Align.CENTER),
         collider = { width = buttonColliderWidth, height = buttonColliderHeight },
         isPressed = false,
         isHovered = false,
@@ -47,11 +47,11 @@ function GameOverMenu.load()
     local mainMenuSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     mainMenuButton = {
         sprite = mainMenuSprite,
-        transform = Ui.newAlignedTransform(
+        transform = Align.newAlignedTransform(
             mainMenuSprite.width,
             mainMenuSprite.height,
-            Ui.align.CENTER,
-            Ui.align.CENTER,
+            Align.CENTER,
+            Align.CENTER,
             0,
             mainMenuSprite.height * 1.1
         ),

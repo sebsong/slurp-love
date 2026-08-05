@@ -1,10 +1,10 @@
 local PauseMenu = {}
 
+local Align = require("engine.ui.align")
 local Animation = require("engine.animation")
 local Collision = require("engine.collision")
 local Scene = require("engine.scene")
 local Sprite = require("engine.sprite")
-local Ui = require("engine.ui.ui")
 
 local Font = require("game.font")
 
@@ -57,11 +57,11 @@ function PauseMenu.load()
     end)
     menu = {
         sprite = menuSprite,
-        transform = Ui.newAlignedTransform(menuSprite.width, menuSprite.height, Ui.align.CENTER, Ui.align.CENTER),
+        transform = Align.newAlignedTransform(menuSprite.width, menuSprite.height, Align.CENTER, Align.CENTER),
     }
 
     titleTextTransform =
-        Ui.newAlignedTransform(menuSprite.width, Font.large:getHeight(), Ui.align.CENTER, Ui.align.CENTER, 0, -75)
+        Align.newAlignedTransform(menuSprite.width, Font.large:getHeight(), Align.CENTER, Align.CENTER, 0, -75)
 
     local buttonImage = love.graphics.newImage("assets/art/button.png")
 
@@ -72,23 +72,23 @@ function PauseMenu.load()
     local resumeSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     resumeButton = {
         sprite = resumeSprite,
-        transform = Ui.newAlignedTransform(resumeSprite.width, resumeSprite.height, Ui.align.CENTER, Ui.align.CENTER),
+        transform = Align.newAlignedTransform(resumeSprite.width, resumeSprite.height, Align.CENTER, Align.CENTER),
         collider = { width = buttonColliderWidth, height = buttonColliderHeight },
         isPressed = false,
         isHovered = false,
     }
     resumeTextTransform =
-        Ui.newAlignedTransform(resumeSprite.width, Font.medium:getHeight(), Ui.align.CENTER, Ui.align.CENTER)
+        Align.newAlignedTransform(resumeSprite.width, Font.medium:getHeight(), Align.CENTER, Align.CENTER)
 
     local mainMenuSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     local yOffset = mainMenuSprite.height * 1.1
     mainMenuButton = {
         sprite = mainMenuSprite,
-        transform = Ui.newAlignedTransform(
+        transform = Align.newAlignedTransform(
             mainMenuSprite.width,
             mainMenuSprite.height,
-            Ui.align.CENTER,
-            Ui.align.CENTER,
+            Align.CENTER,
+            Align.CENTER,
             0,
             yOffset
         ),
@@ -96,14 +96,8 @@ function PauseMenu.load()
         isPressed = false,
         isHovered = false,
     }
-    mainMenuTextTransform = Ui.newAlignedTransform(
-        mainMenuSprite.width,
-        Font.medium:getHeight(),
-        Ui.align.CENTER,
-        Ui.align.CENTER,
-        0,
-        yOffset
-    )
+    mainMenuTextTransform =
+        Align.newAlignedTransform(mainMenuSprite.width, Font.medium:getHeight(), Align.CENTER, Align.CENTER, 0, yOffset)
 end
 
 function PauseMenu.unload() end

@@ -2,9 +2,9 @@ local GameUi = {
     PADDING = 10,
 }
 
+local Align = require("engine.ui.align")
 local PackageEffect = require("game.effects.package_effect")
 local Sprite = require("engine.sprite")
-local Ui = require("engine.ui.ui")
 
 local gasMeterWidth, gasMeterHeight = 16, 128
 local GAS_TEXT_WIDTH = gasMeterWidth
@@ -26,11 +26,11 @@ function GameUi.load()
     local gasMeterSprite = Sprite.new(uiImage, gasMeterQuad)
     gasMeter = {
         sprite = gasMeterSprite,
-        transform = Ui.newAlignedTransform(
+        transform = Align.newAlignedTransform(
             gasMeterSprite.width,
             gasMeterSprite.height,
-            Ui.align.LEFT,
-            Ui.align.BOTTOM,
+            Align.LEFT,
+            Align.BOTTOM,
             GameUi.PADDING,
             GameUi.PADDING
         ),
@@ -45,11 +45,11 @@ function GameUi.load()
     end
     gasMeterProgress = {
         sprite = gasMeterProgressSprite,
-        transform = Ui.newAlignedTransform(
+        transform = Align.newAlignedTransform(
             gasMeterProgressSprite.width,
             gasMeterProgressSprite.height,
-            Ui.align.LEFT,
-            Ui.align.BOTTOM,
+            Align.LEFT,
+            Align.BOTTOM,
             GameUi.PADDING,
             GameUi.PADDING
         ),
@@ -59,21 +59,21 @@ function GameUi.load()
     local packageContainerSprite = Sprite.new(uiImage, packageContainerQuad)
     packageContainer = {
         sprite = packageContainerSprite,
-        transform = Ui.newAlignedTransform(
+        transform = Align.newAlignedTransform(
             packageContainerSprite.width,
             packageContainerSprite.height,
-            Ui.align.RIGHT,
-            Ui.align.BOTTOM,
+            Align.RIGHT,
+            Align.BOTTOM,
             GameUi.PADDING,
             GameUi.PADDING
         ),
     }
 
-    gasRemainingTextTransform = Ui.newAlignedTransform(
+    gasRemainingTextTransform = Align.newAlignedTransform(
         GAS_TEXT_WIDTH,
         GAS_TEXT_HEIGHT,
-        Ui.align.LEFT,
-        Ui.align.BOTTOM,
+        Align.LEFT,
+        Align.BOTTOM,
         GameUi.PADDING,
         gasMeterHeight + GameUi.PADDING * 2
     )

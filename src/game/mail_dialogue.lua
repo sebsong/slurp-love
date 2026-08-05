@@ -1,9 +1,9 @@
 local MailDialogue = {}
 
+local Align = require("engine.ui.align")
 local Animation = require("engine.animation")
 local Scene = require("engine.scene")
 local Sprite = require("engine.sprite")
-local Ui = require("engine.ui.ui")
 
 local Font = require("game.font")
 
@@ -99,11 +99,11 @@ function MailDialogue.load()
     end)
     dialogueBox = {
         sprite = dialogueBoxSprite,
-        transform = Ui.newAlignedTransform(
+        transform = Align.newAlignedTransform(
             dialogueBoxSprite.width,
             dialogueBoxSprite.height,
-            Ui.align.CENTER,
-            Ui.align.BOTTOM,
+            Align.CENTER,
+            Align.BOTTOM,
             0,
             0
         ),
@@ -113,7 +113,7 @@ function MailDialogue.load()
     textHeight = 100
     local xPadding = 90
     local yPadding = 25
-    textTransform = Ui.newAlignedTransform(textWidth, textHeight, Ui.align.CENTER, Ui.align.BOTTOM, xPadding, yPadding)
+    textTransform = Align.newAlignedTransform(textWidth, textHeight, Align.CENTER, Align.BOTTOM, xPadding, yPadding)
 
     setLines(dialogueLines)
 end

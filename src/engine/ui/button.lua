@@ -1,7 +1,7 @@
+local Align = require("engine.ui.align")
 local Collision = require("engine.collision")
 local Sprite = require("engine.sprite")
 local TextBox = require("engine.ui.text_box")
-local Ui = require("engine.ui.ui")
 
 local Button = {}
 local meta = {}
@@ -12,13 +12,13 @@ function Button.new(image, numFrames, font, text, horizontalAlign, verticalAlign
     local colliderWidth, colliderHeight = imageWidth / numFrames, imageHeight
     local sprite = Sprite.newAnimated(image, numFrames)
     local width, height = sprite.width, sprite.height
-    local transform = Ui.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
+    local transform = Align.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
 
     local button = {
         enabled = true,
 
         sprite = sprite,
-        textBox = TextBox.new(transform, width, height, font, text, Ui.align.CENTER, Ui.align.CENTER, "center"),
+        textBox = TextBox.new(transform, width, height, font, text, Align.CENTER, Align.CENTER, "center"),
         transform = transform,
         collider = { width = colliderWidth, height = colliderHeight },
 
