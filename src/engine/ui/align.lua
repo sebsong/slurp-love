@@ -8,21 +8,7 @@ local Align = {
     BOTTOM = 5,
 }
 
-function Align.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
-    return Align._newAlignedTransform(
-        love.math.newTransform(0, 0),
-        Settings.canvasPixelWidth,
-        Settings.canvasPixelHeight,
-        width,
-        height,
-        horizontalAlign,
-        verticalAlign,
-        xPadding,
-        yPadding
-    )
-end
-
-function Align._newAlignedTransform(
+function Align.alignedTransform(
     originTransform,
     originWidth,
     originHeight,
@@ -58,6 +44,20 @@ function Align._newAlignedTransform(
     end
 
     return love.math.newTransform(x + xOffset, y + yOffset)
+end
+
+function Align.screenAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
+    return Align.alignedTransform(
+        love.math.newTransform(0, 0),
+        Settings.canvasPixelWidth,
+        Settings.canvasPixelHeight,
+        width,
+        height,
+        horizontalAlign,
+        verticalAlign,
+        xPadding,
+        yPadding
+    )
 end
 
 return Align

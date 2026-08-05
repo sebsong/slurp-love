@@ -12,7 +12,7 @@ function Button.new(image, numFrames, font, text, horizontalAlign, verticalAlign
     local colliderWidth, colliderHeight = imageWidth / numFrames, imageHeight
     local sprite = Sprite.newAnimated(image, numFrames)
     local width, height = sprite.width, sprite.height
-    local transform = Align.newAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
+    local transform = Align.screenAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
 
     local button = {
         enabled = true,

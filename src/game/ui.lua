@@ -26,7 +26,7 @@ function GameUi.load()
     local gasMeterSprite = Sprite.new(uiImage, gasMeterQuad)
     gasMeter = {
         sprite = gasMeterSprite,
-        transform = Align.newAlignedTransform(
+        transform = Align.screenAlignedTransform(
             gasMeterSprite.width,
             gasMeterSprite.height,
             Align.LEFT,
@@ -45,7 +45,7 @@ function GameUi.load()
     end
     gasMeterProgress = {
         sprite = gasMeterProgressSprite,
-        transform = Align.newAlignedTransform(
+        transform = Align.screenAlignedTransform(
             gasMeterProgressSprite.width,
             gasMeterProgressSprite.height,
             Align.LEFT,
@@ -59,7 +59,7 @@ function GameUi.load()
     local packageContainerSprite = Sprite.new(uiImage, packageContainerQuad)
     packageContainer = {
         sprite = packageContainerSprite,
-        transform = Align.newAlignedTransform(
+        transform = Align.screenAlignedTransform(
             packageContainerSprite.width,
             packageContainerSprite.height,
             Align.RIGHT,
@@ -69,7 +69,7 @@ function GameUi.load()
         ),
     }
 
-    gasRemainingTextTransform = Align.newAlignedTransform(
+    gasRemainingTextTransform = Align.screenAlignedTransform(
         GAS_TEXT_WIDTH,
         GAS_TEXT_HEIGHT,
         Align.LEFT,

@@ -99,7 +99,7 @@ function MailDialogue.load()
     end)
     dialogueBox = {
         sprite = dialogueBoxSprite,
-        transform = Align.newAlignedTransform(
+        transform = Align.screenAlignedTransform(
             dialogueBoxSprite.width,
             dialogueBoxSprite.height,
             Align.CENTER,
@@ -113,7 +113,7 @@ function MailDialogue.load()
     textHeight = 100
     local xPadding = 90
     local yPadding = 25
-    textTransform = Align.newAlignedTransform(textWidth, textHeight, Align.CENTER, Align.BOTTOM, xPadding, yPadding)
+    textTransform = Align.screenAlignedTransform(textWidth, textHeight, Align.CENTER, Align.BOTTOM, xPadding, yPadding)
 
     setLines(dialogueLines)
 end

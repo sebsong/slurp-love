@@ -24,7 +24,7 @@ function GameOverMenu.load()
     local menuSprite = Sprite.new(menuImage)
     menu = {
         sprite = menuSprite,
-        transform = Align.newAlignedTransform(menuSprite.width, menuSprite.height, Align.CENTER, Align.CENTER),
+        transform = Align.screenAlignedTransform(menuSprite.width, menuSprite.height, Align.CENTER, Align.CENTER),
     }
 
     gameOverTextTransform = love.math.newTransform(0, 50)
@@ -38,7 +38,7 @@ function GameOverMenu.load()
     local restartSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     restartButton = {
         sprite = restartSprite,
-        transform = Align.newAlignedTransform(restartSprite.width, restartSprite.height, Align.CENTER, Align.CENTER),
+        transform = Align.screenAlignedTransform(restartSprite.width, restartSprite.height, Align.CENTER, Align.CENTER),
         collider = { width = buttonColliderWidth, height = buttonColliderHeight },
         isPressed = false,
         isHovered = false,
@@ -47,7 +47,7 @@ function GameOverMenu.load()
     local mainMenuSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     mainMenuButton = {
         sprite = mainMenuSprite,
-        transform = Align.newAlignedTransform(
+        transform = Align.screenAlignedTransform(
             mainMenuSprite.width,
             mainMenuSprite.height,
             Align.CENTER,

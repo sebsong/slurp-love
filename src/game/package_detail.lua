@@ -53,7 +53,7 @@ function PackageDetail.load()
     end)
     detailBox = {
         sprite = detailBoxSprite,
-        transform = Align.newAlignedTransform(
+        transform = Align.screenAlignedTransform(
             detailBoxSprite.width,
             detailBoxSprite.height,
             Align.CENTER,
@@ -66,7 +66,7 @@ function PackageDetail.load()
     packageDetailAnimation.animation.currentFrame = packageIndex or 1
     packageDetailPortrait = {
         sprite = packageDetailAnimation,
-        transform = Align.newAlignedTransform(
+        transform = Align.screenAlignedTransform(
             packageDetailAnimation.width,
             packageDetailAnimation.height,
             Align.CENTER,
@@ -78,7 +78,7 @@ function PackageDetail.load()
 
     textWidth = 420
     textHeight = 105
-    textTransform = Align.newAlignedTransform(textWidth, textHeight, Align.CENTER, Align.BOTTOM)
+    textTransform = Align.screenAlignedTransform(textWidth, textHeight, Align.CENTER, Align.BOTTOM)
 end
 
 function PackageDetail.unload() end

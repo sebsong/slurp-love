@@ -10,7 +10,7 @@ function TextBox.new(transform, width, height, font, text, horizontalAlign, vert
     textAlignMode = textAlignMode or "center"
 
     local textTransform =
-        Align._newAlignedTransform(transform, width, height, width, font:getHeight(), horizontalAlign, verticalAlign)
+        Align.alignedTransform(transform, width, height, width, font:getHeight(), horizontalAlign, verticalAlign)
 
     local textBox = {
         width = width,

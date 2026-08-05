@@ -57,11 +57,11 @@ function PauseMenu.load()
     end)
     menu = {
         sprite = menuSprite,
-        transform = Align.newAlignedTransform(menuSprite.width, menuSprite.height, Align.CENTER, Align.CENTER),
+        transform = Align.screenAlignedTransform(menuSprite.width, menuSprite.height, Align.CENTER, Align.CENTER),
     }
 
     titleTextTransform =
-        Align.newAlignedTransform(menuSprite.width, Font.large:getHeight(), Align.CENTER, Align.CENTER, 0, -75)
+        Align.screenAlignedTransform(menuSprite.width, Font.large:getHeight(), Align.CENTER, Align.CENTER, 0, -75)
 
     local buttonImage = love.graphics.newImage("assets/art/button.png")
 
@@ -72,19 +72,19 @@ function PauseMenu.load()
     local resumeSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     resumeButton = {
         sprite = resumeSprite,
-        transform = Align.newAlignedTransform(resumeSprite.width, resumeSprite.height, Align.CENTER, Align.CENTER),
+        transform = Align.screenAlignedTransform(resumeSprite.width, resumeSprite.height, Align.CENTER, Align.CENTER),
         collider = { width = buttonColliderWidth, height = buttonColliderHeight },
         isPressed = false,
         isHovered = false,
     }
     resumeTextTransform =
-        Align.newAlignedTransform(resumeSprite.width, Font.medium:getHeight(), Align.CENTER, Align.CENTER)
+        Align.screenAlignedTransform(resumeSprite.width, Font.medium:getHeight(), Align.CENTER, Align.CENTER)
 
     local mainMenuSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     local yOffset = mainMenuSprite.height * 1.1
     mainMenuButton = {
         sprite = mainMenuSprite,
-        transform = Align.newAlignedTransform(
+        transform = Align.screenAlignedTransform(
             mainMenuSprite.width,
             mainMenuSprite.height,
             Align.CENTER,
@@ -96,8 +96,14 @@ function PauseMenu.load()
         isPressed = false,
         isHovered = false,
     }
-    mainMenuTextTransform =
-        Align.newAlignedTransform(mainMenuSprite.width, Font.medium:getHeight(), Align.CENTER, Align.CENTER, 0, yOffset)
+    mainMenuTextTransform = Align.screenAlignedTransform(
+        mainMenuSprite.width,
+        Font.medium:getHeight(),
+        Align.CENTER,
+        Align.CENTER,
+        0,
+        yOffset
+    )
 end
 
 function PauseMenu.unload() end

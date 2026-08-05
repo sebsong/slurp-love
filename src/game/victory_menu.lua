@@ -21,7 +21,7 @@ function VictoryMenu.load()
     local menuSprite = Sprite.new(menuImage)
     menu = {
         sprite = menuSprite,
-        transform = Align.newAlignedTransform(menuSprite.width, menuSprite.height, Align.CENTER, Align.CENTER),
+        transform = Align.screenAlignedTransform(menuSprite.width, menuSprite.height, Align.CENTER, Align.CENTER),
     }
 
     victoryTextTransform = love.math.newTransform(0, 50)
@@ -35,7 +35,7 @@ function VictoryMenu.load()
     local mainMenuSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     mainMenuButton = {
         sprite = mainMenuSprite,
-        transform = Align.newAlignedTransform(
+        transform = Align.screenAlignedTransform(
             mainMenuSprite.width,
             mainMenuSprite.height,
             Align.CENTER,

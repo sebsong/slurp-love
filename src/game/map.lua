@@ -19,7 +19,7 @@ function Map.load()
     local mapSprite = Sprite.new(mapImage)
     mapOverlay = {
         sprite = mapSprite,
-        transform = Align.newAlignedTransform(mapSprite.width, mapSprite.height, Align.CENTER, Align.CENTER),
+        transform = Align.screenAlignedTransform(mapSprite.width, mapSprite.height, Align.CENTER, Align.CENTER),
     }
 end
 
