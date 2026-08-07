@@ -12,8 +12,7 @@ local PADDING = 20
 
 local backgroundImage
 
--- TODO: convert all buttons to use new button module
--- TODO: make sure game works with new animation state system
+---@type Button
 local playButton
 local exitButton
 

@@ -3,9 +3,20 @@ local Collision = require("engine.collision")
 local Sprite = require("engine.sprite")
 local TextBox = require("engine.ui.text_box")
 
+---@class Button
+---@field enabled boolean
+---@field sprite table
+---@field textBox table
+---@field transform love.Transform
+---@field collider table
+---@field onHover fun(self: Button)?
+---@field onPress fun(self: Button)?
+---
+---@field mousepressed fun(self: Button, x: number, y: number, button: number, isTouch: boolean, presses: number)
+---@field mousemoved fun(self: Button, x: number, y: number, dx: number, dy: number, isTouch: boolean)
+---@field draw fun(self: Button)
 local Button = {}
-local meta = {}
-meta.__index = meta
+Button.__index = Button
 
 local DEFAULT_BUTTON_STATE = 1
 local HOVERED_BUTTON_STATE = 2
@@ -24,12 +35,12 @@ function Button.new(sprite, transform, font, text, onHover, onPress)
         onHover = onHover,
         onPress = onPress,
     }
-    setmetatable(button, meta)
+    setmetatable(button, Button)
 
     return button
 end
 
-function meta:mousepressed(x, y, button, isTouch, presses)
+function Button:mousepressed(x, y, button, isTouch, presses)
     if Collision.hitTest(x, y, self.collider, self.transform) then
         if self.onPress then
             self:onPress()
@@ -37,7 +48,7 @@ function meta:mousepressed(x, y, button, isTouch, presses)
     end
 end
 
-function meta:mousemoved(x, y, dx, dy, isTouch)
+function Button:mousemoved(x, y, dx, dy, isTouch)
     if Collision.hitTest(x, y, self.collider, self.transform) then
         self.sprite.animations[self.sprite.currentAnimationState].currentFrame = HOVERED_BUTTON_STATE
         if self.onHover then
@@ -48,7 +59,7 @@ function meta:mousemoved(x, y, dx, dy, isTouch)
     end
 end
 
-function meta:draw()
+function Button:draw()
     Sprite.draw(self.sprite, self.transform)
     self.textBox:draw()
 end

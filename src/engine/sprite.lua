@@ -49,6 +49,8 @@ function Sprite.newAnimated(image, numFrames, duration, isLooping, xOffset, yOff
     return new(image, quad, { animation }, xOffset, yOffset, zIndex, zIndexOffset, false)
 end
 
+-- a state with an animation associated, e.g. idle, walk, hovered, etc.
+-- in the spritesheet, animation states can be stored on separate rows or separate files
 function Sprite.addAnimationState(sprite, image, numFrames, duration, isLooping)
     local animation = Animation.new(image, numFrames, duration, isLooping)
     table.insert(sprite.animations, animation)

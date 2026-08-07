@@ -18,6 +18,7 @@ local PackageDetail = require("game.package_detail")
 local PauseMenu = require("game.pause_menu")
 local VictoryMenu = require("game.victory_menu")
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     Canvas.load()
@@ -44,28 +45,34 @@ function love.load()
     -- Scene.start(Scene.scenes.packageDetail)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.keypressed(key, scancode, isRepeat)
     Scene.keypressed(key, scancode, isRepeat)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.mousepressed(x, y, button, isTouch, presses)
     x, y = Canvas.screenToCanvasTransform:transformPoint(x, y)
     Scene.mousepressed(x, y, button, isTouch, presses)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.mousemoved(x, y, dx, dy, isTouch)
     x, y = Canvas.screenToCanvasTransform:transformPoint(x, y)
     Scene.mousemoved(x, y, dx, dy, isTouch)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.wheelmoved(x, y)
     Scene.wheelmoved(x, y)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.update(dt)
     Scene.update(dt)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.draw()
     Canvas.draw(Scene.draw)
 end

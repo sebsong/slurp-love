@@ -99,7 +99,7 @@ function Scene.keypressed(key, scancode, isRepeat)
             goto continue
         end
 
-        if Scene.keypressed then
+        if scene.keypressed then
             scene.keypressed(key, scancode, isRepeat)
         end
 
@@ -113,7 +113,7 @@ function Scene.mousepressed(x, y, button, isTouch, presses)
             goto continue
         end
 
-        if Scene.mousepressed then
+        if scene.mousepressed then
             scene.mousepressed(x, y, button, isTouch, presses)
         end
 
@@ -127,7 +127,7 @@ function Scene.mousemoved(x, y, dx, dy, isTouch)
             goto continue
         end
 
-        if Scene.mousemoved then
+        if scene.mousemoved then
             scene.mousemoved(x, y, dx, dy, isTouch)
         end
 
@@ -141,7 +141,7 @@ function Scene.wheelmoved(x, y)
             goto continue
         end
 
-        if Scene.wheelmoved then
+        if scene.wheelmoved then
             scene.wheelmoved(x, y)
         end
 

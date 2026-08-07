@@ -4,12 +4,14 @@ local IS_DEBUG = os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" and arg[2] == "de
 if IS_DEBUG then
     require("lldebugger").start()
 
+    ---@diagnostic disable-next-line: duplicate-set-field
     function love.errorhandler(msg)
         error(msg, 2)
     end
 end
 
 -- https://love2d.org/wiki/Config_Files
+---@diagnostic disable-next-line: duplicate-set-field
 function love.conf(t)
     t.identity = nil
     t.appendidentity = false

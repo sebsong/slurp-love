@@ -1,11 +1,12 @@
 {
 	"Lua.workspace.library": [
-		"${3rd}/love2d/library",
-		"lib"
-	],
+        "${addons}/love2d/module/library",
+        "lib",
+    ],
 	"Lua.runtime.version": "LuaJIT",
 	"Lua.workspace.checkThirdParty": false,
 	"Lua.diagnostics.globals": ["love"],
+    "Lua.diagnostics.libraryFiles": "Disable",
     "[lua]": {
         "editor.defaultFormatter": "JohnnyMorganz.stylua",
         "editor.formatOnSave": true
