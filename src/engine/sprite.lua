@@ -42,19 +42,39 @@ function Sprite.newSpriteBatch(spriteBatch, quad, zIndex, zIndexOffset)
     return new(spriteBatch, quad, nil, nil, nil, zIndex, zIndexOffset, true)
 end
 
-function Sprite.newAnimated(image, numFrames, duration, isLooping, xOffset, yOffset, zIndex, zIndexOffset)
-    local animation = Animation.new(image, numFrames, duration, isLooping)
-    local quad = Animation.getCurrentQuad(animation)
+-- the expected image format is:
+--     each row represents an animation state
+--     each animation frame contains each direction packed horizontally
+--
+-- example:
+-- o o o o O O O O o o o o
+-- u u u u U U U U u u u u
+-- 2 states (o vs u)
+-- 3 frames (o vs O)
+-- 4 directions
+function Sprite.newAnimated(image, animationStateConfigs, numDirections, xOffset, yOffset, zIndex, zIndexOffset)
+    assert(#animationStateConfigs > 0, "must provide at least 1 animation config")
 
-    return new(image, quad, { animation }, xOffset, yOffset, zIndex, zIndexOffset, false)
-end
+    local numStates = #animationStateConfigs
+    local maxNumFrames = 1
+    for _, config in ipairs(animationStateConfigs) do
+        if config.numFrames > maxNumFrames then
+            maxNumFrames = config.numFrames
+        end
+    end
 
--- a state with an animation associated, e.g. idle, walk, hovered, etc.
--- in the spritesheet, animation states can be stored on separate rows or separate files
-function Sprite.addAnimationState(sprite, image, numFrames, duration, isLooping)
-    local animation = Animation.new(image, numFrames, duration, isLooping)
-    table.insert(sprite.animations, animation)
-    return #sprite.animations
+    local imageWidth, imageHeight = image:getDimensions()
+    local quadWidth = imageWidth / (numDirections * maxNumFrames)
+    local quadHeight = imageHeight / numStates
+    local quad = love.graphics.newQuad(0, 0, quadWidth, quadHeight, image)
+
+    local animations = {}
+    for i, config in ipairs(animationStateConfigs) do
+        local animation = Animation.new(image, quad, i, config)
+        table.insert(animations, animation)
+    end
+
+    return new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffset, false)
 end
 
 function Sprite.transitionAnimationState(sprite, state)

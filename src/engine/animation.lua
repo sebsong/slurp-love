@@ -1,11 +1,11 @@
 local Animation = {}
 
-function Animation.new(image, numFrames, duration, isLooping)
+function Animation.new(image, quad, rowIndex, config)
     local quads = {}
-    local imageWidth, imageHeight = image:getDimensions()
-    local quadWidth, quadHeight = imageWidth / numFrames, imageHeight
-    for i = 0, numFrames - 1 do
-        table.insert(quads, love.graphics.newQuad(i * quadWidth, 0, quadWidth, quadHeight, image))
+    local _, _, quadWidth, quadHeight = quad:getViewport()
+    local yOffset = rowIndex * quadHeight
+    for i = 0, config.numFrames - 1 do
+        table.insert(quads, love.graphics.newQuad(i * quadWidth, yOffset, quadWidth, quadHeight, image))
     end
 
     return {
@@ -13,9 +13,9 @@ function Animation.new(image, numFrames, duration, isLooping)
 
         isPlaying = false,
         isReversed = false,
-        isLooping = isLooping,
-        numFrames = numFrames,
-        frameDurationSeconds = (duration or 0) / numFrames,
+        isLooping = config.isLooping,
+        numFrames = config.numFrames,
+        frameDurationSeconds = (config.duration or 0) / config.numFrames,
 
         currentFrame = 1,
         currentFrameSeconds = 0,
