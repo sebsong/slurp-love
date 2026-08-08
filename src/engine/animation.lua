@@ -1,15 +1,22 @@
 local Animation = {}
 
-function Animation.new(image, quad, rowIndex, config)
-    local quads = {}
-    local _, _, quadWidth, quadHeight = quad:getViewport()
-    local yOffset = rowIndex * quadHeight
-    for i = 0, config.numFrames - 1 do
-        table.insert(quads, love.graphics.newQuad(i * quadWidth, yOffset, quadWidth, quadHeight, image))
+function Animation.new(image, referenceQuad, rowIndex, numDirections, config)
+    local _, _, quadWidth, quadHeight = referenceQuad:getViewport()
+    local frameWidth = quadWidth * numDirections
+    local y = rowIndex * quadHeight
+
+    local directions = {}
+    for i = 0, numDirections - 1 do
+        local quads = {}
+        for j = 0, config.numFrames - 1 do
+            local x = (j * frameWidth) + (i * quadWidth)
+            table.insert(quads, love.graphics.newQuad(x, y, quadWidth, quadHeight, image))
+        end
+        table.insert(directions, quads)
     end
 
     return {
-        quads = quads,
+        directions = directions,
 
         isPlaying = false,
         isReversed = false,
@@ -17,6 +24,7 @@ function Animation.new(image, quad, rowIndex, config)
         numFrames = config.numFrames,
         frameDurationSeconds = (config.duration or 0) / config.numFrames,
 
+        currentDirection = 1,
         currentFrame = 1,
         currentFrameSeconds = 0,
         onFinish = nil,
@@ -24,7 +32,13 @@ function Animation.new(image, quad, rowIndex, config)
 end
 
 function Animation.getCurrentQuad(animation)
-    return animation.quads[animation.currentFrame]
+    return animation.directions[animation.currentDirection][animation.currentFrame]
+end
+
+function Animation.setDirection(animation, rotation)
+    local rotSegmentLength = 2 * math.pi / #animation.directions
+    local direction = math.floor((((rotation + (rotSegmentLength / 2)) % (2 * math.pi)) / rotSegmentLength)) + 1
+    animation.currentDirection = direction
 end
 
 local function reset(animation)

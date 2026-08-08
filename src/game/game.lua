@@ -202,10 +202,10 @@ function Game.load()
         tilemapBuildingsSpriteBatch:add(object.sprite.quad, x + object.sprite.xOffset, y + object.sprite.yOffset)
     end
 
-    Scene.pauseInput(Scene.scenes.game)
-    MailDialogue.open(MailScript.dailyDialogue[currentDay], function()
-        Scene.resumeInput(Scene.scenes.game)
-    end)
+    -- Scene.pauseInput(Scene.scenes.game)
+    -- MailDialogue.open(MailScript.dailyDialogue[currentDay], function()
+    --     Scene.resumeInput(Scene.scenes.game)
+    -- end)
 end
 
 function Game.unload()
@@ -305,7 +305,7 @@ function Game.update(dt)
     end
 
     if not cameraObj.isPanning then
-        local boatX, boatY = boatObj.transform:transformPoint(0, 0)
+        local boatX, boatY = boatObj.moveTransform:transformPoint(0, 0)
         cameraObj.transform:setTransformation(boatX, boatY)
     end
 
@@ -376,7 +376,7 @@ function Game.draw()
     love.graphics.draw(tilemapBuildingsSpriteBatch)
 
     if boatObj.isLanternActive then
-        local boatX, boatY = boatObj.transform:transformPoint(0, 0)
+        local boatX, boatY = boatObj.moveTransform:transformPoint(0, 0)
         LanternEffect.setShader()
         love.graphics.draw(lanternLightImage, boatX - lanternXRadius, boatY - lanternYRadius)
     end
@@ -389,7 +389,7 @@ end
 function Game.debugTeleportBoatToCanvasPoint(x, y)
     local canvasToWorldTransform = Camera.getCanvasToWorldTransform(cameraObj)
     local targetWorldPoint = Vec2.new(canvasToWorldTransform:transformPoint(x, y))
-    boatObj.transform:setTransformation(targetWorldPoint.x, targetWorldPoint.y, boatObj.rotation)
+    boatObj.moveTransform:setTransformation(targetWorldPoint.x, targetWorldPoint.y, boatObj.rotation)
 end
 
 return Game

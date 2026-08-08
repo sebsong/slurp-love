@@ -18,7 +18,7 @@ local function new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffs
     return {
         shouldDraw = true,
         image = image,
-        quad = quad,
+        quad = quad, -- TODO: remove this in favor of storing it in animation
         animations = animations,
         currentAnimationState = 1,
         width = width,
@@ -69,8 +69,8 @@ function Sprite.newAnimated(image, animationStateConfigs, numDirections, xOffset
     local quad = love.graphics.newQuad(0, 0, quadWidth, quadHeight, image)
 
     local animations = {}
-    for i, config in ipairs(animationStateConfigs) do
-        local animation = Animation.new(image, quad, i, config)
+    for stateIndex, config in ipairs(animationStateConfigs) do
+        local animation = Animation.new(image, quad, stateIndex - 1, numDirections, config)
         table.insert(animations, animation)
     end
 
@@ -79,8 +79,13 @@ end
 
 function Sprite.transitionAnimationState(sprite, state)
     assert(state >= 1 and state <= #sprite.animations, "invalid animation state")
+    Animation.stop(Sprite.getCurrentAnimation(sprite))
     sprite.currentAnimationState = state
-    -- TODO: play new animation
+    Animation.play(Sprite.getCurrentAnimation(sprite))
+end
+
+function Sprite.setDirection(sprite, rotation)
+    Animation.setDirection(Sprite.getCurrentAnimation(sprite), rotation)
 end
 
 function Sprite.getCurrentAnimation(sprite)
