@@ -6,7 +6,7 @@ local PackageEffect = require("game.effects.package_effect")
 
 local GameUi = {
     PADDING = 16,
-    BUTTON_DIMENSIONS = Vec2.new(128, 64),
+    BUTTON_DIMENSIONS = Vec2.new(128, 64), -- TODO: maybe have a better way to align ui items
 }
 
 local gasMeterWidth, gasMeterHeight = 16, 128

@@ -1,50 +1,46 @@
 local Align = require("engine.ui.align")
 local Button = require("engine.ui.button")
-local Collision = require("engine.collision")
 local Scene = require("engine.scene")
-local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
+local GameUi = require("game.ui")
 
 local MainMenu = {}
 
-local PADDING = 20
-
+---@type love.Image
 local backgroundImage
 
 ---@type Button
 local playButton
+---@type Button
 local exitButton
 
 function MainMenu.load()
     backgroundImage = love.graphics.newImage("assets/art/main_menu.png")
 
     local buttonImage = love.graphics.newImage("assets/art/button.png")
-    local numButtonFrames = 2
 
-    local playButtonSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     local playButtonTransform = Align.screenAlignedTransform(
-        playButtonSprite.width,
-        playButtonSprite.height,
+        GameUi.BUTTON_DIMENSIONS.x,
+        GameUi.BUTTON_DIMENSIONS.y,
         Align.LEFT,
         Align.BOTTOM,
-        PADDING,
-        PADDING + playButtonSprite.height + PADDING
+        GameUi.PADDING,
+        GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )
-    playButton = Button.new(playButtonSprite, playButtonTransform, Font.large, "play", nil, function()
+    playButton = Button.new(buttonImage, playButtonTransform, Font.large, "play", nil, function()
         Scene.transition(Scene.scenes.dayTracker)
     end)
 
-    local exitButtonSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     local exitButtonTransform = Align.screenAlignedTransform(
-        exitButtonSprite.width,
-        exitButtonSprite.height,
+        GameUi.BUTTON_DIMENSIONS.x,
+        GameUi.BUTTON_DIMENSIONS.y,
         Align.LEFT,
         Align.BOTTOM,
-        PADDING,
-        PADDING
+        GameUi.PADDING,
+        GameUi.PADDING
     )
-    exitButton = Button.new(exitButtonSprite, exitButtonTransform, Font.large, "exit", nil, function()
+    exitButton = Button.new(buttonImage, exitButtonTransform, Font.large, "exit", nil, function()
         love.event.quit()
     end)
 end
