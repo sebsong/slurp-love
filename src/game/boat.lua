@@ -268,11 +268,15 @@ function Boat.new(tilemap, dayValue)
             numFrames = 1,
             duration = 0,
             isLooping = false,
+            isReversed = false,
+            onFinish = nil,
         },
         [MOVE_STATE] = {
             numFrames = 1,
             duration = 0,
             isLooping = false,
+            isReversed = false,
+            onFinish = nil,
         },
     }, NUM_BOAT_ANGLES, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2), 0, 0)
     sprite.setShader = function()
@@ -300,6 +304,8 @@ function Boat.new(tilemap, dayValue)
     return {
         -- TODO: build the boat from a tile object
         sprite = sprite,
+
+        -- TODO: this is pretty awkward to maintain 2 separate transforms
         moveTransform = moveTransform,
         transform = moveTransform:clone(),
 

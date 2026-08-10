@@ -202,10 +202,10 @@ function Game.load()
         tilemapBuildingsSpriteBatch:add(object.sprite.quad, x + object.sprite.xOffset, y + object.sprite.yOffset)
     end
 
-    -- Scene.pauseInput(Scene.scenes.game)
-    -- MailDialogue.open(MailScript.dailyDialogue[currentDay], function()
-    --     Scene.resumeInput(Scene.scenes.game)
-    -- end)
+    Scene.pauseInput(Scene.scenes.game)
+    MailDialogue.open(MailScript.dailyDialogue[currentDay], function()
+        Scene.resumeInput(Scene.scenes.game)
+    end)
 end
 
 function Game.unload()

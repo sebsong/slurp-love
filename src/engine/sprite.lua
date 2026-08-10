@@ -56,6 +56,7 @@ function Sprite.newAnimated(image, animationStateConfigs, numDirections, xOffset
     assert(#animationStateConfigs > 0, "must provide at least 1 animation config")
 
     local numStates = #animationStateConfigs
+    numDirections = numDirections or 1
     local maxNumFrames = 1
     for _, config in ipairs(animationStateConfigs) do
         if config.numFrames > maxNumFrames then
@@ -74,7 +75,11 @@ function Sprite.newAnimated(image, animationStateConfigs, numDirections, xOffset
         table.insert(animations, animation)
     end
 
-    return new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffset, false)
+    local sprite = new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffset, false)
+
+    Sprite.transitionAnimationState(sprite, sprite.currentAnimationState)
+
+    return sprite
 end
 
 function Sprite.transitionAnimationState(sprite, state)
