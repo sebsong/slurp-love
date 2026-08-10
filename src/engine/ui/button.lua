@@ -18,10 +18,14 @@ local TextBox = require("engine.ui.text_box")
 local Button = {}
 Button.__index = Button
 
-local DEFAULT_BUTTON_STATE = 1
-local HOVERED_BUTTON_STATE = 2
+local DEFAULT_STATE = 1
+local HOVERED_STATE = 2
 
-function Button.new(sprite, transform, font, text, onHover, onPress)
+function Button.new(image, transform, font, text, onHover, onPress)
+    local sprite = Sprite.newAnimated(image, {
+        [DEFAULT_STATE] = {},
+        [HOVERED_STATE] = {},
+    })
     local width, height = sprite.width, sprite.height
 
     local button = {
@@ -50,12 +54,12 @@ end
 
 function Button:mousemoved(x, y, dx, dy, isTouch)
     if Collision.hitTest(x, y, self.collider, self.transform) then
-        self.sprite.animations[self.sprite.currentAnimationState].currentFrame = HOVERED_BUTTON_STATE
+        Sprite.transitionAnimationState(self.sprite, HOVERED_STATE)
         if self.onHover then
             self:onHover()
         end
     else
-        self.sprite.animations[self.sprite.currentAnimationState].currentFrame = DEFAULT_BUTTON_STATE
+        Sprite.transitionAnimationState(self.sprite, DEFAULT_STATE)
     end
 end
 

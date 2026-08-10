@@ -59,7 +59,7 @@ function Sprite.newAnimated(image, animationStateConfigs, numDirections, xOffset
     numDirections = numDirections or 1
     local maxNumFrames = 1
     for _, config in ipairs(animationStateConfigs) do
-        if config.numFrames > maxNumFrames then
+        if config.numFrames or 1 > maxNumFrames then
             maxNumFrames = config.numFrames
         end
     end
