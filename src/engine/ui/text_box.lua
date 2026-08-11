@@ -1,8 +1,17 @@
 local Align = require("engine.ui.align")
 
+---@class TextBox
+---@field width integer
+---@field transform love.Transform
+---@field font love.Font
+---@field text string
+---@field alignMode love.AlignMode
+---
+---@field new fun(transform: love.Transform, width: integer, height: integer, font: love.Font, text: string, horizontalAlign: HorizontalAlignOption, verticalAlign: VerticalAlignOption, textAlignMode: love.AlignMode): TextBox
+---@field setText fun(self: TextBox, text: string)
+---@field draw fun(self: TextBox)
 local TextBox = {}
-local meta = {}
-meta.__index = meta
+TextBox.__index = TextBox
 
 function TextBox.new(transform, width, height, font, text, horizontalAlign, verticalAlign, textAlignMode)
     horizontalAlign = horizontalAlign or Align.CENTER
@@ -19,16 +28,16 @@ function TextBox.new(transform, width, height, font, text, horizontalAlign, vert
         text = text,
         alignMode = textAlignMode,
     }
-    setmetatable(textBox, meta)
+    setmetatable(textBox, TextBox)
 
     return textBox
 end
 
-function meta:setText(text)
+function TextBox:setText(text)
     self.text = text
 end
 
-function meta:draw()
+function TextBox:draw()
     love.graphics.setFont(self.font)
     love.graphics.printf(self.text, self.transform, self.width, self.alignMode)
 end

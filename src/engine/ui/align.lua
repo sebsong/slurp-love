@@ -1,5 +1,11 @@
 local Settings = require("engine.settings")
 
+---@alias HorizontalAlignOption 1 | 2 | 3
+---@alias VerticalAlignOption 1 | 4 | 5
+
+---@class Align
+---@field alignedTransform fun(originTransform: love.Transform ,originWidth: integer, originHeight: integer, width: integer, height: integer, horizontalAlign: HorizontalAlignOption, verticalAlign: VerticalAlignOption, xPadding: integer?, yPadding: integer?): love.Transform
+---@field screenAlignedTransform fun(width: integer, height: integer, horizontalAlign: HorizontalAlignOption, verticalAlign: VerticalAlignOption, xPadding: integer?, yPadding: integer?): love.Transform
 local Align = {
     CENTER = 1,
     LEFT = 2,
