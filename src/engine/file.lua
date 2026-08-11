@@ -1,3 +1,6 @@
+---@class File
+---@field assertFileExtension fun(filePath: string, expectedFileExt: string)
+---@field stripFileExtension fun(filePath: string): string
 local File = {}
 
 function File.assertFileExtension(filePath, expectedFileExt)

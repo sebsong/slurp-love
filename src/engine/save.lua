@@ -1,6 +1,10 @@
-local Save = {}
-
 local Serialization = require("engine.serialization")
+
+---@class Save
+---@field save fun(data: table)
+---@field update fun(updateFn: fun(data: table))
+---@field load fun(): table
+local Save = {}
 
 local SAVE_FILE_NAME = "save_data.slurp"
 

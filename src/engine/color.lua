@@ -1,6 +1,10 @@
+---@class Color
+---@field palette ColorPalette
+---
+---@field loadPalette fun(hexFilePath: string)
 local Color = {}
 
-Color.palette = nil
+---@alias ColorPalette number[][]
 
 local function hexToColorPercent(hexSubString)
     return tonumber(hexSubString, 16) / 255
@@ -24,8 +28,6 @@ function Color.loadPalette(hexFilePath)
         table.insert(Color.palette, hexToRGBA(hexColor))
         ::continue::
     end
-
-    return Color.palette
 end
 
 return Color

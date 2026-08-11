@@ -1,6 +1,8 @@
-local Debug = {}
-
 local Serialization = require("engine.serialization")
+
+---@class Debug
+---@field stopwatch fun(label: string): number | nil
+local Debug = {}
 
 -- redefine global print to pretty print tables
 local _print = print

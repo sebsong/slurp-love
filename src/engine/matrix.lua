@@ -1,3 +1,5 @@
+---@class Matrix
+---@field getTransposed fun(matrix: number[][]): number[][]
 local Matrix = {}
 
 function Matrix.getTransposed(matrix)

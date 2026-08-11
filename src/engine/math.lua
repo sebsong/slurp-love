@@ -1,3 +1,8 @@
+---@class Math
+---@field absMin fun(v1: number, ...: number | number[] | nil): number
+---@field clamped fun(val: number, min: number, max: number): number
+---@field inRange fun(val: number, min: number, max: number): boolean
+---@field inEllipse fun(xRadius: number, yRadius: number, ellipsePosition: Vec2, testPosition: Vec2): boolean
 local Math = {}
 
 function Math.absMin(v1, ...)
