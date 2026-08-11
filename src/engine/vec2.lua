@@ -3,7 +3,7 @@
 ---@field [2] any
 ---@field x any
 ---@field y any
----@
+---
 ---@field magnitude fun(self: Vec2): number
 ---@field distanceTo fun(self: Vec2, otherVec: Vec2): number
 ---@field normalized fun(self: Vec2): Vec2

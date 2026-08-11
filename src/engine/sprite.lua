@@ -15,11 +15,11 @@ local Animation = require("engine.animation")
 ---@field isSpriteBatch boolean
 ---@field setShader fun()?
 ---@field draw fun()?
----@
+---
 ---@field new fun(image: love.Image, quad: love.Quad?, xOffset: number?, yOffset: number?, zIndex: number?, zIndexOffset :number?): Sprite
 ---@field newSpriteBatch fun(spriteBatch: love.SpriteBatch, quad: love.Quad, zIndex: number?, zIndexOffset :number?): Sprite
 ---@field newAnimated fun(image: love.Image, animationStateConfigs: AnimationConfig[], numDirections: number?, xOffset: number?, yOffset: number?, zIndex: number?, zIndexOffset :number?): Sprite
----@
+---
 ---@field transitionAnimationState fun(self: Sprite, state: number)
 ---@field setDirection fun(self: Sprite, rotation: number)
 ---@field getCurrentAnimation fun(self: Sprite):Animation

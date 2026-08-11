@@ -3,14 +3,14 @@
 ---@field isPlaying boolean
 ---@field isReversed boolean
 ---@field isLooping boolean
----@field numFrames number
+---@field numFrames integer
 ---@field frameDurationSeconds number
----@field currentDirection number
----@field currentFrame number
+---@field currentDirection integer
+---@field currentFrame integer
 ---@field currentFrameSeconds number
 ---@field onFinish fun()?
 ---@field new fun(image: love.Image, referenceQuad: love.Quad, rowIndex: number, numDirections: number, config: AnimationConfig): Animation
----@
+---
 ---@field getCurrentQuad fun(self: Animation): love.Quad
 ---@field setDirection fun(self: Animation, rotation: number)
 ---@field play fun(self: Animation)
@@ -20,7 +20,7 @@ local Animation = {}
 Animation.__index = Animation
 
 ---@class AnimationConfig
----@field numFrames number?
+---@field numFrames integer?
 ---@field duration number?
 ---@field isLooping boolean?
 ---@field isReversed boolean?

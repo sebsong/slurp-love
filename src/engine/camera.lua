@@ -10,9 +10,9 @@ local Settings = require("engine.settings")
 ---@field zoomToggleIdx number
 ---@field zoomToggles number[]
 ---@field zoomSpeed number
----@
+---
 ---@field new fun(): Camera
----@
+---
 ---@field getScreenWidth fun(self: Camera): number
 ---@field getScreenHeight fun(self: Camera): number
 ---@field toggleZoom fun(self: Camera)

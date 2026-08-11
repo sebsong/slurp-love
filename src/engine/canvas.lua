@@ -4,7 +4,7 @@
 ---@field canvasToScreenTransform love.Transform
 ---@field screenToCanvasTransform love.Transform
 ---@field canvas love.Canvas
----@
+---
 ---@field load fun()
 ---@field draw fun(drawFunction: fun())
 local Canvas = {}

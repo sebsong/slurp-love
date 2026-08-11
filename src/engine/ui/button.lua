@@ -5,10 +5,10 @@ local TextBox = require("engine.ui.text_box")
 
 ---@class Button
 ---@field enabled boolean
----@field sprite table
+---@field sprite Sprite
 ---@field textBox table
 ---@field transform love.Transform
----@field collider table
+---@field collider Collider
 ---@field onHover fun(self: Button)?
 ---@field onPress fun(self: Button)?
 ---

@@ -1,43 +1,25 @@
 local Math = require("engine.math")
+local Vec2 = require("engine.vec2")
 
 ---@class Collision
+---@field hitTest fun(x: number, y: number, collider: Collider, transform: love.Transform): boolean
+---@field getPositionUpdate fun(collidable: Collidable, collidables: Collidable[], targetPositionUpdate: Vec2): Vec2
+---@field drawTileColliders fun(tilemap: table, layerIndex: integer)
+---@field drawCollider fun(collider: Collider, position: Vec2)
 local Collision = {}
 
--- collidable:
--- {
---	position: {x, y},
---	getPosition: (self) => {x, y},
---
--- 	collider: {
--- 		width: x,
--- 		height: y
--- 	}
--- }
--- local collidables = Set.new()
+---@class Collider
+---@field width number
+---@field height number
 
--- function Collision.register(collidable)
--- 	assert(collidable.collider ~= nil, "collidables must have a collider")
--- 	assert(collidable.position ~= nil or collidable.getPosition ~= nil, "collidables must have a position")
--- 	if not collidables:contains(collidable) then
--- 		collidable.collidingWith = Set.new()
--- 		collidables:insert(collidable)
--- 	end
--- end
+---@class Collidable
+---@field position Vec2?
+---@field getPosition fun(self: Collidable): Vec2?
+---@field collider Collider
+---@field collidingWith Set
+---@field onCollision fun(self: Collidable, otherCollidable: Collidable)
 
--- function Collision.remove(collidable)
--- 	collidables:remove(collidable)
--- end
-
--- function Collision.clearAll()
--- 	collidables = Set.new()
--- end
-
-function Collision.hitTest(x, y, collider, transform, centered)
-    if centered then
-        x = x + collider.width / 2
-        y = y + collider.height / 2
-    end
-
+function Collision.hitTest(x, y, collider, transform)
     local colliderX, colliderY = transform:transformPoint(0, 0)
     local xMin, xMax = colliderX, colliderX + collider.width
     local yMin, yMax = colliderY, colliderY + collider.height
@@ -134,7 +116,7 @@ function Collision.drawTileColliders(tilemap, layerIndex)
     for rowIdx, row in ipairs(tilemap.layers[layerIndex].tiles) do
         for colIdx, tile in ipairs(row) do
             if tile.tileId then
-                Collision.drawCollider({ width = 1, height = 1 }, { colIdx, rowIdx })
+                Collision.drawCollider({ width = 1, height = 1 }, Vec2.new(colIdx, rowIdx))
             end
         end
     end

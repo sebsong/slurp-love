@@ -1,8 +1,8 @@
 ---@class Set
 ---@field length number
----@
+---
 ---@field new fun(...: any): Set
----@
+---
 ---@field insert fun(self:Set, val: any, ...: any)
 ---@field remove fun(self:Set, val: any, ...: any)
 ---@field contains fun(self: Set, item: any): boolean
