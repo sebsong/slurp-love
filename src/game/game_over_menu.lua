@@ -2,7 +2,7 @@ local GameOverMenu = {}
 
 local Align = require("engine.ui.align")
 local Button = require("engine.ui.button")
-local Scene = require("engine.scene")
+local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
 local Sprite = require("engine.sprite")
 
@@ -22,8 +22,8 @@ function GameOverMenu.load()
     local restartTransform =
         Align.screenAlignedTransform(GameUi.BUTTON_DIMENSIONS.x, GameUi.BUTTON_DIMENSIONS.y, Align.CENTER, Align.CENTER)
     restartButton = Button.new(buttonImage, restartTransform, Font.medium, "restart", nil, function(_button)
-        Scene.stop(Scene.scenes.gameOverMenu)
-        Scene.restart(Scene.scenes.game)
+        SceneManager.scenes.gameOverMenu:stop()
+        SceneManager.scenes.game:restart()
     end)
 
     local mainMenuTransform = Align.screenAlignedTransform(
@@ -35,7 +35,7 @@ function GameOverMenu.load()
         GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )
     mainMenuButton = Button.new(buttonImage, mainMenuTransform, Font.medium, "main menu", nil, function(_button)
-        Scene.transition(Scene.scenes.mainMenu)
+        SceneManager.transition(SceneManager.scenes.mainMenu)
     end)
 end
 

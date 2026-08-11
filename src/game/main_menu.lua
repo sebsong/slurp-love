@@ -1,6 +1,6 @@
 local Align = require("engine.ui.align")
 local Button = require("engine.ui.button")
-local Scene = require("engine.scene")
+local SceneManager = require("engine.scene_manager")
 
 local Font = require("game.font")
 local GameUi = require("game.ui")
@@ -29,7 +29,7 @@ function MainMenu.load()
         GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )
     playButton = Button.new(buttonImage, playButtonTransform, Font.large, "play", nil, function()
-        Scene.transition(Scene.scenes.dayTracker)
+        SceneManager.transition(SceneManager.scenes.dayTracker)
     end)
 
     local exitButtonTransform = Align.screenAlignedTransform(

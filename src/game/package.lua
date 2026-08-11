@@ -2,7 +2,7 @@ local Package = {}
 local meta = {}
 meta.__index = meta
 
-local Scene = require("engine.scene")
+local SceneManager = require("engine.scene_manager")
 
 local PackageDetail = require("game.package_detail")
 local Values = require("game.values")
@@ -22,9 +22,9 @@ end
 function meta:onPickup(boat)
     local tileId = self.tileId
 
-    Scene.pause(Scene.scenes.game)
+    SceneManager.scenes.game:pause()
     PackageDetail.open(tileId, function()
-        Scene.resume(Scene.scenes.game)
+        SceneManager.scenes.game:resume()
     end)
 
     if tileId == Values.PACKAGE_TYPES.GLASS then

@@ -3,7 +3,7 @@ local Game = {}
 local Camera = require("engine.camera")
 local Color = require("engine.color")
 local Math = require("engine.math")
-local Scene = require("engine.scene")
+local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 local Tilemap = require("engine.tilemap")
 local Vec2 = require("engine.vec2")
@@ -76,7 +76,7 @@ function Game.load()
 
     cameraObj = Camera.new()
 
-    local currentDay = Scene.scenes.dayTracker.currentDay
+    local currentDay = SceneManager.scenes.dayTracker.currentDay
 
     OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[currentDay] or OBJECT_LAYER_NAME
 
@@ -202,9 +202,9 @@ function Game.load()
         tilemapBuildingsSpriteBatch:add(object.sprite.quad, x + object.sprite.xOffset, y + object.sprite.yOffset)
     end
 
-    Scene.pauseInput(Scene.scenes.game)
+    SceneManager.scenes.game:pauseInput()
     MailDialogue.open(MailScript.dailyDialogue[currentDay], function()
-        Scene.resumeInput(Scene.scenes.game)
+        SceneManager.scenes.game:resumeInput()
     end)
 end
 
@@ -237,8 +237,8 @@ local function evaluateWinCondition()
 end
 
 local function gameOver()
-    if not Scene.scenes.gameOverMenu.isActive then
-        Scene.start(Scene.scenes.gameOverMenu)
+    if not SceneManager.scenes.gameOverMenu.isActive then
+        SceneManager.scenes.gameOverMenu:start()
     end
     didLose = true
 end
@@ -272,11 +272,11 @@ function Game.keypressed(key, scancode, isRepeat)
     end
 
     if key == "r" and not isRepeat then
-        Scene.restart(Game)
+        SceneManager.scenes.game:restart()
     end
 
     if key == "tab" then
-        if not Scene.scenes.map.isActive then
+        if not SceneManager.scenes.map.isActive then
             Map.open()
         else
             Map.close()

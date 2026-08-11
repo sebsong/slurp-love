@@ -1,7 +1,7 @@
 local PackageDetail = {}
 
 local Align = require("engine.ui.align")
-local Scene = require("engine.scene")
+local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
@@ -34,7 +34,7 @@ local onClose
 function PackageDetail.open(_packageIndex, _onClose)
     packageIndex = _packageIndex
     onClose = _onClose
-    Scene.start(Scene.scenes.packageDetail)
+    SceneManager.scenes.packageDetail:start()
 end
 
 function PackageDetail.close()
@@ -126,7 +126,7 @@ function PackageDetail.update(dt)
         if onClose then
             onClose()
         end
-        Scene.stop(Scene.scenes.packageDetail)
+        SceneManager.scenes.packageDetail:stop()
     end
 
     detailBox.sprite:update(dt)

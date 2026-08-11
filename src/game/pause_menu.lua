@@ -2,7 +2,7 @@ local PauseMenu = {}
 
 local Align = require("engine.ui.align")
 local Button = require("engine.ui.button")
-local Scene = require("engine.scene")
+local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
@@ -21,7 +21,7 @@ local resumeButton
 local mainMenuButton
 
 function PauseMenu.open()
-    Scene.start(Scene.scenes.pauseMenu)
+    SceneManager.scenes.pauseMenu:start()
 end
 
 function PauseMenu.close()
@@ -30,14 +30,14 @@ function PauseMenu.close()
 end
 
 function PauseMenu.toggle()
-    local gameScene = Scene.scenes.game
-    local pauseScene = Scene.scenes.pauseMenu
+    local gameScene = SceneManager.scenes.game
+    local pauseScene = SceneManager.scenes.pauseMenu
     if not pauseScene.isActive then
         PauseMenu.open()
-        Scene.pause(gameScene)
+        gameScene:pause()
     else
         PauseMenu.close()
-        Scene.resume(gameScene) -- TODO: need to have some ref counter for how many things pausing the game
+        gameScene:resume() -- TODO: need to have some ref counter for how many things pausing the game
     end
 end
 
@@ -90,7 +90,7 @@ function PauseMenu.load()
         GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )
     mainMenuButton = Button.new(buttonImage, mainMenuTransform, Font.medium, "main menu", nil, function(_button)
-        Scene.transition(Scene.scenes.mainMenu)
+        SceneManager.transition(SceneManager.scenes.mainMenu)
     end)
 end
 
@@ -118,7 +118,7 @@ function PauseMenu.update(dt)
     menu.sprite:update(dt)
 
     if shouldStop then
-        Scene.stop(Scene.scenes.pauseMenu)
+        SceneManager.scenes.pauseMenu:stop()
     end
 end
 

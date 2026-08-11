@@ -1,3 +1,10 @@
+local Input = require("engine.input")
+local Save = require("engine.save")
+local SceneManager = require("engine.scene_manager")
+local Settings = require("engine.settings")
+
+local Font = require("game.font")
+
 local FIRST_DAY = 1
 local FINAL_DAY = 5
 local DAY_TO_NAME = {
@@ -12,13 +19,6 @@ local DayTracker = {
     currentDay = FIRST_DAY,
 }
 
-local Input = require("engine.input")
-local Save = require("engine.save")
-local Scene = require("engine.scene")
-local Settings = require("engine.settings")
-
-local Font = require("game.font")
-
 local dayTransitionBackgroundImage
 
 local showContinueText
@@ -26,13 +26,13 @@ local blinkTimer
 local BLINK_HOLD_TIME = 1
 
 local function startDay()
-    Scene.transition(Scene.scenes.game)
+    SceneManager.transition(SceneManager.scenes.game)
 end
 
 function DayTracker.nextDay(gasRemaining)
     if DayTracker.currentDay == FINAL_DAY then
-        if not Scene.scenes.victoryMenu.isActive then
-            Scene.start(Scene.scenes.victoryMenu)
+        if not SceneManager.scenes.victoryMenu.isActive then
+            SceneManager.scenes.victoryMenu:start()
         end
         return
     end
@@ -54,7 +54,7 @@ function DayTracker.nextDay(gasRemaining)
         end
     end)
 
-    Scene.transition(Scene.scenes.dayTracker)
+    SceneManager.transition(SceneManager.scenes.dayTracker)
 end
 
 local function initializeSaveData()

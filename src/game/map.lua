@@ -1,17 +1,17 @@
 local Map = {}
 
 local Align = require("engine.ui.align")
-local Scene = require("engine.scene")
+local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 
 local mapOverlay
 
 function Map.open()
-    Scene.start(Scene.scenes.map)
+    SceneManager.scenes.map:start()
 end
 
 function Map.close()
-    Scene.stop(Scene.scenes.map)
+    SceneManager.scenes.map:stop()
 end
 
 function Map.load()

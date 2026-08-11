@@ -2,7 +2,7 @@ local MailDialogue = {}
 
 local Align = require("engine.ui.align")
 local Animation = require("engine.animation")
-local Scene = require("engine.scene")
+local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
@@ -52,7 +52,7 @@ function MailDialogue.open(lines, onClose)
     end
     dialogueLines = lines
     onDialogueClose = onClose
-    Scene.start(Scene.scenes.mailDialogue)
+    SceneManager.scenes.mailDialogue:start()
 end
 
 function MailDialogue.next()
@@ -161,7 +161,7 @@ function MailDialogue.update(dt)
         dialogueLines = {}
         onDialogueClose = nil
 
-        Scene.stop(Scene.scenes.mailDialogue)
+        SceneManager.scenes.mailDialogue:stop()
     end
 
     dialogueBox.sprite:update(dt)

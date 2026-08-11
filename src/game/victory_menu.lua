@@ -2,7 +2,7 @@ local VictoryMenu = {}
 
 local Align = require("engine.ui.align")
 local Button = require("engine.ui.button")
-local Scene = require("engine.scene")
+local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
 local Sprite = require("engine.sprite")
 
@@ -26,8 +26,6 @@ function VictoryMenu.load()
 
     local buttonImage = love.graphics.newImage("assets/art/button.png")
 
-    local numButtonFrames = 2
-
     local mainMenuTransform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
@@ -37,7 +35,7 @@ function VictoryMenu.load()
         GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )
     mainMenuButton = Button.new(buttonImage, mainMenuTransform, Font.medium, "main menu", nil, function(_button)
-        Scene.transition(Scene.scenes.mainMenu)
+        SceneManager.transition(SceneManager.scenes.mainMenu)
     end)
 end
 

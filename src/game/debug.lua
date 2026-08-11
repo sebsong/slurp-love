@@ -1,6 +1,6 @@
 local Debug = {}
 
-local Scene = require("engine.scene")
+local SceneManager = require("engine.scene_manager")
 
 local DayTracker = require("game.day_tracker")
 local Game = require("game.game")
@@ -31,7 +31,7 @@ function Debug.onResume() end
 function Debug.keypressed(key, scancode, isRepeat)
     if key == "return" and not isRepeat then
         if MainMenu.isActive then
-            Scene.transition(DayTracker)
+            SceneManager.transition(DayTracker)
         elseif not DayTracker.isActive then
             DayTracker.nextDay(0)
         end

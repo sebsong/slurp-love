@@ -2,8 +2,7 @@
 require("engine.debug")
 
 local Canvas = require("engine.canvas")
-local Scene = require("engine.scene")
-local Sprite = require("engine.sprite")
+local SceneManager = require("engine.scene_manager")
 
 local DayTracker = require("game.day_tracker")
 local Debug = require("game.debug")
@@ -27,54 +26,54 @@ function love.load()
     Canvas.load()
     Font.load()
 
-    Scene.register("global", Global, true)
-    Scene.register("debug", Debug, true)
+    SceneManager.register("global", Global, true)
+    SceneManager.register("debug", Debug, true)
 
-    Scene.register("mainMenu", MainMenu)
-    Scene.register("dayTracker", DayTracker)
-    Scene.register("game", Game)
-    Scene.register("mailDialogue", MailDialogue)
-    Scene.register("packageDetail", PackageDetail)
-    Scene.register("map", Map)
-    Scene.register("pauseMenu", PauseMenu)
-    Scene.register("gameOverMenu", GameOverMenu)
-    Scene.register("victoryMenu", VictoryMenu)
+    SceneManager.register("mainMenu", MainMenu)
+    SceneManager.register("dayTracker", DayTracker)
+    SceneManager.register("game", Game)
+    SceneManager.register("mailDialogue", MailDialogue)
+    SceneManager.register("packageDetail", PackageDetail)
+    SceneManager.register("map", Map)
+    SceneManager.register("pauseMenu", PauseMenu)
+    SceneManager.register("gameOverMenu", GameOverMenu)
+    SceneManager.register("victoryMenu", VictoryMenu)
 
-    Scene.start(Scene.scenes.global)
-    Scene.start(Scene.scenes.debug)
-    -- Scene.start(Scene.scenes.mainMenu)
-    Scene.start(Scene.scenes.game)
-    -- Scene.start(Scene.scenes.packageDetail)
+    SceneManager.scenes.global:start()
+    SceneManager.scenes.debug:start()
+    -- SceneManager.scenes.mainMenu:start()
+    SceneManager.scenes.game:start()
+    -- SceneManager.scenes.packageDetail:start()
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.keypressed(key, scancode, isRepeat)
-    Scene.keypressed(key, scancode, isRepeat)
+    SceneManager.keypressed(key, scancode, isRepeat)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.mousepressed(x, y, button, isTouch, presses)
     x, y = Canvas.screenToCanvasTransform:transformPoint(x, y)
-    Scene.mousepressed(x, y, button, isTouch, presses)
+    SceneManager.mousepressed(x, y, button, isTouch, presses)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.mousemoved(x, y, dx, dy, isTouch)
     x, y = Canvas.screenToCanvasTransform:transformPoint(x, y)
-    Scene.mousemoved(x, y, dx, dy, isTouch)
+    SceneManager.mousemoved(x, y, dx, dy, isTouch)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.wheelmoved(x, y)
-    Scene.wheelmoved(x, y)
+    SceneManager.wheelmoved(x, y)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.update(dt)
-    Scene.update(dt)
+    SceneManager.update(dt)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.draw()
-    Canvas.draw(Scene.draw)
+    Canvas.draw(SceneManager.draw)
 end
