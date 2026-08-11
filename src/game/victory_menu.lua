@@ -7,6 +7,7 @@ local Settings = require("engine.settings")
 local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
+local GameUi = require("game.ui")
 
 local menu
 
@@ -27,16 +28,15 @@ function VictoryMenu.load()
 
     local numButtonFrames = 2
 
-    local mainMenuSprite = Sprite.newAnimated(buttonImage, numButtonFrames)
     local mainMenuTransform = Align.screenAlignedTransform(
-        mainMenuSprite.width,
-        mainMenuSprite.height,
+        GameUi.BUTTON_DIMENSIONS.x,
+        GameUi.BUTTON_DIMENSIONS.y,
         Align.CENTER,
         Align.CENTER,
         0,
-        mainMenuSprite.height * 1.1
+        GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )
-    mainMenuButton = Button.new(mainMenuSprite, mainMenuTransform, Font.medium, "main menu", nil, function(_button)
+    mainMenuButton = Button.new(buttonImage, mainMenuTransform, Font.medium, "main menu", nil, function(_button)
         Scene.transition(Scene.scenes.mainMenu)
     end)
 end

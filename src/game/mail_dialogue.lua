@@ -7,6 +7,9 @@ local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
 
+local OPEN_STATE = 1
+local CLOSED_STATE = 2
+
 local DEFAULT_CHARACTERS_PER_SECOND = 20
 local FAST_FORWARD_MULTIPLIER = 10
 
@@ -72,9 +75,7 @@ end
 
 function MailDialogue.close()
     isOpen = false
-    Animation.play(Sprite.getCurrentAnimation(dialogueBox.sprite), true, function()
-        shouldStop = true
-    end)
+    Sprite.transitionAnimationState(dialogueBox.sprite, CLOSED_STATE)
 end
 
 local function setLines(lines)
@@ -92,11 +93,26 @@ function MailDialogue.load()
     shouldStop = false
 
     local dialogueBoxImage = love.graphics.newImage("assets/art/dialogue_box.png")
-    -- local dialogueBoxSprite = Sprite.new(dialogueBoxImage)
-    local dialogueBoxSprite = Sprite.newAnimated(dialogueBoxImage, 12, 1.5)
-    Animation.play(Sprite.getCurrentAnimation(dialogueBoxSprite), false, function()
-        isOpen = true
-    end)
+    local dialogueBoxSprite = Sprite.newAnimated(dialogueBoxImage, {
+        [OPEN_STATE] = {
+            numFrames = 12,
+            duration = 1.5,
+            isLooping = false,
+            isReversed = false,
+            onFinish = function()
+                isOpen = true
+            end,
+        },
+        [CLOSED_STATE] = {
+            numFrames = 12,
+            duration = 1.5,
+            isLooping = false,
+            isReversed = true,
+            onFinish = function()
+                shouldStop = true
+            end,
+        },
+    })
     dialogueBox = {
         sprite = dialogueBoxSprite,
         transform = Align.screenAlignedTransform(

@@ -1,6 +1,5 @@
 local Boat = {}
 
-local Animation = require("engine.animation")
 local Collision = require("engine.collision")
 local Math = require("engine.math")
 local Set = require("engine.set")
@@ -18,9 +17,12 @@ local NEIGHBOR_TILE_DISTANCE = 2
 
 local NUM_TRAIL_POSITIONS = 16
 
+local DEFAULT_STATE = 1
+local MOVE_STATE = 2
+
 local function updateNeighborTiles(self)
     local tilemapCol, tilemapRow =
-        self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0))
+        self.tilemap.worldToTilemapIndexTransform:transformPoint(self.moveTransform:transformPoint(0, 0))
     local tilemapColIdx = math.floor(tilemapCol)
     local tilemapRowIdx = math.floor(tilemapRow)
     self.neighborTiles = {}
@@ -47,7 +49,7 @@ local function updateTrailPositions(self, dt)
         local position = self.trailPositions[i]
         local target
         if i == 1 then
-            target = Vec2.new(self.transform:transformPoint(0, 0))
+            target = Vec2.new(self.moveTransform:transformPoint(0, 0))
         else
             target = self.trailPositions[i - 1]
         end
@@ -63,7 +65,8 @@ local function updateTrailPositions(self, dt)
 end
 
 local function getWorldRowIdx(self)
-    local colIdx, rowIdx = self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0))
+    local colIdx, rowIdx =
+        self.tilemap.worldToTilemapIndexTransform:transformPoint(self.moveTransform:transformPoint(0, 0))
     return Tilemap.getWorldRowIdx(colIdx, rowIdx)
 end
 
@@ -123,29 +126,27 @@ local function update(self, cameraObj, dt)
 
     if love.keyboard.isDown("left") or love.keyboard.isDown("a") then
         self.rotation = self.rotation - self.rotationSpeed * dt
-        self.transform:rotate(-self.rotationSpeed * dt)
+        self.moveTransform:rotate(-self.rotationSpeed * dt)
     end
     if love.keyboard.isDown("right") or love.keyboard.isDown("d") then
         self.rotation = self.rotation + self.rotationSpeed * dt
-        self.transform:rotate(self.rotationSpeed * dt)
+        self.moveTransform:rotate(self.rotationSpeed * dt)
     end
 
     if didMoveForward then
-        self.sprite = self.sprites[2]
+        Sprite.transitionAnimationState(self.sprite, MOVE_STATE)
     else
-        self.sprite = self.sprites[1]
+        Sprite.transitionAnimationState(self.sprite, DEFAULT_STATE)
     end
-    local rotSegmentLength = 2 * math.pi / self.sprite.animations[self.sprite.currentAnimationState].numFrames
-    local frameIdx = math.floor((((self.rotation + (rotSegmentLength / 2)) % (2 * math.pi)) / rotSegmentLength)) + 1
-    self.sprite.animations[self.sprite.currentAnimationState].currentFrame = frameIdx
+    Sprite.setDirection(self.sprite, self.rotation)
 
     self:updateNeighborTiles()
     self:updateTrailPositions(dt)
 
     local tilemapPosition =
-        Vec2.new(self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)))
+        Vec2.new(self.tilemap.worldToTilemapIndexTransform:transformPoint(self.moveTransform:transformPoint(0, 0)))
     local newTilemapPosition = Vec2.new(
-        self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, -self.speed * dt))
+        self.tilemap.worldToTilemapIndexTransform:transformPoint(self.moveTransform:transformPoint(0, -self.speed * dt))
     )
     local tilemapPositionUpdate = newTilemapPosition - tilemapPosition
     local tileFrom = Vec2.new()
@@ -153,27 +154,16 @@ local function update(self, cameraObj, dt)
     local worldFrom = Vec2.new(self.tilemap.tilemapIndexToWorldTransform:transformPoint(tileFrom.x, tileFrom.y))
     local worldTo = Vec2.new(self.tilemap.tilemapIndexToWorldTransform:transformPoint(tileTo.x, tileTo.y))
 
-    local boatFrom = Vec2.new(self.transform:inverse():transformPoint(worldFrom.x, worldFrom.y))
-    local boatTo = Vec2.new(self.transform:inverse():transformPoint(worldTo.x, worldTo.y))
+    local boatFrom = Vec2.new(self.moveTransform:inverse():transformPoint(worldFrom.x, worldFrom.y))
+    local boatTo = Vec2.new(self.moveTransform:inverse():transformPoint(worldTo.x, worldTo.y))
     local boatUpdate = boatTo - boatFrom
-    self.transform:translate(boatUpdate.x, boatUpdate.y)
+    self.moveTransform:translate(boatUpdate.x, boatUpdate.y)
+    local x, y = self.moveTransform:transformPoint(0, 0)
+    self.transform:setTransformation(x, y)
 
     self.sprite.zIndex = self:getWorldRowIdx()
 
     BoatEffect.update(cameraObj)
-end
-
-local function draw(sprite, transform)
-    love.graphics.push()
-    local boatX, boatY = transform:transformPoint(0, 0)
-    BoatEffect.setShader()
-    love.graphics.draw(
-        sprite.image,
-        Animation.getCurrentQuad(Sprite.getCurrentAnimation(sprite)),
-        boatX + sprite.xOffset,
-        boatY + sprite.yOffset
-    )
-    love.graphics.pop()
 end
 
 local function indexOfPackage(self, packageTileId)
@@ -193,7 +183,7 @@ local function findPackageToPickup(self, packages)
         if self:indexOfPackage(package.tileId) then
             goto continue
         end
-        local boatPos = Vec2.new(self.transform:transformPoint(0, 0))
+        local boatPos = Vec2.new(self.moveTransform:transformPoint(0, 0))
         local packagePos = Vec2.new(package.transform:transformPoint(0, 0))
         local packageDistance = boatPos:distanceTo(packagePos)
         if packageDistance <= self.interactionRadius and (not closestDistance or packageDistance < closestDistance) then
@@ -219,7 +209,7 @@ local function pickupPackage(self, packages, mailboxes)
 end
 
 local function getDeliveryMailbox(self, mailboxes)
-    local boatPosition = Vec2.new(self.transform:transformPoint(0, 0))
+    local boatPosition = Vec2.new(self.moveTransform:transformPoint(0, 0))
     local package = self.packages[#self.packages]
 
     if not package then
@@ -258,7 +248,7 @@ local function deliverPackage(self, mailboxes)
 end
 
 local function getPosition(self)
-    return Vec2.new(self.tilemap.worldToTilemapIndexTransform:transformPoint(self.transform:transformPoint(0, 0)))
+    return Vec2.new(self.tilemap.worldToTilemapIndexTransform:transformPoint(self.moveTransform:transformPoint(0, 0)))
 end
 
 local function onCollision(self, collidable)
@@ -272,19 +262,26 @@ local function onCollision(self, collidable)
 end
 
 function Boat.new(tilemap, dayValue)
-    local sprites = {}
-
-    local boatImage = love.graphics.newImage("assets/art/boat1.png")
-    local spriteStatic =
-        Sprite.newAnimated(boatImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2), 0, 0)
-    spriteStatic.draw = draw
-    table.insert(sprites, spriteStatic)
-
-    local boatAccelImage = love.graphics.newImage("assets/art/boat2.png")
-    local spriteAccel =
-        Sprite.newAnimated(boatAccelImage, NUM_BOAT_ANGLES, 0, false, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2), 0, 0)
-    spriteAccel.draw = draw
-    table.insert(sprites, spriteAccel)
+    local boatImage = love.graphics.newImage("assets/art/boat.png")
+    local sprite = Sprite.newAnimated(boatImage, {
+        [DEFAULT_STATE] = {
+            numFrames = 1,
+            duration = 0,
+            isLooping = false,
+            isReversed = false,
+            onFinish = nil,
+        },
+        [MOVE_STATE] = {
+            numFrames = 1,
+            duration = 0,
+            isLooping = false,
+            isReversed = false,
+            onFinish = nil,
+        },
+    }, NUM_BOAT_ANGLES, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2), 0, 0)
+    sprite.setShader = function()
+        BoatEffect.setShader()
+    end
 
     BoatEffect.load()
 
@@ -294,8 +291,8 @@ function Boat.new(tilemap, dayValue)
     engineLoopSound:setLooping(true)
     engineLoopSound:setVolume(0.25)
 
-    local transform = love.math.newTransform(0, 300)
-    local position = Vec2.new(transform:transformPoint(0, 0))
+    local moveTransform = love.math.newTransform(0, 300)
+    local position = Vec2.new(moveTransform:transformPoint(0, 0))
     local trailPositions = {}
     for _ = 1, NUM_TRAIL_POSITIONS do
         table.insert(trailPositions, position)
@@ -306,9 +303,11 @@ function Boat.new(tilemap, dayValue)
 
     return {
         -- TODO: build the boat from a tile object
-        sprites = sprites,
-        sprite = spriteStatic,
-        transform = transform,
+        sprite = sprite,
+
+        -- TODO: this is pretty awkward to maintain 2 separate transforms
+        moveTransform = moveTransform,
+        transform = moveTransform:clone(),
 
         bumpSound = bumpSound,
         engineStartSound = engineStartSound,

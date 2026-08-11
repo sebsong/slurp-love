@@ -1,30 +1,50 @@
 local Animation = {}
 
-function Animation.new(image, numFrames, duration, isLooping)
-    local quads = {}
-    local imageWidth, imageHeight = image:getDimensions()
-    local quadWidth, quadHeight = imageWidth / numFrames, imageHeight
-    for i = 0, numFrames - 1 do
-        table.insert(quads, love.graphics.newQuad(i * quadWidth, 0, quadWidth, quadHeight, image))
+function Animation.new(image, referenceQuad, rowIndex, numDirections, config)
+    local numFrames = config.numFrames or 1
+    local duration = config.duration or 0
+    local isLooping = config.isLooping or false
+    local isReversed = config.isReversed or false
+    local onFinish = config.onFinish or false
+
+    local _, _, quadWidth, quadHeight = referenceQuad:getViewport()
+    local frameWidth = quadWidth * numDirections
+    local y = rowIndex * quadHeight
+
+    local directions = {}
+    for i = 0, numDirections - 1 do
+        local quads = {}
+        for j = 0, numFrames - 1 do
+            local x = (j * frameWidth) + (i * quadWidth)
+            table.insert(quads, love.graphics.newQuad(x, y, quadWidth, quadHeight, image))
+        end
+        table.insert(directions, quads)
     end
 
     return {
-        quads = quads,
+        directions = directions,
 
         isPlaying = false,
-        isReversed = false,
+        isReversed = isReversed,
         isLooping = isLooping,
         numFrames = numFrames,
-        frameDurationSeconds = (duration or 0) / numFrames,
+        frameDurationSeconds = duration / numFrames,
 
+        currentDirection = 1,
         currentFrame = 1,
         currentFrameSeconds = 0,
-        onFinish = nil,
+        onFinish = onFinish,
     }
 end
 
 function Animation.getCurrentQuad(animation)
-    return animation.quads[animation.currentFrame]
+    return animation.directions[animation.currentDirection][animation.currentFrame]
+end
+
+function Animation.setDirection(animation, rotation)
+    local rotSegmentLength = 2 * math.pi / #animation.directions
+    local direction = math.floor((((rotation + (rotSegmentLength / 2)) % (2 * math.pi)) / rotSegmentLength)) + 1
+    animation.currentDirection = direction
 end
 
 local function reset(animation)
@@ -36,10 +56,8 @@ local function reset(animation)
     animation.currentFrameSeconds = 0
 end
 
-function Animation.play(animation, isReversed, onFinish)
-    animation.isReversed = isReversed
+function Animation.play(animation)
     reset(animation)
-    animation.onFinish = onFinish
     animation.isPlaying = true
 end
 

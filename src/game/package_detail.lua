@@ -1,11 +1,11 @@
 local PackageDetail = {}
 
 local Align = require("engine.ui.align")
-local Animation = require("engine.animation")
 local Scene = require("engine.scene")
 local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
+local Values = require("game.values")
 
 local FLAVOR_TEXTS = {
     "fragile, handle with care",
@@ -15,8 +15,11 @@ local FLAVOR_TEXTS = {
     "uno reverse",
 }
 
+local OPEN_STATE = 1
+local CLOSE_STATE = 2
+
 local isOpen
-local shouldClose
+local shouldStop
 
 local detailBox
 local packageDetailPortrait
@@ -36,21 +39,34 @@ end
 
 function PackageDetail.close()
     isOpen = false
-    Animation.play(Sprite.getCurrentAnimation(detailBox.sprite), true, function()
-        shouldClose = true
-    end)
+    Sprite.transitionAnimationState(detailBox.sprite, CLOSE_STATE)
 end
 
 function PackageDetail.load()
     isOpen = false
-    shouldClose = false
+    shouldStop = false
 
     local detailBoxImage = love.graphics.newImage("assets/art/package_detail_box.png")
-    -- local detailBoxSprite = Sprite.new(detailBoxImage)
-    local detailBoxSprite = Sprite.newAnimated(detailBoxImage, 6, 0.15)
-    Animation.play(Sprite.getCurrentAnimation(detailBoxSprite), false, function()
-        isOpen = true
-    end)
+    local detailBoxSprite = Sprite.newAnimated(detailBoxImage, {
+        [OPEN_STATE] = {
+            numFrames = 6,
+            duration = 0.15,
+            isLooping = false,
+            isReversed = false,
+            onFinish = function()
+                isOpen = true
+            end,
+        },
+        [CLOSE_STATE] = {
+            numFrames = 6,
+            duration = 0.15,
+            isLooping = false,
+            isReversed = false,
+            onFinish = function()
+                shouldStop = true
+            end,
+        },
+    })
     detailBox = {
         sprite = detailBoxSprite,
         transform = Align.screenAlignedTransform(
@@ -62,8 +78,14 @@ function PackageDetail.load()
     }
 
     local packageDetailsImage = love.graphics.newImage("assets/art/package_details.png")
-    local packageDetailSprite = Sprite.newAnimated(packageDetailsImage, 5)
-    Sprite.getCurrentAnimation(packageDetailSprite).currentFrame = packageIndex or 1
+    local packageDetailSprite = Sprite.newAnimated(packageDetailsImage, {
+        [Values.PACKAGE_TYPES.GLASS] = {},
+        [Values.PACKAGE_TYPES.LEAD_FOOT] = {},
+        [Values.PACKAGE_TYPES.LANTERN] = {},
+        [Values.PACKAGE_TYPES.RADIOACTIVE_JUNK] = {},
+        [Values.PACKAGE_TYPES.MIRROR] = {},
+    })
+    Sprite.transitionAnimationState(packageDetailSprite, packageIndex or 1)
     packageDetailPortrait = {
         sprite = packageDetailSprite,
         transform = Align.screenAlignedTransform(
@@ -100,7 +122,7 @@ function PackageDetail.mousemoved(x, y, dx, dy, isTouch) end
 function PackageDetail.wheelmoved(x, y) end
 
 function PackageDetail.update(dt)
-    if shouldClose then
+    if shouldStop then
         if onClose then
             onClose()
         end

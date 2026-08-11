@@ -40,8 +40,8 @@ function love.load()
 
     Scene.start(Scene.scenes.global)
     Scene.start(Scene.scenes.debug)
-    Scene.start(Scene.scenes.mainMenu)
-    -- Scene.start(Scene.scenes.game)
+    -- Scene.start(Scene.scenes.mainMenu)
+    Scene.start(Scene.scenes.game)
     -- Scene.start(Scene.scenes.packageDetail)
 end
 
