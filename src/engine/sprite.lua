@@ -24,6 +24,7 @@ local Animation = require("engine.animation")
 ---@field setDirection fun(self: Sprite, rotation: number)
 ---@field getCurrentAnimation fun(self: Sprite):Animation
 ---@field update fun(self: Sprite, dt: number)
+---@field draw fun(self: Sprite, transform: love.Transform)
 local Sprite = {}
 Sprite.__index = Sprite
 
@@ -106,13 +107,13 @@ end
 
 function Sprite:transitionAnimationState(state)
     assert(state >= 1 and state <= #self.animations, "invalid animation state")
-    Animation.stop(self:getCurrentAnimation())
+    self:getCurrentAnimation():stop()
     self.currentAnimationState = state
-    Animation.play(self:getCurrentAnimation())
+    self:getCurrentAnimation():play()
 end
 
 function Sprite:setDirection(rotation)
-    Animation.setDirection(self:getCurrentAnimation(), rotation)
+    self:getCurrentAnimation():setDirection(rotation)
 end
 
 function Sprite:getCurrentAnimation()
@@ -120,7 +121,7 @@ function Sprite:getCurrentAnimation()
 end
 
 function Sprite:update(dt)
-    Animation.update(self:getCurrentAnimation(), dt)
+    self:getCurrentAnimation():update(dt)
 end
 
 function Sprite:draw(transform)
@@ -139,7 +140,7 @@ function Sprite:draw(transform)
 
     local quad
     if self.animations then
-        quad = Animation.getCurrentQuad(self:getCurrentAnimation())
+        quad = self:getCurrentAnimation():getCurrentQuad()
     else
         quad = self.quad
     end

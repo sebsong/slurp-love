@@ -1,5 +1,23 @@
 ---@class Animation
+---@field directions love.Quad[][]
+---@field isPlaying boolean
+---@field isReversed boolean
+---@field isLooping boolean
+---@field numFrames number
+---@field frameDurationSeconds number
+---@field currentDirection number
+---@field currentFrame number
+---@field currentFrameSeconds number
+---@field onFinish fun()?
+---@field new fun(image: love.Image, referenceQuad: love.Quad, rowIndex: number, numDirections: number, config: AnimationConfig): Animation
+---@
+---@field getCurrentQuad fun(self: Animation): love.Quad
+---@field setDirection fun(self: Animation, rotation: number)
+---@field play fun(self: Animation)
+---@field update fun(self: Animation, dt: number)
+---@field stop fun(self: Animation)
 local Animation = {}
+Animation.__index = Animation
 
 ---@class AnimationConfig
 ---@field numFrames number?
@@ -29,7 +47,7 @@ function Animation.new(image, referenceQuad, rowIndex, numDirections, config)
         table.insert(directions, quads)
     end
 
-    return {
+    local animation = {
         directions = directions,
 
         isPlaying = false,
@@ -43,16 +61,19 @@ function Animation.new(image, referenceQuad, rowIndex, numDirections, config)
         currentFrameSeconds = 0,
         onFinish = onFinish,
     }
+    setmetatable(animation, Animation)
+
+    return animation
 end
 
-function Animation.getCurrentQuad(animation)
-    return animation.directions[animation.currentDirection][animation.currentFrame]
+function Animation:getCurrentQuad()
+    return self.directions[self.currentDirection][self.currentFrame]
 end
 
-function Animation.setDirection(animation, rotation)
-    local rotSegmentLength = 2 * math.pi / #animation.directions
+function Animation:setDirection(rotation)
+    local rotSegmentLength = 2 * math.pi / #self.directions
     local direction = math.floor((((rotation + (rotSegmentLength / 2)) % (2 * math.pi)) / rotSegmentLength)) + 1
-    animation.currentDirection = direction
+    self.currentDirection = direction
 end
 
 local function reset(animation)
@@ -64,9 +85,9 @@ local function reset(animation)
     animation.currentFrameSeconds = 0
 end
 
-function Animation.play(animation)
-    reset(animation)
-    animation.isPlaying = true
+function Animation:play()
+    reset(self)
+    self.isPlaying = true
 end
 
 local function isFinalFrame(animation)
@@ -101,20 +122,20 @@ local function nextFrame(animation)
     end
 end
 
-function Animation.update(animation, dt)
-    if not animation.isPlaying then
+function Animation:update(dt)
+    if not self.isPlaying then
         return
     end
 
-    if animation.currentFrameSeconds >= animation.frameDurationSeconds then
-        nextFrame(animation)
+    if self.currentFrameSeconds >= self.frameDurationSeconds then
+        nextFrame(self)
     end
 
-    animation.currentFrameSeconds = animation.currentFrameSeconds + dt
+    self.currentFrameSeconds = self.currentFrameSeconds + dt
 end
 
-function Animation.stop(animation)
-    animation.isPlaying = false
+function Animation:stop()
+    self.isPlaying = false
 end
 
 return Animation
