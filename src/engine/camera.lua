@@ -113,7 +113,7 @@ function Camera:getWorldToCanvasTransform()
 end
 
 function Camera:getCanvasToWorldTransform()
-    self:getWorldToCanvasTransform():inverse()
+    return self:getWorldToCanvasTransform():inverse()
 end
 
 return Camera

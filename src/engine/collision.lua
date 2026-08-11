@@ -1,6 +1,7 @@
-local Collision = {}
-
 local Math = require("engine.math")
+
+---@class Collision
+local Collision = {}
 
 -- collidable:
 -- {

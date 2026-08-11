@@ -1,10 +1,13 @@
-local Canvas = {
-    scale = nil,
-    scaledCanvasToScreenTransform = nil,
-    canvasToScreenTransform = nil,
-    screenToCanvasTransform = nil,
-    canvas = nil,
-}
+---@class Canvas
+---@field scale number
+---@field scaledCanvasToScreenTransform love.Transform
+---@field canvasToScreenTransform love.Transform
+---@field screenToCanvasTransform love.Transform
+---@field canvas love.Canvas
+---@
+---@field load fun()
+---@field draw fun(drawFunction: fun())
+local Canvas = {}
 
 local Settings = require("engine.settings")
 
