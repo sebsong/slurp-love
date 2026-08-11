@@ -43,7 +43,7 @@ function Map.draw()
     love.graphics.push()
 
     love.graphics.setShader()
-    Sprite.draw(mapOverlay.sprite, mapOverlay.transform)
+    mapOverlay.sprite:draw(mapOverlay.transform)
 
     love.graphics.pop()
 end

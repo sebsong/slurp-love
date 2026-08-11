@@ -1,12 +1,31 @@
-local Sprite = {}
-
 local Animation = require("engine.animation")
 
-function Sprite.load()
-    love.graphics.setPointSize(8)
-    love.graphics.setLineWidth(0.1)
-    love.graphics.setBackgroundColor(0, 0, 0)
-end
+---@class Sprite
+---@field shouldDraw boolean
+---@field image love.Image | love.SpriteBatch
+---@field quad love.Quad
+---@field animations Animation[]
+---@field currentAnimationState number
+---@field width number
+---@field height number
+---@field xOffset number
+---@field yOffset number
+---@field zIndex number
+---@field zIndexOffset number
+---@field isSpriteBatch boolean
+---@field setShader fun()?
+---@field draw fun()?
+---@
+---@field new fun(image: love.Image, quad: love.Quad?, xOffset: number?, yOffset: number?, zIndex: number?, zIndexOffset :number?): Sprite
+---@field newSpriteBatch fun(spriteBatch: love.SpriteBatch, quad: love.Quad, zIndex: number?, zIndexOffset :number?): Sprite
+---@field newAnimated fun(image: love.Image, animationStateConfigs: AnimationConfig[], numDirections: number?, xOffset: number?, yOffset: number?, zIndex: number?, zIndexOffset :number?): Sprite
+---@
+---@field transitionAnimationState fun(self: Sprite, state: number)
+---@field setDirection fun(self: Sprite, rotation: number)
+---@field getCurrentAnimation fun(self: Sprite):Animation
+---@field update fun(self: Sprite, dt: number)
+local Sprite = {}
+Sprite.__index = Sprite
 
 local function new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffset, isSpriteBatch)
     local width, height
@@ -15,7 +34,8 @@ local function new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffs
     else
         width, height = image:getDimensions()
     end
-    return {
+
+    local sprite = {
         shouldDraw = true,
         image = image,
         quad = quad, -- TODO: remove this in favor of storing it in animation
@@ -30,8 +50,10 @@ local function new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffs
         isSpriteBatch = isSpriteBatch,
 
         setShader = nil,
-        draw = nil,
     }
+    setmetatable(sprite, Sprite)
+
+    return sprite
 end
 
 function Sprite.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset)
@@ -77,60 +99,55 @@ function Sprite.newAnimated(image, animationStateConfigs, numDirections, xOffset
 
     local sprite = new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffset, false)
 
-    Sprite.transitionAnimationState(sprite, sprite.currentAnimationState)
+    sprite:transitionAnimationState(sprite.currentAnimationState)
 
     return sprite
 end
 
-function Sprite.transitionAnimationState(sprite, state)
-    assert(state >= 1 and state <= #sprite.animations, "invalid animation state")
-    Animation.stop(Sprite.getCurrentAnimation(sprite))
-    sprite.currentAnimationState = state
-    Animation.play(Sprite.getCurrentAnimation(sprite))
+function Sprite:transitionAnimationState(state)
+    assert(state >= 1 and state <= #self.animations, "invalid animation state")
+    Animation.stop(self:getCurrentAnimation())
+    self.currentAnimationState = state
+    Animation.play(self:getCurrentAnimation())
 end
 
-function Sprite.setDirection(sprite, rotation)
-    Animation.setDirection(Sprite.getCurrentAnimation(sprite), rotation)
+function Sprite:setDirection(rotation)
+    Animation.setDirection(self:getCurrentAnimation(), rotation)
 end
 
-function Sprite.getCurrentAnimation(sprite)
-    return sprite.animations[sprite.currentAnimationState]
+function Sprite:getCurrentAnimation()
+    return self.animations[self.currentAnimationState]
 end
 
-function Sprite.update(sprite, dt)
-    Animation.update(Sprite.getCurrentAnimation(sprite), dt)
+function Sprite:update(dt)
+    Animation.update(self:getCurrentAnimation(), dt)
 end
 
-function Sprite.draw(sprite, transform)
-    if not sprite.shouldDraw then
-        return
-    end
-
-    if sprite.draw then
-        sprite.draw(sprite, transform)
+function Sprite:draw(transform)
+    if not self.shouldDraw then
         return
     end
 
     love.graphics.push()
     love.graphics.applyTransform(transform)
 
-    if sprite.setShader then
-        sprite.setShader()
+    if self.setShader then
+        self.setShader()
     else
         love.graphics.setShader()
     end
 
     local quad
-    if sprite.animations then
-        quad = Animation.getCurrentQuad(Sprite.getCurrentAnimation(sprite))
+    if self.animations then
+        quad = Animation.getCurrentQuad(self:getCurrentAnimation())
     else
-        quad = sprite.quad
+        quad = self.quad
     end
 
-    if quad and not sprite.isSpriteBatch then
-        love.graphics.draw(sprite.image, quad, sprite.xOffset, sprite.yOffset)
+    if quad and not self.isSpriteBatch then
+        love.graphics.draw(self.image, quad, self.xOffset, self.yOffset)
     else
-        love.graphics.draw(sprite.image, sprite.xOffset, sprite.yOffset)
+        love.graphics.draw(self.image, self.xOffset, self.yOffset)
     end
     love.graphics.pop()
 end

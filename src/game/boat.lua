@@ -1,5 +1,3 @@
-local Boat = {}
-
 local Collision = require("engine.collision")
 local Math = require("engine.math")
 local Set = require("engine.set")
@@ -10,6 +8,9 @@ local Vec2 = require("engine.vec2")
 local BoatEffect = require("game.effects.boat_effect")
 local GameUi = require("game.ui")
 local Values = require("game.values")
+
+---@class Boat
+local Boat = {}
 
 local NUM_BOAT_ANGLES = 16
 local BOAT_WIDTH, BOAT_HEIGHT = 16, 16
@@ -134,11 +135,11 @@ local function update(self, cameraObj, dt)
     end
 
     if didMoveForward then
-        Sprite.transitionAnimationState(self.sprite, MOVE_STATE)
+        self.sprite:transitionAnimationState(MOVE_STATE)
     else
-        Sprite.transitionAnimationState(self.sprite, DEFAULT_STATE)
+        self.sprite:transitionAnimationState(DEFAULT_STATE)
     end
-    Sprite.setDirection(self.sprite, self.rotation)
+    self.sprite:setDirection(self.rotation)
 
     self:updateNeighborTiles()
     self:updateTrailPositions(dt)

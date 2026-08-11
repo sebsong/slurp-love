@@ -1,4 +1,12 @@
+---@class Animation
 local Animation = {}
+
+---@class AnimationConfig
+---@field numFrames number?
+---@field duration number?
+---@field isLooping boolean?
+---@field isReversed boolean?
+---@field onFinish fun()?
 
 function Animation.new(image, referenceQuad, rowIndex, numDirections, config)
     local numFrames = config.numFrames or 1

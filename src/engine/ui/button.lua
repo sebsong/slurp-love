@@ -54,17 +54,17 @@ end
 
 function Button:mousemoved(x, y, dx, dy, isTouch)
     if Collision.hitTest(x, y, self.collider, self.transform) then
-        Sprite.transitionAnimationState(self.sprite, HOVERED_STATE)
+        self.sprite:transitionAnimationState(HOVERED_STATE)
         if self.onHover then
             self:onHover()
         end
     else
-        Sprite.transitionAnimationState(self.sprite, DEFAULT_STATE)
+        self.sprite:transitionAnimationState(DEFAULT_STATE)
     end
 end
 
 function Button:draw()
-    Sprite.draw(self.sprite, self.transform)
+    self.sprite:draw(self.transform)
     self.textBox:draw()
 end
 

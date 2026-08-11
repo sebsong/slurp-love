@@ -115,7 +115,7 @@ end
 function PauseMenu.wheelmoved(x, y) end
 
 function PauseMenu.update(dt)
-    Sprite.update(menu.sprite, dt)
+    menu.sprite:update(dt)
 
     if shouldStop then
         Scene.stop(Scene.scenes.pauseMenu)
@@ -126,7 +126,7 @@ function PauseMenu.draw()
     love.graphics.push()
 
     love.graphics.setShader()
-    Sprite.draw(menu.sprite, menu.transform)
+    menu.sprite:draw(menu.transform)
 
     if not isOpen then
         love.graphics.pop()

@@ -39,7 +39,7 @@ end
 
 function PackageDetail.close()
     isOpen = false
-    Sprite.transitionAnimationState(detailBox.sprite, CLOSE_STATE)
+    detailBox.sprite:transitionAnimationState(CLOSE_STATE)
 end
 
 function PackageDetail.load()
@@ -85,7 +85,7 @@ function PackageDetail.load()
         [Values.PACKAGE_TYPES.RADIOACTIVE_JUNK] = {},
         [Values.PACKAGE_TYPES.MIRROR] = {},
     })
-    Sprite.transitionAnimationState(packageDetailSprite, packageIndex or 1)
+    packageDetailSprite:transitionAnimationState(packageIndex or 1)
     packageDetailPortrait = {
         sprite = packageDetailSprite,
         transform = Align.screenAlignedTransform(
@@ -129,21 +129,21 @@ function PackageDetail.update(dt)
         Scene.stop(Scene.scenes.packageDetail)
     end
 
-    Sprite.update(detailBox.sprite, dt)
+    detailBox.sprite:update(dt)
 end
 
 function PackageDetail.draw()
     love.graphics.push()
 
     love.graphics.setShader()
-    Sprite.draw(detailBox.sprite, detailBox.transform)
+    detailBox.sprite:draw(detailBox.transform)
 
     if not isOpen then
         love.graphics.pop()
         return
     end
 
-    Sprite.draw(packageDetailPortrait.sprite, packageDetailPortrait.transform)
+    packageDetailPortrait.sprite:draw(packageDetailPortrait.transform)
 
     love.graphics.setFont(Font.medium)
     love.graphics.printf(FLAVOR_TEXTS[packageIndex], textTransform, textWidth, "center")

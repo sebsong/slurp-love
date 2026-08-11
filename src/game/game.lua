@@ -370,7 +370,7 @@ function Game.draw()
 
     love.graphics.draw(tilemapWallsSpriteBatch)
     for _, worldObject in ipairs(worldEntities) do
-        Sprite.draw(worldObject.sprite, worldObject.transform)
+        worldObject.sprite:draw(worldObject.transform)
     end
     love.graphics.setShader()
     love.graphics.draw(tilemapBuildingsSpriteBatch)

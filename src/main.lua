@@ -21,8 +21,10 @@ local VictoryMenu = require("game.victory_menu")
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
+    love.graphics.setPointSize(8)
+    love.graphics.setLineWidth(0.1)
+    love.graphics.setBackgroundColor(0, 0, 0)
     Canvas.load()
-    Sprite.load()
     Font.load()
 
     Scene.register("global", Global, true)

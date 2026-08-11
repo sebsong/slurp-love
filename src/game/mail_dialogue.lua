@@ -75,7 +75,7 @@ end
 
 function MailDialogue.close()
     isOpen = false
-    Sprite.transitionAnimationState(dialogueBox.sprite, CLOSED_STATE)
+    dialogueBox.sprite:transitionAnimationState(CLOSED_STATE)
 end
 
 local function setLines(lines)
@@ -164,7 +164,7 @@ function MailDialogue.update(dt)
         Scene.stop(Scene.scenes.mailDialogue)
     end
 
-    Sprite.update(dialogueBox.sprite, dt)
+    dialogueBox.sprite:update(dt)
 
     if not isOpen or isDialogueFinished then
         return
@@ -194,7 +194,7 @@ function MailDialogue.draw()
     love.graphics.push()
 
     love.graphics.setShader()
-    Sprite.draw(dialogueBox.sprite, dialogueBox.transform)
+    dialogueBox.sprite:draw(dialogueBox.transform)
 
     if not isOpen then
         love.graphics.pop()

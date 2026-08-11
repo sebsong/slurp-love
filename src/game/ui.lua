@@ -85,13 +85,13 @@ end
 function GameUi.draw(gasRemaining, packages)
     love.graphics.setShader()
 
-    Sprite.draw(gasMeter.sprite, gasMeter.transform)
-    Sprite.draw(gasMeterProgress.sprite, gasMeterProgress.transform)
+    gasMeter.sprite:draw(gasMeter.transform)
+    gasMeterProgress.sprite:draw(gasMeterProgress.transform)
 
     love.graphics.setShader()
-    love.graphics.printf(math.floor(gasRemaining), gasRemainingTextTransform, GAS_TEXT_WIDTH, "center")
+    love.graphics.printf(("%d"):format(math.floor(gasRemaining)), gasRemainingTextTransform, GAS_TEXT_WIDTH, "center")
 
-    Sprite.draw(packageContainer.sprite, packageContainer.transform)
+    packageContainer.sprite:draw(packageContainer.transform)
     local packageOffsetY = packageOffsetYInitial
     PackageEffect.setShader(nil)
     local x, y = packageContainer.transform:transformPoint(0, 0)
