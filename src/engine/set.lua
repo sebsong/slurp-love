@@ -1,13 +1,22 @@
+---@class Set
+---@field length number
+---@
+---@field new fun(...: any[]): Set
+---@
+---@field insert fun(self:Set, val: any, ...: any[])
+---@field remove fun(self:Set, val: any, ...: any[])
+---@field contains fun(self: Set, item: any): boolean
+---@field len fun(self: Set): number
+---@field isEmpty fun(self: Set): boolean
+---@field toArray fun(self: Set): any[]
 local Set = {}
-
-local meta = {}
-meta.__index = meta
+Set.__index = Set
 
 function Set.new(...)
     local set = {
         length = 0,
     }
-    setmetatable(set, meta)
+    setmetatable(set, Set)
 
     set:insert(...)
 
@@ -21,8 +30,8 @@ local function insert(set, val)
     end
 end
 
-function meta:insert(val, ...)
-    if getmetatable(val) == meta then
+function Set:insert(val, ...)
+    if getmetatable(val) == Set then
         assert(... == nil, "shouldn't pass in more args if val is a set")
         for item, _ in pairs(val) do
             insert(self, item)
@@ -42,8 +51,8 @@ local function remove(set, val)
     end
 end
 
-function meta:remove(val, ...)
-    if getmetatable(val) == meta then
+function Set:remove(val, ...)
+    if getmetatable(val) == Set then
         assert(... == nil, "shouldn't pass in more args if val is a set")
         for item, _ in pairs(val) do
             remove(self, item)
@@ -56,19 +65,19 @@ function meta:remove(val, ...)
     end
 end
 
-function meta:contains(item)
+function Set:contains(item)
     return self[item] ~= nil
 end
 
-function meta:len()
+function Set:len()
     return self.length
 end
 
-function meta:isEmpty()
+function Set:isEmpty()
     return self:len() == 0
 end
 
-function meta:toArray()
+function Set:toArray()
     local array = {}
     for item, _ in pairs(self) do
         table.insert(array, item)
@@ -76,19 +85,19 @@ function meta:toArray()
     return array
 end
 
-function meta:__add(_otherSet)
+function Set:__add(_otherSet)
     local union = Set.new(self)
     union:insert(_otherSet)
     return union
 end
 
-function meta:__sub(_otherSet)
+function Set:__sub(_otherSet)
     local intersection = Set.new(self)
     intersection:remove(_otherSet)
     return intersection
 end
 
-function meta:__tostring()
+function Set:__tostring()
     local items = {}
     for key, _ in pairs(self) do
         table.insert(items, key)

@@ -1,3 +1,8 @@
+---@class Serialization
+---@field primitiveToString fun(primitive: number | boolean | string): string
+---@field tableToString fun(tbl: table, indentLevel: number?): string
+---@field tableToFile fun(tbl: table, fileName: string)
+---@field fileToTable fun(fileName: string): table
 local Serialization = {}
 
 function Serialization.primitiveToString(primitive)
