@@ -4,18 +4,8 @@ require("engine.debug")
 local Canvas = require("engine.canvas")
 local SceneManager = require("engine.scene_manager")
 
-local DayTracker = require("game.day_tracker")
-local Debug = require("game.debug")
 local Font = require("game.font")
-local Game = require("game.game")
-local GameOverMenu = require("game.game_over_menu")
-local Global = require("game.global")
-local MailDialogue = require("game.mail_dialogue")
-local MainMenu = require("game.main_menu")
-local Map = require("game.map")
-local PackageDetail = require("game.package_detail")
-local PauseMenu = require("game.pause_menu")
-local VictoryMenu = require("game.victory_menu")
+local Scenes = require("game.scenes.scenes")
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.load()
@@ -26,24 +16,7 @@ function love.load()
     Canvas.load()
     Font.load()
 
-    SceneManager.register("global", Global, true)
-    SceneManager.register("debug", Debug, true)
-
-    SceneManager.register("mainMenu", MainMenu)
-    SceneManager.register("dayTracker", DayTracker)
-    SceneManager.register("game", Game)
-    SceneManager.register("mailDialogue", MailDialogue)
-    SceneManager.register("packageDetail", PackageDetail)
-    SceneManager.register("map", Map)
-    SceneManager.register("pauseMenu", PauseMenu)
-    SceneManager.register("gameOverMenu", GameOverMenu)
-    SceneManager.register("victoryMenu", VictoryMenu)
-
-    SceneManager.scenes.global:start()
-    SceneManager.scenes.debug:start()
-    -- SceneManager.scenes.mainMenu:start()
-    SceneManager.scenes.game:start()
-    -- SceneManager.scenes.packageDetail:start()
+    Scenes.register()
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field

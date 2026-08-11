@@ -1,5 +1,5 @@
 ---@class Scene
----@field init fun(self: Scene, isGlobal: boolean?): Scene
+---@field init fun(self: Scene, isGlobal: boolean?)
 ---@field start fun(self: Scene)
 ---@field stop fun(self: Scene)
 ---@field pause fun(self: Scene)
@@ -43,7 +43,6 @@ function Scene:init(isGlobal)
     self.shouldLoad = false
     self.shouldUnload = false
     setmetatable(self, Scene)
-    return self
 end
 
 function Scene:start()

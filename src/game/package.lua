@@ -1,11 +1,10 @@
-local Package = {}
-local meta = {}
-meta.__index = meta
-
 local SceneManager = require("engine.scene_manager")
 
-local PackageDetail = require("game.package_detail")
+local PackageDetail = require("game.scenes.package_detail")
 local Values = require("game.values")
+
+local Package = {}
+Package.__index = Package
 
 local crack1Sound
 local crack2Sound
@@ -19,7 +18,7 @@ local function reversePackageOrder(boat)
     end
 end
 
-function meta:onPickup(boat)
+function Package:onPickup(boat)
     local tileId = self.tileId
 
     SceneManager.scenes.game:pause()
@@ -40,7 +39,7 @@ function meta:onPickup(boat)
     end
 end
 
-function meta:onDeliver(boat)
+function Package:onDeliver(boat)
     local tileId = self.tileId
 
     if tileId == Values.PACKAGE_TYPES.GLASS then
@@ -55,7 +54,7 @@ function meta:onDeliver(boat)
     end
 end
 
-function meta:onCollision(boat, _collidable)
+function Package:onCollision(boat, _collidable)
     if self.tileId == Values.PACKAGE_TYPES.GLASS then
         if not self.canDeliver then
             return
@@ -73,7 +72,7 @@ function meta:onCollision(boat, _collidable)
     end
 end
 
-function meta:update(dt) end
+function Package:update(dt) end
 
 function Package.load()
     crack1Sound = love.audio.newSource("assets/sound/crack_1.ogg", "static")
@@ -86,7 +85,7 @@ function Package.load()
 end
 
 function Package.toPackage(tileObject)
-    setmetatable(tileObject, meta)
+    setmetatable(tileObject, Package)
     tileObject.destinationId = tileObject.properties.destination.id
     tileObject.isDelivered = false
     tileObject.canDeliver = true

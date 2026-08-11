@@ -2,9 +2,9 @@ local Debug = {}
 
 local SceneManager = require("engine.scene_manager")
 
-local DayTracker = require("game.day_tracker")
-local Game = require("game.game")
-local MainMenu = require("game.main_menu")
+local DayTracker = require("game.scenes.day_tracker")
+local Game = require("game.scenes.game")
+local MainMenu = require("game.scenes.main_menu")
 
 local Profile = require("external.profile")
 

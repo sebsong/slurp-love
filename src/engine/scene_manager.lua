@@ -21,8 +21,9 @@ local SceneManager = {
 local scenesList = {}
 
 function SceneManager.register(sceneName, scene, isGlobal)
+    Scene.init(scene, isGlobal or false)
     table.insert(scenesList, scene)
-    SceneManager.scenes[sceneName] = Scene.init(scene, isGlobal or false)
+    SceneManager.scenes[sceneName] = scene
 end
 
 function SceneManager.transition(scene)
