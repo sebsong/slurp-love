@@ -1,7 +1,6 @@
 local Animation = {}
 
 function Animation.new(image, referenceQuad, rowIndex, numDirections, config)
-    -- TODO: maybe these are just baked into the animation and not sent on play
     local numFrames = config.numFrames or 1
     local duration = config.duration or 0
     local isLooping = config.isLooping or false
