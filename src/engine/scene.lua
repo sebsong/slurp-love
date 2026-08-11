@@ -1,3 +1,31 @@
+---@class Scene
+---@field load fun()
+---@field unload fun()
+---@field onPause fun()
+---@field onResume fun()
+---@field keyPressed fun(key: love.KeyConstant, scancode: love.Scancode, isRepeat: boolean)?
+---@field mousepressed fun(x: number, y: number, button: number, isTouch: boolean, presses: number)?
+---@field mousemoved fun(x: number, y: number, dx: number, dy: number, isTouch: boolean)?
+---@field wheelmoved fun(x: number, y: number)?
+---@field update fun(dt: number)
+---@field draw fun()
+---
+---@field isGlobal boolean
+---@field isActive boolean
+---@field isPaused boolean
+---@field isInputPaused boolean
+---@field shouldLoad boolean
+---@field shouldUnload boolean
+---
+---@field register fun(sceneName: string, scene: Scene, isGlobal: boolean?)
+---@field start fun(self: Scene)
+---@field stop fun(self: Scene)
+---@field pause fun(self: Scene)
+---@field resume fun(self: Scene)
+---@field pauseInput fun(self: Scene)
+---@field resumeInput fun(self: Scene)
+---@field restart fun(self: Scene)
+---@field transition fun(scene: Scene)
 local Scene = {
     scenes = {},
 }
