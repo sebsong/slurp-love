@@ -2,6 +2,8 @@ local Global = {}
 
 local SceneManager = require("engine.scene_manager")
 
+local PauseMenu = require("game.scenes.pause_menu")
+
 function Global.load() end
 
 function Global.unload() end
@@ -13,7 +15,7 @@ function Global.onResume() end
 function Global.keypressed(key, scancode, isRepeat)
     local gameScene = SceneManager.scenes.game
     if gameScene.isActive and love.keyboard.isDown("escape") and not isRepeat then
-        SceneManager.scenes.pauseMenu.toggle()
+        PauseMenu.toggle()
     end
 end
 
