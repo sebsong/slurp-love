@@ -1,7 +1,6 @@
 {
 	"Lua.workspace.library": [
-        "${addons}/love2d/module/library",
-        "lib",
+        "${addons}/love2d/module/library"
     ],
 	"Lua.runtime.version": "LuaJIT",
 	"Lua.workspace.checkThirdParty": false,
@@ -11,4 +10,7 @@
         "editor.defaultFormatter": "JohnnyMorganz.stylua",
         "editor.formatOnSave": true
     },
+    "Lua.runtime.special": {
+        "love.filesystem.load": "loadfile"
+    }
 }
