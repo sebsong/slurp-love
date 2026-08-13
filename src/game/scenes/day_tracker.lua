@@ -25,38 +25,6 @@ local showContinueText
 local blinkTimer
 local BLINK_HOLD_TIME = 1
 
-local function startDay()
-    SceneManager.transition(SceneManager.scenes.game)
-end
-
-function DayTracker.nextDay(gasRemaining)
-    if DayTracker.currentDay == FINAL_DAY then
-        if not SceneManager.scenes.victoryMenu.isActive then
-            SceneManager.scenes.victoryMenu:start()
-        end
-        return
-    end
-
-    DayTracker.currentDay = DayTracker.currentDay + 1
-
-    Save.update(function(saveData)
-        local currentDay = DayTracker.currentDay
-        saveData.currentDay = currentDay
-
-        if currentDay > saveData.maxDay then
-            saveData.maxDay = currentDay
-        end
-
-        -- TODO: track time taken
-        local currentDayStats = saveData.dayStats[currentDay]
-        if gasRemaining > currentDayStats.gasRemaining then
-            currentDayStats.gasRemaining = gasRemaining
-        end
-    end)
-
-    SceneManager.transition(SceneManager.scenes.dayTracker)
-end
-
 local function initializeSaveData()
     Save.update(function(saveData)
         if not saveData.currentDay then
@@ -81,6 +49,51 @@ local function initializeSaveData()
             end
         end
     end)
+end
+
+local function updateDaySaveData(currentDay)
+    Save.update(function(saveData)
+        saveData.currentDay = currentDay
+
+        if currentDay > saveData.maxDay then
+            saveData.maxDay = currentDay
+        end
+    end)
+end
+
+local function updateStatsSaveData(currentDay, gasRemaining)
+    Save.update(function(saveData)
+        -- TODO: track time taken
+        if gasRemaining then
+            local currentDayStats = saveData.dayStats[currentDay]
+            if gasRemaining > currentDayStats.gasRemaining then
+                currentDayStats.gasRemaining = gasRemaining
+            end
+        end
+    end)
+end
+
+local function startDay()
+    SceneManager.transition(SceneManager.scenes.game)
+end
+
+function DayTracker.nextDay(gasRemaining)
+    if DayTracker.currentDay == FINAL_DAY then
+        if not SceneManager.scenes.victoryMenu.isActive then
+            SceneManager.scenes.victoryMenu:start()
+        end
+        return
+    end
+
+    updateStatsSaveData(DayTracker.currentDay, gasRemaining)
+
+    DayTracker.selectDay(DayTracker.currentDay + 1)
+end
+
+function DayTracker.selectDay(day)
+    DayTracker.currentDay = day
+    updateDaySaveData(day)
+    SceneManager.transition(SceneManager.scenes.dayTracker)
 end
 
 function DayTracker.load()

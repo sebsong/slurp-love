@@ -4,6 +4,7 @@ require("engine.debug")
 local Canvas = require("engine.canvas")
 local SceneManager = require("engine.scene_manager")
 
+local DaySelector = require("game.scenes.day_selector")
 local DayTracker = require("game.scenes.day_tracker")
 local Debug = require("game.scenes.debug")
 local Font = require("game.font")
@@ -30,6 +31,7 @@ function love.load()
     SceneManager.register("debug", Debug, true)
 
     SceneManager.register("mainMenu", MainMenu)
+    SceneManager.register("daySelector", DaySelector)
     SceneManager.register("dayTracker", DayTracker)
     SceneManager.register("game", Game)
     SceneManager.register("mailDialogue", MailDialogue)
@@ -41,8 +43,8 @@ function love.load()
 
     SceneManager.scenes.global:start()
     SceneManager.scenes.debug:start()
-    -- SceneManager.scenes.mainMenu:start()
-    SceneManager.scenes.game:start()
+    SceneManager.scenes.mainMenu:start()
+    -- SceneManager.scenes.game:start()
     -- SceneManager.scenes.packageDetail:start()
 end
 
