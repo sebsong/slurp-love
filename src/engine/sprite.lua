@@ -5,23 +5,23 @@ local Animation = require("engine.animation")
 ---@field image love.Image | love.SpriteBatch
 ---@field quad love.Quad
 ---@field animations Animation[]
----@field currentAnimationState number
----@field width number
----@field height number
----@field xOffset number
----@field yOffset number
----@field zIndex number
----@field zIndexOffset number
+---@field currentAnimationState integer
+---@field width integer
+---@field height integer
+---@field xOffset integer
+---@field yOffset integer
+---@field zIndex integer
+---@field zIndexOffset integer
 ---@field isSpriteBatch boolean
 ---@field setShader fun()?
 ---@field draw fun()?
 ---
----@field new fun(image: love.Image, quad: love.Quad?, xOffset: number?, yOffset: number?, zIndex: number?, zIndexOffset :number?): Sprite
----@field newSpriteBatch fun(spriteBatch: love.SpriteBatch, quad: love.Quad, zIndex: number?, zIndexOffset :number?): Sprite
----@field newAnimated fun(image: love.Image, animationStateConfigs: AnimationConfig[], numDirections: number?, xOffset: number?, yOffset: number?, zIndex: number?, zIndexOffset :number?): Sprite
+---@field new fun(image: love.Image, quad: love.Quad?, xOffset: integer?, yOffset: integer?, zIndex: number?, zIndexOffset :integer?): Sprite
+---@field newSpriteBatch fun(spriteBatch: love.SpriteBatch, quad: love.Quad, zIndex: number?, zIndexOffset :integer?): Sprite
+---@field newAnimated fun(image: love.Image, animationStateConfigs: AnimationConfig[], numDirections: integer?, xOffset: integer?, yOffset: integer?, zIndex: number?, zIndexOffset :integer?): Sprite
 ---
----@field transitionAnimationState fun(self: Sprite, state: number)
----@field setDirection fun(self: Sprite, rotation: number)
+---@field transitionAnimationState fun(self: Sprite, state: integer)
+---@field setDirection fun(self: Sprite, rotation: integer)
 ---@field getCurrentAnimation fun(self: Sprite):Animation
 ---@field update fun(self: Sprite, dt: number)
 ---@field draw fun(self: Sprite, transform: love.Transform)

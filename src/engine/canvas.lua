@@ -1,5 +1,5 @@
 ---@class Canvas
----@field scale number
+---@field scale integer
 ---@field scaledCanvasToScreenTransform love.Transform
 ---@field canvasToScreenTransform love.Transform
 ---@field screenToCanvasTransform love.Transform

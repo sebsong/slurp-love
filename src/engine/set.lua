@@ -1,12 +1,12 @@
 ---@class Set
----@field length number
+---@field length integer
 ---
 ---@field new fun(...: any): Set
 ---
 ---@field insert fun(self:Set, val: any, ...: any)
 ---@field remove fun(self:Set, val: any, ...: any)
 ---@field contains fun(self: Set, item: any): boolean
----@field len fun(self: Set): number
+---@field len fun(self: Set): integer
 ---@field isEmpty fun(self: Set): boolean
 ---@field toArray fun(self: Set): any[]
 local Set = {}

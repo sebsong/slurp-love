@@ -4,13 +4,13 @@ local Vec2 = require("engine.vec2")
 ---@class Collision
 ---@field hitTest fun(x: number, y: number, collider: Collider, transform: love.Transform): boolean
 ---@field getPositionUpdate fun(collidable: Collidable, collidables: Collidable[], targetPositionUpdate: Vec2): Vec2
----@field drawTileColliders fun(tilemap: table, layerIndex: integer)
+---@field drawTileColliders fun(tilemap: table, layerIndex: number)
 ---@field drawCollider fun(collider: Collider, position: Vec2)
 local Collision = {}
 
 ---@class Collider
----@field width number
----@field height number
+---@field width integer
+---@field height integer
 
 ---@class Collidable
 ---@field position Vec2?

@@ -76,7 +76,7 @@ function Game.load()
 
     cameraObj = Camera.new()
 
-    local currentDay = SceneManager.scenes.dayTracker.currentDay
+    local currentDay = DayTracker.currentDay
 
     OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[currentDay] or OBJECT_LAYER_NAME
 

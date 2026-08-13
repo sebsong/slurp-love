@@ -2,19 +2,19 @@ local Settings = require("engine.settings")
 
 ---@class Camera
 ---@field transform love.Transform
----@field screenWidth number
----@field screenHeight number
+---@field screenWidth integer
+---@field screenHeight integer
 ---@field isPanning boolean
 ---@field panSpeed number
 ---@field zoom number
----@field zoomToggleIdx number
----@field zoomToggles number[]
+---@field zoomToggleIdx integer
+---@field zoomToggles integer[]
 ---@field zoomSpeed number
 ---
 ---@field new fun(): Camera
 ---
----@field getScreenWidth fun(self: Camera): number
----@field getScreenHeight fun(self: Camera): number
+---@field getScreenWidth fun(self: Camera): integer
+---@field getScreenHeight fun(self: Camera): integer
 ---@field toggleZoom fun(self: Camera)
 ---@field resetZoom fun(self: Camera)
 ---@field togglePan fun(self: Camera)

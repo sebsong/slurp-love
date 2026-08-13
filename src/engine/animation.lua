@@ -9,10 +9,10 @@
 ---@field currentFrame integer
 ---@field currentFrameSeconds number
 ---@field onFinish fun()?
----@field new fun(image: love.Image, referenceQuad: love.Quad, rowIndex: number, numDirections: number, config: AnimationConfig): Animation
+---@field new fun(image: love.Image, referenceQuad: love.Quad, rowIndex: number, numDirections: integer, config: AnimationConfig): Animation
 ---
 ---@field getCurrentQuad fun(self: Animation): love.Quad
----@field setDirection fun(self: Animation, rotation: number)
+---@field setDirection fun(self: Animation, rotation: integer)
 ---@field play fun(self: Animation)
 ---@field update fun(self: Animation, dt: number)
 ---@field stop fun(self: Animation)

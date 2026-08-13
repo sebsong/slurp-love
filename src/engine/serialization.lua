@@ -1,6 +1,6 @@
 ---@class Serialization
 ---@field primitiveToString fun(primitive: number | boolean | string): string
----@field tableToString fun(tbl: table, indentLevel: number?): string
+---@field tableToString fun(tbl: table, indentLevel: integer?): string
 ---@field tableToFile fun(tbl: table, fileName: string)
 ---@field fileToTable fun(fileName: string): table
 local Serialization = {}
