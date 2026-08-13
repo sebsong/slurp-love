@@ -1,5 +1,3 @@
-local Game = {}
-
 local Camera = require("engine.camera")
 local Color = require("engine.color")
 local Math = require("engine.math")
@@ -21,6 +19,9 @@ local Package = require("game.package")
 local PackageEffect = require("game.effects.package_effect")
 local TileEffect = require("game.effects.tile_effect")
 local WaterEffect = require("game.effects.water_effect")
+
+---@class Game: Scene
+local Game = {}
 
 local DAY_TO_LAYER_NAME = {
     "objects_monday",

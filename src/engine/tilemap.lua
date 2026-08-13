@@ -5,6 +5,24 @@ local Set = require("engine.set")
 local Sprite = require("engine.sprite")
 local Vec2 = require("engine.vec2")
 
+---@class Tilemap
+---@field width integer
+---@field height integer
+---@field tileWidth integer
+---@field tileHeight integer
+---@field isIsometric boolean
+---@field worldToTilemapIndexTransform love.Transform
+---@field tilemapIndexToWorldTransform love.Transform
+---@field tilesets Tileset[]
+---@field layers Layer[]
+---
+---@field newTileset fun(imageFilePath: string, tileWidth: integer, tileHeight: integer): Tileset
+---@field newTilemapLua fun(luaFilepath: string, tilesets: Tileset[]): Tilemap
+---@field getIntersectionTiles fun(tilemap: Tilemap, tiles: Tile[], camera: Camera): Tile[]
+---@field drawTiles fun(tilemap: Tilemap, tiles: Tile[])
+---@field getWorldRowIdx fun(colIdx: integer, rowIdx: integer): integer
+local Tilemap = {}
+
 ---@class Tileset
 ---@field image love.Image
 ---@field quads love.Quad[]
@@ -37,24 +55,6 @@ local Vec2 = require("engine.vec2")
 ---@field tilesetName string
 ---@field tileId integer
 ---@field properties table
-
----@class Tilemap
----@field width integer
----@field height integer
----@field tileWidth integer
----@field tileHeight integer
----@field isIsometric boolean
----@field worldToTilemapIndexTransform love.Transform
----@field tilemapIndexToWorldTransform love.Transform
----@field tilesets Tileset[]
----@field layers Layer[]
----
----@field newTileset fun(imageFilePath: string, tileWidth: integer, tileHeight: integer): Tileset
----@field newTilemapLua fun(luaFilepath: string, tilesets: Tileset[]): Tilemap
----@field getIntersectionTiles fun(tilemap: Tilemap, tiles: Tile[], camera: Camera): Tile[]
----@field drawTiles fun(tilemap: Tilemap, tiles: Tile[])
----@field getWorldRowIdx fun(colIdx: integer, rowIdx: integer): integer
-local Tilemap = {}
 
 function Tilemap.getIntersectionTiles(tilemap, tiles, camera)
     local cameraX, cameraY = camera.transform:transformPoint(0, 0)
