@@ -3,6 +3,7 @@ require("engine.debug")
 
 local Canvas = require("engine.canvas")
 local SceneManager = require("engine.scene_manager")
+local Settings = require("engine.settings")
 
 local DaySelector = require("game.scenes.day_selector")
 local DayTracker = require("game.scenes.day_tracker")
@@ -29,7 +30,6 @@ function love.load()
     Font.load()
 
     SceneManager.register("global", Global, true)
-    SceneManager.register("debug", Debug, true)
     SceneManager.register("dayTracker", DayTracker, true)
 
     SceneManager.register("mainMenu", MainMenu)
@@ -45,10 +45,14 @@ function love.load()
 
     SceneManager.scenes.global:start()
     SceneManager.scenes.dayTracker:start()
-    SceneManager.scenes.debug:start()
     SceneManager.scenes.mainMenu:start()
     -- SceneManager.scenes.game:start()
     -- SceneManager.scenes.packageDetail:start()
+
+    if Settings.IS_DEBUG then
+        SceneManager.register("debug", Debug, true)
+        SceneManager.scenes.debug:start()
+    end
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field

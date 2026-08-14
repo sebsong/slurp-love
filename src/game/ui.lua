@@ -21,7 +21,6 @@ local packageOffsetYInitial = packageContainerHeight + packageUiVerticalSpacing
 local gasMeter
 local gasMeterProgress
 local packageContainer
-local gasRemainingTextTransform
 
 function GameUi.load()
     local uiImage = love.graphics.newImage("assets/art/Ui.png")
@@ -71,15 +70,6 @@ function GameUi.load()
             GameUi.PADDING
         ),
     }
-
-    gasRemainingTextTransform = Align.screenAlignedTransform(
-        GAS_TEXT_WIDTH,
-        GAS_TEXT_HEIGHT,
-        Align.LEFT,
-        Align.BOTTOM,
-        GameUi.PADDING,
-        gasMeterHeight + GameUi.PADDING * 2
-    )
 end
 
 function GameUi.draw(gasRemaining, packages)
@@ -89,8 +79,6 @@ function GameUi.draw(gasRemaining, packages)
     gasMeterProgress.sprite:draw(gasMeterProgress.transform)
 
     love.graphics.setShader()
-    love.graphics.printf(("%d"):format(math.floor(gasRemaining)), gasRemainingTextTransform, GAS_TEXT_WIDTH, "center")
-
     packageContainer.sprite:draw(packageContainer.transform)
     local packageOffsetY = packageOffsetYInitial
     PackageEffect.setShader(nil)
