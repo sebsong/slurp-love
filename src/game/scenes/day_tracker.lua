@@ -45,19 +45,20 @@ local function updateDaySaveData(currentDay)
     end)
 end
 
-local function updateStatsSaveData(currentDay, gasRemaining)
+local function updateStatsSaveData(currentDay, gasRemaining, elapsedSeconds)
     Save.update(function(saveData)
-        -- TODO: track time taken
-        if gasRemaining then
-            local currentDayStats = saveData.dayStats[currentDay]
-            if gasRemaining > currentDayStats.gasRemaining then
-                currentDayStats.gasRemaining = gasRemaining
-            end
+        local currentDayStats = saveData.dayStats[currentDay]
+        if gasRemaining > currentDayStats.gasRemaining then
+            currentDayStats.gasRemaining = gasRemaining
+        end
+
+        if not currentDayStats.elapsedSeconds or elapsedSeconds < currentDayStats.elapsedSeconds then
+            currentDayStats.elapsedSeconds = elapsedSeconds
         end
     end)
 end
 
-function DayTracker.nextDay(gasRemaining)
+function DayTracker.nextDay(gasRemaining, elapsedSeconds)
     if DayTracker.currentDay == FINAL_DAY then
         if not SceneManager.scenes.victoryMenu.isActive then
             SceneManager.scenes.victoryMenu:start()
@@ -65,7 +66,7 @@ function DayTracker.nextDay(gasRemaining)
         return
     end
 
-    updateStatsSaveData(DayTracker.currentDay, gasRemaining)
+    updateStatsSaveData(DayTracker.currentDay, gasRemaining, elapsedSeconds)
 
     DayTracker.selectDay(DayTracker.currentDay + 1)
 end
@@ -80,6 +81,7 @@ end
 function DayTracker.load()
     initializeSaveData()
     local saveData = Save.load()
+    print(saveData)
     DayTracker.currentDay = saveData.currentDay
     DayTracker.maxDay = saveData.maxDay
 end

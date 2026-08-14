@@ -33,7 +33,7 @@ function Debug.keypressed(key, scancode, isRepeat)
         if MainMenu.isActive then
             SceneManager.transition(SceneManager.scenes.dayTransition)
         elseif not SceneManager.scenes.dayTransition.isActive then
-            DayTracker.nextDay(0)
+            DayTracker.nextDay(0, 9999)
         end
     end
 end

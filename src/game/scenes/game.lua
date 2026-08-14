@@ -63,10 +63,15 @@ local lanternLightImage
 local lanternXRadius
 local lanternYRadius
 
+local pauseTimer
+local elapsedSeconds
+
 local didWin
 local didLose
 
 function Game.load()
+    pauseTimer = true
+    elapsedSeconds = 0
     didWin = false
     didLose = false
 
@@ -206,6 +211,7 @@ function Game.load()
     SceneManager.scenes.game:pauseInput()
     MailDialogue.open(MailScript.dailyDialogue[currentDay], function()
         SceneManager.scenes.game:resumeInput()
+        pauseTimer = false
     end)
 end
 
@@ -215,10 +221,12 @@ function Game.unload()
 end
 
 function Game.onPause()
+    pauseTimer = true
     boatObj.engineLoopSound:pause()
 end
 
 function Game.onResume()
+    pauseTimer = false
     boatObj.engineLoopSound:play()
 end
 
@@ -234,7 +242,7 @@ local function evaluateWinCondition()
     end
 
     didWin = true
-    DayTracker.nextDay(boatObj.gasRemaining)
+    DayTracker.nextDay(boatObj.gasRemaining, elapsedSeconds)
 end
 
 local function gameOver()
@@ -300,6 +308,10 @@ function Game.wheelmoved(x, y)
 end
 
 function Game.update(dt)
+    if not pauseTimer then
+        elapsedSeconds = elapsedSeconds + dt
+    end
+
     boatObj:update(cameraObj, dt)
     for _, packageObj in ipairs(boatObj.packages) do
         packageObj:update(dt)
