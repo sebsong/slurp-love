@@ -1,9 +1,12 @@
+local Align = require("engine.ui.align")
 local Input = require("engine.input")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
+local TextBox = require("engine.ui.text_box")
 
 local DayTracker = require("game.scenes.day_tracker")
 local Font = require("game.font")
+local GameUi = require("game.ui")
 
 local DAY_TO_NAME = {
     "monday",
@@ -17,11 +20,52 @@ local DayTransition = {}
 
 local dayTransitionBackgroundImage
 
+local dayTextBox
+local continueTextBox
+
 local showContinueText
 local blinkTimer
 local BLINK_HOLD_TIME = 1
 
 function DayTransition.load()
+    local dayTextBoxTransform = Align.screenAlignedTransform(
+        Settings.canvasPixelWidth,
+        Font.large:getHeight(),
+        Align.CENTER,
+        Align.TOP,
+        0,
+        GameUi.PADDING * 2
+    )
+    dayTextBox = TextBox.new(
+        dayTextBoxTransform,
+        Settings.canvasPixelWidth,
+        Font.large:getHeight(),
+        Font.large,
+        DAY_TO_NAME[DayTracker.currentDay],
+        Align.CENTER,
+        Align.CENTER,
+        "center"
+    )
+
+    local continueTextBoxTransform = Align.screenAlignedTransform(
+        Settings.canvasPixelWidth,
+        Font.medium:getHeight(),
+        Align.CENTER,
+        Align.BOTTOM,
+        0,
+        GameUi.PADDING * 4
+    )
+    continueTextBox = TextBox.new(
+        continueTextBoxTransform,
+        Settings.canvasPixelWidth,
+        Font.medium:getHeight(),
+        Font.medium,
+        "press any button to continue",
+        Align.CENTER,
+        Align.CENTER,
+        "center"
+    )
+
     dayTransitionBackgroundImage = love.graphics.newImage("assets/art/day_transition_background.png")
     blinkTimer = 0
     showContinueText = true
@@ -56,25 +100,11 @@ function DayTransition.update(dt)
 end
 
 function DayTransition.draw()
-    love.graphics.setFont(Font.large)
     love.graphics.draw(dayTransitionBackgroundImage)
-    love.graphics.printf(
-        DAY_TO_NAME[DayTracker.currentDay],
-        0,
-        2 * Font.large:getHeight(),
-        Settings.canvasPixelWidth,
-        "center"
-    )
+    dayTextBox:draw()
 
     if showContinueText then
-        love.graphics.setFont(Font.medium)
-        love.graphics.printf(
-            string.format("press any button to continue", DayTracker.currentDay),
-            0,
-            Settings.canvasPixelHeight - (4 * Font.medium:getHeight()),
-            Settings.canvasPixelWidth,
-            "center"
-        )
+        continueTextBox:draw()
     end
 end
 
