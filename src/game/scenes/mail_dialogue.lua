@@ -1,7 +1,6 @@
 local MailDialogue = {}
 
 local Align = require("engine.ui.align")
-local Animation = require("engine.animation")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 

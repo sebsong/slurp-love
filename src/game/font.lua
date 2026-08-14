@@ -4,7 +4,7 @@ local Font = {
     small = nil,
 }
 
-local CHAR_LAYOUT = "abcdefghijklmnopqrstuvwxyz0123456789'., "
+local CHAR_LAYOUT = "abcdefghijklmnopqrstuvwxyz0123456789'.,: "
 
 function Font.load()
     Font.large = love.graphics.newImageFont("assets/art/font_large.png", CHAR_LAYOUT)

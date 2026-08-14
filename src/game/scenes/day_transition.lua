@@ -1,5 +1,6 @@
 local Align = require("engine.ui.align")
 local Input = require("engine.input")
+local Save = require("engine.save")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
 local TextBox = require("engine.ui.text_box")
@@ -23,6 +24,8 @@ local dayTransitionBackgroundImage
 local dayTextBox
 local continueTextBox
 
+local dayStatsTextBox
+
 local showContinueText
 local blinkTimer
 local BLINK_HOLD_TIME = 1
@@ -42,6 +45,30 @@ function DayTransition.load()
         Font.large:getHeight(),
         Font.large,
         DAY_TO_NAME[DayTracker.currentDay],
+        Align.CENTER,
+        Align.CENTER,
+        "center"
+    )
+
+    local saveData = Save.load()
+    local currentDayStats = saveData.dayStats[DayTracker.currentDay]
+    local gasRemaining = currentDayStats.gasRemaining
+    local elapsedSeconds = currentDayStats.elapsedSeconds
+
+    local dayStatsTextBoxTransform = Align.screenAlignedTransform(
+        Settings.canvasPixelWidth,
+        Font.medium:getHeight(),
+        Align.CENTER,
+        Align.CENTER,
+        0,
+        -GameUi.PADDING
+    )
+    dayStatsTextBox = TextBox.new(
+        dayStatsTextBoxTransform,
+        Settings.canvasPixelWidth,
+        Font.medium:getHeight(),
+        Font.medium,
+        ("gas remaining: %.2f\n\ntime remaining: %.2f"):format(gasRemaining, elapsedSeconds or 0),
         Align.CENTER,
         Align.CENTER,
         "center"
@@ -102,6 +129,8 @@ end
 function DayTransition.draw()
     love.graphics.draw(dayTransitionBackgroundImage)
     dayTextBox:draw()
+
+    dayStatsTextBox:draw()
 
     if showContinueText then
         continueTextBox:draw()

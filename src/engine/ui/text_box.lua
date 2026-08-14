@@ -13,19 +13,23 @@ local Align = require("engine.ui.align")
 local TextBox = {}
 TextBox.__index = TextBox
 
-function TextBox.new(transform, width, height, font, text, horizontalAlign, verticalAlign, textAlignMode)
+--TODO: use love.Text here
+function TextBox.new(transform, width, height, font, rawText, horizontalAlign, verticalAlign, textAlignMode)
     horizontalAlign = horizontalAlign or Align.CENTER
     verticalAlign = verticalAlign or Align.CENTER
     textAlignMode = textAlignMode or "center"
 
+    -- local text = love.graphics.newText(font, rawText)
+
     local textTransform =
         Align.alignedTransform(transform, width, height, width, font:getHeight(), horizontalAlign, verticalAlign)
+    -- Align.alignedTransform(transform, width, height, width, text:getHeight(), horizontalAlign, verticalAlign)
 
     local textBox = {
         width = width,
         transform = textTransform,
         font = font,
-        text = text,
+        text = rawText,
         alignMode = textAlignMode,
     }
     setmetatable(textBox, TextBox)
@@ -33,8 +37,9 @@ function TextBox.new(transform, width, height, font, text, horizontalAlign, vert
     return textBox
 end
 
-function TextBox:setText(text)
-    self.text = text
+function TextBox:setText(rawText)
+    -- self.text:set(rawText)
+    self.text = rawText
 end
 
 function TextBox:draw()
