@@ -58,10 +58,10 @@ function DaySelector.load()
     local mondayButtonTranform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.LEFT,
+        Align.CENTER,
         Align.BOTTOM,
-        GameUi.PADDING,
-        GameUi.PADDING
+        -(GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x),
+        (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) + GameUi.PADDING
     )
     mondayButton = Button.new(buttonImage, mondayButtonTranform, Font.medium, "monday", nil, function()
         DayTracker.selectDay(1)
@@ -70,10 +70,10 @@ function DaySelector.load()
     local tuesdayButtonTranform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.LEFT,
+        Align.CENTER,
         Align.BOTTOM,
-        GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x + GameUi.PADDING,
-        GameUi.PADDING
+        0,
+        (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) + GameUi.PADDING
     )
     tuesdayButton = Button.new(buttonImage, tuesdayButtonTranform, Font.medium, "tuesday", nil, function()
         DayTracker.selectDay(2)
@@ -82,10 +82,10 @@ function DaySelector.load()
     local wednesdayButtonTranform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.LEFT,
+        Align.CENTER,
         Align.BOTTOM,
-        (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x) * 2 + GameUi.PADDING,
-        GameUi.PADDING
+        (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x),
+        (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) + GameUi.PADDING
     )
     wednesdayButton = Button.new(buttonImage, wednesdayButtonTranform, Font.medium, "wednesday", nil, function()
         DayTracker.selectDay(3)
@@ -94,9 +94,9 @@ function DaySelector.load()
     local thursdayButtonTranform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.LEFT,
+        Align.CENTER,
         Align.BOTTOM,
-        (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x) * 3 + GameUi.PADDING,
+        -(GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x) / 2,
         GameUi.PADDING
     )
     thursdayButton = Button.new(buttonImage, thursdayButtonTranform, Font.medium, "thursday", nil, function()
@@ -106,14 +106,28 @@ function DaySelector.load()
     local fridayButtonTranform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.LEFT,
+        Align.CENTER,
         Align.BOTTOM,
-        (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x) * 4 + GameUi.PADDING,
+        (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x) / 2,
         GameUi.PADDING
     )
     fridayButton = Button.new(buttonImage, fridayButtonTranform, Font.medium, "friday", nil, function()
         DayTracker.selectDay(5)
     end)
+
+    local maxDay = DayTracker.maxDay
+    if maxDay < 2 then
+        tuesdayButton:disable()
+    end
+    if maxDay < 3 then
+        wednesdayButton:disable()
+    end
+    if maxDay < 4 then
+        thursdayButton:disable()
+    end
+    if maxDay < 5 then
+        fridayButton:disable()
+    end
 end
 
 function DaySelector.unload() end

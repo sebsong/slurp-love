@@ -31,8 +31,8 @@ function Debug.onResume() end
 function Debug.keypressed(key, scancode, isRepeat)
     if key == "return" and not isRepeat then
         if MainMenu.isActive then
-            SceneManager.transition(DayTracker)
-        elseif not DayTracker.isActive then
+            SceneManager.transition(SceneManager.scenes.dayTransition)
+        elseif not SceneManager.scenes.dayTransition.isActive then
             DayTracker.nextDay(0)
         end
     end

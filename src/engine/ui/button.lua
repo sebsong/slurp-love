@@ -20,11 +20,13 @@ Button.__index = Button
 
 local DEFAULT_STATE = 1
 local HOVERED_STATE = 2
+local DISABLED_STATE = 3
 
 function Button.new(image, transform, font, text, onHover, onPress)
     local sprite = Sprite.newAnimated(image, {
         [DEFAULT_STATE] = {},
         [HOVERED_STATE] = {},
+        [DISABLED_STATE] = {},
     })
     local width, height = sprite.width, sprite.height
 
@@ -44,7 +46,21 @@ function Button.new(image, transform, font, text, onHover, onPress)
     return button
 end
 
+function Button:disable()
+    self.enabled = false
+    self.sprite:transitionAnimationState(DISABLED_STATE)
+end
+
+function Button:enable()
+    self.enabled = true
+    self.sprite:transitionAnimationState(DEFAULT_STATE)
+end
+
 function Button:mousepressed(x, y, button, isTouch, presses)
+    if not self.enabled then
+        return
+    end
+
     if Collision.hitTest(x, y, self.collider, self.transform) then
         if self.onPress then
             self:onPress()
@@ -53,6 +69,10 @@ function Button:mousepressed(x, y, button, isTouch, presses)
 end
 
 function Button:mousemoved(x, y, dx, dy, isTouch)
+    if not self.enabled then
+        return
+    end
+
     if Collision.hitTest(x, y, self.collider, self.transform) then
         self.sprite:transitionAnimationState(HOVERED_STATE)
         if self.onHover then

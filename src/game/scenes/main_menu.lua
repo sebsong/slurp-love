@@ -31,7 +31,7 @@ function MainMenu.load()
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) * 2 + GameUi.PADDING
     )
     playButton = Button.new(buttonImage, playButtonTransform, Font.large, "play", nil, function()
-        SceneManager.transition(SceneManager.scenes.dayTracker)
+        SceneManager.transition(SceneManager.scenes.dayTransition)
     end)
 
     local daySelectorButtonTransform = Align.screenAlignedTransform(
