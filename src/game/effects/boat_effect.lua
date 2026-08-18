@@ -15,10 +15,10 @@ function BoatEffect.load()
     shader:send("VERTICAL_AMPLITUDE", BoatEffect.VERTICAL_AMPLITUDE)
 end
 
-function BoatEffect.update(camera)
+function BoatEffect.update(camera, time)
     shader:send("cameraCanvasDimensions", { camera:getScreenWidth(), camera:getScreenHeight() })
     shader:send("cameraPosition", { camera.transform:transformPoint(0, 0) })
-    shader:send("time", love.timer.getTime())
+    shader:send("time", time)
 end
 
 function BoatEffect.setShader()

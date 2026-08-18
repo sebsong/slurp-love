@@ -20,9 +20,9 @@ function TileEffect.load(camera, boat)
     shader:send("FOAM_COLOR", Color.palette[WaterEffect.FOAM_INNER_COLOR_IDX])
 end
 
-function TileEffect.update(camera, boat)
+function TileEffect.update(camera, boat, time)
     shader:send("isLanternActive", boat.isLanternActive)
-    shader:send("time", love.timer.getTime())
+    shader:send("time", time)
     shader:send("cameraCanvasDimensions", { camera:getScreenWidth(), camera:getScreenHeight() })
     shader:send("cameraPosition", { camera.transform:transformPoint(0, 0) })
 end

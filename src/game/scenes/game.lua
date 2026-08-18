@@ -7,6 +7,7 @@ local Tilemap = require("engine.tilemap")
 local Vec2 = require("engine.vec2")
 
 local Boat = require("game.scenes.boat")
+local BoatEffect = require("game.effects.boat_effect")
 local DayTracker = require("game.scenes.day_tracker")
 local GameUi = require("game.ui")
 local LanternEffect = require("game.effects.lantern_effect")
@@ -364,9 +365,10 @@ function Game.update(dt)
         return entityZIndex < otherEntityZIndex
     end)
 
-    WaterEffect.update(cameraObj, boatObj)
-    TileEffect.update(cameraObj, boatObj)
-    LanternEffect.update(cameraObj)
+    WaterEffect.update(cameraObj, boatObj, elapsedSeconds)
+    BoatEffect.update(cameraObj, elapsedSeconds)
+    TileEffect.update(cameraObj, boatObj, elapsedSeconds)
+    LanternEffect.update(cameraObj, elapsedSeconds)
     PackageEffect.update(boatObj, packages)
     MailboxEffect.update(boatObj, mailboxes)
 

@@ -66,13 +66,13 @@ function WaterEffect.load(camera, boat, newSeed)
     -- shader:send("DEBUG_GRID_LINE_SIZE", DEBUG_GRID_LINE_SIZE)
 end
 
-function WaterEffect.update(camera, boat)
+function WaterEffect.update(camera, boat, time)
     local modTime = love.filesystem.getInfo(SHADER_FILE_PATH).modtime
     if modTime ~= shaderFileModTime then
         WaterEffect.load(camera, boat, seed)
     end
 
-    shader:send("time", love.timer.getTime())
+    shader:send("time", time)
     shader:send("cameraCanvasDimensions", { camera:getScreenWidth(), camera:getScreenHeight() })
     shader:send("cameraPosition", { camera.transform:transformPoint(0, 0) })
     shader:send("boatPosition", { boat.transform:transformPoint(0, 0) })

@@ -163,8 +163,6 @@ local function update(self, cameraObj, dt)
     self.transform:setTransformation(x, y)
 
     self.sprite.zIndex = self:getWorldRowIdx()
-
-    BoatEffect.update(cameraObj)
 end
 
 local function indexOfPackage(self, packageTileId)

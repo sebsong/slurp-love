@@ -22,10 +22,10 @@ function LanternEffect.load()
     shader:send("colorMapping", unpack({ 1, 2, 3, 4, 5, 6, 7, 6 }))
 end
 
-function LanternEffect.update(camera)
+function LanternEffect.update(camera, time)
     shader:send("cameraCanvasDimensions", { camera:getScreenWidth(), camera:getScreenHeight() })
     shader:send("cameraPosition", { camera.transform:transformPoint(0, 0) })
-    shader:send("time", love.timer.getTime())
+    shader:send("time", time)
 end
 
 function LanternEffect.setShader()
