@@ -285,14 +285,16 @@ function Game.keypressed(key, scancode, isRepeat)
     end
 
     if key == "tab" then
-        if not SceneManager.scenes.map.isActive then
-            Map.open()
-        else
-            Map.close()
-        end
+        Map.open()
     end
 
     cameraObj:keypressed(key, scancode, isRepeat)
+end
+
+function Game.keyreleased(key, scancode)
+    if key == "tab" then
+        Map.close()
+    end
 end
 
 function Game.mousepressed(x, y, button, isTouch, presses)

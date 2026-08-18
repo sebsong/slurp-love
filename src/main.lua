@@ -61,6 +61,11 @@ function love.keypressed(key, scancode, isRepeat)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
+function love.keyreleased(key, scancode)
+    SceneManager.keyreleased(key, scancode)
+end
+
+---@diagnostic disable-next-line: duplicate-set-field
 function love.mousepressed(x, y, button, isTouch, presses)
     x, y = Canvas.screenToCanvasTransform:transformPoint(x, y)
     SceneManager.mousepressed(x, y, button, isTouch, presses)

@@ -14,6 +14,7 @@ local Settings = require("engine.settings")
 function Canvas.load()
     local screenWidth, screenHeight = love.graphics.getDimensions()
     Canvas.scale = math.min(screenWidth / Settings.canvasPixelWidth, screenHeight / Settings.canvasPixelHeight)
+
     -- if Canvas.scale > 1 then
     -- if display is smaller than the canvas, we can't enforce integer scaling
     -- Canvas.scale = math.floor(Canvas.scale)

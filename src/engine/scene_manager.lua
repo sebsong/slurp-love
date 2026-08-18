@@ -9,6 +9,7 @@ local Scene = require("engine.scene")
 ---@field load fun()
 ---@field unload fun()
 ---@field keyPressed fun(key: love.KeyConstant, scancode: love.Scancode, isRepeat: boolean)?
+---@field keyReleased fun(key: love.KeyConstant, scancode: love.Scancode)?
 ---@field mousepressed fun(x: number, y: number, button: number, isTouch: boolean, presses: number)?
 ---@field mousemoved fun(x: number, y: number, dx: number, dy: number, isTouch: boolean)?
 ---@field wheelmoved fun(x: number, y: number)?
@@ -18,6 +19,7 @@ local SceneManager = {
     scenes = {}, --TODO: might be better to register these in a separate game scene file
 }
 
+---@type Scene[]
 local scenesList = {}
 
 function SceneManager.register(sceneName, scene, isGlobal)
@@ -69,6 +71,20 @@ function SceneManager.keypressed(key, scancode, isRepeat)
 
         if scene.keypressed then
             scene.keypressed(key, scancode, isRepeat)
+        end
+
+        ::continue::
+    end
+end
+
+function SceneManager.keyreleased(key, scancode)
+    for _, scene in ipairs(scenesList) do
+        if shouldSkipInput(scene) then
+            goto continue
+        end
+
+        if scene.keyreleased then
+            scene.keyreleased(key, scancode)
         end
 
         ::continue::

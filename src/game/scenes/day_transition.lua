@@ -30,6 +30,16 @@ local showContinueText
 local blinkTimer
 local BLINK_HOLD_TIME = 1
 
+local function secondsToTimeString(seconds)
+    if not seconds then
+        return "no record"
+    end
+
+    local minutes = seconds / 60
+    local remainderSeconds = seconds % 60
+    return ("%d:%.2f"):format(minutes, remainderSeconds)
+end
+
 function DayTransition.load()
     local dayTextBoxTransform = Align.screenAlignedTransform(
         Settings.canvasPixelWidth,
@@ -61,14 +71,14 @@ function DayTransition.load()
         Align.CENTER,
         Align.CENTER,
         0,
-        -GameUi.PADDING
+        -GameUi.PADDING * 3
     )
     dayStatsTextBox = TextBox.new(
         dayStatsTextBoxTransform,
         Settings.canvasPixelWidth,
         Font.medium:getHeight(),
         Font.medium,
-        ("gas remaining: %.2f\n\ntime remaining: %.2f"):format(gasRemaining, elapsedSeconds or 0),
+        ("record:\ngas: %.2f\ntime: %s"):format(gasRemaining, secondsToTimeString(elapsedSeconds)),
         Align.CENTER,
         Align.CENTER,
         "center"

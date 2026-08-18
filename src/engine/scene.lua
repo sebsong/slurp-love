@@ -19,7 +19,8 @@
 ---@field unload fun()
 ---@field onPause fun()
 ---@field onResume fun()
----@field keyPressed fun(key: love.KeyConstant, scancode: love.Scancode, isRepeat: boolean)?
+---@field keypressed fun(key: love.KeyConstant, scancode: love.Scancode, isRepeat: boolean)?
+---@field keyreleased fun(key: love.KeyConstant, scancode: love.Scancode)?
 ---@field mousepressed fun(x: number, y: number, button: number, isTouch: boolean, presses: number)?
 ---@field mousemoved fun(x: number, y: number, dx: number, dy: number, isTouch: boolean)?
 ---@field wheelmoved fun(x: number, y: number)?
