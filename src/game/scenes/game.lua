@@ -290,12 +290,14 @@ function Game.keypressed(key, scancode, isRepeat)
     end
 
     cameraObj:keypressed(key, scancode, isRepeat)
+    boatObj:keypressed(key, scancode, isRepeat)
 end
 
 function Game.keyreleased(key, scancode)
     if key == "tab" then
         Map.close()
     end
+    boatObj:keyreleased(key, scancode)
 end
 
 function Game.mousepressed(x, y, button, isTouch, presses)
@@ -315,7 +317,7 @@ function Game.update(dt)
         elapsedSeconds = elapsedSeconds + dt
     end
 
-    boatObj:update(cameraObj, dt)
+    boatObj:update(dt)
     for _, packageObj in ipairs(boatObj.packages) do
         packageObj:update(dt)
     end

@@ -9,8 +9,9 @@ local BoatEffect = require("game.effects.boat_effect")
 local GameUi = require("game.ui")
 local Values = require("game.values")
 
----@class Boat: Scene, Collidable
+-- ---@class Boat: Scene, Collidable
 local Boat = {}
+Boat.__index = Boat
 
 local NUM_BOAT_ANGLES = 16
 local BOAT_WIDTH, BOAT_HEIGHT = 16, 16
@@ -71,24 +72,54 @@ local function getWorldRowIdx(self)
     return Tilemap.getWorldRowIdx(colIdx, rowIdx)
 end
 
-local function update(self, cameraObj, dt)
-    local didMove = false
-    local didMoveForward = false
+function Boat:keypressed(key, scancode, isRepeat)
+    if key == "up" or key == "w" or self.autoAccelerate then
+        self.isMovingBackward = false
+        self.isMovingForward = true
+    end
+    if (key == "down" or key == "s") and not self.autoAccelerate then
+        self.isMovingForward = false
+        self.isMovingBackward = true
+    end
+
+    if key == "left" or key == "a" then
+        self.isRotatingClockwise = false
+        self.isRotatingCounterClockwise = true
+    end
+    if key == "right" or key == "d" then
+        self.isRotatingCounterClockwise = false
+        self.isRotatingClockwise = true
+    end
+end
+
+function Boat:keyreleased(key, scancode)
+    if key == "up" or key == "w" or self.autoAccelerate then
+        self.isMovingForward = false
+    end
+    if (key == "down" or key == "s") and not self.autoAccelerate then
+        self.isMovingBackward = false
+    end
+
+    if key == "left" or key == "a" then
+        self.isRotatingCounterClockwise = false
+    end
+    if key == "right" or key == "d" then
+        self.isRotatingClockwise = false
+    end
+end
+
+local function update(self, dt)
     local didAccelerate = false
 
     if self.gasRemaining > 0 then
-        if love.keyboard.isDown("up") or love.keyboard.isDown("w") or self.autoAccelerate then
+        if self.isMovingForward or self.autoAccelerate then
             self.speed = self.speed + self.acceleration * dt
-            didMove = true
-            didMoveForward = true
-        end
-        if (love.keyboard.isDown("down") or love.keyboard.isDown("s")) and not self.autoAccelerate then
+        elseif self.isMovingBackward then
             local acceleration = self.deceleration
             if self.speed > 0 then
                 acceleration = acceleration * 2
             end
             self.speed = self.speed - acceleration * dt
-            didMove = true
         end
 
         if self.speed < self.maxBackwardsSpeed or self.speed > self.maxSpeed then
@@ -98,7 +129,7 @@ local function update(self, cameraObj, dt)
         end
     end
 
-    if didMove or self.deceleration == 0 then
+    if self.isMovingForward or self.isMovingBackward or self.deceleration == 0 then
         if not self.engineStartSound:isPlaying() and not self.engineLoopSound:isPlaying() then
             -- TODO: have the engine start sound play first, also fade these sounds in and out
             -- self.engineStartSound:play()
@@ -106,7 +137,7 @@ local function update(self, cameraObj, dt)
         end
 
         local depletionAmount = self.gasDepletionRate * dt
-        if didAccelerate and didMoveForward then
+        if didAccelerate and self.isMovingForward then
             depletionAmount = depletionAmount * Values.GAS_ACCELERATION_DEPLETION_MULTIPLIER
         end
         self.gasRemaining = self.gasRemaining - depletionAmount
@@ -125,16 +156,15 @@ local function update(self, cameraObj, dt)
         end
     end
 
-    if love.keyboard.isDown("left") or love.keyboard.isDown("a") then
+    if self.isRotatingClockwise then
+        self.rotation = self.rotation + self.rotationSpeed * dt
+        self.moveTransform:rotate(self.rotationSpeed * dt)
+    elseif self.isRotatingCounterClockwise then
         self.rotation = self.rotation - self.rotationSpeed * dt
         self.moveTransform:rotate(-self.rotationSpeed * dt)
     end
-    if love.keyboard.isDown("right") or love.keyboard.isDown("d") then
-        self.rotation = self.rotation + self.rotationSpeed * dt
-        self.moveTransform:rotate(self.rotationSpeed * dt)
-    end
 
-    if didMoveForward then
+    if self.isMovingForward then
         self.sprite:transitionAnimationState(MOVE_STATE)
     else
         self.sprite:transitionAnimationState(DEFAULT_STATE)
@@ -300,7 +330,7 @@ function Boat.new(tilemap, dayValue)
     local initialGasAmount = Values.DAY_TO_GAS_AMOUNT[dayValue] or Values.FULL_GAS_AMOUNT
     GameUi.gasMeterShader:send("progress", initialGasAmount / Values.FULL_GAS_AMOUNT)
 
-    return {
+    local boat = {
         -- TODO: build the boat from a tile object
         sprite = sprite,
 
@@ -347,6 +377,9 @@ function Boat.new(tilemap, dayValue)
         deliverPackage = deliverPackage,
         getWorldRowIdx = getWorldRowIdx,
     }
+    setmetatable(boat, Boat)
+
+    return boat
 end
 
 return Boat
