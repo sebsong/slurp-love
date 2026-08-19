@@ -9,7 +9,7 @@ local BoatEffect = require("game.effects.boat_effect")
 local GameUi = require("game.ui")
 local Values = require("game.values")
 
--- ---@class Boat: Scene, Collidable
+---@class Boat: Scene, Collidable
 local Boat = {}
 Boat.__index = Boat
 
@@ -73,11 +73,11 @@ local function getWorldRowIdx(self)
 end
 
 function Boat:keypressed(key, scancode, isRepeat)
-    if key == "up" or key == "w" or self.autoAccelerate then
+    if key == "up" or key == "w" then
         self.isMovingBackward = false
         self.isMovingForward = true
     end
-    if (key == "down" or key == "s") and not self.autoAccelerate then
+    if key == "down" or key == "s" then
         self.isMovingForward = false
         self.isMovingBackward = true
     end
@@ -93,10 +93,10 @@ function Boat:keypressed(key, scancode, isRepeat)
 end
 
 function Boat:keyreleased(key, scancode)
-    if key == "up" or key == "w" or self.autoAccelerate then
+    if key == "up" or key == "w" then
         self.isMovingForward = false
     end
-    if (key == "down" or key == "s") and not self.autoAccelerate then
+    if key == "down" or key == "s" then
         self.isMovingBackward = false
     end
 
@@ -110,11 +110,14 @@ end
 
 local function update(self, dt)
     local didAccelerate = false
+    --TODO: rename self.isMovingForward and others to imply input rather than state
+    local isMovingForward = self.isMovingForward or self.autoAccelerate
+    local isMovingBackward = self.isMovingBackward
 
     if self.gasRemaining > 0 then
-        if self.isMovingForward or self.autoAccelerate then
+        if isMovingForward then
             self.speed = self.speed + self.acceleration * dt
-        elseif self.isMovingBackward then
+        elseif isMovingBackward then
             local acceleration = self.deceleration
             if self.speed > 0 then
                 acceleration = acceleration * 2
@@ -129,7 +132,7 @@ local function update(self, dt)
         end
     end
 
-    if self.isMovingForward or self.isMovingBackward or self.deceleration == 0 then
+    if isMovingForward or isMovingBackward or self.deceleration == 0 then
         if not self.engineStartSound:isPlaying() and not self.engineLoopSound:isPlaying() then
             -- TODO: have the engine start sound play first, also fade these sounds in and out
             -- self.engineStartSound:play()
@@ -164,7 +167,7 @@ local function update(self, dt)
         self.moveTransform:rotate(-self.rotationSpeed * dt)
     end
 
-    if self.isMovingForward then
+    if isMovingForward then
         self.sprite:transitionAnimationState(MOVE_STATE)
     else
         self.sprite:transitionAnimationState(DEFAULT_STATE)
@@ -353,6 +356,10 @@ function Boat.new(tilemap, dayValue)
         trailPositions = trailPositions,
         updateTrailPositions = updateTrailPositions,
 
+        isMovingForward = false,
+        isMovingBackward = false,
+        isRotatingClockwise = false,
+        isRotatingCounterClockwise = false,
         speed = 0,
         maxSpeed = Values.BOAT_MAX_SPEED_DEFAULT,
         maxBackwardsSpeed = Values.BOAT_MAX_BACKWARD_SPEED_DEFAULT,
