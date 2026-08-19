@@ -81,7 +81,6 @@ end
 function DayTracker.load()
     initializeSaveData()
     local saveData = Save.load()
-    print(saveData)
     DayTracker.currentDay = saveData.currentDay
     DayTracker.maxDay = saveData.maxDay
 end

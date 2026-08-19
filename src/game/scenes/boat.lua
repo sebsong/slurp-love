@@ -145,9 +145,6 @@ local function update(self, dt)
         end
         self.gasRemaining = self.gasRemaining - depletionAmount
         GameUi.gasMeterShader:send("progress", self.gasRemaining / Values.FULL_GAS_AMOUNT)
-        if self.gasRemaining <= 0 then
-            print("OUT OF GAS")
-        end
     else
         self.engineStartSound:stop()
         self.engineLoopSound:stop()
