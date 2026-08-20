@@ -211,9 +211,7 @@ function Game.load()
         tilemapBuildingsSpriteBatch:add(object.sprite.quad, x + object.sprite.xOffset, y + object.sprite.yOffset)
     end
 
-    SceneManager.scenes.game:pauseInput()
     MailDialogue.open(MailScript.dailyDialogue[currentDay], function()
-        SceneManager.scenes.game:resumeInput()
         pauseTimer = false
     end)
 end
@@ -326,9 +324,9 @@ end
 function Game.update(dt)
     if not pauseTimer then
         elapsedSeconds = elapsedSeconds + dt
+        boatObj:update(dt)
     end
 
-    boatObj:update(dt)
     for _, packageObj in ipairs(boatObj.packages) do
         packageObj:update(dt)
     end

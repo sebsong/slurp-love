@@ -387,6 +387,7 @@ function Boat.new(tilemap, dayValue)
         getWorldRowIdx = getWorldRowIdx,
     }
     setmetatable(boat, Boat)
+    boat.sprite.zIndex = boat:getWorldRowIdx()
 
     return boat
 end

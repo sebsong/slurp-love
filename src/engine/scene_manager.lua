@@ -56,7 +56,7 @@ local function shouldSkipUpdate(scene)
 end
 
 local function shouldSkipInput(scene)
-    return scene.isInputPaused or shouldSkipUpdate(scene)
+    return not scene.isActive or scene.isInputPaused
 end
 
 local function shouldSkipDraw(scene)
