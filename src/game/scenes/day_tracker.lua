@@ -59,14 +59,14 @@ local function updateStatsSaveData(currentDay, gasRemaining, elapsedSeconds)
 end
 
 function DayTracker.nextDay(gasRemaining, elapsedSeconds)
+    updateStatsSaveData(DayTracker.currentDay, gasRemaining, elapsedSeconds)
+
     if DayTracker.currentDay == FINAL_DAY then
         if not SceneManager.scenes.victoryMenu.isActive then
             SceneManager.scenes.victoryMenu:start()
         end
         return
     end
-
-    updateStatsSaveData(DayTracker.currentDay, gasRemaining, elapsedSeconds)
 
     DayTracker.selectDay(DayTracker.currentDay + 1)
 end

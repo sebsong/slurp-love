@@ -118,25 +118,23 @@ end
 local function update(self, dt)
     local didAccelerate = false
     --TODO: rename self.isMovingForward and others to imply input rather than state
-    local isMovingForward = self.isMovingForward or self.autoAccelerate
-    local isMovingBackward = self.isMovingBackward
+    local isMovingForward = (self.isMovingForward or self.autoAccelerate) and self.gasRemaining > 0
+    local isMovingBackward = self.isMovingBackward and self.gasRemaining > 0
 
-    if self.gasRemaining > 0 then
-        if isMovingForward then
-            self.speed = self.speed + self.acceleration * dt
-        elseif isMovingBackward then
-            local acceleration = self.deceleration
-            if self.speed > 0 then
-                acceleration = acceleration * 2
-            end
-            self.speed = self.speed - acceleration * dt
+    if isMovingForward then
+        self.speed = self.speed + self.acceleration * dt
+    elseif isMovingBackward then
+        local acceleration = self.deceleration
+        if self.speed > 0 then
+            acceleration = acceleration * 2
         end
+        self.speed = self.speed - acceleration * dt
+    end
 
-        if self.speed < self.maxBackwardsSpeed or self.speed > self.maxSpeed then
-            self.speed = Math.clamped(self.speed, -self.maxBackwardsSpeed, self.maxSpeed)
-        else
-            didAccelerate = true
-        end
+    if self.speed < self.maxBackwardsSpeed or self.speed > self.maxSpeed then
+        self.speed = Math.clamped(self.speed, -self.maxBackwardsSpeed, self.maxSpeed)
+    else
+        didAccelerate = true
     end
 
     if isMovingForward or isMovingBackward or self.deceleration == 0 then
