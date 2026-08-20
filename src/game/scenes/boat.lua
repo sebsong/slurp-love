@@ -108,6 +108,13 @@ function Boat:keyreleased(key, scancode)
     end
 end
 
+function Boat:releaseInput()
+    self.isMovingForward = false
+    self.isMovingBackward = false
+    self.isRotatingClockwise = false
+    self.isRotatingCounterClockwise = false
+end
+
 local function update(self, dt)
     local didAccelerate = false
     --TODO: rename self.isMovingForward and others to imply input rather than state

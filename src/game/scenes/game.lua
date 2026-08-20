@@ -66,6 +66,7 @@ local lanternYRadius
 
 local pauseTimer
 local elapsedSeconds
+local shaderSeconds
 
 local didWin
 local didLose
@@ -73,6 +74,7 @@ local didLose
 function Game.load()
     pauseTimer = true
     elapsedSeconds = 0
+    shaderSeconds = 0
     didWin = false
     didLose = false
 
@@ -231,6 +233,15 @@ function Game.onResume()
     boatObj.engineLoopSound:play()
 end
 
+function Game.onPauseInput()
+    Game.onPause()
+    boatObj:releaseInput()
+end
+
+function Game.onResumeInput()
+    Game.onResume()
+end
+
 local function evaluateWinCondition()
     if didLose then
         return
@@ -367,10 +378,11 @@ function Game.update(dt)
         return entityZIndex < otherEntityZIndex
     end)
 
-    WaterEffect.update(cameraObj, boatObj, elapsedSeconds)
-    BoatEffect.update(cameraObj, elapsedSeconds)
-    TileEffect.update(cameraObj, boatObj, elapsedSeconds)
-    LanternEffect.update(cameraObj, elapsedSeconds)
+    shaderSeconds = shaderSeconds + dt
+    WaterEffect.update(cameraObj, boatObj, shaderSeconds)
+    BoatEffect.update(cameraObj, shaderSeconds)
+    TileEffect.update(cameraObj, boatObj, shaderSeconds)
+    LanternEffect.update(cameraObj, shaderSeconds)
     PackageEffect.update(boatObj, packages)
     MailboxEffect.update(boatObj, mailboxes)
 

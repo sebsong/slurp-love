@@ -17,8 +17,10 @@
 ---
 ---@field load fun()
 ---@field unload fun()
----@field onPause fun()
----@field onResume fun()
+---@field onPause fun()?
+---@field onResume fun()?
+---@field onPauseInput fun()?
+---@field onResumeInput fun()?
 ---@field keypressed fun(key: love.KeyConstant, scancode: love.Scancode, isRepeat: boolean)?
 ---@field keyreleased fun(key: love.KeyConstant, scancode: love.Scancode)?
 ---@field mousepressed fun(x: number, y: number, button: number, isTouch: boolean, presses: number)?
@@ -32,8 +34,6 @@ Scene.__index = Scene
 function Scene:init(isGlobal)
     assert(self.load, "Scene %s missing load method")
     assert(self.unload, "Scene missing unload method")
-    assert(self.onPause, "Scene missing onPause method")
-    assert(self.onResume, "Scene missing onResume method")
     assert(self.update, "Scene missing update method")
     assert(self.draw, "Scene missing draw method")
 
@@ -56,21 +56,31 @@ function Scene:stop()
 end
 
 function Scene:pause()
-    self.onPause()
     self.isPaused = true
+    if self.onPause then
+        self.onPause()
+    end
 end
 
 function Scene:resume()
-    self.onResume()
     self.isPaused = false
+    if self.onResume then
+        self.onResume()
+    end
 end
 
 function Scene:pauseInput()
     self.isInputPaused = true
+    if self.onPauseInput then
+        self.onPauseInput()
+    end
 end
 
 function Scene:resumeInput()
     self.isInputPaused = false
+    if self.onResumeInput then
+        self.onResumeInput()
+    end
 end
 
 function Scene:restart()
