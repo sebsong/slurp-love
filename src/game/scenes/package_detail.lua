@@ -79,8 +79,18 @@ function PackageDetail.load()
 
     local packageDetailsImage = love.graphics.newImage("assets/art/package_details.png")
     local packageDetailSprite = Sprite.newAnimated(packageDetailsImage, {
-        [Values.PACKAGE_TYPES.GLASS] = {},
-        [Values.PACKAGE_TYPES.LEAD_FOOT] = {},
+        [Values.PACKAGE_TYPES.GLASS] = {
+            numFrames = 4,
+            duration = 1,
+            isLooping = true,
+            isReversed = false,
+        },
+        [Values.PACKAGE_TYPES.LEAD_FOOT] = {
+            numFrames = 4,
+            duration = 1,
+            isLooping = true,
+            isReversed = false,
+        },
         [Values.PACKAGE_TYPES.LANTERN] = {},
         [Values.PACKAGE_TYPES.RADIOACTIVE_JUNK] = {},
         [Values.PACKAGE_TYPES.MIRROR] = {},
@@ -130,6 +140,7 @@ function PackageDetail.update(dt)
     end
 
     detailBox.sprite:update(dt)
+    packageDetailPortrait.sprite:update(dt)
 end
 
 function PackageDetail.draw()
