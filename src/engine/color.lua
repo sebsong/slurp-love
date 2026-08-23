@@ -1,7 +1,5 @@
 ---@class Color
 ---@field palette ColorPalette
----
----@field loadPalette fun(hexFilePath: string)
 local Color = {
     palette = {},
 }
@@ -19,6 +17,7 @@ local function hexToRGBA(hexString)
     return { red, green, blue, 1 }
 end
 
+---@param hexFilePath string
 function Color.loadPalette(hexFilePath)
     local isBlankColor = true
     for hexColor in love.filesystem.lines(hexFilePath) do

@@ -3,17 +3,22 @@ local Align = require("engine.ui.align")
 ---@class TextBox
 ---@field transform love.Transform
 ---@field text love.Text
----
+---@field width integer
+---@field height integer
 ---@field private boxTransform love.Transform
----@field private width integer
----@field private height integer
----
----@field new fun(transform: love.Transform, width: integer, height: integer, font: love.Font, color: table, text: string, horizontalAlign: HorizontalAlignOption, verticalAlign: VerticalAlignOption, textAlignMode: love.AlignMode): TextBox
----@field setText fun(self: TextBox, text: string)
----@field draw fun(self: TextBox)
 local TextBox = {}
 TextBox.__index = TextBox
 
+---@param transform love.Transform
+---@param width integer
+---@param height integer
+---@param font love.Font
+---@param color table
+---@param rawText string
+---@param horizontalAlign HorizontalAlignOption
+---@param verticalAlign VerticalAlignOption
+---@param textAlignMode love.AlignMode
+---@return TextBox
 function TextBox.new(transform, width, height, font, color, rawText, horizontalAlign, verticalAlign, textAlignMode)
     horizontalAlign = horizontalAlign or Align.CENTER
     verticalAlign = verticalAlign or Align.CENTER
@@ -28,10 +33,10 @@ function TextBox.new(transform, width, height, font, color, rawText, horizontalA
     local textBox = {
         transform = textTransform,
         text = text,
-
-        boxTransform = transform,
         width = width,
         height = height,
+
+        boxTransform = transform,
     }
     setmetatable(textBox, TextBox)
 
@@ -39,6 +44,9 @@ function TextBox.new(transform, width, height, font, color, rawText, horizontalA
 end
 
 --TODO: this should technically re-align the text transform
+--TODO: convert all method annotations to use this style
+---@overload fun(self: TextBox, coloredtext: table)
+---@param rawText string
 function TextBox:setText(rawText)
     self.text:set(rawText)
 end

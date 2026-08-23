@@ -1,13 +1,4 @@
 ---@class Scene
----@field init fun(self: Scene, isGlobal: boolean?)
----@field start fun(self: Scene)
----@field stop fun(self: Scene)
----@field pause fun(self: Scene)
----@field resume fun(self: Scene)
----@field pauseInput fun(self: Scene)
----@field resumeInput fun(self: Scene)
----@field restart fun(self: Scene)
----
 ---@field isGlobal boolean
 ---@field isActive boolean
 ---@field isPaused boolean
@@ -31,6 +22,7 @@
 local Scene = {}
 Scene.__index = Scene
 
+---@param isGlobal boolean
 function Scene:init(isGlobal)
     assert(self.load, "Scene %s missing load method")
     assert(self.unload, "Scene missing unload method")

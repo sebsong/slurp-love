@@ -3,13 +3,12 @@
 ---@field [2] any
 ---@field x any
 ---@field y any
----
----@field magnitude fun(self: Vec2): number
----@field distanceTo fun(self: Vec2, otherVec: Vec2): number
----@field normalized fun(self: Vec2): Vec2
 local Vec2 = {}
 Vec2.__index = Vec2
 
+---@param x any
+---@param y any
+---@return Vec2
 function Vec2.new(x, y)
     local newVec = { x or 0, y or 0 }
     setmetatable(newVec, Vec2)
@@ -39,14 +38,18 @@ function Vec2.__newindex(vec, key, val)
     rawset(vec, key, val)
 end
 
+---@return number
 function Vec2:magnitude()
     return math.sqrt(self.x ^ 2 + self.y ^ 2)
 end
 
+---@param otherVec Vec2
+---@return number
 function Vec2:distanceTo(otherVec)
     return (otherVec - self):magnitude()
 end
 
+---@return Vec2
 function Vec2:normalized()
     local magnitude = self:magnitude()
     if magnitude == 0 then

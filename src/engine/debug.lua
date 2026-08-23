@@ -1,7 +1,6 @@
 local Serialization = require("engine.serialization")
 
 ---@class Debug
----@field stopwatch fun(label: string): number | nil
 local Debug = {}
 
 -- redefine global print to pretty print tables
@@ -18,6 +17,8 @@ end
 
 local stopwatchTime
 
+---@param label string
+---@return number?
 function Debug.stopwatch(label)
     local endTime = love.timer.getTime()
     local elapsedMs = stopwatchTime and (endTime - stopwatchTime) * 1000 or nil

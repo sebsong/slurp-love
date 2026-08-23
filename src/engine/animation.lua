@@ -9,13 +9,6 @@
 ---@field currentFrame integer
 ---@field currentFrameSeconds number
 ---@field onFinish fun()?
----@field new fun(image: love.Image, referenceQuad: love.Quad, rowIndex: number, numDirections: integer, config: AnimationConfig): Animation
----
----@field getCurrentQuad fun(self: Animation): love.Quad
----@field setDirection fun(self: Animation, rotation: integer)
----@field play fun(self: Animation)
----@field update fun(self: Animation, dt: number)
----@field stop fun(self: Animation)
 local Animation = {}
 Animation.__index = Animation
 
@@ -26,6 +19,12 @@ Animation.__index = Animation
 ---@field isReversed boolean?
 ---@field onFinish fun()?
 
+---@param image love.Image
+---@param referenceQuad love.Quad
+---@param rowIndex number
+---@param numDirections integer
+---@param config AnimationConfig
+---@return Animation
 function Animation.new(image, referenceQuad, rowIndex, numDirections, config)
     local numFrames = config.numFrames or 1
     local duration = config.duration or 0
@@ -66,10 +65,12 @@ function Animation.new(image, referenceQuad, rowIndex, numDirections, config)
     return animation
 end
 
+---@return love.Quad
 function Animation:getCurrentQuad()
     return self.directions[self.currentDirection][self.currentFrame]
 end
 
+---@param rotation integer
 function Animation:setDirection(rotation)
     local rotSegmentLength = 2 * math.pi / #self.directions
     local direction = math.floor((((rotation + (rotSegmentLength / 2)) % (2 * math.pi)) / rotSegmentLength)) + 1
@@ -122,6 +123,7 @@ local function nextFrame(animation)
     end
 end
 
+---@param dt number
 function Animation:update(dt)
     if not self.isPlaying then
         return

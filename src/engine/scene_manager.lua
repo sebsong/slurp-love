@@ -2,19 +2,6 @@ local Scene = require("engine.scene")
 
 ---@class SceneManager
 ---@field scenes table<string, Scene>
----
----@field register fun(sceneName: string, scene: Scene, isGlobal: boolean?)
----@field transition fun(scene: Scene)
----
----@field load fun()
----@field unload fun()
----@field keyPressed fun(key: love.KeyConstant, scancode: love.Scancode, isRepeat: boolean)?
----@field keyReleased fun(key: love.KeyConstant, scancode: love.Scancode)?
----@field mousepressed fun(x: number, y: number, button: number, isTouch: boolean, presses: number)?
----@field mousemoved fun(x: number, y: number, dx: number, dy: number, isTouch: boolean)?
----@field wheelmoved fun(x: number, y: number)?
----@field update fun(dt: number)
----@field draw fun()
 local SceneManager = {
     scenes = {}, --TODO: might be better to register these in a separate game scene file
 }
@@ -22,12 +9,16 @@ local SceneManager = {
 ---@type Scene[]
 local scenesList = {}
 
+---@param sceneName string
+---@param scene Scene
+---@param isGlobal boolean?
 function SceneManager.register(sceneName, scene, isGlobal)
     Scene.init(scene, isGlobal or false)
     table.insert(scenesList, scene)
     SceneManager.scenes[sceneName] = scene
 end
 
+---@param scene Scene
 function SceneManager.transition(scene)
     for _, s in ipairs(scenesList) do
         if not s.isGlobal and s.isActive then
@@ -63,6 +54,9 @@ local function shouldSkipDraw(scene)
     return not scene.isActive
 end
 
+---@param key love.KeyConstant
+---@param scancode love.Scancode
+---@param isRepeat boolean
 function SceneManager.keypressed(key, scancode, isRepeat)
     for _, scene in ipairs(scenesList) do
         if shouldSkipInput(scene) then
@@ -77,6 +71,8 @@ function SceneManager.keypressed(key, scancode, isRepeat)
     end
 end
 
+---@param key love.KeyConstant
+---@param scancode love.Scancode
 function SceneManager.keyreleased(key, scancode)
     for _, scene in ipairs(scenesList) do
         if shouldSkipInput(scene) then
@@ -91,6 +87,11 @@ function SceneManager.keyreleased(key, scancode)
     end
 end
 
+---@param x number
+---@param y number
+---@param button number
+---@param isTouch boolean
+---@param presses number
 function SceneManager.mousepressed(x, y, button, isTouch, presses)
     for _, scene in ipairs(scenesList) do
         if shouldSkipInput(scene) then
@@ -105,6 +106,11 @@ function SceneManager.mousepressed(x, y, button, isTouch, presses)
     end
 end
 
+---@param x number
+---@param y number
+---@param dx number
+---@param dy number
+---@param isTouch boolean
 function SceneManager.mousemoved(x, y, dx, dy, isTouch)
     for _, scene in ipairs(scenesList) do
         if shouldSkipInput(scene) then
@@ -119,6 +125,8 @@ function SceneManager.mousemoved(x, y, dx, dy, isTouch)
     end
 end
 
+---@param x number
+---@param y number
 function SceneManager.wheelmoved(x, y)
     for _, scene in ipairs(scenesList) do
         if shouldSkipInput(scene) then
@@ -133,6 +141,7 @@ function SceneManager.wheelmoved(x, y)
     end
 end
 
+---@param dt number
 function SceneManager.update(dt)
     for _, scene in ipairs(scenesList) do
         if scene.shouldUnload then

@@ -12,10 +12,6 @@ local TextBox = require("engine.ui.text_box")
 ---@field collider Collider
 ---@field onHover fun(self: Button)?
 ---@field onPress fun(self: Button)?
----
----@field mousepressed fun(self: Button, x: number, y: number, button: number, isTouch: boolean, presses: number)
----@field mousemoved fun(self: Button, x: number, y: number, dx: number, dy: number, isTouch: boolean)
----@field draw fun(self: Button)
 local Button = {}
 Button.__index = Button
 
@@ -23,6 +19,13 @@ local DEFAULT_STATE = 1
 local HOVERED_STATE = 2
 local DISABLED_STATE = 3
 
+---@param image love.Image
+---@param transform love.Transform
+---@param font love.Font
+---@param text string
+---@param onHover fun(self: Button)?
+---@param onPress fun(self: Button)?
+---@return Button
 function Button.new(image, transform, font, text, onHover, onPress)
     local sprite = Sprite.newAnimated(image, {
         [DEFAULT_STATE] = {},
@@ -67,6 +70,11 @@ function Button:enable()
     self.sprite:transitionAnimationState(DEFAULT_STATE)
 end
 
+---@param x number
+---@param y number
+---@param button number
+---@param isTouch boolean
+---@param presses number
 function Button:mousepressed(x, y, button, isTouch, presses)
     if not self.enabled then
         return
@@ -79,6 +87,11 @@ function Button:mousepressed(x, y, button, isTouch, presses)
     end
 end
 
+---@param x number
+---@param y number
+---@param dx number
+---@param dy number
+---@param isTouch boolean
 function Button:mousemoved(x, y, dx, dy, isTouch)
     if not self.enabled then
         return

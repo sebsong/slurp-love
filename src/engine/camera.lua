@@ -10,24 +10,10 @@ local Settings = require("engine.settings")
 ---@field zoomToggleIdx integer
 ---@field zoomToggles integer[]
 ---@field zoomSpeed number
----
----@field new fun(): Camera
----
----@field getScreenWidth fun(self: Camera): integer
----@field getScreenHeight fun(self: Camera): integer
----@field toggleZoom fun(self: Camera)
----@field resetZoom fun(self: Camera)
----@field togglePan fun(self: Camera)
----@field keyPressed fun(self: Camera, key: love.KeyConstant, scancode: love.Scancode, isRepeat: boolean)
----@field mousepressed fun(self: Camera, x: number, y: number, button: number, isTouch: boolean, presses: number)
----@field mousemoved fun(self: Camera, x: number, y: number, dx: number, dy: number, isTouch: boolean)
----@field wheelmoved fun(self: Camera, x: number, y: number)
----@field update fun(self: Camera, dt: number)
----@field getWorldToCanvasTransform fun(self: Camera): love.Transform
----@field getCanvasToWorldTransform fun(self: Camera): love.Transform
 local Camera = {}
 Camera.__index = Camera
 
+---@return Camera
 function Camera.new()
     local zoomToggles = { 1, 0.5 }
     local newCamera = {
@@ -47,10 +33,12 @@ function Camera.new()
     return newCamera
 end
 
+---@return integer
 function Camera:getScreenWidth()
     return self.screenWidth / self.zoom
 end
 
+---@return integer
 function Camera:getScreenHeight()
     return self.screenHeight / self.zoom
 end
@@ -73,6 +61,9 @@ function Camera:togglePan()
     end
 end
 
+---@param key love.KeyConstant
+---@param scancode love.Scancode
+---@param isRepeat boolean
 function Camera:keypressed(key, scancode, isRepeat)
     if key == "return" and not isRepeat then
         self:toggleZoom()
@@ -83,18 +74,30 @@ function Camera:keypressed(key, scancode, isRepeat)
     end
 end
 
+---@param x number
+---@param y number
+---@param button number
+---@param isTouch boolean
+---@param presses number
 function Camera:mousepressed(x, y, button, isTouch, presses)
     if button == 3 then
         self:togglePan()
     end
 end
 
+---@param x number
+---@param y number
+---@param dx number
+---@param dy number
+---@param isTouch boolean
 function Camera:mousemoved(x, y, dx, dy, isTouch)
     if self.isPanning then
         self.transform:translate(dx * self.panSpeed, dy * self.panSpeed)
     end
 end
 
+---@param x number
+---@param y number
 function Camera:wheelmoved(x, y)
     if self.isPanning and y ~= 0 then
         local cameraZoomMultiplier = self.zoomSpeed
@@ -105,13 +108,16 @@ function Camera:wheelmoved(x, y)
     end
 end
 
+---@param dt number
 function Camera:update(dt) end
 
+---@return love.Transform
 function Camera:getWorldToCanvasTransform()
     local camX, camY = self.transform:transformPoint(0, 0)
     return love.math.newTransform(-camX + (self:getScreenWidth() / 2), -camY + (self:getScreenHeight() / 2))
 end
 
+---@return love.Transform
 function Camera:getCanvasToWorldTransform()
     return self:getWorldToCanvasTransform():inverse()
 end

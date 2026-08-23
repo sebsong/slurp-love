@@ -1,10 +1,9 @@
 ---@class Math
----@field absMin fun(v1: number, ...: number | number[] | nil): number
----@field clamped fun(val: number, min: number, max: number): number
----@field inRange fun(val: number, min: number, max: number): boolean
----@field inEllipse fun(xRadius: number, yRadius: number, ellipsePosition: Vec2, testPosition: Vec2): boolean
 local Math = {}
 
+---@param v1 number
+---@param ... number?
+---@return number
 function Math.absMin(v1, ...)
     local minAbs = math.abs(v1)
     local min = v1
@@ -20,14 +19,27 @@ function Math.absMin(v1, ...)
     return min
 end
 
+---@param val number
+---@param min number
+---@param max number
+---@return number
 function Math.clamped(val, min, max)
     return math.min(math.max(val, min), max)
 end
 
+---@param val number
+---@param min number
+---@param max number
+---@return boolean
 function Math.inRange(val, min, max)
     return val >= min and val <= max
 end
 
+---@param xRadius number
+---@param yRadius number
+---@param ellipsePosition Vec2
+---@param testPosition Vec2
+---@return boolean
 function Math.inEllipse(xRadius, yRadius, ellipsePosition, testPosition)
     local positionDiff = testPosition - ellipsePosition
     return ((positionDiff.x / xRadius) ^ 2 + (positionDiff.y / yRadius) ^ 2) <= 1

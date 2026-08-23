@@ -14,17 +14,6 @@ local Animation = require("engine.animation")
 ---@field zIndexOffset integer
 ---@field isSpriteBatch boolean
 ---@field setShader fun()?
----@field draw fun()?
----
----@field new fun(image: love.Image, quad: love.Quad?, xOffset: integer?, yOffset: integer?, zIndex: number?, zIndexOffset :integer?): Sprite
----@field newSpriteBatch fun(spriteBatch: love.SpriteBatch, quad: love.Quad, zIndex: number?, zIndexOffset :integer?): Sprite
----@field newAnimated fun(image: love.Image, animationStateConfigs: AnimationConfig[], numDirections: integer?, xOffset: integer?, yOffset: integer?, zIndex: number?, zIndexOffset :integer?): Sprite
----
----@field transitionAnimationState fun(self: Sprite, state: integer)
----@field setDirection fun(self: Sprite, rotation: integer)
----@field getCurrentAnimation fun(self: Sprite):Animation
----@field update fun(self: Sprite, dt: number)
----@field draw fun(self: Sprite, transform: love.Transform)
 local Sprite = {}
 Sprite.__index = Sprite
 
@@ -57,10 +46,22 @@ local function new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffs
     return sprite
 end
 
+---@param image love.Image
+---@param quad love.Quad?
+---@param xOffset integer?
+---@param yOffset integer?
+---@param zIndex number?
+---@param zIndexOffset integer?
+---@return Sprite
 function Sprite.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset)
     return new(image, quad, nil, xOffset, yOffset, zIndex, zIndexOffset, false)
 end
 
+---@param spriteBatch love.SpriteBatch
+---@param quad love.Quad
+---@param zIndex number?
+---@param zIndexOffset integer?
+---@return Sprite
 function Sprite.newSpriteBatch(spriteBatch, quad, zIndex, zIndexOffset)
     return new(spriteBatch, quad, nil, nil, nil, zIndex, zIndexOffset, true)
 end
@@ -75,6 +76,14 @@ end
 -- 2 states (o vs u)
 -- 3 frames (o vs O)
 -- 4 directions
+---@param image love.Image
+---@param animationStateConfigs AnimationConfig[]
+---@param numDirections integer?
+---@param xOffset integer?
+---@param yOffset integer?
+---@param zIndex number?
+---@param zIndexOffset integer?
+---@return Sprite
 function Sprite.newAnimated(image, animationStateConfigs, numDirections, xOffset, yOffset, zIndex, zIndexOffset)
     assert(#animationStateConfigs > 0, "must provide at least 1 animation config")
 
@@ -105,6 +114,7 @@ function Sprite.newAnimated(image, animationStateConfigs, numDirections, xOffset
     return sprite
 end
 
+---@param state integer
 function Sprite:transitionAnimationState(state)
     assert(state >= 1 and state <= #self.animations, "invalid animation state")
     self:getCurrentAnimation():stop()
@@ -112,18 +122,22 @@ function Sprite:transitionAnimationState(state)
     self:getCurrentAnimation():play()
 end
 
+---@param rotation integer
 function Sprite:setDirection(rotation)
     self:getCurrentAnimation():setDirection(rotation)
 end
 
+---@return Animation
 function Sprite:getCurrentAnimation()
     return self.animations[self.currentAnimationState]
 end
 
+---@param dt number
 function Sprite:update(dt)
     self:getCurrentAnimation():update(dt)
 end
 
+---@param transform love.Transform
 function Sprite:draw(transform)
     if not self.shouldDraw then
         return

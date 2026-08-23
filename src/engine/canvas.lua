@@ -4,9 +4,6 @@
 ---@field canvasToScreenTransform love.Transform
 ---@field screenToCanvasTransform love.Transform
 ---@field canvas love.Canvas
----
----@field load fun()
----@field draw fun(drawFunction: fun())
 local Canvas = {}
 
 local Settings = require("engine.settings")
@@ -33,6 +30,7 @@ function Canvas.load()
     Canvas.canvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
 end
 
+---@param drawFunction fun()
 function Canvas.draw(drawFunction)
     Canvas.canvas:renderTo(function()
         love.graphics.clear()

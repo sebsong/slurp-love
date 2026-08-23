@@ -1,7 +1,8 @@
 ---@class Matrix
----@field getTransposed fun(matrix: number[][]): number[][]
 local Matrix = {}
 
+---@param matrix number[][]
+---@return number[][]
 function Matrix.getTransposed(matrix)
     local transposed = {}
     for i, row in ipairs(matrix) do

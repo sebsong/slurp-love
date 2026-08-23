@@ -4,8 +4,6 @@ local Settings = require("engine.settings")
 ---@alias VerticalAlignOption 1 | 4 | 5
 
 ---@class Align
----@field alignedTransform fun(originTransform: love.Transform ,originWidth: integer, originHeight: integer, width: integer, height: integer, horizontalAlign: HorizontalAlignOption, verticalAlign: VerticalAlignOption, xPadding: integer?, yPadding: integer?): love.Transform
----@field screenAlignedTransform fun(width: integer, height: integer, horizontalAlign: HorizontalAlignOption, verticalAlign: VerticalAlignOption, xPadding: integer?, yPadding: integer?): love.Transform
 local Align = {
     CENTER = 1,
     LEFT = 2,
@@ -14,6 +12,16 @@ local Align = {
     BOTTOM = 5,
 }
 
+---@param originTransform love.Transform
+---@param originWidth integer
+---@param originHeight integer
+---@param width integer
+---@param height integer
+---@param horizontalAlign HorizontalAlignOption
+---@param verticalAlign VerticalAlignOption
+---@param xPadding integer?
+---@param yPadding integer?
+---@return love.Transform
 function Align.alignedTransform(
     originTransform,
     originWidth,
@@ -52,6 +60,13 @@ function Align.alignedTransform(
     return love.math.newTransform(x + xOffset, y + yOffset)
 end
 
+---@param width integer
+---@param height integer
+---@param horizontalAlign HorizontalAlignOption
+---@param verticalAlign VerticalAlignOption
+---@param xPadding integer?
+---@param yPadding integer?
+---@return love.Transform
 function Align.screenAlignedTransform(width, height, horizontalAlign, verticalAlign, xPadding, yPadding)
     return Align.alignedTransform(
         love.math.newTransform(0, 0),

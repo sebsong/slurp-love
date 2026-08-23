@@ -1,10 +1,8 @@
 ---@class Serialization
----@field primitiveToString fun(primitive: number | boolean | string): string
----@field tableToString fun(tbl: table, indentLevel: integer?): string
----@field tableToFile fun(tbl: table, fileName: string)
----@field fileToTable fun(fileName: string): table
 local Serialization = {}
 
+---@param primitive boolean|string|number
+---@return string
 function Serialization.primitiveToString(primitive)
     local primitiveType = type(primitive)
 
@@ -25,6 +23,9 @@ local function indentedString(str, indentLevel)
     return ("\t"):rep(indentLevel) .. str
 end
 
+---@param tbl table
+---@param indentLevel integer?
+---@return string
 function Serialization.tableToString(tbl, indentLevel)
     assert(type(tbl) == "table", "must be a table")
 
@@ -57,12 +58,16 @@ function Serialization.tableToString(tbl, indentLevel)
     return str
 end
 
+---@param tbl table
+---@param fileName string
 function Serialization.tableToFile(tbl, fileName)
     local fileString = ("return %s\n"):format(Serialization.tableToString(tbl))
     local file = love.filesystem.newFile(fileName, "w")
     file:write(fileString)
 end
 
+---@param fileName string
+---@return table
 function Serialization.fileToTable(fileName)
     local file = love.filesystem.newFile(fileName, "r")
     if not file then

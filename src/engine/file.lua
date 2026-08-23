@@ -1,8 +1,8 @@
 ---@class File
----@field assertFileExtension fun(filePath: string, expectedFileExt: string)
----@field stripFileExtension fun(filePath: string): string
 local File = {}
 
+---@param filePath string
+---@param expectedFileExt string
 function File.assertFileExtension(filePath, expectedFileExt)
     local fileExt = string.sub(filePath, string.find(filePath, "%.%a+") or #filePath - 3, #filePath)
     assert(
@@ -11,6 +11,8 @@ function File.assertFileExtension(filePath, expectedFileExt)
     )
 end
 
+---@param filePath string
+---@return string
 function File.stripFileExtension(filePath)
     local first, _ = string.find(filePath, "%.%a+")
     if first then

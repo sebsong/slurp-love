@@ -15,12 +15,6 @@ local Vec2 = require("engine.vec2")
 ---@field tilemapIndexToWorldTransform love.Transform
 ---@field tilesets Tileset[]
 ---@field layers Layer[]
----
----@field newTileset fun(imageFilePath: string, tileWidth: integer, tileHeight: integer): Tileset
----@field newTilemapLua fun(luaFilepath: string, tilesets: Tileset[]): Tilemap
----@field getIntersectionTiles fun(tilemap: Tilemap, tiles: Tile[], camera: Camera): Tile[]
----@field drawTiles fun(tilemap: Tilemap, tiles: Tile[])
----@field getWorldRowIdx fun(colIdx: integer, rowIdx: integer): integer
 local Tilemap = {}
 
 ---@class Tileset
@@ -56,6 +50,10 @@ local Tilemap = {}
 ---@field tileId integer
 ---@field properties table
 
+---@param tilemap Tilemap
+---@param tiles Tile[]
+---@param camera Camera
+---@return Tile[]
 function Tilemap.getIntersectionTiles(tilemap, tiles, camera)
     local cameraX, cameraY = camera.transform:transformPoint(0, 0)
     local startX, startY = cameraX - (camera:getScreenWidth() / 2), cameraY - (camera:getScreenHeight() / 2)
@@ -100,6 +98,8 @@ function Tilemap.getIntersectionTiles(tilemap, tiles, camera)
     return intersectionTiles
 end
 
+---@param tilemap Tilemap
+---@param tiles Tile[]
 function Tilemap.drawTiles(tilemap, tiles)
     for _, tile in ipairs(tiles) do
         local tilesetIndex = tile.tilesetIndex
@@ -121,6 +121,10 @@ function Tilemap.drawTiles(tilemap, tiles)
     end
 end
 
+---@param imageFilePath string
+---@param tileWidth integer
+---@param tileHeight integer
+---@return Tileset
 function Tilemap.newTileset(imageFilePath, tileWidth, tileHeight)
     local image = love.graphics.newImage(imageFilePath)
     local tileQuads = {}
@@ -184,6 +188,9 @@ end
 --     *		1
 --   *   *		2 (1, 2) => 2, (2, 1) => 2
 -- *   *   * 	3
+---@param colIdx integer
+---@param rowIdx integer
+---@return integer
 function Tilemap.getWorldRowIdx(colIdx, rowIdx)
     return (colIdx + rowIdx) - 1
 end
@@ -221,6 +228,9 @@ end
 
 -- NOTE: tilesets must match order of tilesets in tilemap
 -- NOTE: tilesets and layers are 1:1
+---@param luaFilepath string
+---@param tilesets Tileset[]
+---@return Tilemap
 function Tilemap.newTilemapLua(luaFilepath, tilesets)
     File.assertFileExtension(luaFilepath, ".lua")
 

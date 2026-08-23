@@ -1,17 +1,10 @@
 ---@class Set
 ---@field length integer
----
----@field new fun(...: any): Set
----
----@field insert fun(self:Set, val: any, ...: any)
----@field remove fun(self:Set, val: any, ...: any)
----@field contains fun(self: Set, item: any): boolean
----@field len fun(self: Set): integer
----@field isEmpty fun(self: Set): boolean
----@field toArray fun(self: Set): any[]
 local Set = {}
 Set.__index = Set
 
+---@param ... any
+---@return Set
 function Set.new(...)
     local set = {
         length = 0,
@@ -30,6 +23,8 @@ local function insert(set, val)
     end
 end
 
+---@param val any
+---@param ... any
 function Set:insert(val, ...)
     if getmetatable(val) == Set then
         assert(... == nil, "shouldn't pass in more args if val is a set")
@@ -51,6 +46,8 @@ local function remove(set, val)
     end
 end
 
+---@param val any
+---@param ... any
 function Set:remove(val, ...)
     if getmetatable(val) == Set then
         assert(... == nil, "shouldn't pass in more args if val is a set")
@@ -65,18 +62,23 @@ function Set:remove(val, ...)
     end
 end
 
+---@param item any
+---@return boolean
 function Set:contains(item)
     return self[item] ~= nil
 end
 
+---@return integer
 function Set:len()
     return self.length
 end
 
+---@return boolean
 function Set:isEmpty()
     return self:len() == 0
 end
 
+---@return any[]
 function Set:toArray()
     local array = {}
     for item, _ in pairs(self) do

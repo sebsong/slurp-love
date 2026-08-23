@@ -2,10 +2,6 @@ local Math = require("engine.math")
 local Vec2 = require("engine.vec2")
 
 ---@class Collision
----@field hitTest fun(x: number, y: number, collider: Collider, transform: love.Transform): boolean
----@field getPositionUpdate fun(collidable: Collidable, collidables: Collidable[], targetPositionUpdate: Vec2): Vec2
----@field drawTileColliders fun(tilemap: table, layerIndex: number)
----@field drawCollider fun(collider: Collider, position: Vec2)
 local Collision = {}
 
 ---@class Collider
@@ -19,6 +15,11 @@ local Collision = {}
 ---@field collidingWith Set
 ---@field onCollision fun(self: Collidable, otherCollidable: Collidable)
 
+---@param x number
+---@param y number
+---@param collider Collider
+---@param transform love.Transform
+---@return boolean
 function Collision.hitTest(x, y, collider, transform)
     local colliderX, colliderY = transform:transformPoint(0, 0)
     local xMin, xMax = colliderX, colliderX + collider.width
@@ -41,6 +42,10 @@ local function getRectExtents(x, y, halfWidth, halfHeight)
     return (x - halfWidth), (x + halfWidth), (y - halfHeight), (y + halfHeight)
 end
 
+---@param collidable Collidable
+---@param collidables Collidable[]
+---@param targetPositionUpdate Vec2
+---@return Vec2
 function Collision.getPositionUpdate(collidable, collidables, targetPositionUpdate)
     local positionUpdate = targetPositionUpdate
     local position = getCollidablePosition(collidable)
@@ -110,20 +115,24 @@ function Collision.getPositionUpdate(collidable, collidables, targetPositionUpda
     return positionUpdate
 end
 
-function Collision.drawTileColliders(tilemap, layerIndex)
+---@param tilemap Tilemap
+---@param layerIndex integer
+function Collision.debugDrawTileColliders(tilemap, layerIndex)
     love.graphics.push()
     love.graphics.applyTransform(tilemap.tilemapIndexToWorldTransform)
     for rowIdx, row in ipairs(tilemap.layers[layerIndex].tiles) do
         for colIdx, tile in ipairs(row) do
             if tile.tileId then
-                Collision.drawCollider({ width = 1, height = 1 }, Vec2.new(colIdx, rowIdx))
+                Collision.debugDrawCollider({ width = 1, height = 1 }, Vec2.new(colIdx, rowIdx))
             end
         end
     end
     love.graphics.pop()
 end
 
-function Collision.drawCollider(collider, position)
+---@param collider Collider
+---@param position Vec2
+function Collision.debugDrawCollider(collider, position)
     local x, y = unpack(position)
     local width, height = collider.width, collider.height
     local colliderVertices = {
