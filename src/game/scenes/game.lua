@@ -1,5 +1,4 @@
 local Camera = require("engine.camera")
-local Color = require("engine.color")
 local Math = require("engine.math")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
@@ -78,7 +77,6 @@ function Game.load()
     didWin = false
     didLose = false
 
-    Color.loadPalette("assets/art/retrotronic-dx.hex")
     Package.load()
     GameUi.load()
     Music.load()

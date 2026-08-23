@@ -2,6 +2,7 @@
 require("engine.debug")
 
 local Canvas = require("engine.canvas")
+local Color = require("engine.color")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
 
@@ -28,6 +29,7 @@ function love.load()
     love.graphics.setBackgroundColor(0, 0, 0)
     Canvas.load()
     Font.load()
+    Color.loadPalette("assets/art/retrotronic-dx.hex")
 
     SceneManager.register("global", Global, true)
     SceneManager.register("dayTracker", DayTracker, true)

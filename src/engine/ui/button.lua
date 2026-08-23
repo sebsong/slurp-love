@@ -1,5 +1,6 @@
 local Align = require("engine.ui.align")
 local Collision = require("engine.collision")
+local Color = require("engine.color")
 local Sprite = require("engine.sprite")
 local TextBox = require("engine.ui.text_box")
 
@@ -34,7 +35,17 @@ function Button.new(image, transform, font, text, onHover, onPress)
         enabled = true,
 
         sprite = sprite,
-        textBox = TextBox.new(transform, width, height, font, text, Align.CENTER, Align.CENTER, "center"),
+        textBox = TextBox.new(
+            transform,
+            width,
+            height,
+            font,
+            Color.palette[8],
+            text,
+            Align.CENTER,
+            Align.CENTER,
+            "center"
+        ),
         transform = transform,
         collider = { width = width, height = height },
 

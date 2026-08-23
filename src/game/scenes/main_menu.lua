@@ -30,7 +30,7 @@ function MainMenu.load()
         GameUi.PADDING,
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) * 2 + GameUi.PADDING
     )
-    playButton = Button.new(buttonImage, playButtonTransform, Font.large, "play", nil, function()
+    playButton = Button.new(buttonImage, playButtonTransform, Font.medium, "play", nil, function()
         SceneManager.transition(SceneManager.scenes.dayTransition)
     end)
 
@@ -54,7 +54,7 @@ function MainMenu.load()
         GameUi.PADDING,
         GameUi.PADDING
     )
-    exitButton = Button.new(buttonImage, exitButtonTransform, Font.large, "exit", nil, function()
+    exitButton = Button.new(buttonImage, exitButtonTransform, Font.medium, "exit", nil, function()
         love.event.quit()
     end)
 end

@@ -2,6 +2,7 @@ local PauseMenu = {}
 
 local Align = require("engine.ui.align")
 local Button = require("engine.ui.button")
+local Color = require("engine.color")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 
@@ -134,7 +135,7 @@ function PauseMenu.draw()
     end
 
     love.graphics.setFont(Font.large)
-    love.graphics.printf("paused", titleTextTransform, menu.sprite.width, "center")
+    love.graphics.printf({ Color.palette[8], "paused" }, titleTextTransform, menu.sprite.width, "center")
 
     resumeButton:draw()
     mainMenuButton:draw()

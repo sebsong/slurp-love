@@ -2,7 +2,9 @@
 ---@field palette ColorPalette
 ---
 ---@field loadPalette fun(hexFilePath: string)
-local Color = {}
+local Color = {
+    palette = {},
+}
 
 ---@alias ColorPalette number[][]
 
@@ -18,7 +20,6 @@ local function hexToRGBA(hexString)
 end
 
 function Color.loadPalette(hexFilePath)
-    Color.palette = {}
     local isBlankColor = true
     for hexColor in love.filesystem.lines(hexFilePath) do
         if isBlankColor then

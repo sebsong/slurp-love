@@ -1,4 +1,5 @@
 local Align = require("engine.ui.align")
+local Color = require("engine.color")
 local Input = require("engine.input")
 local Save = require("engine.save")
 local SceneManager = require("engine.scene_manager")
@@ -54,6 +55,7 @@ function DayTransition.load()
         Settings.canvasPixelWidth,
         Font.large:getHeight(),
         Font.large,
+        Color.palette[8],
         DAY_TO_NAME[DayTracker.currentDay],
         Align.CENTER,
         Align.CENTER,
@@ -78,6 +80,7 @@ function DayTransition.load()
         Settings.canvasPixelWidth,
         Font.medium:getHeight(),
         Font.medium,
+        Color.palette[8],
         ("record:\ngas: %.2f\ntime: %s"):format(gasRemaining, secondsToTimeString(elapsedSeconds)),
         Align.CENTER,
         Align.CENTER,
@@ -97,6 +100,7 @@ function DayTransition.load()
         Settings.canvasPixelWidth,
         Font.medium:getHeight(),
         Font.medium,
+        Color.palette[8],
         "press any button to continue",
         Align.CENTER,
         Align.CENTER,

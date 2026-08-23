@@ -1,5 +1,6 @@
 local Align = require("engine.ui.align")
 local Button = require("engine.ui.button")
+local Color = require("engine.color")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
 local TextBox = require("engine.ui.text_box")
@@ -35,6 +36,7 @@ function DaySelector.load()
         Settings.canvasPixelWidth,
         Settings.canvasPixelHeight,
         Font.large,
+        Color.palette[4],
         "select day",
         Align.CENTER,
         Align.TOP,
