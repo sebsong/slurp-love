@@ -7,7 +7,7 @@ local TextBox = require("engine.ui.text_box")
 ---@class Button
 ---@field enabled boolean
 ---@field sprite Sprite
----@field textBox table
+---@field textBox TextBox
 ---@field transform love.Transform
 ---@field collider Collider
 ---@field onHover fun(self: Button)?

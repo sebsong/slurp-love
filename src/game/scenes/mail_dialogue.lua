@@ -1,10 +1,13 @@
 local MailDialogue = {}
 
 local Align = require("engine.ui.align")
+local Color = require("engine.color")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
+local TextBox = require("engine.ui.text_box")
 
 local Font = require("game.font")
+local GameUi = require("game.ui")
 
 local OPEN_STATE = 1
 local CLOSED_STATE = 2
@@ -16,15 +19,13 @@ local isOpen
 local shouldStop
 
 local dialogueBox
-local textWidth
-local textHeight
-local textTransform
+---@type TextBox
+local dialogueTextBox
 
 local dialogueLines = {}
 local onDialogueClose
 
 local currentLineIndex
-local currentLine
 local numCharactersToShow
 local charactersPerSecond
 local isFastForwarding
@@ -32,7 +33,7 @@ local isLineFinished
 local isDialogueFinished
 
 local function resetLine()
-    currentLine = ""
+    dialogueTextBox:setText("")
     numCharactersToShow = 0
     isFastForwarding = false
     isLineFinished = false
@@ -80,7 +81,7 @@ end
 local function setLines(lines)
     for i, line in ipairs(lines) do
         -- pre-wrap text to avoid words wrapping as they're revealed
-        local _, textLines = Font.medium:getWrap(line:lower(), textWidth)
+        local _, textLines = dialogueTextBox.text:getFont():getWrap(line:lower(), dialogueTextBox.width)
         local wrappedLine = table.concat(textLines, "\n")
         dialogueLines[i] = wrappedLine
     end
@@ -112,24 +113,26 @@ function MailDialogue.load()
             end,
         },
     })
+    local dialogueBoxTransform =
+        Align.screenAlignedTransform(dialogueBoxSprite.width, dialogueBoxSprite.height, Align.CENTER, Align.BOTTOM)
+
     dialogueBox = {
         sprite = dialogueBoxSprite,
-        transform = Align.screenAlignedTransform(
-            dialogueBoxSprite.width,
-            dialogueBoxSprite.height,
-            Align.CENTER,
-            Align.BOTTOM,
-            0,
-            0
-        ),
+        transform = dialogueBoxTransform,
     }
 
-    textWidth = 475
-    textHeight = 100
-    local xPadding = 90
-    local yPadding = 25
-    textTransform = Align.screenAlignedTransform(textWidth, textHeight, Align.CENTER, Align.BOTTOM, xPadding, yPadding)
-
+    local dialogueTextBoxTransform = dialogueBoxTransform:clone():translate(53 + GameUi.PADDING, 42 + GameUi.PADDING)
+    dialogueTextBox = TextBox.new(
+        dialogueTextBoxTransform,
+        320 - GameUi.PADDING * 2,
+        120 - GameUi.PADDING * 2,
+        Font.small,
+        Color.palette[8],
+        "",
+        Align.CENTER,
+        Align.TOP,
+        "left"
+    )
     setLines(dialogueLines)
 end
 
@@ -179,7 +182,8 @@ function MailDialogue.update(dt)
         numAdditionalCharacters = numAdditionalCharacters * FAST_FORWARD_MULTIPLIER
     end
     numCharactersToShow = numCharactersToShow + numAdditionalCharacters
-    currentLine = string.sub(fullLine, 1, numCharactersToShow)
+    local currentLine = string.sub(fullLine, 1, numCharactersToShow)
+    dialogueTextBox:setText({ Color.palette[8], currentLine })
 
     if not isLineFinished and #currentLine == #fullLine then
         isLineFinished = true
@@ -200,8 +204,7 @@ function MailDialogue.draw()
         return
     end
 
-    love.graphics.setFont(Font.small)
-    love.graphics.printf(currentLine, textTransform, textWidth, "left")
+    dialogueTextBox:draw()
 
     love.graphics.pop()
 end
