@@ -14,7 +14,6 @@ local Align = require("engine.ui.align")
 local TextBox = {}
 TextBox.__index = TextBox
 
---TODO: allow color selection
 function TextBox.new(transform, width, height, font, color, rawText, horizontalAlign, verticalAlign, textAlignMode)
     horizontalAlign = horizontalAlign or Align.CENTER
     verticalAlign = verticalAlign or Align.CENTER
