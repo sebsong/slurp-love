@@ -68,16 +68,16 @@ function PauseMenu.load()
     })
     menu = {
         sprite = menuSprite,
-        transform = Align.screenAlignedTransform(menuSprite.width, menuSprite.height, Align.CENTER, Align.CENTER),
+        transform = Align.screenAlignedTransform(menuSprite.width, menuSprite.height, "center", "center"),
     }
 
     titleTextTransform =
-        Align.screenAlignedTransform(menuSprite.width, Font.large:getHeight(), Align.CENTER, Align.CENTER, 0, -75)
+        Align.screenAlignedTransform(menuSprite.width, Font.large:getHeight(), "center", "center", 0, -75)
 
     local buttonImage = love.graphics.newImage("assets/art/button.png")
 
     local resumeTransform =
-        Align.screenAlignedTransform(GameUi.BUTTON_DIMENSIONS.x, GameUi.BUTTON_DIMENSIONS.y, Align.CENTER, Align.CENTER)
+        Align.screenAlignedTransform(GameUi.BUTTON_DIMENSIONS.x, GameUi.BUTTON_DIMENSIONS.y, "center", "center")
     resumeButton = Button.new(buttonImage, resumeTransform, Font.medium, "resume", nil, function(_button)
         PauseMenu.toggle()
     end)
@@ -85,8 +85,8 @@ function PauseMenu.load()
     local mainMenuTransform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.CENTER,
-        Align.CENTER,
+        "center",
+        "center",
         0,
         GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )

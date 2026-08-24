@@ -114,7 +114,7 @@ function MailDialogue.load()
         },
     })
     local dialogueBoxTransform =
-        Align.screenAlignedTransform(dialogueBoxSprite.width, dialogueBoxSprite.height, Align.CENTER, Align.BOTTOM)
+        Align.screenAlignedTransform(dialogueBoxSprite.width, dialogueBoxSprite.height, "center", "bottom")
 
     dialogueBox = {
         sprite = dialogueBoxSprite,
@@ -129,8 +129,8 @@ function MailDialogue.load()
         Font.small,
         Color.palette[8],
         "",
-        Align.CENTER,
-        Align.TOP,
+        "center",
+        "top",
         "left"
     )
     setLines(dialogueLines)

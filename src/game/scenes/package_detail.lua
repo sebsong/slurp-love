@@ -69,12 +69,7 @@ function PackageDetail.load()
     })
     detailBox = {
         sprite = detailBoxSprite,
-        transform = Align.screenAlignedTransform(
-            detailBoxSprite.width,
-            detailBoxSprite.height,
-            Align.CENTER,
-            Align.CENTER
-        ),
+        transform = Align.screenAlignedTransform(detailBoxSprite.width, detailBoxSprite.height, "center", "center"),
     }
 
     local packageDetailsImage = love.graphics.newImage("assets/art/package_details.png")
@@ -101,8 +96,8 @@ function PackageDetail.load()
         transform = Align.screenAlignedTransform(
             packageDetailSprite.width,
             packageDetailSprite.height,
-            Align.CENTER,
-            Align.CENTER,
+            "center",
+            "center",
             0,
             -50
         ),
@@ -110,7 +105,7 @@ function PackageDetail.load()
 
     textWidth = 420
     textHeight = 105
-    textTransform = Align.screenAlignedTransform(textWidth, textHeight, Align.CENTER, Align.BOTTOM)
+    textTransform = Align.screenAlignedTransform(textWidth, textHeight, "center", "bottom")
 end
 
 function PackageDetail.unload() end

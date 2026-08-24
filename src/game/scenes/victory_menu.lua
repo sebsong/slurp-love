@@ -19,7 +19,7 @@ function VictoryMenu.load()
     local menuSprite = Sprite.new(menuImage)
     menu = {
         sprite = menuSprite,
-        transform = Align.screenAlignedTransform(menuSprite.width, menuSprite.height, Align.CENTER, Align.CENTER),
+        transform = Align.screenAlignedTransform(menuSprite.width, menuSprite.height, "center", "center"),
     }
 
     victoryTextTransform = love.math.newTransform(0, 50)
@@ -29,8 +29,8 @@ function VictoryMenu.load()
     local mainMenuTransform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.CENTER,
-        Align.CENTER,
+        "center",
+        "center",
         0,
         GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )

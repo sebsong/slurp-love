@@ -20,8 +20,8 @@ TextBox.__index = TextBox
 ---@param textAlignMode love.AlignMode
 ---@return TextBox
 function TextBox.new(transform, width, height, font, color, rawText, horizontalAlign, verticalAlign, textAlignMode)
-    horizontalAlign = horizontalAlign or Align.CENTER
-    verticalAlign = verticalAlign or Align.CENTER
+    horizontalAlign = horizontalAlign or "center"
+    verticalAlign = verticalAlign or "center"
     textAlignMode = textAlignMode or "center"
 
     local text = love.graphics.newText(font, rawText)

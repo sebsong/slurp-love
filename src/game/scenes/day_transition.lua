@@ -45,8 +45,8 @@ function DayTransition.load()
     local dayTextBoxTransform = Align.screenAlignedTransform(
         Settings.canvasPixelWidth,
         Font.large:getHeight(),
-        Align.CENTER,
-        Align.TOP,
+        "center",
+        "top",
         0,
         GameUi.PADDING * 2
     )
@@ -57,8 +57,8 @@ function DayTransition.load()
         Font.large,
         Color.palette[8],
         DAY_TO_NAME[DayTracker.currentDay],
-        Align.CENTER,
-        Align.CENTER,
+        "center",
+        "center",
         "center"
     )
 
@@ -70,8 +70,8 @@ function DayTransition.load()
     local dayStatsTextBoxTransform = Align.screenAlignedTransform(
         Settings.canvasPixelWidth,
         Font.medium:getHeight(),
-        Align.CENTER,
-        Align.CENTER,
+        "center",
+        "center",
         0,
         -GameUi.PADDING * 3
     )
@@ -82,16 +82,16 @@ function DayTransition.load()
         Font.medium,
         Color.palette[8],
         ("record:\ngas: %.2f\ntime: %s"):format(gasRemaining, secondsToTimeString(elapsedSeconds)),
-        Align.CENTER,
-        Align.CENTER,
+        "center",
+        "center",
         "center"
     )
 
     local continueTextBoxTransform = Align.screenAlignedTransform(
         Settings.canvasPixelWidth,
         Font.medium:getHeight(),
-        Align.CENTER,
-        Align.BOTTOM,
+        "center",
+        "bottom",
         0,
         GameUi.PADDING * 4
     )
@@ -102,8 +102,8 @@ function DayTransition.load()
         Font.medium,
         Color.palette[8],
         "press any button to continue",
-        Align.CENTER,
-        Align.CENTER,
+        "center",
+        "center",
         "center"
     )
 

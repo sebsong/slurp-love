@@ -20,7 +20,7 @@ function GameOverMenu.load()
     local buttonImage = love.graphics.newImage("assets/art/button.png")
 
     local restartTransform =
-        Align.screenAlignedTransform(GameUi.BUTTON_DIMENSIONS.x, GameUi.BUTTON_DIMENSIONS.y, Align.CENTER, Align.CENTER)
+        Align.screenAlignedTransform(GameUi.BUTTON_DIMENSIONS.x, GameUi.BUTTON_DIMENSIONS.y, "center", "center")
     restartButton = Button.new(buttonImage, restartTransform, Font.medium, "restart", nil, function(_button)
         SceneManager.scenes.gameOverMenu:stop()
         SceneManager.scenes.game:restart()
@@ -29,8 +29,8 @@ function GameOverMenu.load()
     local mainMenuTransform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.CENTER,
-        Align.CENTER,
+        "center",
+        "center",
         0,
         GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )

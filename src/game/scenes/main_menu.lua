@@ -25,8 +25,8 @@ function MainMenu.load()
     local playButtonTransform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.LEFT,
-        Align.BOTTOM,
+        "left",
+        "bottom",
         GameUi.PADDING,
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) * 2 + GameUi.PADDING
     )
@@ -37,8 +37,8 @@ function MainMenu.load()
     local daySelectorButtonTransform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.LEFT,
-        Align.BOTTOM,
+        "left",
+        "bottom",
         GameUi.PADDING,
         GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )
@@ -49,8 +49,8 @@ function MainMenu.load()
     local exitButtonTransform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.LEFT,
-        Align.BOTTOM,
+        "left",
+        "bottom",
         GameUi.PADDING,
         GameUi.PADDING
     )

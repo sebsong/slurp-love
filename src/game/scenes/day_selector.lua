@@ -38,8 +38,8 @@ function DaySelector.load()
         Font.large,
         Color.palette[4],
         "select day",
-        Align.CENTER,
-        Align.TOP,
+        "center",
+        "top",
         "center"
     )
 
@@ -48,8 +48,8 @@ function DaySelector.load()
     local backButtonTranform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.LEFT,
-        Align.TOP,
+        "left",
+        "top",
         GameUi.PADDING,
         GameUi.PADDING
     )
@@ -60,8 +60,8 @@ function DaySelector.load()
     local mondayButtonTranform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.CENTER,
-        Align.BOTTOM,
+        "center",
+        "bottom",
         -(GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x),
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) + GameUi.PADDING
     )
@@ -72,8 +72,8 @@ function DaySelector.load()
     local tuesdayButtonTranform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.CENTER,
-        Align.BOTTOM,
+        "center",
+        "bottom",
         0,
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) + GameUi.PADDING
     )
@@ -84,8 +84,8 @@ function DaySelector.load()
     local wednesdayButtonTranform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.CENTER,
-        Align.BOTTOM,
+        "center",
+        "bottom",
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x),
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) + GameUi.PADDING
     )
@@ -96,8 +96,8 @@ function DaySelector.load()
     local thursdayButtonTranform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.CENTER,
-        Align.BOTTOM,
+        "center",
+        "bottom",
         -(GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x) / 2,
         GameUi.PADDING
     )
@@ -108,8 +108,8 @@ function DaySelector.load()
     local fridayButtonTranform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        Align.CENTER,
-        Align.BOTTOM,
+        "center",
+        "bottom",
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x) / 2,
         GameUi.PADDING
     )

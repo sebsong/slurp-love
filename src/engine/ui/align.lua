@@ -1,16 +1,10 @@
 local Settings = require("engine.settings")
 
----@alias HorizontalAlignOption 1 | 2 | 3
----@alias VerticalAlignOption 1 | 4 | 5
-
 ---@class Align
-local Align = {
-    CENTER = 1,
-    LEFT = 2,
-    RIGHT = 3,
-    TOP = 4,
-    BOTTOM = 5,
-}
+local Align = {}
+
+---@alias HorizontalAlignOption "left" | "center" | "right"
+---@alias VerticalAlignOption "top" | "center" | "bottom"
 
 ---@param originTransform love.Transform
 ---@param originWidth integer
@@ -37,20 +31,20 @@ function Align.alignedTransform(
     width, height = width or 0, height or 0
     local xOffset, yOffset = xPadding or 0, yPadding or 0
 
-    if horizontalAlign == Align.LEFT then
-    elseif horizontalAlign == Align.CENTER then
+    if horizontalAlign == "left" then
+    elseif horizontalAlign == "center" then
         x = x + (originWidth / 2) - (width / 2)
-    elseif horizontalAlign == Align.RIGHT then
+    elseif horizontalAlign == "right" then
         x = x + originWidth - width
         xOffset = -xOffset
     else
         error(("invalid align option: %d"):format(horizontalAlign))
     end
 
-    if verticalAlign == Align.TOP then
-    elseif verticalAlign == Align.CENTER then
+    if verticalAlign == "top" then
+    elseif verticalAlign == "center" then
         y = y + (originHeight / 2) - (height / 2)
-    elseif verticalAlign == Align.BOTTOM then
+    elseif verticalAlign == "bottom" then
         y = y + originHeight - height
         yOffset = -yOffset
     else

@@ -31,8 +31,8 @@ function GameUi.load()
         transform = Align.screenAlignedTransform(
             gasMeterSprite.width,
             gasMeterSprite.height,
-            Align.LEFT,
-            Align.BOTTOM,
+            "left",
+            "bottom",
             GameUi.PADDING,
             GameUi.PADDING
         ),
@@ -50,8 +50,8 @@ function GameUi.load()
         transform = Align.screenAlignedTransform(
             gasMeterProgressSprite.width,
             gasMeterProgressSprite.height,
-            Align.LEFT,
-            Align.BOTTOM,
+            "left",
+            "bottom",
             GameUi.PADDING,
             GameUi.PADDING
         ),
@@ -64,8 +64,8 @@ function GameUi.load()
         transform = Align.screenAlignedTransform(
             packageContainerSprite.width,
             packageContainerSprite.height,
-            Align.RIGHT,
-            Align.BOTTOM,
+            "right",
+            "bottom",
             GameUi.PADDING,
             GameUi.PADDING
         ),
