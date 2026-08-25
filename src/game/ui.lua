@@ -13,10 +13,10 @@ local gasMeterWidth, gasMeterHeight = 16, 128
 local GAS_TEXT_WIDTH = gasMeterWidth
 local GAS_TEXT_HEIGHT = 12
 
-local packageContainerWidth, packageContainerHeight = 20, 92
-local packageUiVerticalSpacing = -18
-local packageOffsetXInitial = 2
-local packageOffsetYInitial = packageContainerHeight + packageUiVerticalSpacing
+local packageContainerWidth, packageContainerHeight = 22, 102
+local packageUiVerticalSpacing = -20
+local packageOffsetXInitial = 3
+local packageOffsetYInitial = packageContainerHeight - 19
 
 local gasMeter
 local gasMeterProgress
@@ -57,7 +57,7 @@ function GameUi.load()
         ),
     }
 
-    local packageContainerQuad = love.graphics.newQuad(32, 36, packageContainerWidth, packageContainerHeight, uiImage)
+    local packageContainerQuad = love.graphics.newQuad(32, 26, packageContainerWidth, packageContainerHeight, uiImage)
     local packageContainerSprite = Sprite.new(uiImage, packageContainerQuad)
     packageContainer = {
         sprite = packageContainerSprite,
