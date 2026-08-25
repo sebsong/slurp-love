@@ -1,8 +1,10 @@
 local PackageDetail = {}
 
 local Align = require("engine.ui.align")
+local Color = require("engine.color")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
+local TextBox = require("engine.ui.text_box")
 
 local Font = require("game.font")
 local Values = require("game.values")
@@ -24,9 +26,8 @@ local shouldStop
 local detailBox
 local packageDetailPortrait
 
-local textTransform
-local textWidth
-local textHeight
+---@type TextBox
+local flavorTextBox
 
 local packageIndex
 local onClose
@@ -76,13 +77,13 @@ function PackageDetail.load()
     local packageDetailSprite = Sprite.newAnimated(packageDetailsImage, {
         [Values.PACKAGE_TYPES.GLASS] = {
             numFrames = 4,
-            duration = 1,
+            duration = 1.5,
             isLooping = true,
             isReversed = false,
         },
         [Values.PACKAGE_TYPES.LEAD_FOOT] = {
             numFrames = 4,
-            duration = 1,
+            duration = 1.5,
             isLooping = true,
             isReversed = false,
         },
@@ -103,9 +104,27 @@ function PackageDetail.load()
         ),
     }
 
-    textWidth = 420
-    textHeight = 105
-    textTransform = Align.screenAlignedTransform(textWidth, textHeight, "center", "bottom")
+    local textHeight = 112
+    local textBoxTransform = Align.alignedTransform(
+        detailBox.transform,
+        detailBox.sprite.width,
+        detailBox.sprite.height,
+        detailBox.sprite.width,
+        textHeight,
+        "center",
+        "bottom"
+    )
+    flavorTextBox = TextBox.new(
+        textBoxTransform,
+        detailBox.sprite.width,
+        textHeight,
+        Font.medium,
+        Color.palette[8],
+        FLAVOR_TEXTS[packageIndex],
+        "center",
+        "center",
+        "center"
+    )
 end
 
 function PackageDetail.unload() end
@@ -151,8 +170,7 @@ function PackageDetail.draw()
 
     packageDetailPortrait.sprite:draw(packageDetailPortrait.transform)
 
-    love.graphics.setFont(Font.medium)
-    love.graphics.printf(FLAVOR_TEXTS[packageIndex], textTransform, textWidth, "center")
+    flavorTextBox:draw()
 
     love.graphics.pop()
 end
