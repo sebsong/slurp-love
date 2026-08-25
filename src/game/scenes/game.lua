@@ -189,8 +189,6 @@ function Game.load()
                 MailboxEffect.setShader(object)
             end
         end
-
-        table.insert(worldObjects, object)
     end
 
     for _, mailbox in ipairs(mailboxes) do
@@ -398,6 +396,12 @@ function Game.draw()
     love.graphics.draw(tilemapWallsSpriteBatch)
     for _, worldObject in ipairs(worldEntities) do
         worldObject.sprite:draw(worldObject.transform)
+    end
+    for _, package in ipairs(packages) do
+        package.sprite:draw(package.transform)
+    end
+    for _, mailbox in ipairs(mailboxes) do
+        mailbox.sprite:draw(mailbox.transform)
     end
     love.graphics.setShader()
     love.graphics.draw(tilemapBuildingsSpriteBatch)

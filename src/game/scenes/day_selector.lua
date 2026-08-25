@@ -36,7 +36,7 @@ function DaySelector.load()
         Settings.canvasPixelWidth,
         Settings.canvasPixelHeight,
         Font.large,
-        Color.palette[4],
+        Color.palette[7],
         "select day",
         "center",
         "top",
