@@ -9,6 +9,7 @@ local Align = require("engine.ui.align")
 local TextBox = {}
 TextBox.__index = TextBox
 
+--TODO: take in colored text instead of color and text separately
 ---@param transform love.Transform
 ---@param width integer
 ---@param height integer

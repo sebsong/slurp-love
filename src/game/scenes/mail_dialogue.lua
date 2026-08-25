@@ -183,6 +183,7 @@ function MailDialogue.update(dt)
     end
     numCharactersToShow = numCharactersToShow + numAdditionalCharacters
     local currentLine = string.sub(fullLine, 1, numCharactersToShow)
+
     dialogueTextBox:setText({ Color.palette[8], currentLine })
 
     if not isLineFinished and #currentLine == #fullLine then
