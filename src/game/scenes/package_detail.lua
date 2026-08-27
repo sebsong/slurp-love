@@ -35,6 +35,10 @@ local onClose
 function PackageDetail.open(_packageIndex, _onClose)
     packageIndex = _packageIndex
     onClose = _onClose
+    SceneManager.scenes.packageDetail:start()
+end
+
+function PackageDetail.close()
     isOpen = false
     detailBox.sprite:transitionAnimationState(CLOSE_STATE)
 end
@@ -84,7 +88,7 @@ function PackageDetail.load()
             isReversed = false,
         },
         [Values.PACKAGE_TYPES.LANTERN] = {},
-        [Values.PACKAGE_TYPES.RADIOACTIVE_JUNK] = {},
+        [Values.PACKAGE_TYPES.FEATHER] = {},
         [Values.PACKAGE_TYPES.MIRROR] = {},
     })
     packageDetailSprite:transitionAnimationState(packageIndex or 1)

@@ -32,7 +32,7 @@ function Package:onPickup(boat)
         boat.autoAccelerate = true
     elseif tileId == Values.PACKAGE_TYPES.LANTERN then
         boat.isLanternActive = true
-    elseif tileId == Values.PACKAGE_TYPES.RADIOACTIVE_JUNK then
+    elseif tileId == Values.PACKAGE_TYPES.FEATHER then
         boat.maxSpeed = boat.maxSpeed * 2
     elseif tileId == Values.PACKAGE_TYPES.MIRROR then
         reversePackageOrder(boat)
@@ -47,7 +47,7 @@ function Package:onDeliver(boat)
         boat.autoAccelerate = false
     elseif tileId == Values.PACKAGE_TYPES.LANTERN then
         boat.isLanternActive = false
-    elseif tileId == Values.PACKAGE_TYPES.RADIOACTIVE_JUNK then
+    elseif tileId == Values.PACKAGE_TYPES.FEATHER then
         boat.maxSpeed = boat.maxSpeed / 2
     elseif tileId == Values.PACKAGE_TYPES.MIRROR then
         reversePackageOrder(boat)

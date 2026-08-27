@@ -25,7 +25,7 @@ Values.PACKAGE_TYPES = {
     GLASS = 1,
     LEAD_FOOT = 2,
     LANTERN = 3,
-    RADIOACTIVE_JUNK = 4,
+    FEATHER = 4,
     MIRROR = 5,
 }
 
