@@ -13,7 +13,7 @@ local FLAVOR_TEXTS = {
     "fragile, handle with care",
     "pedal to the metal",
     "see that which is unseen",
-    "caution, radioctive materials",
+    "fly like the wind",
     "uno reverse",
 }
 
@@ -35,10 +35,6 @@ local onClose
 function PackageDetail.open(_packageIndex, _onClose)
     packageIndex = _packageIndex
     onClose = _onClose
-    SceneManager.scenes.packageDetail:start()
-end
-
-function PackageDetail.close()
     isOpen = false
     detailBox.sprite:transitionAnimationState(CLOSE_STATE)
 end
