@@ -87,9 +87,19 @@ function PackageDetail.load()
             isLooping = true,
             isReversed = false,
         },
-        [Values.PACKAGE_TYPES.LANTERN] = {},
+        [Values.PACKAGE_TYPES.LANTERN] = {
+            numFrames = 4,
+            duration = 1.5,
+            isLooping = true,
+            isReversed = false,
+        },
         [Values.PACKAGE_TYPES.FEATHER] = {},
-        [Values.PACKAGE_TYPES.MIRROR] = {},
+        [Values.PACKAGE_TYPES.MIRROR] = {
+            numFrames = 4,
+            duration = 1.5,
+            isLooping = true,
+            isReversed = false,
+        },
     })
     packageDetailSprite:transitionAnimationState(packageIndex or 1)
     packageDetailPortrait = {
