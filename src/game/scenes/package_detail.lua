@@ -93,7 +93,12 @@ function PackageDetail.load()
             isLooping = true,
             isReversed = false,
         },
-        [Values.PACKAGE_TYPES.FEATHER] = {},
+        [Values.PACKAGE_TYPES.FEATHER] = {
+            numFrames = 4,
+            duration = 1.5,
+            isLooping = true,
+            isReversed = false,
+        },
         [Values.PACKAGE_TYPES.MIRROR] = {
             numFrames = 4,
             duration = 1.5,
