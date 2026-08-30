@@ -92,7 +92,7 @@ function Game.load()
         Tilemap.newTileset("assets/art/tileset.png", 16, 16),
         Tilemap.newTileset("assets/art/packages.png", 16, 16),
         Tilemap.newTileset("assets/art/buildings.png", 64, 64),
-        Tilemap.newTileset("assets/art/mailboxes.png", 16, 16),
+        Tilemap.newTileset("assets/art/mailboxes.png", 32, 32),
         Tilemap.newTileset("assets/art/walls.png", 16, 256),
     }
     tilemapObj = Tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)

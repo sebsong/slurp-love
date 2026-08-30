@@ -13,14 +13,15 @@
             "scaleInEditor": 1.8095
         },
         "mailboxes.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 8
         },
         "map.tmx": {
-            "scale": 0.75,
+            "scale": 4,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1024.6666666666665,
-                "y": 558
+                "x": 1427.875,
+                "y": 536.375
             }
         },
         "map_iso.tmx": {
@@ -40,7 +41,7 @@
         },
         "tileset.tsx": {
             "scaleInDock": 3,
-            "scaleInEditor": 1
+            "scaleInEditor": 2
         },
         "tileset_old.tsx": {
             "scaleInDock": 1
@@ -52,7 +53,7 @@
     },
     "last.exportedFilePath": "/Users/sebsong/Workspace/slurp-love/src/assets/tilemap",
     "last.externalTilesetPath": "C:/Users/sebys/Workspace/slurp-love/src/assets/art",
-    "last.imagePath": "/Users/sebsong/Workspace/slurp-love/src/assets/art",
+    "last.imagePath": "C:/Users/sebys/Workspace/slurp-love/src/assets/art",
     "map.height": 80,
     "map.lastUsedExportFilter": "Lua files (*.lua)",
     "map.lastUsedFormat": "tmx",
@@ -62,11 +63,13 @@
     "map.width": 100,
     "openFiles": [
         "map.tmx",
-        "tileset.tsx"
+        "tileset.tsx",
+        "mailboxes.tsx"
     ],
     "project": "map.tiled-project",
     "property.type": "object",
     "recentFiles": [
+        "mailboxes.tsx",
         "tileset.tsx",
         "map.tmx",
         "walls.tsx",
@@ -76,7 +79,7 @@
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
-        "height": 256,
-        "width": 16
+        "height": 32,
+        "width": 32
     }
 }
