@@ -34,7 +34,7 @@ function Animation.new(image, quadWidth, quadHeight, rowIndex, numDirections, co
     local onFinish = config.onFinish or false
 
     local frameWidth = quadWidth * numDirections
-    local y = rowIndex * quadHeight
+    local y = (rowIndex - 1) * quadHeight
 
     local quads = {}
     for i = 0, numDirections - 1 do

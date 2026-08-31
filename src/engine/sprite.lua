@@ -4,7 +4,7 @@ local Animation = require("engine.animation")
 ---@field shouldDraw boolean
 ---@field image love.Image | love.SpriteBatch
 ---@field quad love.Quad
----@field animations Animation[]
+---@field animations Animation[]?
 ---@field currentAnimationState integer
 ---@field width integer
 ---@field height integer
@@ -20,7 +20,7 @@ Sprite.__index = Sprite
 ---@param image love.Image | love.SpriteBatch
 ---@param width integer
 ---@param height integer
----@param animations Animation[]
+---@param animations Animation[]?
 ---@param xOffset integer?
 ---@param yOffset integer?
 ---@param zIndex integer?
@@ -56,8 +56,7 @@ end
 ---@return Sprite
 function Sprite.new(image, xOffset, yOffset, zIndex, zIndexOffset)
     local width, height = image:getDimensions()
-    local animation = Animation.new(image, width, height, 1, 1, {})
-    return new(image, width, height, { animation }, xOffset, yOffset, zIndex, zIndexOffset, false)
+    return new(image, width, height, nil, xOffset, yOffset, zIndex, zIndexOffset, false)
 end
 
 --TODO: maybe sprite batches should be a separate layer on top of a sprite, not integrated
@@ -127,7 +126,7 @@ function Sprite.newAnimated(image, animationStateConfigs, numDirections, xOffset
 
     local animations = {}
     for stateIndex, config in ipairs(animationStateConfigs) do
-        local animation = Animation.new(image, quadWidth, quadHeight, stateIndex - 1, numDirections, config)
+        local animation = Animation.new(image, quadWidth, quadHeight, stateIndex, numDirections, config)
         table.insert(animations, animation)
     end
 
