@@ -86,8 +86,10 @@ function Package.load()
     shatterSound:setVolume(0.5)
 end
 
-function Package.new(image, tileObject)
+function Package.new(image, tileObject, tilemap)
     local packageSprite = Sprite.newTiled(image, 5, tileObject.tileId)
+    packageSprite.xOffset = -packageSprite.width / 2
+    packageSprite.yOffset = -packageSprite.height + tilemap.tileHeight / 2
     local package = {
         transform = tileObject.transform,
         sprite = packageSprite,

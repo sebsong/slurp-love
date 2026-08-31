@@ -6,7 +6,7 @@ local Mailbox = {}
 local DEFAULT_STATE = 1
 local DELIVERED_STATE = 2
 
-function Mailbox.new(image, tileObject)
+function Mailbox.new(image, tileObject, tilemap)
     local mailboxSprite = Sprite.newAnimated(image, {
         [DEFAULT_STATE] = {},
         [DELIVERED_STATE] = {
@@ -17,10 +17,13 @@ function Mailbox.new(image, tileObject)
             onFinish = nil,
         },
     })
+    mailboxSprite.xOffset = -mailboxSprite.width / 2
+    mailboxSprite.yOffset = -mailboxSprite.height + tilemap.tileHeight / 2
     local mailbox = {
         transform = tileObject.transform,
         sprite = mailboxSprite,
 
+        id = tileObject.id,
         package = nil,
     }
 

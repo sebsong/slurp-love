@@ -195,10 +195,10 @@ function Game.load()
     for _, object in ipairs(tilemapObj.layers[OBJECT_LAYER_NAME].objects) do
         local tilesetName = object.tilesetName
         if tilesetName == PACKAGES_TILESET_NAME then
-            local packageObj = Package.new(packagesImage, object)
+            local packageObj = Package.new(packagesImage, object, tilemapObj)
             table.insert(packages, packageObj)
         elseif tilesetName == MAILBOX_TILESET_NAME then
-            local mailboxObj = Mailbox.new(mailboxesImage, object)
+            local mailboxObj = Mailbox.new(mailboxesImage, object, tilemapObj)
             table.insert(mailboxes, mailboxObj)
         end
     end
