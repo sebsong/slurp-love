@@ -1,14 +1,14 @@
 ---@class Animation
----@field directions love.Quad[][]
----@field isPlaying boolean
----@field isReversed boolean
----@field isLooping boolean
----@field numFrames integer
----@field frameDurationSeconds number
----@field currentDirection integer
----@field currentFrame integer
----@field currentFrameSeconds number
----@field onFinish fun()?
+---@field private quads love.Quad[][] [directions][frames] -- TODO: this is really a shared resource, all animation instances would share this
+---@field private isPlaying boolean
+---@field private isReversed boolean
+---@field private isLooping boolean
+---@field private numFrames integer
+---@field private frameDurationSeconds number
+---@field private currentDirection integer
+---@field private currentFrame integer
+---@field private currentFrameSeconds number
+---@field private onFinish fun()?
 local Animation = {}
 Animation.__index = Animation
 
@@ -20,34 +20,34 @@ Animation.__index = Animation
 ---@field onFinish fun()?
 
 ---@param image love.Image
----@param referenceQuad love.Quad
+---@param quadWidth integer
+---@param quadHeight integer
 ---@param rowIndex number
 ---@param numDirections integer
 ---@param config AnimationConfig
 ---@return Animation
-function Animation.new(image, referenceQuad, rowIndex, numDirections, config)
+function Animation.new(image, quadWidth, quadHeight, rowIndex, numDirections, config)
     local numFrames = config.numFrames or 1
     local duration = config.duration or 0
     local isLooping = config.isLooping or false
     local isReversed = config.isReversed or false
     local onFinish = config.onFinish or false
 
-    local _, _, quadWidth, quadHeight = referenceQuad:getViewport()
     local frameWidth = quadWidth * numDirections
     local y = rowIndex * quadHeight
 
-    local directions = {}
+    local quads = {}
     for i = 0, numDirections - 1 do
-        local quads = {}
+        local directionQuads = {}
         for j = 0, numFrames - 1 do
             local x = (j * frameWidth) + (i * quadWidth)
-            table.insert(quads, love.graphics.newQuad(x, y, quadWidth, quadHeight, image))
+            table.insert(directionQuads, love.graphics.newQuad(x, y, quadWidth, quadHeight, image))
         end
-        table.insert(directions, quads)
+        table.insert(quads, directionQuads)
     end
 
     local animation = {
-        directions = directions,
+        quads = quads,
 
         isPlaying = false,
         isReversed = isReversed,
@@ -67,12 +67,12 @@ end
 
 ---@return love.Quad
 function Animation:getCurrentQuad()
-    return self.directions[self.currentDirection][self.currentFrame]
+    return self.quads[self.currentDirection][self.currentFrame]
 end
 
 ---@param rotation integer
 function Animation:setDirection(rotation)
-    local rotSegmentLength = 2 * math.pi / #self.directions
+    local rotSegmentLength = 2 * math.pi / #self.quads
     local direction = math.floor((((rotation + (rotSegmentLength / 2)) % (2 * math.pi)) / rotSegmentLength)) + 1
     self.currentDirection = direction
 end

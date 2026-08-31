@@ -1,4 +1,6 @@
+local PackageEffect = require("game.effects.package_effect")
 local SceneManager = require("engine.scene_manager")
+local Sprite = require("engine.sprite")
 
 local PackageDetail = require("game.scenes.package_detail")
 local Values = require("game.values")
@@ -84,12 +86,24 @@ function Package.load()
     shatterSound:setVolume(0.5)
 end
 
-function Package.toPackage(tileObject)
+function Package.new(image, tileObject)
+    local packageSprite = Sprite.newTiled(image, 5, tileObject.tileId)
+    local package = {
+        transform = tileObject.transform,
+        sprite = packageSprite,
+
+        tileId = tileObject.tileId,
+        destinationId = tileObject.properties.destination.id,
+        isDelivered = false,
+        canDeliver = true,
+        mailbox = nil,
+    }
+
+    packageSprite.setShader = function()
+        PackageEffect.setShader(package)
+    end
+
     setmetatable(tileObject, Package)
-    tileObject.destinationId = tileObject.properties.destination.id
-    tileObject.isDelivered = false
-    tileObject.canDeliver = true
-    return tileObject
 end
 
 return Package

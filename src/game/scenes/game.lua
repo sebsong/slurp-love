@@ -1,4 +1,5 @@
 local Camera = require("engine.camera")
+local Mailbox = require("game.mailbox")
 local Math = require("engine.math")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
@@ -36,8 +37,10 @@ local OBJECT_LAYER_NAME = "objects_monday"
 local BUILDINGS_LAYER_NAME = "buildings"
 
 local LAND_TILESET_NAME = "tileset"
+local LAND_TILESET_SIZE = 3
 local PACKAGES_TILESET_NAME = "packages"
 local BUILDINGS_TILESET_NAME = "buildings"
+local BUILDINGS_TILESET_SIZE = 2
 local MAILBOX_TILESET_NAME = "mailboxes"
 local WALLS_TILESET_NAME = "walls"
 
@@ -45,7 +48,6 @@ local FLOATING_TILE_ID = 2
 
 local tilemapWorldRows
 local tilemapFloatingWorldRows
-local tilemapWallsSpriteBatch
 local tilemapBuildingsSpriteBatch
 
 local tilemapObj
@@ -87,15 +89,29 @@ function Game.load()
 
     OBJECT_LAYER_NAME = DAY_TO_LAYER_NAME[currentDay] or OBJECT_LAYER_NAME
 
-    local tilesets = {
-        -- TODO: maybe switch to reading lua exported tiled files to get the grid size info
-        Tilemap.newTileset("assets/art/tileset.png", 16, 16),
-        Tilemap.newTileset("assets/art/packages.png", 16, 16),
-        Tilemap.newTileset("assets/art/buildings.png", 64, 64),
-        Tilemap.newTileset("assets/art/mailboxes.png", 32, 32),
-        Tilemap.newTileset("assets/art/walls.png", 16, 256),
-    }
-    tilemapObj = Tilemap.newTilemapLua("assets/tilemap/map.lua", tilesets)
+    local landTilesImage = love.graphics.newImage("assets/art/tileset.png")
+    local landTileSprite = Sprite.newTiled(landTilesImage, LAND_TILESET_SIZE, 1)
+    local landQuadWidth, landQuadHeight = Sprite.calculateQuadDimensions(landTilesImage, LAND_TILESET_SIZE, 1, 1)
+
+    local packagesImage = love.graphics.newImage("assets/art/packages.png")
+
+    local buildingsImage = love.graphics.newImage("assets/art/buildings.png")
+    local buildingTileSprite = Sprite.newTiled(buildingsImage, BUILDINGS_TILESET_SIZE, 1)
+    local buildingQuadWidth, buildingQuadHeight =
+        Sprite.calculateQuadDimensions(buildingsImage, BUILDINGS_TILESET_SIZE, 1, 1)
+
+    local mailboxesImage = love.graphics.newImage("assets/art/mailboxes.png")
+
+    --TODO: maybe this isn't that useful to have the tilesets, just let each layer handle its objects and tiles individually
+    -- local tilesets = {
+    --     -- TODO: maybe switch to reading lua exported tiled files to get the grid size info
+    --     Tilemap.newTileset("assets/art/tileset.png", 16, 16),
+    --     Tilemap.newTileset("assets/art/packages.png", 16, 16),
+    --     Tilemap.newTileset("assets/art/buildings.png", 64, 64),
+    --     Tilemap.newTileset("assets/art/mailboxes.png", 32, 32),
+    --     Tilemap.newTileset("assets/art/walls.png", 16, 256),
+    -- }
+    tilemapObj = Tilemap.newTilemapLua("assets/tilemap/map.lua")
 
     worldObjects = {}
     packages = {}
@@ -118,7 +134,6 @@ function Game.load()
     MailboxEffect.load()
 
     local spriteBatchSize = math.max(tilemapObj.width, tilemapObj.height)
-    tilemapWallsSpriteBatch = love.graphics.newSpriteBatch(tilesets[5].image, spriteBatchSize * 4, "static")
     tilemapWorldRows = {}
     tilemapFloatingWorldRows = {}
     for _, row in ipairs(tilemapObj.layers[LAND_LAYER_NAME].tiles) do
@@ -127,26 +142,17 @@ function Game.load()
                 goto continue
             end
 
-            local tileset = tilesets[tile.tilesetIndex]
-            local tileImage = tileset.image
-            local tileQuad = tileset.quads[tile.tileId]
-            local _, _, width, height = tileQuad:getViewport()
             local x, y = tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
 
-            if tile.tilesetName == WALLS_TILESET_NAME then
-                tilemapWallsSpriteBatch:add(tileQuad, x - width / 2, y - height + tilemapObj.tileHeight / 2)
-                goto continue
-            end
-
             if tile.tilesetName == LAND_TILESET_NAME and tile.tileId == FLOATING_TILE_ID then
-                local xOffset = -width / 2
-                local yOffset = -height + tilemapObj.tileHeight / 2
-                local zIndex = tile.zIndex
-                local zIndexOffset = tile.zIndexOffset
+                local tileSprite = Sprite.newTiled(landTilesImage, LAND_TILESET_SIZE, tile.tileId)
+                tileSprite.xOffset = -landQuadWidth / 2
+                tileSprite.yOffset = -landQuadHeight + tilemapObj.tileHeight / 2
+                tileSprite.zIndex = tile.zIndex
+                tileSprite.zIndexOffset = tile.zIndexOffset
                 local tileObj = {
                     transform = love.math.newTransform(x, y),
-                    sprite = Sprite.new(tileImage, tileQuad, xOffset, yOffset, zIndex, zIndexOffset),
-                    tileQuad = tileQuad,
+                    sprite = tileSprite,
                     isFloating = true,
                 }
                 tileObj.sprite.setShader = function()
@@ -158,11 +164,17 @@ function Game.load()
 
             local tilemapWorldRow = tilemapWorldRows[tile.worldRowIdx]
             if not tilemapWorldRow then
-                local spriteBatch = love.graphics.newSpriteBatch(tileImage, spriteBatchSize, "static")
+                local spriteBatch = love.graphics.newSpriteBatch(landTilesImage, spriteBatchSize, "static")
                 tilemapWorldRow = {
                     transform = love.math.newTransform(0, y),
-                    sprite = Sprite.newSpriteBatch(spriteBatch, tileQuad, tile.zIndex, tile.zIndexOffset),
-                    tileQuad = tileQuad,
+                    sprite = Sprite.newSpriteBatch(
+                        landTilesImage,
+                        spriteBatch,
+                        landQuadWidth,
+                        landQuadHeight,
+                        tile.zIndex,
+                        tile.zIndexOffset
+                    ),
                     isFloating = false,
                 }
                 tilemapWorldRow.sprite.setShader = function()
@@ -170,7 +182,12 @@ function Game.load()
                 end
                 tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
             end
-            tilemapWorldRow.sprite.image:add(tileQuad, x - width / 2, -height + tilemapObj.tileHeight / 2)
+            landTileSprite:transitionAnimationState(tile.tileId) -- TODO: jank
+            tilemapWorldRow.sprite.image:add(
+                landTileSprite:getCurrentQuad(),
+                x - landQuadWidth / 2,
+                -landQuadHeight + tilemapObj.tileHeight / 2
+            )
             ::continue::
         end
     end
@@ -178,16 +195,11 @@ function Game.load()
     for _, object in ipairs(tilemapObj.layers[OBJECT_LAYER_NAME].objects) do
         local tilesetName = object.tilesetName
         if tilesetName == PACKAGES_TILESET_NAME then
-            local packageObj = Package.toPackage(object)
+            local packageObj = Package.new(packagesImage, object)
             table.insert(packages, packageObj)
-            object.sprite.setShader = function()
-                PackageEffect.setShader(packageObj)
-            end
         elseif tilesetName == MAILBOX_TILESET_NAME then
-            table.insert(mailboxes, object)
-            object.sprite.setShader = function()
-                MailboxEffect.setShader(object)
-            end
+            local mailboxObj = Mailbox.new(mailboxesImage, object)
+            table.insert(mailboxes, mailboxObj)
         end
     end
 
@@ -201,10 +213,13 @@ function Game.load()
         end
     end
 
-    tilemapBuildingsSpriteBatch = love.graphics.newSpriteBatch(tilesets[3].image, 200, "static")
+    tilemapBuildingsSpriteBatch = love.graphics.newSpriteBatch(buildingsImage, 200, "static")
     for _, object in ipairs(tilemapObj.layers[BUILDINGS_LAYER_NAME].objects) do
         local x, y = object.transform:transformPoint(0, 0)
-        tilemapBuildingsSpriteBatch:add(object.sprite.quad, x + object.sprite.xOffset, y + object.sprite.yOffset)
+        local xOffset = -buildingQuadWidth / 2
+        local yOffset = -buildingQuadWidth + tilemapObj.tileHeight / 2
+        buildingTileSprite:transitionAnimationState(object.tileId) -- TODO: jank
+        tilemapBuildingsSpriteBatch:add(buildingTileSprite:getCurrentQuad(), x + xOffset, y + yOffset)
     end
 
     MailDialogue.open(MailScript.dailyDialogue[currentDay], function()
@@ -393,7 +408,6 @@ function Game.draw()
     love.graphics.scale(cameraObj.zoom, cameraObj.zoom)
     love.graphics.applyTransform(Camera.getWorldToCanvasTransform(cameraObj))
 
-    love.graphics.draw(tilemapWallsSpriteBatch)
     for _, worldObject in ipairs(worldEntities) do
         worldObject.sprite:draw(worldObject.transform)
     end

@@ -17,26 +17,28 @@ local Animation = require("engine.animation")
 local Sprite = {}
 Sprite.__index = Sprite
 
-local function new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffset, isSpriteBatch)
-    local width, height
-    if quad then
-        _, _, width, height = quad:getViewport()
-    else
-        width, height = image:getDimensions()
-    end
-
+---@param image love.Image | love.SpriteBatch
+---@param width integer
+---@param height integer
+---@param animations Animation[]
+---@param xOffset integer?
+---@param yOffset integer?
+---@param zIndex integer?
+---@param zIndexOffset integer?
+---@param isSpriteBatch boolean
+---@return Sprite
+local function new(image, width, height, animations, xOffset, yOffset, zIndex, zIndexOffset, isSpriteBatch)
     local sprite = {
         shouldDraw = true,
         image = image,
-        quad = quad, -- TODO: remove this in favor of storing it in animation
         animations = animations,
         currentAnimationState = 1,
         width = width,
         height = height,
-        xOffset = xOffset,
-        yOffset = yOffset,
-        zIndex = zIndex,
-        zIndexOffset = zIndexOffset,
+        xOffset = xOffset or 0,
+        yOffset = yOffset or 0,
+        zIndex = zIndex or 0,
+        zIndexOffset = zIndexOffset or 0,
         isSpriteBatch = isSpriteBatch,
 
         setShader = nil,
@@ -47,23 +49,48 @@ local function new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffs
 end
 
 ---@param image love.Image
----@param quad love.Quad?
 ---@param xOffset integer?
 ---@param yOffset integer?
 ---@param zIndex number?
 ---@param zIndexOffset integer?
 ---@return Sprite
-function Sprite.new(image, quad, xOffset, yOffset, zIndex, zIndexOffset)
-    return new(image, quad, nil, xOffset, yOffset, zIndex, zIndexOffset, false)
+function Sprite.new(image, xOffset, yOffset, zIndex, zIndexOffset)
+    local width, height = image:getDimensions()
+    local animation = Animation.new(image, width, height, 1, 1, {})
+    return new(image, width, height, { animation }, xOffset, yOffset, zIndex, zIndexOffset, false)
 end
 
+--TODO: maybe sprite batches should be a separate layer on top of a sprite, not integrated
 ---@param spriteBatch love.SpriteBatch
----@param quad love.Quad
+---@param quadWidth integer
+---@param quadHeight integer
 ---@param zIndex number?
 ---@param zIndexOffset integer?
 ---@return Sprite
-function Sprite.newSpriteBatch(spriteBatch, quad, zIndex, zIndexOffset)
-    return new(spriteBatch, quad, nil, nil, nil, zIndex, zIndexOffset, true)
+function Sprite.newSpriteBatch(image, spriteBatch, quadWidth, quadHeight, zIndex, zIndexOffset)
+    local animation = Animation.new(image, quadWidth, quadHeight, 1, 1, {})
+    return new(spriteBatch, quadWidth, quadHeight, { animation }, nil, nil, zIndex, zIndexOffset, true)
+end
+
+---@param image love.Image
+---@param tilesetSize integer
+---@param tileId integer
+---@param xOffset integer?
+---@param yOffset integer?
+---@param zIndex integer?
+---@param zIndexOffset integer?
+---@return Sprite
+function Sprite.newTiled(image, tilesetSize, tileId, xOffset, yOffset, zIndex, zIndexOffset)
+    local configs = {}
+    for _ = 1, tilesetSize do
+        table.insert(configs, {})
+    end
+
+    local sprite = Sprite.newAnimated(image, configs, 1, xOffset, yOffset, zIndex, zIndexOffset)
+
+    sprite.currentAnimationState = tileId
+
+    return sprite
 end
 
 -- the expected image format is:
@@ -91,27 +118,37 @@ function Sprite.newAnimated(image, animationStateConfigs, numDirections, xOffset
     numDirections = numDirections or 1
     local maxNumFrames = 1
     for _, config in ipairs(animationStateConfigs) do
-        if config.numFrames or 1 > maxNumFrames then
+        if config.numFrames and config.numFrames > maxNumFrames then
             maxNumFrames = config.numFrames
         end
     end
 
-    local imageWidth, imageHeight = image:getDimensions()
-    local quadWidth = imageWidth / (numDirections * maxNumFrames)
-    local quadHeight = imageHeight / numStates
-    local quad = love.graphics.newQuad(0, 0, quadWidth, quadHeight, image)
+    local quadWidth, quadHeight = Sprite.calculateQuadDimensions(image, numStates, numDirections, maxNumFrames or 1)
 
     local animations = {}
     for stateIndex, config in ipairs(animationStateConfigs) do
-        local animation = Animation.new(image, quad, stateIndex - 1, numDirections, config)
+        local animation = Animation.new(image, quadWidth, quadHeight, stateIndex - 1, numDirections, config)
         table.insert(animations, animation)
     end
 
-    local sprite = new(image, quad, animations, xOffset, yOffset, zIndex, zIndexOffset, false)
+    local sprite = new(image, quadWidth, quadHeight, animations, xOffset, yOffset, zIndex, zIndexOffset, false)
 
     sprite:transitionAnimationState(sprite.currentAnimationState)
 
     return sprite
+end
+
+---@param image love.Image
+---@param numStates integer
+---@param numDirections integer
+---@param maxNumFrames integer
+---@return integer
+---@return integer
+function Sprite.calculateQuadDimensions(image, numStates, numDirections, maxNumFrames)
+    local imageWidth, imageHeight = image:getDimensions()
+    local quadWidth = imageWidth / (numDirections * maxNumFrames)
+    local quadHeight = imageHeight / numStates
+    return quadWidth, quadHeight
 end
 
 ---@param state integer
@@ -130,6 +167,11 @@ end
 ---@return Animation
 function Sprite:getCurrentAnimation()
     return self.animations[self.currentAnimationState]
+end
+
+---@return love.Quad
+function Sprite:getCurrentQuad()
+    return self:getCurrentAnimation():getCurrentQuad()
 end
 
 ---@param dt number
@@ -154,16 +196,15 @@ function Sprite:draw(transform)
 
     local quad
     if self.animations then
-        quad = self:getCurrentAnimation():getCurrentQuad()
-    else
-        quad = self.quad
+        quad = self:getCurrentQuad()
     end
 
-    if quad and not self.isSpriteBatch then
-        love.graphics.draw(self.image, quad, self.xOffset, self.yOffset)
-    else
+    if not quad or self.isSpriteBatch then
         love.graphics.draw(self.image, self.xOffset, self.yOffset)
+    else
+        love.graphics.draw(self.image, quad, self.xOffset, self.yOffset)
     end
+
     love.graphics.pop()
 end
 
