@@ -103,7 +103,8 @@ function Package.new(image, tileObject)
         PackageEffect.setShader(package)
     end
 
-    setmetatable(tileObject, Package)
+    setmetatable(package, Package)
+    return package
 end
 
 return Package

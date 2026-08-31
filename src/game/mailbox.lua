@@ -1,4 +1,4 @@
-local MailBoxEffect = require("game.effects.mailbox_effect")
+local MailboxEffect = require("game.effects.mailbox_effect")
 local Sprite = require("engine.sprite")
 
 local Mailbox = {}
@@ -7,7 +7,7 @@ local DEFAULT_STATE = 1
 local DELIVERED_STATE = 2
 
 function Mailbox.new(image, tileObject)
-    local mailBoxSprite = Sprite.newAnimated(image, {
+    local mailboxSprite = Sprite.newAnimated(image, {
         [DEFAULT_STATE] = {},
         [DELIVERED_STATE] = {
             numFrames = 10,
@@ -17,16 +17,18 @@ function Mailbox.new(image, tileObject)
             onFinish = nil,
         },
     })
-    local mailBox = {
+    local mailbox = {
         transform = tileObject.transform,
-        sprite = mailBoxSprite,
+        sprite = mailboxSprite,
 
         package = nil,
     }
 
-    mailBoxSprite.setShader = function()
-        MailBoxEffect.setShader(mailBox)
+    mailboxSprite.setShader = function()
+        MailboxEffect.setShader(mailbox)
     end
+
+    return mailbox
 end
 
 return Mailbox

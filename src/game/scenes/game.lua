@@ -204,10 +204,10 @@ function Game.load()
     end
 
     for _, mailbox in ipairs(mailboxes) do
-        for _, packageObj in ipairs(packages) do
-            if mailbox.id == packageObj.destinationId then
-                mailbox.package = packageObj
-                packageObj.mailbox = mailbox
+        for _, package in ipairs(packages) do
+            if mailbox.id == package.destinationId then
+                mailbox.package = package
+                package.mailbox = mailbox
                 break
             end
         end

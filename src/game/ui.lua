@@ -78,7 +78,12 @@ function GameUi.draw(gasRemaining, packages)
     PackageEffect.setShader(nil)
     local x, y = packageContainer.transform:transformPoint(0, 0)
     for _, package in ipairs(packages) do
-        love.graphics.draw(package.sprite.image, package.sprite.quad, x + packageOffsetXInitial, y + packageOffsetY)
+        love.graphics.draw(
+            package.sprite.image,
+            package.sprite:getCurrentQuad(),
+            x + packageOffsetXInitial,
+            y + packageOffsetY
+        )
         packageOffsetY = packageOffsetY + packageUiVerticalSpacing
     end
     love.graphics.setShader()
