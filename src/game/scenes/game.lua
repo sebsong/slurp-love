@@ -133,7 +133,8 @@ function Game.load()
                 goto continue
             end
 
-            local x, y = tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
+            local worldX, worldY =
+                tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
 
             ---
             if tile.tilesetName == LAND_TILESET_NAME and tile.tileId == FLOATING_TILE_ID then
@@ -143,7 +144,7 @@ function Game.load()
                 tileSprite.zIndex = tile.zIndex
                 tileSprite.zIndexOffset = tile.zIndexOffset
                 local tileObj = {
-                    transform = love.math.newTransform(x, y),
+                    transform = love.math.newTransform(worldX, worldY),
                     sprite = tileSprite,
                     isFloating = true,
                 }
@@ -157,7 +158,7 @@ function Game.load()
             local tilemapWorldRow = tilemapWorldRows[tile.worldRowIdx]
             if not tilemapWorldRow then
                 tilemapWorldRow = {
-                    transform = love.math.newTransform(0, y),
+                    transform = love.math.newTransform(0, worldY),
                     mesh = nil,
                     vertices = {},
                     isFloating = false,
@@ -165,15 +166,24 @@ function Game.load()
                 tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
             end
             landTileSprite:transitionAnimationState(tile.tileId) -- TODO: jank
-            local originX = x - landQuadWidth / 2
-            local originY = y - landQuadHeight + tilemapObj.tileHeight / 2
-            table.insert(tilemapWorldRow.vertices, { originX, originY, 0, 0 })
-            table.insert(tilemapWorldRow.vertices, { originX, originY + landQuadHeight, 0, 1 / 3 })
-            table.insert(tilemapWorldRow.vertices, { originX + landQuadWidth, originY, 1, 0 })
 
-            table.insert(tilemapWorldRow.vertices, { originX + landQuadWidth, originY, 1, 0 })
-            table.insert(tilemapWorldRow.vertices, { originX, originY + landQuadHeight, 0, 1 / 3 })
-            table.insert(tilemapWorldRow.vertices, { originX + landQuadWidth, originY + landQuadHeight, 1, 1 / 3 })
+            local imageWidth, imageHeight = landTilesImage:getDimensions()
+            local quadX, quadY, quadWidth, quadHeight = landTileSprite:getCurrentQuad():getViewport()
+            local u0, v0 = quadX / imageWidth, quadY / imageHeight
+            local u1, v1 = quadX + quadWidth / imageWidth, quadY + quadHeight / imageHeight
+
+            local originX = worldX - quadWidth / 2
+            local originY = worldY - quadHeight + tilemapObj.tileHeight / 2
+            local x0, y0 = originX, originY
+            local x1, y1 = originX + quadWidth, originY + quadHeight
+
+            table.insert(tilemapWorldRow.vertices, { x0, y0, u0, v0 })
+            table.insert(tilemapWorldRow.vertices, { x0, y1, u0, v1 })
+            table.insert(tilemapWorldRow.vertices, { x1, y0, u1, v0 })
+
+            table.insert(tilemapWorldRow.vertices, { x1, y0, u1, v0 })
+            table.insert(tilemapWorldRow.vertices, { x0, y1, u0, v1 })
+            table.insert(tilemapWorldRow.vertices, { x1, y1, u1, v1 })
 
             ::continue::
             ---
