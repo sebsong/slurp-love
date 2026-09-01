@@ -273,6 +273,7 @@ local function deliverPackage(self, mailboxes)
     local deliveryMailbox = self:getDeliveryMailbox(mailboxes)
     if deliveryMailbox then
         table.remove(self.packages, #self.packages)
+        deliveryMailbox:deliverPackage()
         package:onDeliver(self)
         package.isDelivered = true
         return true

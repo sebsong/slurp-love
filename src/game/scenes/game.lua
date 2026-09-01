@@ -378,6 +378,10 @@ function Game.update(dt)
         return entityZIndex < otherEntityZIndex
     end)
 
+    for _, mailbox in ipairs(mailboxes) do
+        mailbox:update(dt)
+    end
+
     shaderSeconds = shaderSeconds + dt
     WaterEffect.update(cameraObj, boatObj, shaderSeconds)
     BoatEffect.update(cameraObj, shaderSeconds)

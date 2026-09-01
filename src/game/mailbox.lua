@@ -2,6 +2,7 @@ local MailboxEffect = require("game.effects.mailbox_effect")
 local Sprite = require("engine.sprite")
 
 local Mailbox = {}
+Mailbox.__index = Mailbox
 
 local DEFAULT_STATE = 1
 local DELIVERED_STATE = 2
@@ -31,7 +32,17 @@ function Mailbox.new(image, tileObject, tilemap)
         MailboxEffect.setShader(mailbox)
     end
 
+    setmetatable(mailbox, Mailbox)
+
     return mailbox
+end
+
+function Mailbox:deliverPackage()
+    self.sprite:transitionAnimationState(DELIVERED_STATE)
+end
+
+function Mailbox:update(dt)
+    self.sprite:update(dt)
 end
 
 return Mailbox
