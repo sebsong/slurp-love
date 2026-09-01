@@ -263,7 +263,6 @@ function Tilemap.newTilemapLua(luaFilepath)
                 local worldX, worldY = tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
                 local worldRowIdx = Tilemap.getWorldRowIdx(colIdx, rowIdx)
 
-                -- TODO: maybe we shouldn't handle this in the tilemap
                 table.insert(objects, {
                     id = object.id,
                     tilesetName = tilesetInfo.name,

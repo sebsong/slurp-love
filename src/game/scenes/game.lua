@@ -102,15 +102,6 @@ function Game.load()
 
     local mailboxesImage = love.graphics.newImage("assets/art/mailboxes.png")
 
-    --TODO: maybe this isn't that useful to have the tilesets, just let each layer handle its objects and tiles individually
-    -- local tilesets = {
-    --     -- TODO: maybe switch to reading lua exported tiled files to get the grid size info
-    --     Tilemap.newTileset("assets/art/tileset.png", 16, 16),
-    --     Tilemap.newTileset("assets/art/packages.png", 16, 16),
-    --     Tilemap.newTileset("assets/art/buildings.png", 64, 64),
-    --     Tilemap.newTileset("assets/art/mailboxes.png", 32, 32),
-    --     Tilemap.newTileset("assets/art/walls.png", 16, 256),
-    -- }
     tilemapObj = Tilemap.newTilemapLua("assets/tilemap/map.lua")
 
     worldObjects = {}
