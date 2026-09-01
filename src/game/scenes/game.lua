@@ -168,9 +168,12 @@ function Game.load()
             local originX = x - landQuadWidth / 2
             local originY = y - landQuadHeight + tilemapObj.tileHeight / 2
             table.insert(tilemapWorldRow.vertices, { originX, originY, 0, 0 })
-            table.insert(tilemapWorldRow.vertices, { originX + landQuadWidth, originY, 1, 0 })
-            table.insert(tilemapWorldRow.vertices, { originX + landQuadWidth, originY + landQuadHeight, 1, 1 / 3 })
             table.insert(tilemapWorldRow.vertices, { originX, originY + landQuadHeight, 0, 1 / 3 })
+            table.insert(tilemapWorldRow.vertices, { originX + landQuadWidth, originY, 1, 0 })
+
+            table.insert(tilemapWorldRow.vertices, { originX + landQuadWidth, originY, 1, 0 })
+            table.insert(tilemapWorldRow.vertices, { originX, originY + landQuadHeight, 0, 1 / 3 })
+            table.insert(tilemapWorldRow.vertices, { originX + landQuadWidth, originY + landQuadHeight, 1, 1 / 3 })
 
             ::continue::
             ---
@@ -406,17 +409,10 @@ function Game.draw()
         worldObject.sprite:draw(worldObject.transform)
     end
 
-    local count = 0
-    local toDraw = 5
     love.graphics.setShader()
     for _, row in pairs(tilemapWorldRows) do
-        count = count + 1
-        if count == toDraw then
-            love.graphics.drawInstanced(row.mesh, #row.vertices / 4)
-            goto continue
-        end
+        love.graphics.drawInstanced(row.mesh, #row.vertices / 6)
     end
-    ::continue::
 
     for _, package in ipairs(packages) do
         package.sprite:draw(package.transform)
