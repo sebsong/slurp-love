@@ -1,6 +1,6 @@
-local PackageEffect = {}
-
 local Color = require("engine.color")
+
+local PackageEffect = {}
 
 local SHADER_FILE_PATH = "assets/shader/outline.glsl"
 

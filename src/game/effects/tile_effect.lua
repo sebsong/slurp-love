@@ -28,7 +28,7 @@ function TileEffect.update(camera, boat, time)
 end
 
 function TileEffect.setShader(tile, boat, lanternXRadius, lanternYRadius)
-    shader:send("quadViewport", { tile.tileQuad:getViewport() })
+    shader:send("quadViewport", { tile.sprite:getCurrentQuad():getViewport() })
     shader:send("tilePosition", { tile.transform:transformPoint(0, 0) })
     shader:send("isFloating", tile.isFloating)
     local inRange = false

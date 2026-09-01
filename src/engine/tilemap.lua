@@ -13,7 +13,7 @@ local Vec2 = require("engine.vec2")
 ---@field isIsometric boolean
 ---@field worldToTilemapIndexTransform love.Transform
 ---@field tilemapIndexToWorldTransform love.Transform
----@field tilesets Tileset[]
+-- ---@field tilesets Tileset[]
 ---@field layers Layer[]
 local Tilemap = {}
 
@@ -96,29 +96,6 @@ function Tilemap.getIntersectionTiles(tilemap, tiles, camera)
     end
 
     return intersectionTiles
-end
-
----@param tilemap Tilemap
----@param tiles Tile[]
-function Tilemap.drawTiles(tilemap, tiles)
-    for _, tile in ipairs(tiles) do
-        local tilesetIndex = tile.tilesetIndex
-        local tileId = tile.tileId
-        if not tilesetIndex or not tileId then
-            goto continue
-        end
-        local tileset = tilemap.tilesets[tilesetIndex]
-        local tileQuad = tileset.quads[tileId]
-        if not tileQuad then
-            goto continue
-        end
-
-        local x, y = tilemap.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
-        local _, _, width, height = tileQuad:getViewport()
-        love.graphics.draw(tileset.image, tileQuad, x - width / 2, y - height + tilemap.tileHeight / 2)
-
-        ::continue::
-    end
 end
 
 ---@param imageFilePath string
@@ -229,9 +206,8 @@ end
 -- NOTE: tilesets must match order of tilesets in tilemap
 -- NOTE: tilesets and layers are 1:1
 ---@param luaFilepath string
----@param tilesets Tileset[]
 ---@return Tilemap
-function Tilemap.newTilemapLua(luaFilepath, tilesets)
+function Tilemap.newTilemapLua(luaFilepath)
     File.assertFileExtension(luaFilepath, ".lua")
 
     local tilemapInfo = require(File.stripFileExtension(luaFilepath))
@@ -283,28 +259,24 @@ function Tilemap.newTilemapLua(luaFilepath, tilesets)
                 local colIdx = object.x / tileHeight
                 local rowIdx = object.y / tileHeight
                 local tilesetIndex, tilesetInfo = getTilesetInfo(object.gid, tilesetInfos)
-                local tileset = tilesets[tilesetIndex]
                 local tileId = getTileId(object.gid, tilesetInfos[tilesetIndex])
                 local worldX, worldY = tilemapIndexToWorldTransform:transformPoint(colIdx, rowIdx)
                 local worldRowIdx = Tilemap.getWorldRowIdx(colIdx, rowIdx)
-                local quad = tileset.quads[tileId]
-                local _, _, objWidth, objHeight = quad:getViewport()
 
-                local xOffset = -objWidth / 2
-                local yOffset = -objHeight + tileHeight / 2
                 table.insert(objects, {
-                    sprite = Sprite.new(tileset.image, quad, xOffset, yOffset, worldRowIdx, zIndexOffset),
-                    transform = love.math.newTransform(worldX, worldY),
-
                     id = object.id,
                     tilesetName = tilesetInfo.name,
                     tileId = tileId,
                     properties = object.properties,
+
+                    transform = love.math.newTransform(worldX, worldY),
+                    zIndex = worldRowIdx,
+                    zIndexOffset = zIndexOffset,
                 })
             end
 
             table.sort(objects, function(o1, o2)
-                return o1.sprite.zIndex + o1.sprite.zIndexOffset < o2.sprite.zIndex + o2.sprite.zIndexOffset
+                return o1.zIndex + o1.zIndexOffset < o2.zIndex + o2.zIndexOffset
             end)
 
             layers[layer.name] = {
@@ -325,7 +297,6 @@ function Tilemap.newTilemapLua(luaFilepath, tilesets)
         tilemapIndexToWorldTransform = tilemapIndexToWorldTransform,
         worldToTilemapIndexTransform = worldToTilemapIndexTransform,
 
-        tilesets = tilesets,
         layers = layers,
     }
 end

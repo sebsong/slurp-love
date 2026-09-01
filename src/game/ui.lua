@@ -9,10 +9,6 @@ local GameUi = {
     BUTTON_DIMENSIONS = Vec2.new(128, 64), -- TODO: maybe have a better way to align ui items
 }
 
-local gasMeterWidth, gasMeterHeight = 16, 128
-local GAS_TEXT_WIDTH = gasMeterWidth
-local GAS_TEXT_HEIGHT = 12
-
 local packageContainerWidth, packageContainerHeight = 22, 102
 local packageUiVerticalSpacing = -20
 local packageOffsetXInitial = 3
@@ -23,9 +19,8 @@ local gasMeterProgress
 local packageContainer
 
 function GameUi.load()
-    local uiImage = love.graphics.newImage("assets/art/Ui.png")
-    local gasMeterQuad = love.graphics.newQuad(0, 0, gasMeterWidth, gasMeterHeight, uiImage)
-    local gasMeterSprite = Sprite.new(uiImage, gasMeterQuad)
+    local gasProgressImage = love.graphics.newImage("assets/art/gas_progress_bar.png")
+    local gasMeterSprite = Sprite.newTiled(gasProgressImage, 2, 1)
     gasMeter = {
         sprite = gasMeterSprite,
         transform = Align.screenAlignedTransform(
@@ -38,10 +33,9 @@ function GameUi.load()
         ),
     }
 
-    local gasMeterProgressQuad = love.graphics.newQuad(gasMeterWidth, 0, gasMeterWidth, gasMeterHeight, uiImage)
     GameUi.gasMeterShader = love.graphics.newShader("assets/shader/progress_bar.glsl")
     GameUi.gasMeterShader:send("progress", 1.0)
-    local gasMeterProgressSprite = Sprite.new(uiImage, gasMeterProgressQuad)
+    local gasMeterProgressSprite = Sprite.newTiled(gasProgressImage, 2, 2)
     gasMeterProgressSprite.setShader = function()
         love.graphics.setShader(GameUi.gasMeterShader)
     end
@@ -57,8 +51,8 @@ function GameUi.load()
         ),
     }
 
-    local packageContainerQuad = love.graphics.newQuad(32, 26, packageContainerWidth, packageContainerHeight, uiImage)
-    local packageContainerSprite = Sprite.new(uiImage, packageContainerQuad)
+    local packageInventoryImage = love.graphics.newImage("assets/art/package_inventory.png")
+    local packageContainerSprite = Sprite.new(packageInventoryImage)
     packageContainer = {
         sprite = packageContainerSprite,
         transform = Align.screenAlignedTransform(
@@ -84,7 +78,12 @@ function GameUi.draw(gasRemaining, packages)
     PackageEffect.setShader(nil)
     local x, y = packageContainer.transform:transformPoint(0, 0)
     for _, package in ipairs(packages) do
-        love.graphics.draw(package.sprite.image, package.sprite.quad, x + packageOffsetXInitial, y + packageOffsetY)
+        love.graphics.draw(
+            package.sprite.image,
+            package.sprite:getCurrentQuad(),
+            x + packageOffsetXInitial,
+            y + packageOffsetY
+        )
         packageOffsetY = packageOffsetY + packageUiVerticalSpacing
     end
     love.graphics.setShader()

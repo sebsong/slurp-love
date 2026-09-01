@@ -66,6 +66,7 @@ function GameOverMenu.draw()
 
     love.graphics.setShader()
     -- Sprite.draw(menu.sprite, menu.transform)
+    -- TODO: use textbox
     love.graphics.setFont(Font.large)
     love.graphics.printf("you're fired", gameOverTextTransform, Settings.canvasPixelWidth, "center")
 

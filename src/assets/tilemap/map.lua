@@ -36,7 +36,7 @@ return {
     },
     {
       name = "walls",
-      firstgid = 13,
+      firstgid = 32,
       filename = "walls.tsx"
     }
   },

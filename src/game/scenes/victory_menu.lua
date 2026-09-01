@@ -4,24 +4,14 @@ local Align = require("engine.ui.align")
 local Button = require("engine.ui.button")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
-local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
 local GameUi = require("game.ui")
-
-local menu
 
 local victoryTextTransform
 local mainMenuButton
 
 function VictoryMenu.load()
-    local menuImage = love.graphics.newImage("assets/art/victory_menu.png")
-    local menuSprite = Sprite.new(menuImage)
-    menu = {
-        sprite = menuSprite,
-        transform = Align.screenAlignedTransform(menuSprite.width, menuSprite.height, "center", "center"),
-    }
-
     victoryTextTransform = love.math.newTransform(0, 50)
 
     local buttonImage = love.graphics.newImage("assets/art/button.png")
@@ -63,7 +53,7 @@ function VictoryMenu.draw()
     love.graphics.push()
 
     love.graphics.setShader()
-    -- Sprite.draw(menu.sprite, menu.transform)
+    -- TODO: fix coloring, use a textbox
     love.graphics.setFont(Font.large)
     love.graphics.printf("you're hired", victoryTextTransform, Settings.canvasPixelWidth, "center")
 
