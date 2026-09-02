@@ -177,6 +177,8 @@ function Game.load()
     for worldRowIdx, rowTiles in pairs(tilesByRow) do
         local quads = {}
         local positions = {}
+        local positionAttrs = {}
+        local quadViewportAttrs = {}
         local isFloatingAttrs = {}
         local inRangeAttrs = {}
         for _, tile in ipairs(rowTiles) do
@@ -186,8 +188,11 @@ function Game.load()
             local originY = worldY - landTileSprite.height + tilemapObj.tileHeight / 2
             if tile.tileId == LAND_TILE_ID then
                 landTileSprite:transitionAnimationState(tile.tileId) -- TODO: jank
-                table.insert(quads, landTileSprite:getCurrentQuad())
+                local quad = landTileSprite:getCurrentQuad()
+                table.insert(quads, quad)
                 table.insert(positions, Vec2.new(originX, originY))
+                table.insert(positionAttrs, Vec2.new(worldX, worldY))
+                table.insert(quadViewportAttrs, { quad:getViewport() })
                 table.insert(isFloatingAttrs, { 0 })
                 table.insert(inRangeAttrs, { 0 })
             elseif tile.tileId == FLOATING_TILE_ID then
@@ -196,9 +201,10 @@ function Game.load()
         end
         -- TODO: hook tile shader back up
         local mesh = Mesh.new(landTilesImage, quads, positions, nil, "static", 0, 0, worldRowIdx)
-        mesh:attachAttribute("tilePosition", "perinstance", { { "tilePosition", "float", 2 } }, positions)
-        mesh:attachAttribute("isFloating", "perinstance", { { "isFloating", "float", 1 } }, isFloatingAttrs)
-        mesh:attachAttribute("inRange", "perinstance", { { "inRange", "float", 1 } }, inRangeAttrs)
+        mesh:attachAttribute("v_quadViewport", "perinstance", { { "v_quadViewport", "float", 4 } }, quadViewportAttrs)
+        mesh:attachAttribute("v_tilePosition", "perinstance", { { "v_tilePosition", "float", 2 } }, positionAttrs)
+        mesh:attachAttribute("v_isFloating", "perinstance", { { "v_isFloating", "float", 1 } }, isFloatingAttrs)
+        mesh:attachAttribute("v_inRange", "perinstance", { { "v_inRange", "float", 1 } }, inRangeAttrs)
         mesh.setShader = function()
             TileEffect.setShader(nil, nil, nil, nil, true)
         end

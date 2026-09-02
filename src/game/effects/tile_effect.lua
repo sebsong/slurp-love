@@ -29,16 +29,16 @@ end
 
 function TileEffect.setShader(tile, boat, lanternXRadius, lanternYRadius, skip)
     if not skip then
-        shader:send("quadViewport", { tile.renderable:getCurrentQuad():getViewport() })
-        shader:send("tilePosition", { tile.transform:transformPoint(0, 0) })
-        -- shader:send("isFloating", tile.isFloating)
-        local inRange = false
-        if boat.isLanternActive and tile.isFloating then
-            local boatPos = Vec2.new(boat.transform:transformPoint(0, 0))
-            local tilePos = Vec2.new(tile.transform:transformPoint(0, 0))
-            inRange = Math.inEllipse(lanternXRadius, lanternYRadius, boatPos, tilePos)
-        end
-        shader:send("inRange", inRange)
+        -- shader:send("quadViewport", { tile.renderable:getCurrentQuad():getViewport() })
+        -- shader:send("tilePosition", { tile.transform:transformPoint(0, 0) })
+        -- -- shader:send("isFloating", tile.isFloating)
+        -- local inRange = false
+        -- if boat.isLanternActive and tile.isFloating then
+        --     local boatPos = Vec2.new(boat.transform:transformPoint(0, 0))
+        --     local tilePos = Vec2.new(tile.transform:transformPoint(0, 0))
+        --     inRange = Math.inEllipse(lanternXRadius, lanternYRadius, boatPos, tilePos)
+        -- end
+        -- shader:send("inRange", inRange)
     end
     love.graphics.setShader(shader)
 end

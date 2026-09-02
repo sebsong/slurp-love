@@ -12,14 +12,25 @@ uniform float time;
 uniform vec2 cameraCanvasDimensions;
 uniform vec2 cameraPosition;
 // uniform vec2 tilePosition;
-uniform vec4 quadViewport;
+// uniform vec4 quadViewport;
 
+varying vec4 quadViewport;
 varying float isFloating;
 varying vec2 tilePosition;
 varying float inRange;
 
 #ifdef VERTEX
+attribute vec4 v_quadViewport;
+attribute float v_isFloating;
+attribute vec2 v_tilePosition;
+attribute float v_inRange;
+
 vec4 position(mat4 transform_projection, vec4 vertex_position) {
+    quadViewport = v_quadViewport;
+    isFloating = v_isFloating;
+    tilePosition = v_tilePosition;
+    inRange = v_inRange;
+
     vec4 pos = transform_projection * vertex_position;
     if (isFloating > 0) {
         vec2 cameraCoords = (cameraPosition / cameraCanvasDimensions);
