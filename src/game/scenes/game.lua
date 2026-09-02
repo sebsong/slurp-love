@@ -1,6 +1,8 @@
 local Camera = require("engine.camera")
 local Mailbox = require("game.mailbox")
 local Math = require("engine.math")
+local Mesh = require("engine.mesh")
+local Render = require("engine.render")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 local Tilemap = require("engine.tilemap")
@@ -44,6 +46,7 @@ local BUILDINGS_TILESET_SIZE = 2
 local MAILBOX_TILESET_NAME = "mailboxes"
 local WALLS_TILESET_NAME = "walls"
 
+local LAND_TILE_ID = 1
 local FLOATING_TILE_ID = 2
 
 local tilemapWorldRows
@@ -124,10 +127,13 @@ function Game.load()
     PackageEffect.load()
     MailboxEffect.load()
 
-    local spriteBatchSize = math.max(tilemapObj.width, tilemapObj.height)
     tilemapWorldRows = {}
     tilemapFloatingWorldRows = {}
-    for _, row in ipairs(tilemapObj.layers[LAND_LAYER_NAME].tiles) do
+
+    local tilesByRow = {}
+
+    local landTiles = tilemapObj.layers[LAND_LAYER_NAME].tiles
+    for _, row in ipairs(landTiles) do
         for _, tile in ipairs(row) do
             if not tile.tileId then
                 goto continue
@@ -145,54 +151,80 @@ function Game.load()
                 tileSprite.zIndexOffset = tile.zIndexOffset
                 local tileObj = {
                     transform = love.math.newTransform(worldX, worldY),
-                    sprite = tileSprite,
+                    renderable = tileSprite,
                     isFloating = true,
                 }
-                tileObj.sprite.setShader = function()
+                tileObj.renderable.setShader = function()
                     TileEffect.setShader(tileObj, boatObj, lanternXRadius, lanternYRadius)
                 end
                 table.insert(worldObjects, tileObj)
                 goto continue
             end
 
-            local tilemapWorldRow = tilemapWorldRows[tile.worldRowIdx]
-            if not tilemapWorldRow then
-                tilemapWorldRow = {
-                    transform = love.math.newTransform(0, worldY),
-                    mesh = nil,
-                    vertices = {},
-                    isFloating = false,
-                }
-                tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
+            local worldRowTiles = tilesByRow[tile.worldRowIdx]
+            if not worldRowTiles then
+                worldRowTiles = {}
+                tilesByRow[tile.worldRowIdx] = worldRowTiles
             end
-            landTileSprite:transitionAnimationState(tile.tileId) -- TODO: jank
 
-            local imageWidth, imageHeight = landTilesImage:getDimensions()
-            local quadX, quadY, quadWidth, quadHeight = landTileSprite:getCurrentQuad():getViewport()
-            local u0, v0 = quadX / imageWidth, quadY / imageHeight
-            local u1, v1 = quadX + quadWidth / imageWidth, quadY + quadHeight / imageHeight
+            table.insert(worldRowTiles, tile)
 
-            local originX = worldX - quadWidth / 2
-            local originY = worldY - quadHeight + tilemapObj.tileHeight / 2
-            local x0, y0 = originX, originY
-            local x1, y1 = originX + quadWidth, originY + quadHeight
+            -- local tilemapWorldRow = tilemapWorldRows[tile.worldRowIdx]
+            -- if not tilemapWorldRow then
+            --     tilemapWorldRow = {
+            --         transform = love.math.newTransform(0, worldY),
+            --         mesh = nil,
+            --         vertices = {},
+            --         isFloating = false,
+            --     }
+            --     tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
+            -- end
+            -- landTileSprite:transitionAnimationState(tile.tileId) -- TODO: jank
 
-            table.insert(tilemapWorldRow.vertices, { x0, y0, u0, v0 })
-            table.insert(tilemapWorldRow.vertices, { x0, y1, u0, v1 })
-            table.insert(tilemapWorldRow.vertices, { x1, y0, u1, v0 })
+            -- local imageWidth, imageHeight = landTilesImage:getDimensions()
+            -- local quadX, quadY, quadWidth, quadHeight = landTileSprite:getCurrentQuad():getViewport()
 
-            table.insert(tilemapWorldRow.vertices, { x1, y0, u1, v0 })
-            table.insert(tilemapWorldRow.vertices, { x0, y1, u0, v1 })
-            table.insert(tilemapWorldRow.vertices, { x1, y1, u1, v1 })
+            -- local originX = worldX - quadWidth / 2
+            -- local originY = worldY - quadHeight + tilemapObj.tileHeight / 2
+            -- local x0, y0 = originX, originY
+            -- local x1, y1 = originX + quadWidth, originY + quadHeight
+
+            -- local u0, v0 = quadX / imageWidth, quadY / imageHeight
+            -- local u1, v1 = quadX + quadWidth / imageWidth, quadY + quadHeight / imageHeight
+
+            -- table.insert(tilemapWorldRow.vertices, { x0, y0, u0, v0 })
+            -- table.insert(tilemapWorldRow.vertices, { x0, y1, u0, v1 })
+            -- table.insert(tilemapWorldRow.vertices, { x1, y0, u1, v0 })
+
+            -- table.insert(tilemapWorldRow.vertices, { x1, y0, u1, v0 })
+            -- table.insert(tilemapWorldRow.vertices, { x0, y1, u0, v1 })
+            -- table.insert(tilemapWorldRow.vertices, { x1, y1, u1, v1 })
 
             ::continue::
             ---
         end
     end
 
-    for _, row in pairs(tilemapWorldRows) do
-        row.mesh = love.graphics.newMesh(row.vertices, "triangles", "static")
-        row.mesh:setTexture(landTilesImage)
+    for worldRowIdx, rowTiles in pairs(tilesByRow) do
+        local quads = {}
+        local positions = {}
+        for _, tile in ipairs(rowTiles) do
+            local worldX, worldY =
+                tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
+            local originX = worldX - landTileSprite.width / 2
+            local originY = worldY - landTileSprite.height + tilemapObj.tileHeight / 2
+            if tile.tileId == LAND_TILE_ID then
+                landTileSprite:transitionAnimationState(tile.tileId) -- TODO: jank
+                table.insert(quads, landTileSprite:getCurrentQuad())
+                table.insert(positions, Vec2.new(originX, originY))
+            elseif tile.tileId == FLOATING_TILE_ID then
+                --TODO: populate floating tiles here
+            end
+        end
+        local worldRow = {
+            renderable = Mesh.new(landTilesImage, quads, positions, nil, "static", 0, 0, worldRowIdx),
+        }
+        tilemapWorldRows[worldRowIdx] = worldRow
     end
 
     for _, object in ipairs(tilemapObj.layers[OBJECT_LAYER_NAME].objects) do
@@ -366,28 +398,28 @@ function Game.update(dt)
     local startWorldRowIdx = Tilemap.getWorldRowIdx(startColIdx, startRowIdx)
     local endWorldRowIdx = Tilemap.getWorldRowIdx(endColIdx, endRowIdx) + 4
 
+    -- TODO: maybe these are entities to render
+    -- renderables or drawables have: transform, render info (offsets), drawable (image, sprite batch, mesh)
     worldEntities = {}
     for worldRowIdx = startWorldRowIdx, endWorldRowIdx do
-        -- local worldRow = tilemapWorldRows[worldRowIdx]
-        -- if worldRow then
-        --     table.insert(worldEntities, worldRow)
-        -- end
+        local worldRow = tilemapWorldRows[worldRowIdx]
+        if worldRow then
+            table.insert(worldEntities, worldRow)
+        end
         local floatingWorldRow = tilemapFloatingWorldRows[worldRowIdx]
         if floatingWorldRow then
             table.insert(worldEntities, floatingWorldRow)
         end
     end
     for _, worldObject in ipairs(worldObjects) do
-        local zIndex = worldObject.sprite.zIndex + worldObject.sprite.zIndexOffset
+        local zIndex = worldObject.renderable:getZIndex()
         if Math.inRange(zIndex, startWorldRowIdx, endWorldRowIdx) then
             table.insert(worldEntities, worldObject)
         end
     end
 
-    table.sort(worldEntities, function(entity, otherEntity)
-        local entityZIndex = entity.sprite.zIndex + entity.sprite.zIndexOffset
-        local otherEntityZIndex = otherEntity.sprite.zIndex + otherEntity.sprite.zIndexOffset
-        return entityZIndex < otherEntityZIndex
+    Render.zSort(worldEntities, function(item)
+        return item.renderable
     end)
 
     for _, mailbox in ipairs(mailboxes) do
@@ -416,12 +448,7 @@ function Game.draw()
     love.graphics.applyTransform(Camera.getWorldToCanvasTransform(cameraObj))
 
     for _, worldObject in ipairs(worldEntities) do
-        worldObject.sprite:draw(worldObject.transform)
-    end
-
-    love.graphics.setShader()
-    for _, row in pairs(tilemapWorldRows) do
-        love.graphics.drawInstanced(row.mesh, #row.vertices / 6)
+        worldObject.renderable:draw(worldObject.transform)
     end
 
     for _, package in ipairs(packages) do

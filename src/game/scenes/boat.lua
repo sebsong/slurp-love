@@ -170,11 +170,11 @@ local function update(self, dt)
     end
 
     if isMovingForward then
-        self.sprite:transitionAnimationState(MOVE_STATE)
+        self.renderable:transitionAnimationState(MOVE_STATE)
     else
-        self.sprite:transitionAnimationState(DEFAULT_STATE)
+        self.renderable:transitionAnimationState(DEFAULT_STATE)
     end
-    self.sprite:setDirection(self.rotation)
+    self.renderable:setDirection(self.rotation)
 
     self:updateNeighborTiles()
     self:updateTrailPositions(dt)
@@ -197,7 +197,7 @@ local function update(self, dt)
     local x, y = self.moveTransform:transformPoint(0, 0)
     self.transform:setTransformation(x, y)
 
-    self.sprite.zIndex = self:getWorldRowIdx()
+    self.renderable.zIndex = self:getWorldRowIdx()
 end
 
 local function indexOfPackage(self, packageTileId)
@@ -338,7 +338,7 @@ function Boat.new(tilemap, dayValue)
 
     local boat = {
         -- TODO: build the boat from a tile object
-        sprite = sprite,
+        renderable = sprite,
 
         -- TODO: this is pretty awkward to maintain 2 separate transforms
         moveTransform = moveTransform,
@@ -388,7 +388,7 @@ function Boat.new(tilemap, dayValue)
         getWorldRowIdx = getWorldRowIdx,
     }
     setmetatable(boat, Boat)
-    boat.sprite.zIndex = boat:getWorldRowIdx()
+    boat.renderable.zIndex = boat:getWorldRowIdx()
 
     return boat
 end

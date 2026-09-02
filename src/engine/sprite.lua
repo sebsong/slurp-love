@@ -1,9 +1,9 @@
 local Animation = require("engine.animation")
+local Render = require("engine.render")
 
----@class Sprite
+---@class Sprite: Renderable
 ---@field shouldDraw boolean
 ---@field image love.Image | love.SpriteBatch
----@field quad love.Quad
 ---@field animations Animation[]?
 ---@field currentAnimationState integer
 ---@field width integer
@@ -28,6 +28,7 @@ Sprite.__index = Sprite
 ---@param isSpriteBatch boolean
 ---@return Sprite
 local function new(image, width, height, animations, xOffset, yOffset, zIndex, zIndexOffset, isSpriteBatch)
+    ---@type Sprite
     local sprite = {
         shouldDraw = true,
         image = image,
@@ -173,38 +174,32 @@ function Sprite:getCurrentQuad()
     return self:getCurrentAnimation():getCurrentQuad()
 end
 
+function Sprite:getZIndex()
+    return self.zIndex + self.zIndexOffset
+end
+
 ---@param dt number
 function Sprite:update(dt)
     self:getCurrentAnimation():update(dt)
 end
 
----@param transform love.Transform
-function Sprite:draw(transform)
-    if not self.shouldDraw then
-        return
-    end
-
-    love.graphics.push()
-    love.graphics.applyTransform(transform)
-
-    if self.setShader then
-        self.setShader()
-    else
-        love.graphics.setShader()
-    end
-
+---@param sprite Sprite
+local function draw(sprite)
     local quad
-    if self.animations then
-        quad = self:getCurrentQuad()
+    if sprite.animations then
+        quad = sprite:getCurrentQuad()
     end
 
-    if not quad or self.isSpriteBatch then
-        love.graphics.draw(self.image, self.xOffset, self.yOffset)
+    if not quad or sprite.isSpriteBatch then
+        love.graphics.draw(sprite.image, sprite.xOffset, sprite.yOffset)
     else
-        love.graphics.draw(self.image, quad, self.xOffset, self.yOffset)
+        love.graphics.draw(sprite.image, quad, sprite.xOffset, sprite.yOffset)
     end
+end
 
-    love.graphics.pop()
+---@param transform love.Transform?
+function Sprite:draw(transform)
+    Render.draw(self, transform, draw)
 end
 
 return Sprite
