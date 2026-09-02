@@ -169,37 +169,6 @@ function Game.load()
 
             table.insert(worldRowTiles, tile)
 
-            -- local tilemapWorldRow = tilemapWorldRows[tile.worldRowIdx]
-            -- if not tilemapWorldRow then
-            --     tilemapWorldRow = {
-            --         transform = love.math.newTransform(0, worldY),
-            --         mesh = nil,
-            --         vertices = {},
-            --         isFloating = false,
-            --     }
-            --     tilemapWorldRows[tile.worldRowIdx] = tilemapWorldRow
-            -- end
-            -- landTileSprite:transitionAnimationState(tile.tileId) -- TODO: jank
-
-            -- local imageWidth, imageHeight = landTilesImage:getDimensions()
-            -- local quadX, quadY, quadWidth, quadHeight = landTileSprite:getCurrentQuad():getViewport()
-
-            -- local originX = worldX - quadWidth / 2
-            -- local originY = worldY - quadHeight + tilemapObj.tileHeight / 2
-            -- local x0, y0 = originX, originY
-            -- local x1, y1 = originX + quadWidth, originY + quadHeight
-
-            -- local u0, v0 = quadX / imageWidth, quadY / imageHeight
-            -- local u1, v1 = quadX + quadWidth / imageWidth, quadY + quadHeight / imageHeight
-
-            -- table.insert(tilemapWorldRow.vertices, { x0, y0, u0, v0 })
-            -- table.insert(tilemapWorldRow.vertices, { x0, y1, u0, v1 })
-            -- table.insert(tilemapWorldRow.vertices, { x1, y0, u1, v0 })
-
-            -- table.insert(tilemapWorldRow.vertices, { x1, y0, u1, v0 })
-            -- table.insert(tilemapWorldRow.vertices, { x0, y1, u0, v1 })
-            -- table.insert(tilemapWorldRow.vertices, { x1, y1, u1, v1 })
-
             ::continue::
             ---
         end
@@ -208,6 +177,8 @@ function Game.load()
     for worldRowIdx, rowTiles in pairs(tilesByRow) do
         local quads = {}
         local positions = {}
+        local isFloatingAttrs = {}
+        local inRangeAttrs = {}
         for _, tile in ipairs(rowTiles) do
             local worldX, worldY =
                 tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
@@ -217,12 +188,22 @@ function Game.load()
                 landTileSprite:transitionAnimationState(tile.tileId) -- TODO: jank
                 table.insert(quads, landTileSprite:getCurrentQuad())
                 table.insert(positions, Vec2.new(originX, originY))
+                table.insert(isFloatingAttrs, { 0 })
+                table.insert(inRangeAttrs, { 0 })
             elseif tile.tileId == FLOATING_TILE_ID then
                 --TODO: populate floating tiles here
             end
         end
+        -- TODO: hook tile shader back up
+        local mesh = Mesh.new(landTilesImage, quads, positions, nil, "static", 0, 0, worldRowIdx)
+        mesh:attachAttribute("tilePosition", "perinstance", { { "tilePosition", "float", 2 } }, positions)
+        mesh:attachAttribute("isFloating", "perinstance", { { "isFloating", "float", 1 } }, isFloatingAttrs)
+        mesh:attachAttribute("inRange", "perinstance", { { "inRange", "float", 1 } }, inRangeAttrs)
+        mesh.setShader = function()
+            TileEffect.setShader(nil, nil, nil, nil, true)
+        end
         local worldRow = {
-            renderable = Mesh.new(landTilesImage, quads, positions, nil, "static", 0, 0, worldRowIdx),
+            renderable = mesh,
         }
         tilemapWorldRows[worldRowIdx] = worldRow
     end

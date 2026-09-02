@@ -84,6 +84,15 @@ function Mesh.new(image, quads, positions, vertexFormat, usage, xOffset, yOffset
     return mesh
 end
 
+---@param name string
+---@param step love.VertexAttributeStep
+---@param vertexFormat table
+---@param data table
+function Mesh:attachAttribute(name, step, vertexFormat, data)
+    local attributeMesh = love.graphics.newMesh(vertexFormat, data)
+    self.mesh:attachAttribute(name, attributeMesh, step)
+end
+
 ---@return number
 function Mesh:getZIndex()
     return self.zIndex + self.zIndexOffset

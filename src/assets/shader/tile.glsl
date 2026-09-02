@@ -6,20 +6,22 @@ uniform float VERTICAL_AMPLITUDE;
 uniform float VERTICAL_AMPLITUDE_FLOAT;
 uniform vec4 FOAM_COLOR;
 
-uniform bool isFloating;
 uniform bool isLanternActive;
-uniform bool inRange;
 
 uniform float time;
 uniform vec2 cameraCanvasDimensions;
 uniform vec2 cameraPosition;
-uniform vec2 tilePosition;
+// uniform vec2 tilePosition;
 uniform vec4 quadViewport;
+
+varying float isFloating;
+varying vec2 tilePosition;
+varying float inRange;
 
 #ifdef VERTEX
 vec4 position(mat4 transform_projection, vec4 vertex_position) {
     vec4 pos = transform_projection * vertex_position;
-    if (isFloating) {
+    if (isFloating > 0) {
         vec2 cameraCoords = (cameraPosition / cameraCanvasDimensions);
         vec2 tileCoords = (tilePosition / cameraCanvasDimensions);
         pos.y += sin(tileCoords.y * VERTICAL_FREQ + time * VERTICAL_SPEED) * VERTICAL_AMPLITUDE_FLOAT;
@@ -31,13 +33,13 @@ vec4 position(mat4 transform_projection, vec4 vertex_position) {
 #ifdef PIXEL
 vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords)
 {
-    if (isLanternActive && inRange) {
+    if (isLanternActive && inRange > 0) {
         discard;
     }
 
     vec4 texcolor = Texel(tex, texture_coords);
 
-    if (isFloating) {
+    if (isFloating > 0) {
         return texcolor;
     }
 
