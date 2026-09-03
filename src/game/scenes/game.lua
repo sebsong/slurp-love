@@ -186,7 +186,7 @@ function Game.load()
         mesh:attachAttribute("v_isFloating", "perinstance", { { "v_isFloating", "float", 1 } }, isFloatingAttrs)
         mesh:attachAttribute("v_inRange", "perinstance", { { "v_inRange", "float", 1 } }, inRangeAttrs)
         mesh.setShader = function()
-            TileEffect.setShader(nil, nil, nil, nil, true)
+            TileEffect.setShader()
         end
         local worldRow = {
             renderable = mesh,
