@@ -27,7 +27,8 @@ function Mesh.new(image, quads, positions, vertexFormat, usage, xOffset, yOffset
     local numInstances = #positions
 
     local vertices = {}
-    Mesh.insertBaseVertices(vertices, quads[1])
+    local _, _, width, height = quads[1]:getViewport()
+    Mesh.insertBaseVertices(vertices, width, height)
 
     local _mesh
     if vertexFormat then
@@ -59,12 +60,11 @@ end
 
 ---@private
 ---@param vertices table
----@param quad love.Quad
-function Mesh.insertBaseVertices(vertices, quad)
-    local _, _, quadWidth, quadHeight = quad:getViewport()
-
+---@param width integer
+---@param height integer
+function Mesh.insertBaseVertices(vertices, width, height)
     local x0, y0 = 0, 0
-    local x1, y1 = quadWidth, quadHeight
+    local x1, y1 = width, height
 
     local u0, v0 = 0, 0
     local u1, v1 = 1, 1
