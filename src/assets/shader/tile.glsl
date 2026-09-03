@@ -11,8 +11,6 @@ uniform bool isLanternActive;
 uniform float time;
 uniform vec2 cameraCanvasDimensions;
 uniform vec2 cameraPosition;
-// uniform vec2 tilePosition;
-// uniform vec4 quadViewport;
 
 varying vec4 quadViewport;
 varying float isFloating;

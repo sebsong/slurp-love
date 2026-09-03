@@ -139,28 +139,6 @@ function Game.load()
                 goto continue
             end
 
-            local worldX, worldY =
-                tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
-
-            ---
-            if tile.tilesetName == LAND_TILESET_NAME and tile.tileId == FLOATING_TILE_ID then
-                local tileSprite = Sprite.newTiled(landTilesImage, LAND_TILESET_SIZE, tile.tileId)
-                tileSprite.xOffset = -landQuadWidth / 2
-                tileSprite.yOffset = -landQuadHeight + tilemapObj.tileHeight / 2
-                tileSprite.zIndex = tile.zIndex
-                tileSprite.zIndexOffset = tile.zIndexOffset
-                local tileObj = {
-                    transform = love.math.newTransform(worldX, worldY),
-                    renderable = tileSprite,
-                    isFloating = true,
-                }
-                tileObj.renderable.setShader = function()
-                    TileEffect.setShader(tileObj, boatObj, lanternXRadius, lanternYRadius)
-                end
-                table.insert(worldObjects, tileObj)
-                goto continue
-            end
-
             local worldRowTiles = tilesByRow[tile.worldRowIdx]
             if not worldRowTiles then
                 worldRowTiles = {}
@@ -186,17 +164,19 @@ function Game.load()
                 tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
             local originX = worldX - landTileSprite.width / 2
             local originY = worldY - landTileSprite.height + tilemapObj.tileHeight / 2
+
+            landTileSprite:transitionAnimationState(tile.tileId) -- TODO: jank
+            local quad = landTileSprite:getCurrentQuad()
+
+            table.insert(quads, quad)
+            table.insert(positions, Vec2.new(originX, originY))
+            table.insert(positionAttrs, Vec2.new(worldX, worldY))
+            table.insert(quadViewportAttrs, { quad:getViewport() })
+            table.insert(inRangeAttrs, { 0 })
             if tile.tileId == LAND_TILE_ID then
-                landTileSprite:transitionAnimationState(tile.tileId) -- TODO: jank
-                local quad = landTileSprite:getCurrentQuad()
-                table.insert(quads, quad)
-                table.insert(positions, Vec2.new(originX, originY))
-                table.insert(positionAttrs, Vec2.new(worldX, worldY))
-                table.insert(quadViewportAttrs, { quad:getViewport() })
                 table.insert(isFloatingAttrs, { 0 })
-                table.insert(inRangeAttrs, { 0 })
             elseif tile.tileId == FLOATING_TILE_ID then
-                --TODO: populate floating tiles here
+                table.insert(isFloatingAttrs, { 1 })
             end
         end
         -- TODO: hook tile shader back up
