@@ -11,22 +11,31 @@ local Render = require("engine.render")
 local Mesh = {}
 Mesh.__index = Mesh
 
-local NUM_VERTICES_PER_INSTANCE = 6
-
----comment
----@param vertices table
----@param image love.Image
----@param quad love.Quad
----@param position Vec2
-local function insertQuadVertices(vertices, image, quad, position)
+--TODO: maybe also do positions in here
+local function attachUVs(mesh, image, quads)
+    local uvAttrs = {}
     local imageWidth, imageHeight = image:getDimensions()
-    local quadX, quadY, quadWidth, quadHeight = quad:getViewport()
 
-    local x0, y0 = unpack(position)
-    local x1, y1 = x0 + quadWidth, y0 + quadHeight
+    for _, quad in ipairs(quads) do
+        local quadX, quadY, quadWidth, quadHeight = quad:getViewport()
 
-    local u0, v0 = quadX / imageWidth, quadY / imageHeight
-    local u1, v1 = u0 + quadWidth / imageWidth, v0 + quadHeight / imageHeight
+        local u0, v0 = quadX / imageWidth, quadY / imageHeight
+        local u1, v1 = u0 + quadWidth / imageWidth, v0 + quadHeight / imageHeight
+
+        table.insert(uvAttrs, { u0, v0, u1, v1 })
+    end
+
+    mesh:attachAttribute("v_uv", "perinstance", { { "v_uv", "float", 4 } }, uvAttrs)
+end
+
+local function insertBaseVertices(vertices, quad)
+    local _, _, quadWidth, quadHeight = quad:getViewport()
+
+    local x0, y0 = 0, 0
+    local x1, y1 = quadWidth, quadHeight
+
+    local u0, v0 = 0, 0
+    local u1, v1 = 1, 1
 
     table.insert(vertices, { x0, y0, u0, v0 })
     table.insert(vertices, { x0, y1, u0, v1 })
@@ -37,7 +46,6 @@ local function insertQuadVertices(vertices, image, quad, position)
     table.insert(vertices, { x1, y1, u1, v1 })
 end
 
----comment
 ---@param image love.Image
 ---@param quads love.Quad[]
 ---@param positions Vec2[]
@@ -51,12 +59,10 @@ end
 function Mesh.new(image, quads, positions, vertexFormat, usage, xOffset, yOffset, zIndex, zIndexOffset)
     assert(#quads == #positions)
 
-    local numInstances = #quads
+    local numInstances = #positions
 
     local vertices = {}
-    for i = 1, numInstances do
-        insertQuadVertices(vertices, image, quads[i], positions[i])
-    end
+    insertBaseVertices(vertices, quads[1])
 
     local _mesh
     if vertexFormat then
@@ -81,6 +87,8 @@ function Mesh.new(image, quads, positions, vertexFormat, usage, xOffset, yOffset
 
     setmetatable(mesh, Mesh)
 
+    attachUVs(mesh, image, quads)
+
     return mesh
 end
 
@@ -101,6 +109,7 @@ end
 ---@param mesh Mesh
 local function draw(mesh)
     love.graphics.drawInstanced(mesh.mesh, mesh.numInstances, mesh.xOffset, mesh.yOffset)
+    -- love.graphics.draw(mesh.mesh, mesh.xOffset, mesh.yOffset)
 end
 
 ---@param transform love.Transform?

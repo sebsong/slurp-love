@@ -170,7 +170,7 @@ function Game.load()
 
             table.insert(quads, quad)
             table.insert(positions, Vec2.new(originX, originY))
-            table.insert(positionAttrs, Vec2.new(worldX, worldY))
+            table.insert(positionAttrs, Vec2.new(originX, originY))
             table.insert(quadViewportAttrs, { quad:getViewport() })
             table.insert(inRangeAttrs, { 0 })
             if tile.tileId == LAND_TILE_ID then
@@ -179,7 +179,7 @@ function Game.load()
                 table.insert(isFloatingAttrs, { 1 })
             end
         end
-        -- TODO: hook tile shader back up
+        -- TODO: maybe we can attach all these attributes together?
         local mesh = Mesh.new(landTilesImage, quads, positions, nil, "static", 0, 0, worldRowIdx)
         mesh:attachAttribute("v_quadViewport", "perinstance", { { "v_quadViewport", "float", 4 } }, quadViewportAttrs)
         mesh:attachAttribute("v_tilePosition", "perinstance", { { "v_tilePosition", "float", 2 } }, positionAttrs)
