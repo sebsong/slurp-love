@@ -11,41 +11,6 @@ local Render = require("engine.render")
 local Mesh = {}
 Mesh.__index = Mesh
 
---TODO: maybe also do positions in here
-local function attachUVs(mesh, image, quads)
-    local uvAttrs = {}
-    local imageWidth, imageHeight = image:getDimensions()
-
-    for _, quad in ipairs(quads) do
-        local quadX, quadY, quadWidth, quadHeight = quad:getViewport()
-
-        local u0, v0 = quadX / imageWidth, quadY / imageHeight
-        local u1, v1 = u0 + quadWidth / imageWidth, v0 + quadHeight / imageHeight
-
-        table.insert(uvAttrs, { u0, v0, u1, v1 })
-    end
-
-    mesh:attachAttribute("v_uv", "perinstance", { { "v_uv", "float", 4 } }, uvAttrs)
-end
-
-local function insertBaseVertices(vertices, quad)
-    local _, _, quadWidth, quadHeight = quad:getViewport()
-
-    local x0, y0 = 0, 0
-    local x1, y1 = quadWidth, quadHeight
-
-    local u0, v0 = 0, 0
-    local u1, v1 = 1, 1
-
-    table.insert(vertices, { x0, y0, u0, v0 })
-    table.insert(vertices, { x0, y1, u0, v1 })
-    table.insert(vertices, { x1, y0, u1, v0 })
-
-    table.insert(vertices, { x1, y0, u1, v0 })
-    table.insert(vertices, { x0, y1, u0, v1 })
-    table.insert(vertices, { x1, y1, u1, v1 })
-end
-
 ---@param image love.Image
 ---@param quads love.Quad[]
 ---@param positions Vec2[]
@@ -62,7 +27,7 @@ function Mesh.new(image, quads, positions, vertexFormat, usage, xOffset, yOffset
     local numInstances = #positions
 
     local vertices = {}
-    insertBaseVertices(vertices, quads[1])
+    Mesh.insertBaseVertices(vertices, quads[1])
 
     local _mesh
     if vertexFormat then
@@ -87,18 +52,57 @@ function Mesh.new(image, quads, positions, vertexFormat, usage, xOffset, yOffset
 
     setmetatable(mesh, Mesh)
 
-    attachUVs(mesh, image, quads)
+    mesh:attachUVs(image, quads)
 
     return mesh
 end
 
----@param name string
----@param step love.VertexAttributeStep
+---@private
+---@param vertices table
+---@param quad love.Quad
+function Mesh.insertBaseVertices(vertices, quad)
+    local _, _, quadWidth, quadHeight = quad:getViewport()
+
+    local x0, y0 = 0, 0
+    local x1, y1 = quadWidth, quadHeight
+
+    local u0, v0 = 0, 0
+    local u1, v1 = 1, 1
+
+    table.insert(vertices, { x0, y0, u0, v0 })
+    table.insert(vertices, { x0, y1, u0, v1 })
+    table.insert(vertices, { x1, y0, u1, v0 })
+
+    table.insert(vertices, { x1, y0, u1, v0 })
+    table.insert(vertices, { x0, y1, u0, v1 })
+    table.insert(vertices, { x1, y1, u1, v1 })
+end
+
+---@private
+---@param image love.Image
+---@param quads love.Quad[]
+function Mesh:attachUVs(image, quads)
+    local uvAttrs = {}
+    local imageWidth, imageHeight = image:getDimensions()
+
+    for _, quad in ipairs(quads) do
+        local quadX, quadY, quadWidth, quadHeight = quad:getViewport()
+
+        local u0, v0 = quadX / imageWidth, quadY / imageHeight
+        local u1, v1 = u0 + quadWidth / imageWidth, v0 + quadHeight / imageHeight
+
+        table.insert(uvAttrs, { u0, v0, u1, v1 })
+    end
+
+    self:attachAttribute({ "v_uv", "float", 4 }, uvAttrs)
+end
+
 ---@param vertexFormat table
 ---@param data table
-function Mesh:attachAttribute(name, step, vertexFormat, data)
-    local attributeMesh = love.graphics.newMesh(vertexFormat, data)
-    self.mesh:attachAttribute(name, attributeMesh, step)
+function Mesh:attachAttribute(vertexFormat, data)
+    local name = vertexFormat[1]
+    local attributeMesh = love.graphics.newMesh({ vertexFormat }, data)
+    self.mesh:attachAttribute(name, attributeMesh, "perinstance")
 end
 
 ---@return number

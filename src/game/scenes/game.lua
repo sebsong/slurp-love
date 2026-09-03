@@ -181,10 +181,10 @@ function Game.load()
         end
         -- TODO: maybe we can attach all these attributes together?
         local mesh = Mesh.new(landTilesImage, quads, positions, nil, "static", 0, 0, worldRowIdx)
-        mesh:attachAttribute("v_quadViewport", "perinstance", { { "v_quadViewport", "float", 4 } }, quadViewportAttrs)
-        mesh:attachAttribute("v_tilePosition", "perinstance", { { "v_tilePosition", "float", 2 } }, positionAttrs)
-        mesh:attachAttribute("v_isFloating", "perinstance", { { "v_isFloating", "float", 1 } }, isFloatingAttrs)
-        mesh:attachAttribute("v_inRange", "perinstance", { { "v_inRange", "float", 1 } }, inRangeAttrs)
+        mesh:attachAttribute({ "v_quadViewport", "float", 4 }, quadViewportAttrs)
+        mesh:attachAttribute({ "v_tilePosition", "float", 2 }, positionAttrs)
+        mesh:attachAttribute({ "v_isFloating", "float", 1 }, isFloatingAttrs)
+        mesh:attachAttribute({ "v_inRange", "float", 1 }, inRangeAttrs)
         mesh.setShader = function()
             TileEffect.setShader()
         end
