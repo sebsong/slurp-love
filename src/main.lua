@@ -47,8 +47,8 @@ function love.load()
 
     SceneManager.scenes.global:start()
     SceneManager.scenes.dayTracker:start()
-    SceneManager.scenes.mainMenu:start()
-    -- SceneManager.scenes.game:start()
+    -- SceneManager.scenes.mainMenu:start()
+    SceneManager.scenes.game:start()
     -- SceneManager.scenes.packageDetail:start()
 
     if Settings.IS_DEBUG then
