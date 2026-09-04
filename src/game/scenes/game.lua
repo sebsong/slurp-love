@@ -160,14 +160,12 @@ function Game.load()
         for _, tile in ipairs(rowTiles) do
             local worldX, worldY =
                 tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
-            local originX = worldX - landTileSprite.width / 2
-            local originY = worldY - landTileSprite.height + tilemapObj.tileHeight / 2
 
             landTileSprite:transitionAnimationState(tile.tileId) -- TODO: jank
             local quad = landTileSprite:getCurrentQuad()
 
             table.insert(quads, quad)
-            table.insert(positions, Vec2.new(originX, originY))
+            table.insert(positions, Vec2.new(worldX, worldY))
             table.insert(quadViewportAttrs, { quad:getViewport() })
             table.insert(inRangeAttrs, { 0 })
             if tile.tileId == LAND_TILE_ID then
@@ -176,7 +174,9 @@ function Game.load()
                 table.insert(isFloatingAttrs, { 1 })
             end
         end
-        local mesh = Mesh.new(landTilesImage, quads, positions, nil, "static", 0, 0, worldRowIdx)
+        local xOffset = -landTileSprite.width / 2
+        local yOffset = -landTileSprite.height + tilemapObj.tileHeight / 2
+        local mesh = Mesh.new(landTilesImage, quads, positions, nil, "static", xOffset, yOffset, worldRowIdx)
         mesh:attachAttribute({ "v_quadViewport", "float", 4 }, quadViewportAttrs)
         mesh:attachAttribute({ "v_isFloating", "float", 1 }, isFloatingAttrs)
         mesh:attachAttribute({ "v_inRange", "float", 1 }, inRangeAttrs)

@@ -83,9 +83,9 @@ end
 ---@param image love.Image
 ---@param quads love.Quad[]
 function Mesh:attachUVs(image, quads)
-    local uvAttrs = {}
     local imageWidth, imageHeight = image:getDimensions()
 
+    local uvAttrs = {}
     for _, quad in ipairs(quads) do
         local quadX, quadY, quadWidth, quadHeight = quad:getViewport()
 
@@ -98,9 +98,10 @@ function Mesh:attachUVs(image, quads)
     self:attachAttribute({ "v_uv", "float", 4 }, uvAttrs)
 end
 
+---@private
+---@param positions Vec2[]
 function Mesh:attachPositions(positions)
     local positionAttrs = {}
-
     for _, position in ipairs(positions) do
         table.insert(positionAttrs, position)
     end
@@ -124,7 +125,6 @@ end
 ---@param mesh Mesh
 local function draw(mesh)
     love.graphics.drawInstanced(mesh.mesh, mesh.numInstances, mesh.xOffset, mesh.yOffset)
-    -- love.graphics.draw(mesh.mesh, mesh.xOffset, mesh.yOffset)
 end
 
 ---@param transform love.Transform?

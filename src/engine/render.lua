@@ -16,7 +16,6 @@ function Render.zSort(items, getRenderable)
     end)
 end
 
----comment
 ---@param renderable Renderable
 ---@param transform love.Transform?
 ---@param drawFn fun(renderable: Renderable)
