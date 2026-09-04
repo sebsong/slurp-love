@@ -116,12 +116,12 @@ function Game.load()
     waterImage = love.graphics.newImage("assets/art/water.png")
     WaterEffect.load(cameraObj, boatObj, love.timer.getTime())
 
-    TileEffect.load(cameraObj, boatObj)
-
     lanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
     local lanternXDiameter, lanternYDiameter = lanternLightImage:getDimensions()
     lanternXRadius, lanternYRadius = lanternXDiameter / 2, lanternYDiameter / 2
     LanternEffect.load()
+
+    TileEffect.load({ lanternXRadius, lanternYRadius })
 
     PackageEffect.load()
     MailboxEffect.load()
@@ -156,7 +156,6 @@ function Game.load()
         local positions = {}
         local quadViewportAttrs = {}
         local isFloatingAttrs = {}
-        local inRangeAttrs = {}
         for _, tile in ipairs(rowTiles) do
             local worldX, worldY =
                 tilemapObj.tilemapIndexToWorldTransform:transformPoint(tile.position.x, tile.position.y)
@@ -167,7 +166,6 @@ function Game.load()
             table.insert(quads, quad)
             table.insert(positions, Vec2.new(worldX, worldY))
             table.insert(quadViewportAttrs, { quad:getViewport() })
-            table.insert(inRangeAttrs, { 0 })
             if tile.tileId == LAND_TILE_ID then
                 table.insert(isFloatingAttrs, { 0 })
             elseif tile.tileId == FLOATING_TILE_ID then
@@ -179,7 +177,6 @@ function Game.load()
         local mesh = Mesh.new(landTilesImage, quads, positions, nil, "static", xOffset, yOffset, worldRowIdx)
         mesh:attachAttribute({ "v_quadViewport", "float", 4 }, quadViewportAttrs)
         mesh:attachAttribute({ "v_isFloating", "float", 1 }, isFloatingAttrs)
-        mesh:attachAttribute({ "v_inRange", "float", 1 }, inRangeAttrs)
         mesh.setShader = function()
             TileEffect.setShader()
         end
@@ -380,6 +377,7 @@ function Game.update(dt)
         end
     end
 
+    -- TODO: this sorting can be optimized, maybe precompute z index and avoid method indirection
     Render.zSort(worldEntities, function(item)
         return item.renderable
     end)

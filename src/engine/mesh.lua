@@ -27,7 +27,7 @@ function Mesh.new(image, quads, positions, vertexFormat, usage, xOffset, yOffset
     local numInstances = #positions
 
     local vertices = {}
-    local _, _, width, height = quads[1]:getViewport()
+    local _, _, width, height = quads[1]:getViewport() -- assume all quads are the same size
     Mesh.insertBaseVertices(vertices, width, height)
 
     local _mesh
@@ -112,6 +112,8 @@ end
 ---@param vertexFormat table
 ---@param data table
 function Mesh:attachAttribute(vertexFormat, data)
+    --TODO: add ability to batch attributes onto the same auxillary mesh
+    --TODO: keep track of auxillary mesh to allow attribute updating
     local name = vertexFormat[1]
     local attributeMesh = love.graphics.newMesh({ vertexFormat }, data)
     self.mesh:attachAttribute(name, attributeMesh, "perinstance")

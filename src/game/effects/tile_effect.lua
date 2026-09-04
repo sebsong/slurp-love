@@ -8,7 +8,7 @@ local SHADER_FILE_PATH = "assets/shader/tile.glsl"
 
 local shader
 
-function TileEffect.load(camera, boat)
+function TileEffect.load(lanternRadii)
     shader = love.graphics.newShader(SHADER_FILE_PATH)
 
     shader:send("VERTICAL_FREQ", WaterEffect.VERTICAL_FREQ)
@@ -16,10 +16,12 @@ function TileEffect.load(camera, boat)
     shader:send("VERTICAL_AMPLITUDE", WaterEffect.VERTICAL_AMPLITUDE)
     shader:send("VERTICAL_AMPLITUDE_FLOAT", BoatEffect.VERTICAL_AMPLITUDE)
     shader:send("FOAM_COLOR", Color.palette[WaterEffect.FOAM_INNER_COLOR_IDX])
+    shader:send("LANTERN_RADII", lanternRadii)
 end
 
 function TileEffect.update(camera, boat, time)
     shader:send("isLanternActive", boat.isLanternActive)
+    shader:send("lanternPosition", { boat.transform:transformPoint(0, 0) })
     shader:send("time", time)
     shader:send("cameraCanvasDimensions", { camera:getScreenWidth(), camera:getScreenHeight() })
     shader:send("cameraPosition", { camera.transform:transformPoint(0, 0) })
