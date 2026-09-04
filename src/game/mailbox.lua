@@ -5,13 +5,24 @@ local Mailbox = {}
 Mailbox.__index = Mailbox
 
 local DEFAULT_STATE = 1
-local DELIVERED_STATE = 2
+local FLAG_UP_STATE = 2
+local DELIVERED_STATE = 3
 
 function Mailbox.new(image, tileObject, tilemap)
-    local mailboxSprite = Sprite.newAnimated(image, {
+    local mailboxSprite
+    mailboxSprite = Sprite.newAnimated(image, {
         [DEFAULT_STATE] = {},
+        [FLAG_UP_STATE] = {
+            numFrames = 11,
+            duration = 1,
+            isLooping = false,
+            isReversed = false,
+            onFinish = function()
+                mailboxSprite:transitionAnimationState(DELIVERED_STATE)
+            end,
+        },
         [DELIVERED_STATE] = {
-            numFrames = 10,
+            numFrames = 11,
             duration = 1,
             isLooping = false,
             isReversed = false,
@@ -38,7 +49,7 @@ function Mailbox.new(image, tileObject, tilemap)
 end
 
 function Mailbox:deliverPackage()
-    self.sprite:transitionAnimationState(DELIVERED_STATE)
+    self.sprite:transitionAnimationState(FLAG_UP_STATE)
 end
 
 function Mailbox:update(dt)
