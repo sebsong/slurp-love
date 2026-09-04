@@ -314,9 +314,7 @@ function Boat.new(tilemap, dayValue)
             onFinish = nil,
         },
     }, NUM_BOAT_ANGLES, -BOAT_WIDTH / 2, -BOAT_HEIGHT + (8 / 2), 0, 0)
-    sprite.setShader = function()
-        BoatEffect.setShader()
-    end
+    sprite.setShader = BoatEffect.setShader()
 
     BoatEffect.load()
 

@@ -177,9 +177,7 @@ function Game.load()
         local mesh = Mesh.new(landTilesImage, quads, positions, nil, "static", xOffset, yOffset, worldRowIdx)
         mesh:attachAttribute({ "v_quadViewport", "float", 4 }, quadViewportAttrs)
         mesh:attachAttribute({ "v_isFloating", "float", 1 }, isFloatingAttrs)
-        mesh.setShader = function()
-            TileEffect.setShader()
-        end
+        mesh.setShader = TileEffect.setShader
         local worldRow = {
             renderable = mesh,
         }

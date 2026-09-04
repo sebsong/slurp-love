@@ -20,11 +20,11 @@ function TileEffect.load(lanternRadii)
 end
 
 function TileEffect.update(camera, boat, time)
-    shader:send("isLanternActive", boat.isLanternActive)
-    shader:send("lanternPosition", { boat.transform:transformPoint(0, 0) })
     shader:send("time", time)
     shader:send("cameraCanvasDimensions", { camera:getScreenWidth(), camera:getScreenHeight() })
     shader:send("cameraPosition", { camera.transform:transformPoint(0, 0) })
+    shader:send("isLanternActive", boat.isLanternActive)
+    shader:send("lanternPosition", { boat.transform:transformPoint(0, 0) })
 end
 
 function TileEffect.setShader()
