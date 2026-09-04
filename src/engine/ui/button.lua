@@ -37,7 +37,7 @@ function Button.new(image, transform, font, text, onHover, onPress)
         enabled = true,
 
         sprite = sprite,
-        textBox = TextBox.new(transform, width, height, font, Color.palette[8], text, "center", "center", "center"),
+        textBox = TextBox.new(transform, width, height, font, { Color.palette[8], text }, "center", "center", "center"),
         transform = transform,
         collider = { width = width, height = height },
 

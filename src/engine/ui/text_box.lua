@@ -14,19 +14,18 @@ TextBox.__index = TextBox
 ---@param width integer
 ---@param height integer
 ---@param font love.Font
----@param color table
----@param rawText string
+---@param coloredText table
 ---@param horizontalAlign HorizontalAlignOption
 ---@param verticalAlign VerticalAlignOption
 ---@param textAlignMode love.AlignMode
 ---@return TextBox
-function TextBox.new(transform, width, height, font, color, rawText, horizontalAlign, verticalAlign, textAlignMode)
+function TextBox.new(transform, width, height, font, coloredText, horizontalAlign, verticalAlign, textAlignMode)
     horizontalAlign = horizontalAlign or "center"
     verticalAlign = verticalAlign or "center"
     textAlignMode = textAlignMode or "center"
 
-    local text = love.graphics.newText(font, rawText)
-    text:setf({ color, rawText }, width, textAlignMode)
+    local text = love.graphics.newText(font, coloredText)
+    text:setf(coloredText, width, textAlignMode)
 
     local textTransform =
         Align.alignedTransform(transform, width, height, width, text:getHeight(), horizontalAlign, verticalAlign)
@@ -45,11 +44,9 @@ function TextBox.new(transform, width, height, font, color, rawText, horizontalA
 end
 
 --TODO: this should technically re-align the text transform
---TODO: convert all method annotations to use this style
----@overload fun(self: TextBox, coloredtext: table)
----@param rawText string
-function TextBox:setText(rawText)
-    self.text:set(rawText)
+---@param coloredText table
+function TextBox:setText(coloredText)
+    self.text:set(coloredText)
 end
 
 function TextBox:draw()

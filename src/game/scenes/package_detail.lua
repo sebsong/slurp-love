@@ -134,8 +134,7 @@ function PackageDetail.load()
         detailBox.sprite.width,
         textHeight,
         Font.medium,
-        Color.palette[8],
-        FLAVOR_TEXTS[packageIndex],
+        { Color.palette[8], FLAVOR_TEXTS[packageIndex] },
         "center",
         "center",
         "center"

@@ -33,7 +33,7 @@ local isLineFinished
 local isDialogueFinished
 
 local function resetLine()
-    dialogueTextBox:setText("")
+    dialogueTextBox:setText({})
     numCharactersToShow = 0
     isFastForwarding = false
     isLineFinished = false
@@ -127,8 +127,7 @@ function MailDialogue.load()
         320 - GameUi.PADDING * 2,
         120 - GameUi.PADDING * 2,
         Font.small,
-        Color.palette[8],
-        "",
+        {},
         "center",
         "top",
         "left"
