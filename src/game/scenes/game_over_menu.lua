@@ -2,20 +2,38 @@ local GameOverMenu = {}
 
 local Align = require("engine.ui.align")
 local Button = require("engine.ui.button")
+local Color = require("engine.color")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
-local Sprite = require("engine.sprite")
+local TextBox = require("engine.ui.text_box")
 
 local Font = require("game.font")
 local GameUi = require("game.ui")
 
-local gameOverTextTransform
+local gameOverTextBox
 
 local restartButton
 local mainMenuButton
 
 function GameOverMenu.load()
-    gameOverTextTransform = love.math.newTransform(0, 50)
+    local gameOverTextBoxTransform = Align.screenAlignedTransform(
+        Settings.canvasPixelWidth,
+        Settings.canvasPixelHeight,
+        "center",
+        "top",
+        0,
+        GameUi.PADDING * 6
+    )
+    gameOverTextBox = TextBox.new(
+        gameOverTextBoxTransform,
+        Settings.canvasPixelWidth,
+        Settings.canvasPixelHeight,
+        Font.large,
+        { Color.palette[8], "you're fired" },
+        "center",
+        "top",
+        "center"
+    )
 
     local buttonImage = love.graphics.newImage("assets/art/button.png")
 
@@ -65,10 +83,8 @@ function GameOverMenu.draw()
     love.graphics.push()
 
     love.graphics.setShader()
-    -- Sprite.draw(menu.sprite, menu.transform)
-    -- TODO: use textbox
-    love.graphics.setFont(Font.large)
-    love.graphics.printf("you're fired", gameOverTextTransform, Settings.canvasPixelWidth, "center")
+
+    gameOverTextBox:draw()
 
     restartButton:draw()
     mainMenuButton:draw()
