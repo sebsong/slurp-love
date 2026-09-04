@@ -54,6 +54,7 @@ function Mesh.new(image, quads, positions, vertexFormat, usage, xOffset, yOffset
     setmetatable(mesh, Mesh)
 
     mesh:attachUVs(image, quads)
+    mesh:attachPositions(positions)
 
     return mesh
 end
@@ -95,6 +96,16 @@ function Mesh:attachUVs(image, quads)
     end
 
     self:attachAttribute({ "v_uv", "float", 4 }, uvAttrs)
+end
+
+function Mesh:attachPositions(positions)
+    local positionAttrs = {}
+
+    for _, position in ipairs(positions) do
+        table.insert(positionAttrs, position)
+    end
+
+    self:attachAttribute({ "v_position", "float", 2 }, positionAttrs)
 end
 
 ---@param vertexFormat table

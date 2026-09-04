@@ -94,7 +94,6 @@ function Game.load()
 
     local landTilesImage = love.graphics.newImage("assets/art/tileset.png")
     local landTileSprite = Sprite.newTiled(landTilesImage, LAND_TILESET_SIZE, 1)
-    local landQuadWidth, landQuadHeight = Sprite.calculateQuadDimensions(landTilesImage, LAND_TILESET_SIZE, 1, 1)
 
     local packagesImage = love.graphics.newImage("assets/art/packages.png")
 
@@ -155,7 +154,6 @@ function Game.load()
     for worldRowIdx, rowTiles in pairs(tilesByRow) do
         local quads = {}
         local positions = {}
-        local positionAttrs = {}
         local quadViewportAttrs = {}
         local isFloatingAttrs = {}
         local inRangeAttrs = {}
@@ -170,7 +168,6 @@ function Game.load()
 
             table.insert(quads, quad)
             table.insert(positions, Vec2.new(originX, originY))
-            table.insert(positionAttrs, Vec2.new(originX, originY))
             table.insert(quadViewportAttrs, { quad:getViewport() })
             table.insert(inRangeAttrs, { 0 })
             if tile.tileId == LAND_TILE_ID then
@@ -179,10 +176,8 @@ function Game.load()
                 table.insert(isFloatingAttrs, { 1 })
             end
         end
-        -- TODO: maybe we can attach all these attributes together?
         local mesh = Mesh.new(landTilesImage, quads, positions, nil, "static", 0, 0, worldRowIdx)
         mesh:attachAttribute({ "v_quadViewport", "float", 4 }, quadViewportAttrs)
-        mesh:attachAttribute({ "v_tilePosition", "float", 2 }, positionAttrs)
         mesh:attachAttribute({ "v_isFloating", "float", 1 }, isFloatingAttrs)
         mesh:attachAttribute({ "v_inRange", "float", 1 }, inRangeAttrs)
         mesh.setShader = function()
