@@ -1,5 +1,4 @@
 local Align = require("engine.ui.align")
-local Button = require("engine.ui.button")
 local Color = require("engine.color")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
@@ -7,6 +6,7 @@ local TextBox = require("engine.ui.text_box")
 
 local DayTracker = require("game.scenes.day_tracker")
 local Font = require("game.font")
+local GameButton = require("game.button")
 local GameUi = require("game.ui")
 
 local DaySelector = {}
@@ -36,7 +36,7 @@ function DaySelector.load()
         Settings.canvasPixelWidth,
         Settings.canvasPixelHeight,
         Font.large,
-        { Color.palette[7], "select day" },
+        { Color.palette[8], "select day" },
         "center",
         "top",
         "center"
@@ -52,7 +52,7 @@ function DaySelector.load()
         GameUi.PADDING,
         GameUi.PADDING
     )
-    backButton = Button.new(buttonImage, backButtonTranform, Font.medium, "back", nil, function()
+    backButton = GameButton.new(buttonImage, backButtonTranform, Font.medium, "back", nil, function()
         SceneManager.transition(SceneManager.scenes.mainMenu)
     end)
 
@@ -64,7 +64,7 @@ function DaySelector.load()
         -(GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x),
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) + GameUi.PADDING
     )
-    mondayButton = Button.new(buttonImage, mondayButtonTranform, Font.medium, "monday", nil, function()
+    mondayButton = GameButton.new(buttonImage, mondayButtonTranform, Font.medium, "monday", nil, function()
         DayTracker.selectDay(1)
     end)
 
@@ -76,7 +76,7 @@ function DaySelector.load()
         0,
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) + GameUi.PADDING
     )
-    tuesdayButton = Button.new(buttonImage, tuesdayButtonTranform, Font.medium, "tuesday", nil, function()
+    tuesdayButton = GameButton.new(buttonImage, tuesdayButtonTranform, Font.medium, "tuesday", nil, function()
         DayTracker.selectDay(2)
     end)
 
@@ -88,7 +88,7 @@ function DaySelector.load()
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x),
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) + GameUi.PADDING
     )
-    wednesdayButton = Button.new(buttonImage, wednesdayButtonTranform, Font.medium, "wednesday", nil, function()
+    wednesdayButton = GameButton.new(buttonImage, wednesdayButtonTranform, Font.medium, "wednesday", nil, function()
         DayTracker.selectDay(3)
     end)
 
@@ -100,7 +100,7 @@ function DaySelector.load()
         -(GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x) / 2,
         GameUi.PADDING
     )
-    thursdayButton = Button.new(buttonImage, thursdayButtonTranform, Font.medium, "thursday", nil, function()
+    thursdayButton = GameButton.new(buttonImage, thursdayButtonTranform, Font.medium, "thursday", nil, function()
         DayTracker.selectDay(4)
     end)
 
@@ -112,7 +112,7 @@ function DaySelector.load()
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.x) / 2,
         GameUi.PADDING
     )
-    fridayButton = Button.new(buttonImage, fridayButtonTranform, Font.medium, "friday", nil, function()
+    fridayButton = GameButton.new(buttonImage, fridayButtonTranform, Font.medium, "friday", nil, function()
         DayTracker.selectDay(5)
     end)
 

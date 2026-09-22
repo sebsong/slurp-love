@@ -9,6 +9,8 @@ local TextBox = require("engine.ui.text_box")
 ---@field textBox TextBox
 ---@field transform love.Transform
 ---@field collider Collider
+---@field hoverSound love.Source
+---@field pressSound love.Source
 ---@field onHover fun(self: Button)?
 ---@field onPress fun(self: Button)?
 local Button = {}
@@ -22,10 +24,12 @@ local DISABLED_STATE = 3
 ---@param transform love.Transform
 ---@param font love.Font
 ---@param text string
+---@param hoverSound love.Source
+---@param pressSound love.Source
 ---@param onHover fun(self: Button)?
 ---@param onPress fun(self: Button)?
 ---@return Button
-function Button.new(image, transform, font, text, onHover, onPress)
+function Button.new(image, transform, font, text, hoverSound, pressSound, onHover, onPress)
     local sprite = Sprite.newAnimated(image, {
         [DEFAULT_STATE] = {},
         [HOVERED_STATE] = {},
@@ -40,6 +44,9 @@ function Button.new(image, transform, font, text, onHover, onPress)
         textBox = TextBox.new(transform, width, height, font, { Color.palette[8], text }, "center", "center", "center"),
         transform = transform,
         collider = { width = width, height = height },
+
+        hoverSound = hoverSound,
+        pressSound = pressSound,
 
         onHover = onHover,
         onPress = onPress,
@@ -70,6 +77,8 @@ function Button:mousepressed(x, y, button, isTouch, presses)
     end
 
     if Collision.hitTest(x, y, self.collider, self.transform) then
+        self.pressSound:stop()
+        self.pressSound:play()
         if self.onPress then
             self:onPress()
         end
@@ -87,11 +96,15 @@ function Button:mousemoved(x, y, dx, dy, isTouch)
     end
 
     if Collision.hitTest(x, y, self.collider, self.transform) then
-        self.sprite:transitionAnimationState(HOVERED_STATE)
-        if self.onHover then
-            self:onHover()
+        if self.sprite.currentAnimationState ~= HOVERED_STATE then
+            self.sprite:transitionAnimationState(HOVERED_STATE)
+            self.hoverSound:stop()
+            self.hoverSound:play()
+            if self.onHover then
+                self:onHover()
+            end
         end
-    else
+    elseif self.sprite.currentAnimationState ~= DEFAULT_STATE then
         self.sprite:transitionAnimationState(DEFAULT_STATE)
     end
 end

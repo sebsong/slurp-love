@@ -1,13 +1,13 @@
 local VictoryMenu = {}
 
 local Align = require("engine.ui.align")
-local Button = require("engine.ui.button")
 local Color = require("engine.color")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
 local TextBox = require("engine.ui.text_box")
 
 local Font = require("game.font")
+local GameButton = require("game.button")
 local GameUi = require("game.ui")
 
 local victoryTextBox
@@ -43,7 +43,7 @@ function VictoryMenu.load()
         0,
         GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )
-    mainMenuButton = Button.new(buttonImage, mainMenuTransform, Font.medium, "main menu", nil, function(_button)
+    mainMenuButton = GameButton.new(buttonImage, mainMenuTransform, Font.medium, "main menu", nil, function(_button)
         SceneManager.transition(SceneManager.scenes.mainMenu)
     end)
 end

@@ -221,7 +221,6 @@ end
 
 function Game.unload()
     Music:unload()
-    love.audio.stop()
 end
 
 function Game.onPause()

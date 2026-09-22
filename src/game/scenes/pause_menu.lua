@@ -1,12 +1,12 @@
 local PauseMenu = {}
 
 local Align = require("engine.ui.align")
-local Button = require("engine.ui.button")
 local Color = require("engine.color")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
+local GameButton = require("game.button")
 local GameUi = require("game.ui")
 
 local OPEN_STATE = 1
@@ -78,7 +78,7 @@ function PauseMenu.load()
 
     local resumeTransform =
         Align.screenAlignedTransform(GameUi.BUTTON_DIMENSIONS.x, GameUi.BUTTON_DIMENSIONS.y, "center", "center")
-    resumeButton = Button.new(buttonImage, resumeTransform, Font.medium, "resume", nil, function(_button)
+    resumeButton = GameButton.new(buttonImage, resumeTransform, Font.medium, "resume", nil, function(_button)
         PauseMenu.toggle()
     end)
 
@@ -90,7 +90,7 @@ function PauseMenu.load()
         0,
         GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )
-    mainMenuButton = Button.new(buttonImage, mainMenuTransform, Font.medium, "main menu", nil, function(_button)
+    mainMenuButton = GameButton.new(buttonImage, mainMenuTransform, Font.medium, "main menu", nil, function(_button)
         SceneManager.transition(SceneManager.scenes.mainMenu)
     end)
 end

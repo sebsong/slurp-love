@@ -1,8 +1,8 @@
 local Align = require("engine.ui.align")
-local Button = require("engine.ui.button")
 local SceneManager = require("engine.scene_manager")
 
 local Font = require("game.font")
+local GameButton = require("game.button")
 local GameUi = require("game.ui")
 
 local MainMenu = {}
@@ -30,7 +30,7 @@ function MainMenu.load()
         GameUi.PADDING,
         (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) * 2 + GameUi.PADDING
     )
-    playButton = Button.new(buttonImage, playButtonTransform, Font.medium, "play", nil, function()
+    playButton = GameButton.new(buttonImage, playButtonTransform, Font.medium, "play", nil, function()
         SceneManager.transition(SceneManager.scenes.dayTransition)
     end)
 
@@ -42,9 +42,16 @@ function MainMenu.load()
         GameUi.PADDING,
         GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
     )
-    daySelectorButton = Button.new(buttonImage, daySelectorButtonTransform, Font.medium, "select day", nil, function()
-        SceneManager.transition(SceneManager.scenes.daySelector)
-    end)
+    daySelectorButton = GameButton.new(
+        buttonImage,
+        daySelectorButtonTransform,
+        Font.medium,
+        "select day",
+        nil,
+        function()
+            SceneManager.transition(SceneManager.scenes.daySelector)
+        end
+    )
 
     local exitButtonTransform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
@@ -54,7 +61,7 @@ function MainMenu.load()
         GameUi.PADDING,
         GameUi.PADDING
     )
-    exitButton = Button.new(buttonImage, exitButtonTransform, Font.medium, "exit", nil, function()
+    exitButton = GameButton.new(buttonImage, exitButtonTransform, Font.medium, "exit", nil, function()
         love.event.quit()
     end)
 end
