@@ -62,8 +62,6 @@ local worldObjects
 local packages
 local mailboxes
 
-local waterImage
-
 local lanternLightImage
 local lanternXRadius
 local lanternYRadius
@@ -113,7 +111,6 @@ function Game.load()
     boatObj = Boat.new(tilemapObj, currentDay)
     table.insert(worldObjects, boatObj)
 
-    waterImage = love.graphics.newImage("assets/art/water.png")
     WaterEffect.load(cameraObj, boatObj, love.timer.getTime())
 
     lanternLightImage = love.graphics.newImage("assets/art/lantern_light.png")
