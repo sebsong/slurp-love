@@ -8,7 +8,7 @@ local Sprite = require("engine.sprite")
 local Tilemap = require("engine.tilemap")
 local Vec2 = require("engine.vec2")
 
-local Boat = require("game.scenes.boat")
+local Boat = require("game.boat")
 local BoatEffect = require("game.effects.boat_effect")
 local DayTracker = require("game.scenes.day_tracker")
 local GameUi = require("game.ui")
@@ -75,7 +75,7 @@ local shaderSeconds
 local didWin
 local didLose
 
-function Game.load()
+function Game:load()
     pauseTimer = true
     elapsedSeconds = 0
     shaderSeconds = 0
@@ -219,27 +219,27 @@ function Game.load()
     end)
 end
 
-function Game.unload()
+function Game:unload()
     Music:unload()
 end
 
-function Game.onPause()
+function Game:onPause()
     pauseTimer = true
     boatObj.engineLoopSound:pause()
 end
 
-function Game.onResume()
+function Game:onResume()
     pauseTimer = false
     boatObj.engineLoopSound:play()
 end
 
-function Game.onPauseInput()
-    Game.onPause()
+function Game:onPauseInput()
+    Game:onPause()
     boatObj:releaseInput()
 end
 
-function Game.onResumeInput()
-    Game.onResume()
+function Game:onResumeInput()
+    Game:onResume()
 end
 
 local function evaluateWinCondition()
@@ -281,7 +281,7 @@ local function evaluateLoseCondition()
     end
 end
 
-function Game.keypressed(key, scancode, isRepeat)
+function Game:keypressed(key, scancode, isRepeat)
     if key == "space" and not isRepeat then
         if not boatObj:pickupPackage(packages, mailboxes) then
             boatObj:deliverPackage(mailboxes)
@@ -304,26 +304,26 @@ function Game.keypressed(key, scancode, isRepeat)
     boatObj:keypressed(key, scancode, isRepeat)
 end
 
-function Game.keyreleased(key, scancode)
+function Game:keyreleased(key, scancode)
     if key == "tab" then
         Map.close()
     end
     boatObj:keyreleased(key, scancode)
 end
 
-function Game.mousepressed(x, y, button, isTouch, presses)
+function Game:mousepressed(x, y, button, isTouch, presses)
     cameraObj:mousepressed(x, y, button, isTouch, presses)
 end
 
-function Game.mousemoved(x, y, dx, dy, isTouch)
+function Game:mousemoved(x, y, dx, dy, isTouch)
     cameraObj:mousemoved(x, y, dx, dy, isTouch)
 end
 
-function Game.wheelmoved(x, y)
+function Game:wheelmoved(x, y)
     cameraObj:wheelmoved(x, y)
 end
 
-function Game.update(dt)
+function Game:update(dt)
     if not pauseTimer then
         elapsedSeconds = elapsedSeconds + dt
         boatObj:update(dt)
@@ -395,7 +395,7 @@ function Game.update(dt)
     evaluateLoseCondition()
 end
 
-function Game.draw()
+function Game:draw()
     WaterEffect.setShader()
     love.graphics.draw(waterImage)
     love.graphics.setShader()

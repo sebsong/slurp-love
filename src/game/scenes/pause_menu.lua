@@ -42,7 +42,7 @@ function PauseMenu.toggle()
     end
 end
 
-function PauseMenu.load()
+function PauseMenu:load()
     isOpen = false
     shouldStop = false
     local menuImage = love.graphics.newImage("assets/art/pause_menu.png")
@@ -95,27 +95,17 @@ function PauseMenu.load()
     end)
 end
 
-function PauseMenu.unload() end
-
-function PauseMenu.onPause() end
-
-function PauseMenu.onResume() end
-
-function PauseMenu.keypressed(key, scancode, isRepeat) end
-
-function PauseMenu.mousepressed(x, y, button, isTouch, presses)
+function PauseMenu:mousepressed(x, y, button, isTouch, presses)
     resumeButton:mousepressed(x, y, button, isTouch, presses)
     mainMenuButton:mousepressed(x, y, button, isTouch, presses)
 end
 
-function PauseMenu.mousemoved(x, y, dx, dy, isTouch)
+function PauseMenu:mousemoved(x, y, dx, dy, isTouch)
     resumeButton:mousemoved(x, y, dx, dy, isTouch)
     mainMenuButton:mousemoved(x, y, dx, dy, isTouch)
 end
 
-function PauseMenu.wheelmoved(x, y) end
-
-function PauseMenu.update(dt)
+function PauseMenu:update(dt)
     menu.sprite:update(dt)
 
     if shouldStop then
@@ -123,7 +113,7 @@ function PauseMenu.update(dt)
     end
 end
 
-function PauseMenu.draw()
+function PauseMenu:draw()
     love.graphics.push()
 
     love.graphics.setShader()

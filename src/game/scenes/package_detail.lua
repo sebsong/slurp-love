@@ -43,7 +43,7 @@ function PackageDetail.close()
     detailBox.sprite:transitionAnimationState(CLOSE_STATE)
 end
 
-function PackageDetail.load()
+function PackageDetail:load()
     isOpen = false
     shouldStop = false
 
@@ -141,25 +141,13 @@ function PackageDetail.load()
     )
 end
 
-function PackageDetail.unload() end
-
-function PackageDetail.onPause() end
-
-function PackageDetail.onResume() end
-
-function PackageDetail.keypressed(key, scancode, isRepeat)
+function PackageDetail:keypressed(key, scancode, isRepeat)
     if key == "space" then
         PackageDetail.close()
     end
 end
 
-function PackageDetail.mousepressed(x, y, button, isTouch, presses) end
-
-function PackageDetail.mousemoved(x, y, dx, dy, isTouch) end
-
-function PackageDetail.wheelmoved(x, y) end
-
-function PackageDetail.update(dt)
+function PackageDetail:update(dt)
     if shouldStop then
         if onClose then
             onClose()
@@ -171,7 +159,7 @@ function PackageDetail.update(dt)
     packageDetailPortrait.sprite:update(dt)
 end
 
-function PackageDetail.draw()
+function PackageDetail:draw()
     love.graphics.push()
 
     love.graphics.setShader()

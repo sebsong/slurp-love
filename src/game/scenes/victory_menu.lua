@@ -13,7 +13,7 @@ local GameUi = require("game.ui")
 local victoryTextBox
 local mainMenuButton
 
-function VictoryMenu.load()
+function VictoryMenu:load()
     local victoryTextBoxTransform = Align.screenAlignedTransform(
         Settings.canvasPixelWidth,
         Settings.canvasPixelHeight,
@@ -48,27 +48,15 @@ function VictoryMenu.load()
     end)
 end
 
-function VictoryMenu.unload() end
-
-function VictoryMenu.onPause() end
-
-function VictoryMenu.onResume() end
-
-function VictoryMenu.keypressed(key, scancode, isRepeat) end
-
-function VictoryMenu.mousepressed(x, y, button, isTouch, presses)
+function VictoryMenu:mousepressed(x, y, button, isTouch, presses)
     mainMenuButton:mousepressed(x, y, button, isTouch, presses)
 end
 
-function VictoryMenu.mousemoved(x, y, dx, dy, isTouch)
+function VictoryMenu:mousemoved(x, y, dx, dy, isTouch)
     mainMenuButton:mousemoved(x, y, dx, dy, isTouch)
 end
 
-function VictoryMenu.wheelmoved(x, y) end
-
-function VictoryMenu.update(dt) end
-
-function VictoryMenu.draw()
+function VictoryMenu:draw()
     love.graphics.push()
 
     love.graphics.setShader()

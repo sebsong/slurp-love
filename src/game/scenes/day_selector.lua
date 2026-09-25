@@ -28,7 +28,7 @@ local thursdayButton
 ---@type Button
 local fridayButton
 
-function DaySelector.load()
+function DaySelector:load()
     daySelectorMenuImage = love.graphics.newImage("assets/art/menu.png")
 
     daySelectorTitle = TextBox.new(
@@ -53,7 +53,7 @@ function DaySelector.load()
         GameUi.PADDING
     )
     backButton = GameButton.new(buttonImage, backButtonTranform, Font.medium, "back", nil, function()
-        SceneManager.transition(SceneManager.scenes.mainMenu)
+        SceneManager.closeOverlay(SceneManager.scenes.daySelector)
     end)
 
     local mondayButtonTranform = Align.screenAlignedTransform(
@@ -131,15 +131,7 @@ function DaySelector.load()
     end
 end
 
-function DaySelector.unload() end
-
-function DaySelector.onPause() end
-
-function DaySelector.onResume() end
-
-function DaySelector.keypressed(key, scancode, isRepeat) end
-
-function DaySelector.mousepressed(x, y, button, isTouch, presses)
+function DaySelector:mousepressed(x, y, button, isTouch, presses)
     backButton:mousepressed(x, y, button, isTouch, presses)
     mondayButton:mousepressed(x, y, button, isTouch, presses)
     tuesdayButton:mousepressed(x, y, button, isTouch, presses)
@@ -148,7 +140,7 @@ function DaySelector.mousepressed(x, y, button, isTouch, presses)
     fridayButton:mousepressed(x, y, button, isTouch, presses)
 end
 
-function DaySelector.mousemoved(x, y, dx, dy, isTouch)
+function DaySelector:mousemoved(x, y, dx, dy, isTouch)
     backButton:mousemoved(x, y, dx, dy, isTouch)
     mondayButton:mousemoved(x, y, dx, dy, isTouch)
     tuesdayButton:mousemoved(x, y, dx, dy, isTouch)
@@ -157,11 +149,7 @@ function DaySelector.mousemoved(x, y, dx, dy, isTouch)
     fridayButton:mousemoved(x, y, dx, dy, isTouch)
 end
 
-function DaySelector.wheelmoved(x, y) end
-
-function DaySelector.update(dt) end
-
-function DaySelector.draw()
+function DaySelector:draw()
     love.graphics.draw(daySelectorMenuImage)
     daySelectorTitle:draw()
     backButton:draw()

@@ -14,7 +14,7 @@ function Map.close()
     SceneManager.scenes.map:stop()
 end
 
-function Map.load()
+function Map:load()
     local mapImage = love.graphics.newImage("assets/art/map.png")
     local mapSprite = Sprite.new(mapImage)
     mapOverlay = {
@@ -23,23 +23,7 @@ function Map.load()
     }
 end
 
-function Map.unload() end
-
-function Map.onPause() end
-
-function Map.onResume() end
-
-function Map.keypressed(key, scancode, isRepeat) end
-
-function Map.mousepressed(x, y, button, isTouch, presses) end
-
-function Map.mousemoved(x, y, dx, dy, isTouch) end
-
-function Map.wheelmoved(x, y) end
-
-function Map.update(dt) end
-
-function Map.draw()
+function Map:draw()
     love.graphics.push()
 
     love.graphics.setShader()

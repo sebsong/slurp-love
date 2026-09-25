@@ -14,7 +14,7 @@ local defaultFont
 local frame
 local report
 
-function Debug.load()
+function Debug:load()
     defaultFont = love.graphics.getFont()
     frame = 0
     if ENABLE_PROFILER then
@@ -22,13 +22,7 @@ function Debug.load()
     end
 end
 
-function Debug.unload() end
-
-function Debug.onPause() end
-
-function Debug.onResume() end
-
-function Debug.keypressed(key, scancode, isRepeat)
+function Debug:keypressed(key, scancode, isRepeat)
     if key == "return" and not isRepeat then
         if MainMenu.isActive then
             SceneManager.transition(SceneManager.scenes.dayTransition)
@@ -38,17 +32,13 @@ function Debug.keypressed(key, scancode, isRepeat)
     end
 end
 
-function Debug.mousepressed(x, y, button, isTouch, presses)
+function Debug:mousepressed(x, y, button, isTouch, presses)
     if button == 1 and Game.isActive and not Game.isPaused then
         Game.debugTeleportBoatToCanvasPoint(x, y)
     end
 end
 
-function Debug.mousemoved(x, y, dx, dy, isTouch) end
-
-function Debug.wheelmoved(x, y) end
-
-function Debug.update(dt)
+function Debug:update(dt)
     if ENABLE_PROFILER then
         frame = frame + 1
         if frame % 1000 == 0 then
@@ -59,7 +49,7 @@ function Debug.update(dt)
     end
 end
 
-function Debug.draw()
+function Debug:draw()
     love.graphics.setFont(defaultFont)
 
     love.graphics.setColor(0, 1, 0)

@@ -15,7 +15,7 @@ local gameOverTextBox
 local restartButton
 local mainMenuButton
 
-function GameOverMenu.load()
+function GameOverMenu:load()
     local gameOverTextBoxTransform = Align.screenAlignedTransform(
         Settings.canvasPixelWidth,
         Settings.canvasPixelHeight,
@@ -57,29 +57,17 @@ function GameOverMenu.load()
     end)
 end
 
-function GameOverMenu.unload() end
-
-function GameOverMenu.onPause() end
-
-function GameOverMenu.onResume() end
-
-function GameOverMenu.keypressed(key, scancode, isRepeat) end
-
-function GameOverMenu.mousepressed(x, y, button, isTouch, presses)
+function GameOverMenu:mousepressed(x, y, button, isTouch, presses)
     restartButton:mousepressed(x, y, button, isTouch, presses)
     mainMenuButton:mousepressed(x, y, button, isTouch, presses)
 end
 
-function GameOverMenu.mousemoved(x, y, dx, dy, isTouch)
+function GameOverMenu:mousemoved(x, y, dx, dy, isTouch)
     restartButton:mousemoved(x, y, dx, dy, isTouch)
     mainMenuButton:mousemoved(x, y, dx, dy, isTouch)
 end
 
-function GameOverMenu.wheelmoved(x, y) end
-
-function GameOverMenu.update(dt) end
-
-function GameOverMenu.draw()
+function GameOverMenu:draw()
     love.graphics.push()
 
     love.graphics.setShader()

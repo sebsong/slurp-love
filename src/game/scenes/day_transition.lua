@@ -41,7 +41,7 @@ local function secondsToTimeString(seconds)
     return ("%d:%.2f"):format(minutes, remainderSeconds)
 end
 
-function DayTransition.load()
+function DayTransition:load()
     local dayTextBoxTransform = Align.screenAlignedTransform(
         Settings.canvasPixelWidth,
         Font.large:getHeight(),
@@ -109,13 +109,7 @@ function DayTransition.load()
     showContinueText = true
 end
 
-function DayTransition.unload() end
-
-function DayTransition.onPause() end
-
-function DayTransition.onResume() end
-
-function DayTransition.keypressed(key, scancode, isRepeat)
+function DayTransition:keypressed(key, scancode, isRepeat)
     if Input.MODIFIER_KEYS:contains(key) then
         return
     end
@@ -123,13 +117,7 @@ function DayTransition.keypressed(key, scancode, isRepeat)
     SceneManager.transition(SceneManager.scenes.game)
 end
 
-function DayTransition.mousepressed(x, y, button, isTouch, presses) end
-
-function DayTransition.mousemoved(x, y, dx, dy, isTouch) end
-
-function DayTransition.wheelmoved(x, y) end
-
-function DayTransition.update(dt)
+function DayTransition:update(dt)
     blinkTimer = blinkTimer + dt
     if blinkTimer > BLINK_HOLD_TIME then
         blinkTimer = 0
@@ -137,7 +125,7 @@ function DayTransition.update(dt)
     end
 end
 
-function DayTransition.draw()
+function DayTransition:draw()
     love.graphics.draw(dayTransitionBackgroundImage)
     dayTextBox:draw()
 

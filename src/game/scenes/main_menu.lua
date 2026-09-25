@@ -19,7 +19,7 @@ local gameSettingsButton
 ---@type Button
 local exitButton
 
-function MainMenu.load()
+function MainMenu:load()
     backgroundImage = love.graphics.newImage("assets/art/main_menu.png")
 
     local buttonImage = love.graphics.newImage("assets/art/button.png")
@@ -51,7 +51,7 @@ function MainMenu.load()
         "select day",
         nil,
         function()
-            SceneManager.transition(SceneManager.scenes.daySelector)
+            SceneManager.openOverlay(SceneManager.scenes.daySelector)
         end
     )
 
@@ -70,7 +70,7 @@ function MainMenu.load()
         "settings",
         nil,
         function()
-            SceneManager.transition(SceneManager.scenes.gameSettings)
+            SceneManager.openOverlay(SceneManager.scenes.gameSettings)
         end
     )
 
@@ -87,33 +87,21 @@ function MainMenu.load()
     end)
 end
 
-function MainMenu.unload() end
-
-function MainMenu.onPause() end
-
-function MainMenu.onResume() end
-
-function MainMenu.keypressed(key, scancode, isRepeat) end
-
-function MainMenu.mousepressed(x, y, button, isTouch, presses)
+function MainMenu:mousepressed(x, y, button, isTouch, presses)
     playButton:mousepressed(x, y, button, isTouch, presses)
     daySelectorButton:mousepressed(x, y, button, isTouch, presses)
     gameSettingsButton:mousepressed(x, y, button, isTouch, presses)
     exitButton:mousepressed(x, y, button, isTouch, presses)
 end
 
-function MainMenu.mousemoved(x, y, dx, dy, isTouch)
+function MainMenu:mousemoved(x, y, dx, dy, isTouch)
     playButton:mousemoved(x, y, dx, dy, isTouch)
     daySelectorButton:mousemoved(x, y, dx, dy, isTouch)
     gameSettingsButton:mousemoved(x, y, dx, dy, isTouch)
     exitButton:mousemoved(x, y, dx, dy, isTouch)
 end
 
-function MainMenu.wheelmoved(x, y) end
-
-function MainMenu.update(dt) end
-
-function MainMenu.draw()
+function MainMenu:draw()
     love.graphics.draw(backgroundImage)
     playButton:draw()
     daySelectorButton:draw()

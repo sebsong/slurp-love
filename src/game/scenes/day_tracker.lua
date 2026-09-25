@@ -78,29 +78,11 @@ function DayTracker.selectDay(day)
     SceneManager.transition(SceneManager.scenes.dayTransition)
 end
 
-function DayTracker.load()
+function DayTracker:load()
     initializeSaveData()
     local saveData = Save.load()
     DayTracker.currentDay = saveData.currentDay
     DayTracker.maxDay = saveData.maxDay
 end
-
-function DayTracker.unload() end
-
-function DayTracker.onPause() end
-
-function DayTracker.onResume() end
-
-function DayTracker.keypressed(key, scancode, isRepeat) end
-
-function DayTracker.mousepressed(x, y, button, isTouch, presses) end
-
-function DayTracker.mousemoved(x, y, dx, dy, isTouch) end
-
-function DayTracker.wheelmoved(x, y) end
-
-function DayTracker.update(dt) end
-
-function DayTracker.draw() end
 
 return DayTracker

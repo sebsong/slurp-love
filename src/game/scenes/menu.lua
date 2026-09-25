@@ -4,25 +4,35 @@ local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
 local TextBox = require("engine.ui.text_box")
 
-local DayTracker = require("game.scenes.day_tracker")
 local Font = require("game.font")
 local GameButton = require("game.button")
 local GameUi = require("game.ui")
 
-local GameSettings = {}
+---@class Menu: Scene
+---@field subMenu Scene
+local Menu = {}
+Menu.__index = Menu
 
 ---@type love.Image
 local menuImage
 ---@type TextBox
-local daySelectorTitle
+local title
 
 ---@type Button
-local backButton
+local closeButton
 
-function GameSettings:load()
+function Menu.new(subMenu)
+    local menu = {
+        subMenu = subMenu,
+    }
+    setmetatable(menu, Menu)
+    return menu
+end
+
+function Menu:load()
     menuImage = love.graphics.newImage("assets/art/menu.png")
 
-    daySelectorTitle = TextBox.new(
+    title = TextBox.new(
         love.math.newTransform(0, GameUi.PADDING),
         Settings.canvasPixelWidth,
         Settings.canvasPixelHeight,
@@ -43,23 +53,32 @@ function GameSettings:load()
         GameUi.PADDING,
         GameUi.PADDING
     )
-    backButton = GameButton.new(buttonImage, backButtonTranform, Font.medium, "back", nil, function()
-        SceneManager.closeOverlay(SceneManager.scenes.gameSettings)
+    closeButton = GameButton.new(buttonImage, backButtonTranform, Font.medium, "close", nil, function()
+        SceneManager.closeOverlay(self)
     end)
+
+    self.subMenu:load()
 end
 
-function GameSettings:mousepressed(x, y, button, isTouch, presses)
-    backButton:mousepressed(x, y, button, isTouch, presses)
+function Menu:keypressed(key, scancode, isRepeat)
+    if key == "escape" then
+        SceneManager.closeOverlay(self)
+    end
 end
 
-function GameSettings:mousemoved(x, y, dx, dy, isTouch)
-    backButton:mousemoved(x, y, dx, dy, isTouch)
+function Menu:mousepressed(x, y, button, isTouch, presses)
+    closeButton:mousepressed(x, y, button, isTouch, presses)
+    self.subMenu:mousepressed(x, y, button, isTouch, presses)
 end
 
-function GameSettings:draw()
+function Menu:mousemoved(x, y, dx, dy, isTouch)
+    closeButton:mousemoved(x, y, dx, dy, isTouch)
+end
+
+function Menu:draw()
     love.graphics.draw(menuImage)
-    daySelectorTitle:draw()
-    backButton:draw()
+    title:draw()
+    closeButton:draw()
 end
 
-return GameSettings
+return Menu

@@ -88,7 +88,7 @@ local function setLines(lines)
     resetDialogue()
 end
 
-function MailDialogue.load()
+function MailDialogue:load()
     isOpen = false
     shouldStop = false
 
@@ -135,25 +135,13 @@ function MailDialogue.load()
     setLines(dialogueLines)
 end
 
-function MailDialogue.unload() end
-
-function MailDialogue.onPause() end
-
-function MailDialogue.onResume() end
-
-function MailDialogue.keypressed(key, scancode, isRepeat)
+function MailDialogue:keypressed(key, scancode, isRepeat)
     if isOpen and key == "space" then
         MailDialogue.next()
     end
 end
 
-function MailDialogue.mousepressed(x, y, button, isTouch, presses) end
-
-function MailDialogue.mousemoved(x, y, dx, dy, isTouch) end
-
-function MailDialogue.wheelmoved(x, y) end
-
-function MailDialogue.update(dt)
+function MailDialogue:update(dt)
     if shouldStop then
         if onDialogueClose then
             onDialogueClose()
@@ -193,7 +181,7 @@ function MailDialogue.update(dt)
     end
 end
 
-function MailDialogue.draw()
+function MailDialogue:draw()
     love.graphics.push()
 
     love.graphics.setShader()

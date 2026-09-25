@@ -50,14 +50,18 @@ end
 
 local function load(scene)
     assert(not scene.isActive, "can't load an active scene")
-    scene.load()
+    if scene.load then
+        scene.load()
+    end
     scene.isActive = true
     scene.shouldLoad = false
 end
 
 local function unload(scene)
     assert(scene.isActive, "can't unload an inactive scene")
-    scene.unload()
+    if scene.unload then
+        scene.unload()
+    end
     scene.isActive = false
     scene.shouldUnload = false
 end
@@ -84,7 +88,7 @@ function SceneManager.keypressed(key, scancode, isRepeat)
         end
 
         if scene.keypressed then
-            scene.keypressed(key, scancode, isRepeat)
+            scene:keypressed(key, scancode, isRepeat)
         end
 
         ::continue::
@@ -100,7 +104,7 @@ function SceneManager.keyreleased(key, scancode)
         end
 
         if scene.keyreleased then
-            scene.keyreleased(key, scancode)
+            scene:keyreleased(key, scancode)
         end
 
         ::continue::
@@ -119,7 +123,7 @@ function SceneManager.mousepressed(x, y, button, isTouch, presses)
         end
 
         if scene.mousepressed then
-            scene.mousepressed(x, y, button, isTouch, presses)
+            scene:mousepressed(x, y, button, isTouch, presses)
         end
 
         ::continue::
@@ -138,7 +142,7 @@ function SceneManager.mousemoved(x, y, dx, dy, isTouch)
         end
 
         if scene.mousemoved then
-            scene.mousemoved(x, y, dx, dy, isTouch)
+            scene:mousemoved(x, y, dx, dy, isTouch)
         end
 
         ::continue::
@@ -154,7 +158,7 @@ function SceneManager.wheelmoved(x, y)
         end
 
         if scene.wheelmoved then
-            scene.wheelmoved(x, y)
+            scene:wheelmoved(x, y)
         end
 
         ::continue::
@@ -175,7 +179,9 @@ function SceneManager.update(dt)
             goto continue
         end
 
-        scene.update(dt)
+        if scene.update then
+            scene:update(dt)
+        end
 
         ::continue::
     end
@@ -187,7 +193,9 @@ function SceneManager.draw()
             goto continue
         end
 
-        scene.draw()
+        if scene.draw then
+            scene:draw()
+        end
 
         ::continue::
     end
