@@ -15,6 +15,8 @@ local playButton
 ---@type Button
 local daySelectorButton
 ---@type Button
+local gameSettingsButton
+---@type Button
 local exitButton
 
 function MainMenu.load()
@@ -25,10 +27,10 @@ function MainMenu.load()
     local playButtonTransform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        "left",
+        "right",
         "bottom",
         GameUi.PADDING,
-        (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) * 2 + GameUi.PADDING
+        (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) * 3 + GameUi.PADDING
     )
     playButton = GameButton.new(buttonImage, playButtonTransform, Font.medium, "play", nil, function()
         SceneManager.transition(SceneManager.scenes.dayTransition)
@@ -37,10 +39,10 @@ function MainMenu.load()
     local daySelectorButtonTransform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        "left",
+        "right",
         "bottom",
         GameUi.PADDING,
-        GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
+        (GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y) * 2 + GameUi.PADDING
     )
     daySelectorButton = GameButton.new(
         buttonImage,
@@ -53,10 +55,29 @@ function MainMenu.load()
         end
     )
 
+    local gameSettingsButtonTransform = Align.screenAlignedTransform(
+        GameUi.BUTTON_DIMENSIONS.x,
+        GameUi.BUTTON_DIMENSIONS.y,
+        "right",
+        "bottom",
+        GameUi.PADDING,
+        GameUi.PADDING + GameUi.BUTTON_DIMENSIONS.y + GameUi.PADDING
+    )
+    gameSettingsButton = GameButton.new(
+        buttonImage,
+        gameSettingsButtonTransform,
+        Font.medium,
+        "settings",
+        nil,
+        function()
+            SceneManager.transition(SceneManager.scenes.gameSettings)
+        end
+    )
+
     local exitButtonTransform = Align.screenAlignedTransform(
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        "left",
+        "right",
         "bottom",
         GameUi.PADDING,
         GameUi.PADDING
@@ -77,12 +98,14 @@ function MainMenu.keypressed(key, scancode, isRepeat) end
 function MainMenu.mousepressed(x, y, button, isTouch, presses)
     playButton:mousepressed(x, y, button, isTouch, presses)
     daySelectorButton:mousepressed(x, y, button, isTouch, presses)
+    gameSettingsButton:mousepressed(x, y, button, isTouch, presses)
     exitButton:mousepressed(x, y, button, isTouch, presses)
 end
 
 function MainMenu.mousemoved(x, y, dx, dy, isTouch)
     playButton:mousemoved(x, y, dx, dy, isTouch)
     daySelectorButton:mousemoved(x, y, dx, dy, isTouch)
+    gameSettingsButton:mousemoved(x, y, dx, dy, isTouch)
     exitButton:mousemoved(x, y, dx, dy, isTouch)
 end
 
@@ -94,6 +117,7 @@ function MainMenu.draw()
     love.graphics.draw(backgroundImage)
     playButton:draw()
     daySelectorButton:draw()
+    gameSettingsButton:draw()
     exitButton:draw()
 end
 

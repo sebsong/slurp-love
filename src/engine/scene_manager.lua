@@ -28,6 +28,26 @@ function SceneManager.transition(scene)
     scene:start()
 end
 
+---@param scene Scene
+function SceneManager.openOverlay(scene)
+    for _, s in ipairs(scenesList) do
+        if not s.isGlobal and s.isActive then
+            s:pauseInput()
+        end
+    end
+    scene:start()
+end
+
+---@param scene Scene
+function SceneManager.closeOverlay(scene)
+    scene:stop()
+    for _, s in ipairs(scenesList) do
+        if not s.isGlobal and s.isActive then
+            s:resumeInput()
+        end
+    end
+end
+
 local function load(scene)
     assert(not scene.isActive, "can't load an active scene")
     scene.load()

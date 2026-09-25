@@ -29,7 +29,7 @@ local thursdayButton
 local fridayButton
 
 function DaySelector.load()
-    daySelectorMenuImage = love.graphics.newImage("assets/art/day_selector_menu.png")
+    daySelectorMenuImage = love.graphics.newImage("assets/art/menu.png")
 
     daySelectorTitle = TextBox.new(
         love.math.newTransform(0, GameUi.PADDING),
