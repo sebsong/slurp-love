@@ -1,40 +1,47 @@
 local Align = require("engine.ui.align")
-local Color = require("engine.color")
 local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
-local Settings = require("engine.settings")
-local TextBox = require("engine.ui.text_box")
+local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
 local GameButton = require("game.button")
 local GameUi = require("game.ui")
 
 ---@class Menu: Scene
+---@field frame table
 local Menu = Scene.new()
 Menu.__index = Menu
-
----@type love.Image
-local menuImage
 
 ---@type Button
 local closeButton
 
 ---@return Menu
 function Menu.new()
-    local menu = {}
+    local menu = {
+        frame = {},
+    }
     setmetatable(menu, Menu)
     return menu
 end
 
 function Menu:load()
-    menuImage = love.graphics.newImage("assets/art/menu.png")
+    local menuImage = love.graphics.newImage("assets/art/menu.png")
+    local menuSprite = Sprite.new(menuImage)
+    local menuTransform = Align.screenAlignedTransform(menuSprite.width, menuSprite.height, "center", "center")
+    self.frame = {
+        sprite = menuSprite,
+        transform = menuTransform,
+    }
 
     local buttonImage = love.graphics.newImage("assets/art/button.png")
 
-    local backButtonTranform = Align.screenAlignedTransform(
+    local backButtonTranform = Align.alignedTransform(
+        menuTransform,
+        menuSprite.width,
+        menuSprite.height,
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
-        "left",
+        "right",
         "top",
         GameUi.PADDING,
         GameUi.PADDING
@@ -59,7 +66,7 @@ function Menu:mousemoved(x, y, dx, dy, isTouch)
 end
 
 function Menu:draw()
-    love.graphics.draw(menuImage)
+    self.frame.sprite:draw(self.frame.transform)
     closeButton:draw()
 end
 

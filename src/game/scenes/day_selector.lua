@@ -10,14 +10,12 @@ local Font = require("game.font")
 local GameButton = require("game.button")
 local GameUi = require("game.ui")
 
+---@class DaySelector: Scene
+---@field baseScene Menu
 local DaySelector = Scene.new()
 
----@type love.Image
-local daySelectorMenuImage
 ---@type TextBox
-local daySelectorTitle
----@type Button
-local backButton
+local titleTextBox
 ---@type Button
 local mondayButton
 ---@type Button
@@ -30,12 +28,24 @@ local thursdayButton
 local fridayButton
 
 function DaySelector:load()
-    daySelectorMenuImage = love.graphics.newImage("assets/art/menu.png")
-
-    daySelectorTitle = TextBox.new(
-        love.math.newTransform(0, GameUi.PADDING),
-        Settings.canvasPixelWidth,
-        Settings.canvasPixelHeight,
+    local menuFrame = self.baseScene.frame
+    local frameTransform = menuFrame.transform
+    local frameWidth, frameHeight = menuFrame.sprite.width, menuFrame.sprite.height
+    local titleTransform = Align.alignedTransform(
+        frameTransform,
+        frameWidth,
+        frameHeight,
+        frameWidth,
+        frameHeight,
+        "center",
+        "center",
+        0,
+        GameUi.PADDING * 2
+    )
+    titleTextBox = TextBox.new(
+        titleTransform,
+        frameWidth,
+        frameHeight,
         Font.large,
         { Color.palette[8], "select day" },
         "center",
@@ -45,19 +55,10 @@ function DaySelector:load()
 
     local buttonImage = love.graphics.newImage("assets/art/button.png")
 
-    local backButtonTranform = Align.screenAlignedTransform(
-        GameUi.BUTTON_DIMENSIONS.x,
-        GameUi.BUTTON_DIMENSIONS.y,
-        "left",
-        "top",
-        GameUi.PADDING,
-        GameUi.PADDING
-    )
-    backButton = GameButton.new(buttonImage, backButtonTranform, Font.medium, "back", nil, function()
-        SceneManager.closeOverlay(SceneManager.scenes.daySelector)
-    end)
-
-    local mondayButtonTranform = Align.screenAlignedTransform(
+    local mondayButtonTranform = Align.alignedTransform(
+        frameTransform,
+        frameWidth,
+        frameHeight,
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
         "center",
@@ -69,7 +70,10 @@ function DaySelector:load()
         DayTracker.selectDay(1)
     end)
 
-    local tuesdayButtonTranform = Align.screenAlignedTransform(
+    local tuesdayButtonTranform = Align.alignedTransform(
+        frameTransform,
+        frameWidth,
+        frameHeight,
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
         "center",
@@ -81,7 +85,10 @@ function DaySelector:load()
         DayTracker.selectDay(2)
     end)
 
-    local wednesdayButtonTranform = Align.screenAlignedTransform(
+    local wednesdayButtonTranform = Align.alignedTransform(
+        frameTransform,
+        frameWidth,
+        frameHeight,
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
         "center",
@@ -93,7 +100,10 @@ function DaySelector:load()
         DayTracker.selectDay(3)
     end)
 
-    local thursdayButtonTranform = Align.screenAlignedTransform(
+    local thursdayButtonTranform = Align.alignedTransform(
+        frameTransform,
+        frameWidth,
+        frameHeight,
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
         "center",
@@ -105,7 +115,10 @@ function DaySelector:load()
         DayTracker.selectDay(4)
     end)
 
-    local fridayButtonTranform = Align.screenAlignedTransform(
+    local fridayButtonTranform = Align.alignedTransform(
+        frameTransform,
+        frameWidth,
+        frameHeight,
         GameUi.BUTTON_DIMENSIONS.x,
         GameUi.BUTTON_DIMENSIONS.y,
         "center",
@@ -133,7 +146,6 @@ function DaySelector:load()
 end
 
 function DaySelector:mousepressed(x, y, button, isTouch, presses)
-    backButton:mousepressed(x, y, button, isTouch, presses)
     mondayButton:mousepressed(x, y, button, isTouch, presses)
     tuesdayButton:mousepressed(x, y, button, isTouch, presses)
     wednesdayButton:mousepressed(x, y, button, isTouch, presses)
@@ -142,7 +154,6 @@ function DaySelector:mousepressed(x, y, button, isTouch, presses)
 end
 
 function DaySelector:mousemoved(x, y, dx, dy, isTouch)
-    backButton:mousemoved(x, y, dx, dy, isTouch)
     mondayButton:mousemoved(x, y, dx, dy, isTouch)
     tuesdayButton:mousemoved(x, y, dx, dy, isTouch)
     wednesdayButton:mousemoved(x, y, dx, dy, isTouch)
@@ -151,9 +162,7 @@ function DaySelector:mousemoved(x, y, dx, dy, isTouch)
 end
 
 function DaySelector:draw()
-    love.graphics.draw(daySelectorMenuImage)
-    daySelectorTitle:draw()
-    backButton:draw()
+    titleTextBox:draw()
     mondayButton:draw()
     tuesdayButton:draw()
     wednesdayButton:draw()
