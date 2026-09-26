@@ -1,11 +1,13 @@
 local Align = require("engine.ui.align")
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 
 local Font = require("game.font")
 local GameButton = require("game.button")
 local GameUi = require("game.ui")
 
-local MainMenu = {}
+---@class MainMenu: Scene
+local MainMenu = Scene.new()
 
 ---@type love.Image
 local backgroundImage

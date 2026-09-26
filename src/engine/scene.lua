@@ -5,9 +5,11 @@
 ---@field isInputPaused boolean
 ---@field shouldLoad boolean
 ---@field shouldUnload boolean
+---@field baseScene Scene?
+---@field subScene Scene?
 ---
----@field load fun(self: Scene)
----@field unload fun(self: Scene)
+---@field load fun(self: Scene)?
+---@field unload fun(self: Scene)?
 ---@field onPause fun(self: Scene)?
 ---@field onResume fun(self: Scene)?
 ---@field onPauseInput fun(self: Scene)?
@@ -17,22 +19,28 @@
 ---@field mousepressed fun(self: Scene, x: number, y: number, button: number, isTouch: boolean, presses: number)?
 ---@field mousemoved fun(self: Scene, x: number, y: number, dx: number, dy: number, isTouch: boolean)?
 ---@field wheelmoved fun(self: Scene, x: number, y: number)?
----@field update fun(self: Scene, dt: number)
----@field draw fun(self: Scene)
+---@field update fun(self: Scene, dt: number)?
+---@field draw fun(self: Scene)?
 local Scene = {}
 Scene.__index = Scene
 
----@param isGlobal boolean
-function Scene:init(isGlobal)
-    self.isGlobal = isGlobal
-    self.isActive = false
-    self.isPaused = false
-    self.isInputPaused = false
-    self.shouldLoad = false
-    self.shouldUnload = false
-    setmetatable(self, Scene)
+---@param isGlobal boolean?
+function Scene.new(isGlobal)
+    ---@type Scene
+    local scene = {
+        isGlobal = isGlobal or false,
+        isActive = false,
+        isPaused = false,
+        isInputPaused = false,
+        shouldLoad = false,
+        shouldUnload = false,
+    }
+    setmetatable(scene, Scene)
+
+    return scene
 end
 
+-- TODO: all of these methods should be executed by the scene manager using processSceneStack
 function Scene:start()
     self.isPaused = false
     self.shouldLoad = true
@@ -73,6 +81,14 @@ end
 function Scene:restart()
     self:stop()
     self:start()
+end
+
+---@param subScene Scene
+---@return Scene
+function Scene:compose(subScene)
+    self.subScene = subScene
+    subScene.baseScene = self
+    return self
 end
 
 return Scene

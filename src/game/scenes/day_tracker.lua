@@ -1,13 +1,14 @@
 local Save = require("engine.save")
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 
 local FIRST_DAY = 1
 local FINAL_DAY = 5
 
-local DayTracker = {
-    currentDay = FIRST_DAY,
-    maxDay = FIRST_DAY,
-}
+---@class DayTracker: Scene
+local DayTracker = Scene.new()
+DayTracker.currentDay = FIRST_DAY
+DayTracker.maxDay = FIRST_DAY
 
 local function initializeSaveData()
     Save.update(function(saveData)

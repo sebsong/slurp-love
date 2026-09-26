@@ -1,5 +1,4 @@
-local Debug = {}
-
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 
 local DayTracker = require("game.scenes.day_tracker")
@@ -7,6 +6,9 @@ local Game = require("game.scenes.game")
 local MainMenu = require("game.scenes.main_menu")
 
 local Profile = require("external.profile")
+
+---@class Debug: Scene
+local Debug = Scene.new(true)
 
 local ENABLE_PROFILER = false
 

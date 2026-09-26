@@ -1,7 +1,6 @@
-local VictoryMenu = {}
-
 local Align = require("engine.ui.align")
 local Color = require("engine.color")
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
 local TextBox = require("engine.ui.text_box")
@@ -9,6 +8,9 @@ local TextBox = require("engine.ui.text_box")
 local Font = require("game.font")
 local GameButton = require("game.button")
 local GameUi = require("game.ui")
+
+---@class VictoryMenu: Scene
+local VictoryMenu = Scene.new()
 
 local victoryTextBox
 local mainMenuButton

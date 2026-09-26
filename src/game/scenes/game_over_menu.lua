@@ -1,7 +1,6 @@
-local GameOverMenu = {}
-
 local Align = require("engine.ui.align")
 local Color = require("engine.color")
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
 local TextBox = require("engine.ui.text_box")
@@ -14,6 +13,8 @@ local gameOverTextBox
 
 local restartButton
 local mainMenuButton
+
+local GameOverMenu = Scene.new()
 
 function GameOverMenu:load()
     local gameOverTextBoxTransform = Align.screenAlignedTransform(

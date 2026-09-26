@@ -1,13 +1,15 @@
-local PackageDetail = {}
-
 local Align = require("engine.ui.align")
 local Color = require("engine.color")
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 local TextBox = require("engine.ui.text_box")
 
 local Font = require("game.font")
 local Values = require("game.values")
+
+---@class PackageDetail: Scene
+local PackageDetail = Scene.new()
 
 local FLAVOR_TEXTS = {
     "fragile, handle with care",

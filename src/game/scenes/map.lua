@@ -1,8 +1,10 @@
-local Map = {}
-
 local Align = require("engine.ui.align")
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
+
+---@class Map: Scene
+local Map = Scene.new()
 
 local mapOverlay
 

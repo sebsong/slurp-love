@@ -18,6 +18,7 @@ local Global = require("game.scenes.global")
 local MailDialogue = require("game.scenes.mail_dialogue")
 local MainMenu = require("game.scenes.main_menu")
 local Map = require("game.scenes.map")
+local Menu = require("game.scenes.menu")
 local PackageDetail = require("game.scenes.package_detail")
 local PauseMenu = require("game.scenes.pause_menu")
 local VictoryMenu = require("game.scenes.victory_menu")
@@ -32,12 +33,12 @@ function love.load()
     Font.load()
     Color.loadPalette("assets/art/retrotronic-dx.hex")
 
-    SceneManager.register("global", Global, true)
-    SceneManager.register("dayTracker", DayTracker, true)
+    SceneManager.register("global", Global)
+    SceneManager.register("dayTracker", DayTracker)
 
     SceneManager.register("mainMenu", MainMenu)
-    SceneManager.register("gameSettings", GameSettings)
-    SceneManager.register("daySelector", DaySelector)
+    SceneManager.register("gameSettings", Menu.new():compose(GameSettings))
+    SceneManager.register("daySelector", Menu.new():compose(DaySelector))
     SceneManager.register("dayTransition", DayTransition)
     SceneManager.register("game", Game)
     SceneManager.register("mailDialogue", MailDialogue)
@@ -54,7 +55,7 @@ function love.load()
     -- SceneManager.scenes.packageDetail:start()
 
     if Settings.IS_DEBUG then
-        SceneManager.register("debug", Debug, true)
+        SceneManager.register("debug", Debug)
         SceneManager.scenes.debug:start()
     end
 end

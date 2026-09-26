@@ -1,13 +1,15 @@
-local PauseMenu = {}
-
 local Align = require("engine.ui.align")
 local Color = require("engine.color")
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 
 local Font = require("game.font")
 local GameButton = require("game.button")
 local GameUi = require("game.ui")
+
+---@class PauseMenu: Scene
+local PauseMenu = Scene.new()
 
 local OPEN_STATE = 1
 local CLOSED_STATE = 2

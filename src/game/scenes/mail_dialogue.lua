@@ -1,13 +1,15 @@
-local MailDialogue = {}
-
 local Align = require("engine.ui.align")
 local Color = require("engine.color")
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 local TextBox = require("engine.ui.text_box")
 
 local Font = require("game.font")
 local GameUi = require("game.ui")
+
+---@class MailDialogue: Scene
+local MailDialogue = Scene.new()
 
 local OPEN_STATE = 1
 local CLOSED_STATE = 2

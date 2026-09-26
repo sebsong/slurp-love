@@ -2,6 +2,7 @@ local Align = require("engine.ui.align")
 local Color = require("engine.color")
 local Input = require("engine.input")
 local Save = require("engine.save")
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
 local TextBox = require("engine.ui.text_box")
@@ -18,7 +19,7 @@ local DAY_TO_NAME = {
     "friday",
 }
 
-local DayTransition = {}
+local DayTransition = Scene.new()
 
 local dayTransitionBackgroundImage
 

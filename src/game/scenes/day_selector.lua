@@ -1,5 +1,6 @@
 local Align = require("engine.ui.align")
 local Color = require("engine.color")
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 local Settings = require("engine.settings")
 local TextBox = require("engine.ui.text_box")
@@ -9,7 +10,7 @@ local Font = require("game.font")
 local GameButton = require("game.button")
 local GameUi = require("game.ui")
 
-local DaySelector = {}
+local DaySelector = Scene.new()
 
 ---@type love.Image
 local daySelectorMenuImage

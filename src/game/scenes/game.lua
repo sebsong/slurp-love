@@ -3,6 +3,7 @@ local Mailbox = require("game.mailbox")
 local Math = require("engine.math")
 local Mesh = require("engine.mesh")
 local Render = require("engine.render")
+local Scene = require("engine.scene")
 local SceneManager = require("engine.scene_manager")
 local Sprite = require("engine.sprite")
 local Tilemap = require("engine.tilemap")
@@ -24,7 +25,7 @@ local TileEffect = require("game.effects.tile_effect")
 local WaterEffect = require("game.effects.water_effect")
 
 ---@class Game: Scene
-local Game = {}
+local Game = Scene.new()
 
 local DAY_TO_LAYER_NAME = {
     "objects_monday",
