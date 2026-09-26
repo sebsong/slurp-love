@@ -9,7 +9,7 @@ local BoatEffect = require("game.effects.boat_effect")
 local GameUi = require("game.ui")
 local Values = require("game.values")
 
----@class Boat: Scene, Collidable
+---@class Boat: Collidable
 local Boat = {}
 Boat.__index = Boat
 
