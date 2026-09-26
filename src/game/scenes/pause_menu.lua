@@ -24,7 +24,7 @@ local resumeButton
 local mainMenuButton
 
 function PauseMenu.open()
-    SceneManager.scenes.pauseMenu:start()
+    SceneManager.start(SceneManager.scenes.pauseMenu)
 end
 
 function PauseMenu.close()
@@ -37,10 +37,10 @@ function PauseMenu.toggle()
     local pauseScene = SceneManager.scenes.pauseMenu
     if not pauseScene.isActive then
         PauseMenu.open()
-        gameScene:pause()
+        SceneManager.pause(gameScene)
     else
         PauseMenu.close()
-        gameScene:resume() -- TODO: need to have some ref counter for how many things pausing the game
+        SceneManager.resume(gameScene) -- TODO: need to have some ref counter for how many things pausing the game
     end
 end
 
@@ -111,7 +111,7 @@ function PauseMenu:update(dt)
     menu.sprite:update(dt)
 
     if shouldStop then
-        SceneManager.scenes.pauseMenu:stop()
+        SceneManager.stop(SceneManager.scenes.pauseMenu)
     end
 end
 

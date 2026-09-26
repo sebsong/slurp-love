@@ -64,7 +64,7 @@ function DayTracker.nextDay(gasRemaining, elapsedSeconds)
 
     if DayTracker.currentDay == FINAL_DAY then
         if not SceneManager.scenes.victoryMenu.isActive then
-            SceneManager.scenes.victoryMenu:start()
+            SceneManager.start(SceneManager.scenes.victoryMenu)
         end
         return
     end

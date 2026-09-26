@@ -9,45 +9,6 @@ local SceneManager = {
 ---@type Scene[]
 local scenesList = {}
 
----@param scene Scene
-function SceneManager.transition(scene)
-    for _, s in ipairs(scenesList) do
-        if not s.isGlobal and s.isActive then
-            s:stop()
-        end
-    end
-    scene:start()
-end
-
----@param scene Scene
-function SceneManager.openOverlay(scene)
-    for _, s in ipairs(scenesList) do
-        if not s.isGlobal and s.isActive then
-            s:pauseInput()
-        end
-    end
-    scene:start()
-end
-
----@param scene Scene
-function SceneManager.closeOverlay(scene)
-    scene:stop()
-    for _, s in ipairs(scenesList) do
-        if not s.isGlobal and s.isActive then
-            s:resumeInput()
-        end
-    end
-end
-
---- SCENE PROCESSING ---
-
----@param sceneName string
----@param scene Scene
-function SceneManager.register(sceneName, scene)
-    table.insert(scenesList, scene)
-    SceneManager.scenes[sceneName] = scene
-end
-
 ---@param baseScene Scene
 ---@param fn fun(scene: Scene)
 local function processSceneStack(baseScene, fn)
@@ -62,6 +23,104 @@ local function processScenes(fn)
     for _, scene in ipairs(scenesList) do
         processSceneStack(scene, fn)
     end
+end
+
+function SceneManager.start(scene)
+    processSceneStack(scene, function(scene)
+        scene.isPaused = false
+        scene.isInputPaused = false
+        scene.shouldLoad = true
+    end)
+end
+
+function SceneManager.stop(scene)
+    processSceneStack(scene, function(scene)
+        scene.shouldUnload = true
+    end)
+end
+
+function SceneManager.pause(scene)
+    processSceneStack(scene, function(scene)
+        scene.isPaused = true
+        if scene.onPause then
+            scene:onPause()
+        end
+    end)
+end
+
+function SceneManager.resume(scene)
+    processSceneStack(scene, function(scene)
+        scene.isPaused = false
+        if scene.onResume then
+            scene:onResume()
+        end
+    end)
+end
+
+function SceneManager.pauseInput(scene)
+    processSceneStack(scene, function(scene)
+        scene.isInputPaused = true
+        if scene.onPauseInput then
+            scene:onPauseInput()
+        end
+    end)
+end
+
+function SceneManager.resumeInput(scene)
+    processSceneStack(scene, function(scene)
+        scene.isInputPaused = false
+        if scene.onResumeInput then
+            scene:onResumeInput()
+        end
+    end)
+end
+
+function SceneManager.restart(scene)
+    SceneManager.stop(scene)
+    SceneManager.start(scene)
+end
+
+---@param scene Scene
+function SceneManager.transition(scene)
+    processScenes(function(scene)
+        if not scene.isGlobal and scene.isActive then
+            SceneManager.stop(scene)
+        end
+    end)
+
+    SceneManager.start(scene)
+end
+
+-- TODO: this should have some stack behavior to push and pop multiple overlays
+---@param scene Scene
+function SceneManager.openOverlay(scene)
+    processScenes(function(scene)
+        if not scene.isGlobal and scene.isActive then
+            SceneManager.pauseInput(scene)
+        end
+    end)
+
+    SceneManager.start(scene)
+end
+
+---@param scene Scene
+function SceneManager.closeOverlay(scene)
+    SceneManager.stop(scene)
+
+    processScenes(function(scene)
+        if not scene.isGlobal and scene.isActive then
+            SceneManager.resumeInput(scene)
+        end
+    end)
+end
+
+--- SCENE PROCESSING ---
+
+---@param sceneName string
+---@param scene Scene
+function SceneManager.register(sceneName, scene)
+    table.insert(scenesList, scene)
+    SceneManager.scenes[sceneName] = scene
 end
 
 ---@param scene Scene

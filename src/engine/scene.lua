@@ -40,49 +40,6 @@ function Scene.new(isGlobal)
     return scene
 end
 
--- TODO: all of these methods should be executed by the scene manager using processSceneStack
-function Scene:start()
-    self.isPaused = false
-    self.shouldLoad = true
-end
-
-function Scene:stop()
-    self.shouldUnload = true
-end
-
-function Scene:pause()
-    self.isPaused = true
-    if self.onPause then
-        self:onPause()
-    end
-end
-
-function Scene:resume()
-    self.isPaused = false
-    if self.onResume then
-        self:onResume()
-    end
-end
-
-function Scene:pauseInput()
-    self.isInputPaused = true
-    if self.onPauseInput then
-        self:onPauseInput()
-    end
-end
-
-function Scene:resumeInput()
-    self.isInputPaused = false
-    if self.onResumeInput then
-        self:onResumeInput()
-    end
-end
-
-function Scene:restart()
-    self:stop()
-    self:start()
-end
-
 ---@param subScene Scene
 ---@return Scene
 function Scene:compose(subScene)

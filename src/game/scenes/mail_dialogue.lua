@@ -54,7 +54,7 @@ function MailDialogue.open(lines, onClose)
     end
     dialogueLines = lines
     onDialogueClose = onClose
-    SceneManager.scenes.mailDialogue:start()
+    SceneManager.start(SceneManager.scenes.mailDialogue)
 end
 
 function MailDialogue.next()
@@ -152,7 +152,7 @@ function MailDialogue:update(dt)
         dialogueLines = {}
         onDialogueClose = nil
 
-        SceneManager.scenes.mailDialogue:stop()
+        SceneManager.stop(SceneManager.scenes.mailDialogue)
     end
 
     dialogueBox.sprite:update(dt)

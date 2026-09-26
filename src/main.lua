@@ -48,15 +48,15 @@ function love.load()
     SceneManager.register("gameOverMenu", GameOverMenu)
     SceneManager.register("victoryMenu", VictoryMenu)
 
-    SceneManager.scenes.global:start()
-    SceneManager.scenes.dayTracker:start()
-    SceneManager.scenes.mainMenu:start()
-    -- SceneManager.scenes.game:start()
-    -- SceneManager.scenes.packageDetail:start()
+    SceneManager.start(SceneManager.scenes.global)
+    SceneManager.start(SceneManager.scenes.dayTracker)
+    SceneManager.start(SceneManager.scenes.mainMenu)
+    -- SceneManager.start(SceneManager.scenes.game)
+    -- SceneManager.start(SceneManager.scenes.packageDetail)
 
     if Settings.IS_DEBUG then
         SceneManager.register("debug", Debug)
-        SceneManager.scenes.debug:start()
+        SceneManager.start(SceneManager.scenes.debug)
     end
 end
 

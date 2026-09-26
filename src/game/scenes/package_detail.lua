@@ -37,7 +37,7 @@ local onClose
 function PackageDetail.open(_packageIndex, _onClose)
     packageIndex = _packageIndex
     onClose = _onClose
-    SceneManager.scenes.packageDetail:start()
+    SceneManager.start(SceneManager.scenes.packageDetail)
 end
 
 function PackageDetail.close()
@@ -154,7 +154,7 @@ function PackageDetail:update(dt)
         if onClose then
             onClose()
         end
-        SceneManager.scenes.packageDetail:stop()
+        SceneManager.stop(SceneManager.scenes.packageDetail)
     end
 
     detailBox.sprite:update(dt)

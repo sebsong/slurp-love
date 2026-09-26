@@ -23,9 +23,9 @@ end
 function Package:onPickup(boat)
     local tileId = self.tileId
 
-    SceneManager.scenes.game:pause()
+    SceneManager.pause(SceneManager.scenes.game)
     PackageDetail.open(tileId, function()
-        SceneManager.scenes.game:resume()
+        SceneManager.resume(SceneManager.scenes.game)
     end)
 
     if tileId == Values.PACKAGE_TYPES.GLASS then

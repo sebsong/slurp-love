@@ -260,7 +260,7 @@ end
 
 local function gameOver()
     if not SceneManager.scenes.gameOverMenu.isActive then
-        SceneManager.scenes.gameOverMenu:start()
+        SceneManager.start(SceneManager.scenes.gameOverMenu)
     end
     didLose = true
 end
@@ -294,7 +294,7 @@ function Game:keypressed(key, scancode, isRepeat)
     end
 
     if key == "r" and not isRepeat then
-        SceneManager.scenes.game:restart()
+        SceneManager.restart(SceneManager.scenes.game)
     end
 
     if key == "tab" then

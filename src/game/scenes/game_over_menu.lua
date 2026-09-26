@@ -41,8 +41,8 @@ function GameOverMenu:load()
     local restartTransform =
         Align.screenAlignedTransform(GameUi.BUTTON_DIMENSIONS.x, GameUi.BUTTON_DIMENSIONS.y, "center", "center")
     restartButton = GameButton.new(buttonImage, restartTransform, Font.medium, "restart", nil, function(_button)
-        SceneManager.scenes.gameOverMenu:stop()
-        SceneManager.scenes.game:restart()
+        SceneManager.stop(SceneManager.scenes.gameOverMenu)
+        SceneManager.restart(SceneManager.scenes.game)
     end)
 
     local mainMenuTransform = Align.screenAlignedTransform(

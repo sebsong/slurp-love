@@ -9,11 +9,11 @@ local Map = Scene.new()
 local mapOverlay
 
 function Map.open()
-    SceneManager.scenes.map:start()
+    SceneManager.start(SceneManager.scenes.map)
 end
 
 function Map.close()
-    SceneManager.scenes.map:stop()
+    SceneManager.stop(SceneManager.scenes.map)
 end
 
 function Map:load()
