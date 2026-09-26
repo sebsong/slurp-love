@@ -40,7 +40,7 @@ function DaySelector:load()
         "center",
         "center",
         0,
-        GameUi.PADDING * 2
+        GameUi.PADDING * 4
     )
     titleTextBox = TextBox.new(
         titleTransform,

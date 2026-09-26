@@ -6,7 +6,7 @@ local TextBox = require("engine.ui.text_box")
 ---@class Button
 ---@field enabled boolean
 ---@field sprite Sprite
----@field textBox TextBox
+---@field textBox TextBox?
 ---@field transform love.Transform
 ---@field collider Collider
 ---@field hoverSound love.Source
@@ -37,11 +37,17 @@ function Button.new(image, transform, font, text, hoverSound, pressSound, onHove
     })
     local width, height = sprite.width, sprite.height
 
+    local textBox
+    if font and text then
+        textBox = TextBox.new(transform, width, height, font, { Color.palette[8], text }, "center", "center", "center")
+    end
+
+    ---@type Button
     local button = {
         enabled = true,
 
         sprite = sprite,
-        textBox = TextBox.new(transform, width, height, font, { Color.palette[8], text }, "center", "center", "center"),
+        textBox = textBox,
         transform = transform,
         collider = { width = width, height = height },
 
@@ -111,7 +117,9 @@ end
 
 function Button:draw()
     self.sprite:draw(self.transform)
-    self.textBox:draw()
+    if self.textBox then
+        self.textBox:draw()
+    end
 end
 
 return Button

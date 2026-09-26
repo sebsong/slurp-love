@@ -33,20 +33,19 @@ function Menu:load()
         transform = menuTransform,
     }
 
-    local buttonImage = love.graphics.newImage("assets/art/button.png")
-
-    local backButtonTranform = Align.alignedTransform(
+    local buttonImage = love.graphics.newImage("assets/art/close_button.png")
+    local closeButtonTranform = Align.alignedTransform(
         menuTransform,
         menuSprite.width,
         menuSprite.height,
-        GameUi.BUTTON_DIMENSIONS.x,
-        GameUi.BUTTON_DIMENSIONS.y,
+        16,
+        16,
         "right",
         "top",
-        GameUi.PADDING,
-        GameUi.PADDING
+        GameUi.PADDING * 2,
+        GameUi.PADDING * 2
     )
-    closeButton = GameButton.new(buttonImage, backButtonTranform, Font.medium, "close", nil, function()
+    closeButton = GameButton.new(buttonImage, closeButtonTranform, nil, nil, nil, function()
         SceneManager.closeOverlay(self)
     end)
 end
